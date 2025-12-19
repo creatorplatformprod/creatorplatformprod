@@ -36,14 +36,14 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "purple lights casting shadows across sensual black fabric... there's something about that neon glow against skin that just unlocks a different version of me. cozy fit but make it dangerous. mysterious but inviting. this is the energy tonight. 💜🖤",
+      text: "Woke up feeling like today was meant for something special. Threw on my favorite outfit, grabbed my iced coffee, and just let the day unfold. Sometimes the best adventures are the unplanned ones. 🌺✨",
       timestamp: "4 hours ago",
       likes: 125000,
       comments: 3470,
       media: {
         type: "image" as const,
-        url: "./images485573257456374938/collection17/38.jpg",
-        alt: "Behind the scenes photoshoot"
+        url: "./images485573257456374938/14.jpg",
+        alt: "Behind the scenes moment"
       }
     },
     {
@@ -53,8 +53,8 @@ const Index = () => {
         avatar: portrait1,
         verified: true
       },
-      title: "Something's Brewing",
-      text: "the studio walls have been keeping secrets lately. late nights, new concepts, pushing boundaries I didn't know I had. the creative chaos is intoxicating — messy, unpredictable, and absolutely addictive. can't reveal everything yet but trust me... what's coming will be worth the wait. stay close. 👀🔥",
+      title: "A Little Life Update",
+      text: "Been working on some exciting projects behind the scenes that I can't wait to share with you all. The creative process is messy, unpredictable, and absolutely thrilling. Stay tuned — big things are coming.",
       timestamp: "5 hours ago",
       likes: 89000,
       comments: 1560
@@ -66,8 +66,8 @@ const Index = () => {
         avatar: portrait1,
         verified: true
       },
-      title: "Before the World Wakes",
-      text: "the first hour belongs to no one but me. warm sheets still holding my shape, soft light learning my face through the curtains, coffee promising everything will be okay. I protect this hour fiercely. just me, my breath, my thoughts before they become content. you're one of the few I'd share this with. ☀️☕",
+      title: "Morning Rituals",
+      text: "My morning routine is sacred — skincare, playlist on shuffle, and 20 minutes of just existing before the world demands my attention. It's not about productivity, it's about starting the day on my own terms. ☕💭",
       timestamp: "3 days ago",
       likes: 67000,
       comments: 890
@@ -80,14 +80,14 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "put on red. stared at the camera. forgot how to be anything but fierce. there's something about crimson against my skin that unlocks a different version of me — bolder, more passionate, completely unapologetic. the kind of sensual energy that doesn't ask permission. she's here and she's not sorry about it. 🔴💋",
+      text: "That golden light hit different today. Dropped everything to capture this moment because some things just can't wait. Nature's timing is always perfect. ☀️🧡",
       timestamp: "1 hour ago",
       likes: 92000,
       comments: 1234,
       media: {
         type: "image" as const,
-        url: "./images485573257456374938/collection17/40.jpg",
-        alt: "Sun-kissed moment"
+        url: "./images485573257456374938/collection22/11.jpg",
+        alt: "Golden hour moment"
       }
     },
     {
@@ -97,8 +97,8 @@ const Index = () => {
         avatar: portrait1,
         verified: true
       },
-      title: "Unboxed",
-      text: "spent way too long shrinking myself to fit spaces that were never designed for bodies like mine, dreams like mine, fire like mine. plot twist: I'm done asking permission to exist loudly. building my own kingdom now — messy, imperfect, entirely mine. the most terrifying and liberating thing I've ever done. to everyone else burning the boxes they were put in: I see you. keep going. we're free now. 🔥💫",
+      title: "Real Talk",
+      text: "I spent years trying to fit into boxes that weren't made for me. Now I'm building my own. It's scary, it's liberating, and it's the most authentic thing I've ever done. Here's to everyone else doing the same.",
       timestamp: "12 days ago",
       likes: 156000,
       comments: 2890
@@ -110,14 +110,14 @@ const Index = () => {
         avatar: portrait1,
         verified: true
       },
-      title: "Maid to Slay",
-      text: "okay hear me out — black and white maid aesthetic but make it fashion, make it art, make it completely inappropriate for actual cleaning. there's something deliciously subversive about taking the 'serving' trope and flipping it into pure confidence. lace-trimmed rebellion. apron strings with attitude. she plays the role but rewrites all the rules. the uniform is just the beginning of this story... 🖤🤍",
+      title: "Feeling Bold",
+      text: "There are days when you play it safe, and then there are days like this. Red lips, red nails, zero apologies. Something about this color makes me feel unstoppable. What's your power color? 🔥💋",
       timestamp: "22 days ago",
       likes: 203000,
       comments: 4567,
       media: {
         type: "image" as const,
-        url: "./images485573257456374938/collection17/21.jpg",
+        url: "./images485573257456374938/collection15/4.jpg",
         alt: "Red fashion moment"
       }
     },
@@ -129,7 +129,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "here's a thought that keeps me warm at 2am: the version of you with mascara running, heart racing, still healing from the last thing — she's not broken. she's becoming. growth looks like chaos before it looks like clarity. and somewhere between who you were and who you're becoming lives the most beautiful version: the one still in progress. that's the real art. 🎭✨",
+      text: "Plot twist: the messy, unfiltered, still-figuring-it-out version of you is just as worthy of love as the polished version. Maybe even more so. Embracing all of it today.",
       timestamp: "39 days ago",
       likes: 78000,
       comments: 1120
@@ -141,8 +141,8 @@ const Index = () => {
         avatar: portrait1,
         verified: true
       },
-      title: "You",
-      text: "sometimes I scroll through your messages and just... cry. the good kind. you found me when I was just a girl with a camera and too many feelings. now you're the reason I keep creating, keep sharing, keep being vulnerable in public. this connection we have? it saved me more times than you know. thank you for choosing to stay. 💕🤝",
+      title: "Grateful Heart",
+      text: "Taking a moment to appreciate everyone who's been supporting this journey. Every like, every comment, every DM saying my content made your day better — I see you and I'm so thankful. This community is everything. 💕📸",
       timestamp: "46 days ago",
       likes: 94000,
       comments: 1890
@@ -155,13 +155,13 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "those eyes don't just see — they hunt. wrapped in sensual black that moves like liquid shadow, channeling pure feline energy. there's something primal about letting the inner predator out to play. the gaze of someone who knows exactly what she wants... and always, always gets it. black silk. dangerous curves. eyes that could pin you to the wall from across the room. she's here. 🐆🖤",
+      text: "Tried something completely new for this shoot and honestly? It scared me. But that's usually a sign I'm growing. Step outside the comfort zone, that's where the magic happens. 🎨✨",
       timestamp: "50 days ago",
       likes: 112000,
       comments: 2340,
       media: {
         type: "image" as const,
-        url: "./images485573257456374938/collection7/2.jpg",
+        url: "./images485573257456374938/collection6/4.jpg",
         alt: "Artistic pose"
       }
     },
@@ -173,7 +173,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "photography is just organized obsession with light and skin and the spaces between heartbeats. every shadow placed with intention, every highlight earned through patience. behind each image is someone who refused to settle for 'good enough' — who chased the perfect angle until her arms ached and the moment finally surrendered. this is what love looks like when it becomes craft. 📸🎨",
+      text: "Three things I refuse to apologize for: taking up space, having high standards, and loving myself loudly. Life's too short for dimming your own light. 🌟",
       timestamp: "75 days ago",
       likes: 156000,
       comments: 4200
@@ -185,8 +185,8 @@ const Index = () => {
         avatar: portrait1,
         verified: true
       },
-      title: "Permission Granted",
-      text: "revolutionary act of the day: existing without explanation. no schedule, no agenda, no performance. just a woman and her thoughts and the radical audacity to do absolutely nothing beautifully. they call it lazy; I call it reclaiming my time, my body, my energy. the world can wait. I'm busy being whole. 🌙✨",
+      title: "Weekend Mood",
+      text: "Saturday plans: absolutely nothing scheduled and everything possible. Sometimes the best self-care is giving yourself permission to just be. No goals, no to-do lists, just existing. 🌙💫",
       timestamp: "54 days ago",
       likes: 67000,
       comments: 890
@@ -199,17 +199,17 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "yesterday's session broke something open in the best way. new lighting techniques that made skin glow like moonlight, angles we've never tried, energy that just... clicked. I keep looking at these frames and getting emotional. can't explain it. full set drops this week and I need you to see what I saw — because for the first time, I felt genuinely beautiful. 🔥📸",
+      text: "Sneak peek from yesterday's session. We tried some new lighting techniques and I'm obsessed with how they turned out. Full collection dropping this week — you're not ready! 🔥",
       timestamp: "58 days ago",
       likes: 145000,
       comments: 3200,
       media: {
         type: "image" as const,
-        url: "./images485573257456374938/collection9/4.jpg",
+        url: "./images485573257456374938/collection19/8.jpg",
         alt: "Creative moment"
       }
     },
-      {
+    {
       id: "status-41739582",
       user: {
         name: "Lannah",
@@ -217,7 +217,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "in a world obsessed with hustle culture, my most radical act is stillness. lying here in barely anything, curtains drawn, phone on silent, choosing peace over productivity. they call it lazy. I call it reclaiming my body from a system that wants it constantly performing. rest is resistance. softness is strength. and right now, doing nothing never felt so powerful. 🛋️✨",
+      text: "Hot take: rest is not a reward for being productive. Rest is a right. Taking care of yourself isn't lazy — it's necessary. Normalize doing nothing sometimes. 🛋️✨",
       timestamp: "62 days ago",
       likes: 128000,
       comments: 2890
@@ -230,7 +230,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "I love the way soft sheets feel against my skin, how they move when I stretch, and the subtle thrill when I know someone's eyes are on me. 💛",
+      text: "Currently manifesting: good energy, creative breakthroughs, and flights to places I've never been. What are you manifesting today?🌍💭",
       timestamp: "63 days ago",
       likes: 234000,
       comments: 5670
@@ -243,14 +243,14 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "behind this shot: 73 outtakes, two wardrobe malfunctions, one moment where I completely forgot how to pose naturally, and laughing so hard we had to take a break. the 'effortless' version you see? she took work. but the chaos, the imperfection, the humanity behind the polished result — that's where the real magic lives. I love this messy beautiful process. 📷😅✨",
+      text: "Behind every great photo is about 47 outtakes, three outfit changes, and probably a coffee spill. The glamour is real, folks. Worth it though. 📷😅",
       timestamp: "67 days ago",
       likes: 76000,
       comments: 1234,
       media: {
         type: "image" as const,
-        url: "./images485573257456374938/collection12/19.jpg",
-        alt: "Creative Approach"
+        url: "./images485573257456374938/collection5/11.jpg",
+        alt: "Creative Session"
       }
     },
   ];
