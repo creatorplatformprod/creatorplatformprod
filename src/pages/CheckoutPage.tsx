@@ -721,22 +721,22 @@ const CheckoutPage = () => {
                         <div className="flex items-center justify-between">
                           <div className="flex-1">
                             <div className="font-semibold text-foreground mb-2 text-sm">
-                              {provider.name}
-                            </div>
-                            <div className="flex gap-1.5 flex-wrap">
-                              {provider.cards?.map((card) => (
-                                <div key={card}>
-                                  {renderCardIcon(card)}
+                                  {provider.name}
                                 </div>
-                              ))}
-                            </div>
-                          </div>
+                                <div className="flex gap-1.5 flex-wrap">
+                              {provider.cards?.map((card) => (
+                                    <div key={card}>
+                                      {renderCardIcon(card)}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
                           {selectedProvider === provider.id && isProcessing && (
                             <Loader2 className="w-5 h-5 animate-spin text-primary ml-4 flex-shrink-0" />
                           )}
                           {selectedProvider === provider.id && !isProcessing && (
                             <CheckCircle2 className="w-5 h-5 text-primary ml-4 flex-shrink-0" />
-                          )}
+                              )}
                         </div>
                       </button>
                     ))}

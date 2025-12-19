@@ -235,23 +235,23 @@ const TipCheckoutPage = () => {
           <div className="relative mb-2">
             <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-full flex items-center justify-center mx-auto shadow-md animate-scale-in">
               <Heart className="w-6 h-6 text-white fill-current animate-bounce-once" />
-            </div>
+                </div>
             <div className="absolute inset-0 w-10 h-10 mx-auto bg-red-500/20 rounded-full animate-ping"></div>
-          </div>
-          
+              </div>
+              
           <h2 className="text-sm font-bold text-foreground mb-1 animate-fade-in">
-            Thank You!
-          </h2>
-          
+                Thank You!
+              </h2>
+              
           <p className="text-muted-foreground text-xs mb-2 animate-fade-in" style={{ animationDelay: '0.2s' }}>
             Your support means the world to me
-          </p>
-          
+              </p>
+              
           <div className="flex flex-col gap-1 animate-fade-in" style={{ animationDelay: '0.4s' }}>
             <div className="flex items-center justify-center gap-1.5 text-[11px] text-primary">
               <CheckCircle2 className="w-3 h-3" />
-              <span>Payment confirmed</span>
-            </div>
+                <span>Payment confirmed</span>
+              </div>
             <div className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
               <Loader2 className="w-3 h-3 animate-spin" />
               <span>Redirecting...</span>
@@ -279,14 +279,14 @@ const TipCheckoutPage = () => {
           </div>
           
           <div className="pt-4">
-            <button 
-              onClick={handleBack}
+          <button 
+            onClick={handleBack}
               className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Go Back</span>
-            </button>
-          </div>
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Go Back</span>
+          </button>
+        </div>
         </div>
       </div>
     );
@@ -379,32 +379,32 @@ const TipCheckoutPage = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="font-semibold text-foreground mb-2 text-sm">
-                          {provider.name}
-                        </div>
+                              {provider.name}
+                            </div>
                         <div className="flex gap-1.5 flex-wrap">
                           {provider.cards?.map((card) => (
-                            <div key={card}>
-                              {renderCardIcon(card)}
+                                <div key={card}>
+                                  {renderCardIcon(card)}
+                                </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
-                      </div>
+                          </div>
                       {selectedProvider === provider.id && isProcessing && (
                         <Loader2 className="w-5 h-5 animate-spin text-red-500 ml-4 flex-shrink-0" />
                       )}
                       {selectedProvider === provider.id && !isProcessing && (
                         <CheckCircle2 className="w-5 h-5 text-red-500 ml-4 flex-shrink-0" />
-                      )}
+                          )}
                     </div>
-                  </button>
-                ))}
-              </div>
+                        </button>
+                      ))}
+                    </div>
 
               <div className="mt-5 flex items-center justify-center gap-6 pt-5 border-t border-border">
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Shield className="w-4 h-4 text-green-500" />
                   <span>Secure Payment</span>
-                </div>
+                  </div>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Lock className="w-4 h-4 text-green-500" />
                   <span>SSL Encrypted</span>

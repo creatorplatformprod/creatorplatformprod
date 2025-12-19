@@ -158,10 +158,10 @@ const FeedHeader = ({ onSearch, onLogoClick }: FeedHeaderProps) => {
             <Heart className="w-4 h-4 fill-current" />
             Unlock Everything
           </Button>
-          
+
           <div className="relative group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input 
+            <Input
               placeholder="Find what you are looking for..."
               value={searchQuery}
               onChange={handleSearchChange}
