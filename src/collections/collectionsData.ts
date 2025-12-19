@@ -64,7 +64,7 @@ export const collections: Record<string, Collection> = {
   "1": {
     id: "1",
     title: "Dripping in Midnight",
-    description: "water cascading down like liquid diamonds against obsidian fabric — crimson accents bleeding through the darkness like forbidden poetry. there's something about being drenched in the right kind of darkness that makes you feel invincible. minimal black, maximum heat. every droplet tracing paths you wish you could follow. wet, wild, and completely unapologetic about it. 💧🔥",
+    description: "Water cascades like liquid diamonds against midnight fabric. Crimson accents bleed through the darkness like forbidden poetry. Wet, wild, and completely unapologetic. 💧🔥",
     images: generatePostCollectionImages("1", 0, [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
@@ -99,7 +99,7 @@ export const collections: Record<string, Collection> = {
   "2": {
     id: "2",
     title: "Creature of the Night",
-    description: "halloween isn't a holiday, it's a lifestyle. bat-wing silhouettes dancing across midnight fabric while shadows weave their own seduction. there's something dangerously alluring about embracing the darkness — the way black clings to curves, the way shadow details play hide and seek with imagination. gothic elegance meets pure temptation. the night didn't just call... she answered. 🦇🖤",
+    description: "Halloween isn't a holiday—it's a lifestyle. Bat-wing silhouettes dance across midnight fabric as shadows weave their own seduction. Gothic elegance meets pure temptation. 🦇🖤",
     images: generatePostCollectionImages("2", 7),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "1 day ago",
@@ -146,7 +146,7 @@ export const collections: Record<string, Collection> = {
   "4": {
     id: "4",
     title: "Netflix & Thrill",
-    description: "oversized blue knit barely covering what matters, screen glow painting shadows across bare skin. movie night but make it irresistible. there's an art to looking this good while doing absolutely nothing — cozy has never been this tempting. come for the chill, stay for the view. 💙🎬",
+    description: "Oversized blue knit barely covers anything. Screen glow paints shadows across bare skin. Movie night, but make it irresistible. Cozy never looked this tempting. 💙🎬",
     images: generatePostCollectionImages("4", 0, [
       { index: 1, type: 'image' },
       { index: 2, type: 'video', extension: 'mp4' },
@@ -200,7 +200,7 @@ export const collections: Record<string, Collection> = {
   "5": {
     id: "5",
     title: "Body as Canvas",
-    description: "the female form reimagined in rose gold light and blush-toned shadows — every curve a brushstroke, every angle a masterpiece museums could never hold. pink isn't soft here; it's powerful, provocative, primal. celebrating the art that doesn't hang on walls but walks through rooms and stops hearts. we are the gallery. we are the exhibition. we are unforgettable. 🌸💗",
+    description: "The female form reimagined in rose gold light. Every curve a brushstroke, every angle a masterpiece. Pink isn't soft—it's powerful and provocative. We are the gallery. 🌸💗",
     images: generatePostCollectionImages("5", 0, [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
@@ -231,7 +231,7 @@ export const collections: Record<string, Collection> = {
   "6": {
     id: "6",
     title: "Dark Elegance",
-    description: "black silk wrapped around confidence like a second skin — elegant enough to command respect, playful enough to keep them guessing. she carries herself like royalty but laughs like she knows all your secrets. there's something intoxicating about a woman who can be sophisticated and seductive in the same breath. the smile that follows the smolder? that's where the real danger lives. 🖤✨",
+    description: "Black silk wrapped around confidence like a second skin. Elegant enough to command respect, playful enough to keep them guessing. The smile that follows the smolder is where the real danger lives. 🖤✨",
     images: generatePostCollectionImages("6", 21),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "4 days ago",
@@ -249,7 +249,7 @@ export const collections: Record<string, Collection> = {
   "7": {
     id: "7",
     title: "Midnight Muse",
-    description: "noir never looked this alive. she wears darkness like others wear perfume — intoxicating, unforgettable, lingering long after she's gone. every fold of black fabric holds midnight's promise, every glance an invitation you're afraid to accept but can't refuse. this is the kind of beauty that haunts your thoughts at 3am. the kind you can't explain but can't forget. all black everything, and everything you've been dreaming about. 🖤🌑",
+    description: "Noir never looked this alive. She wears darkness like perfume—intoxicating and unforgettable. Every fold of black fabric holds midnight's promise. 🖤🌑",
     images: generatePostCollectionImages("7", 15),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "6 hours ago",
@@ -267,7 +267,7 @@ export const collections: Record<string, Collection> = {
   "8": {
     id: "8",
     title: "Crimson Sophistication",
-    description: "red dress clinging in all the right places, designer shades reflecting a world she's about to set on fire. this isn't just confidence — it's a declaration. sophisticated, sultry, and completely aware of the effect she has. the kind of presence that turns heads and holds gazes hostage. sunday mood: unbothered, untouchable, unforgettable. 🕶️❤️",
+    description: "Red dress clinging in all the right places. Designer shades reflecting a world she's about to conquer. This isn't confidence—it's a declaration. Unforgettable. 🕶️❤️",
     images: generatePostCollectionImages("8", 9),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "2 days ago",
@@ -285,7 +285,7 @@ export const collections: Record<string, Collection> = {
   "9": {
     id: "9",
     title: "Whisper White",
-    description: "where fabric becomes suggestion and skin becomes poetry — pure white against warm curves, minimal threads creating maximum tension. there's an art to revealing everything by showing almost nothing. sensual doesn't have to scream; sometimes it whispers, and those whispers echo louder than any shout. intimate. intentional. impossible to look away. 🤍",
+    description: "Where fabric becomes suggestion and skin becomes poetry. Pure white against warm curves. Minimal threads, maximum tension. Impossible to look away. 🤍",
     images: generatePostCollectionImages("9", 0, [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
@@ -319,7 +319,7 @@ export const collections: Record<string, Collection> = {
   "10": {
     id: "10",
     title: "Caramel Dreams",
-    description: "wrapped in autumn's warmest embrace — caramel knits and cocoa tones that feel like the first chapter of a love story. cozy never looked this tempting. there's something about soft brown against bare skin that just hits different. earthy, grounded, effortlessly seductive. comfort has never been this captivating. 🤎☕",
+    description: "Wrapped in autumn's warmest embrace. Caramel knits and cocoa tones that feel like the first chapter of a love story. Comfort never looked this tempting. 🤎☕",
     images: generatePostCollectionImages("10", 24),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "3 days ago",
@@ -332,7 +332,7 @@ export const collections: Record<string, Collection> = {
   "11": {
     id: "11",
     title: "Siren Song",
-    description: "she rose from depths unknown — cerulean and crimson cascading like ocean fire. part warning, part invitation, entirely irresistible. they say sirens sing ships to shore; she sings souls to surrender. blue and red hair framing features that could launch wars or end them. mythical energy wrapped in mortal beauty. the kind of creature you'd follow anywhere, even knowing the danger. especially knowing the danger. 🧜‍♀️🔵🔴",
+    description: "She rose from depths unknown. Cerulean and crimson cascading like ocean fire. Part warning, part invitation. Mythical energy in mortal beauty. 🧜‍♀️🔵🔴",
     images: generatePostCollectionImages("11", 7),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "12 hours ago",
@@ -350,7 +350,7 @@ export const collections: Record<string, Collection> = {
   "12": {
     id: "12",
     title: "Dark Christmas",
-    description: "santa but make it sinfully sophisticated — deep burgundy velvet clinging to curves that could make the naughty list worth it. holiday vibes with a shadow of seduction. 'tis the season to be tempting, and she's rewriting the rules of festive. dark red against warm skin, christmas magic with a dangerous twist. who said the holidays couldn't be this hot? 🎅🖤🎄",
+    description: "Santa but make it sophisticated. Deep burgundy velvet clinging to curves. Holiday vibes with seduction. Naughty list never looked this good. 🎅🖤🎄",
     images: generatePostCollectionImages("12", 0, [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
@@ -393,7 +393,7 @@ export const collections: Record<string, Collection> = {
   "13": {
     id: "13",
     title: "Shower Dreams",
-    description: "where water becomes worship and steam holds secrets — crystalline droplets painting paths of purity down bare skin. she emerges renewed, baptized in her own beauty. there's something sacred about these moments: vulnerable yet powerful, exposed yet protected. clean slate. clear mind. captivating in ways that feel almost too intimate to share. almost. 💧🤍",
+    description: "Where water becomes worship and steam holds secrets. Crystalline droplets painting paths of purity. Sacred, vulnerable, powerful. 💧🤍",
     images: generatePostCollectionImages("13", 19),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "4 days ago",
@@ -438,7 +438,7 @@ export const collections: Record<string, Collection> = {
   "15": {
     id: "15",
     title: "X Marks the Heart",
-    description: "she leaves her signature on souls — an X that marks the spot where you'll never forget her. dramatic blacks cut with silver intention, style that brands itself into memory permanently. some people pass through your life like whispers. others leave marks. she's the mark you'll trace with your thoughts at midnight, wondering what could have been, grateful for what was. ✖️🖤🌙",
+    description: "She leaves her signature on souls. An X that marks the spot where you'll never forget her. Dramatic blacks cut with silver intention. ✖️🖤🌙",
     images: generatePostCollectionImages("15", 19),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "5 days ago",
@@ -451,7 +451,7 @@ export const collections: Record<string, Collection> = {
   "16": {
     id: "16",
     title: "Off Duty Heat",
-    description: "jeans that hug in all the right places, casual top that somehow still screams 'look at me' — the everyday uniform of someone who doesn't need to try. grocery runs become runways, morning errands become moments. real life never looked this tempting. because the sexiest thing? confidence in the mundane. effortless energy that turns ordinary into unforgettable. 👖✨",
+    description: "Jeans that hug in all the right places. Casual top that screams 'look at me.' Grocery runs become runways. Confidence in the mundane. 👖✨",
     images: generatePostCollectionImages("16", 8),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "1 week ago",
@@ -469,7 +469,7 @@ export const collections: Record<string, Collection> = {
   "17": {
     id: "17",
     title: "Kyoto Dreams",
-    description: "silk whispers of ancient elegance — where tradition meets transcendence in every fold. cherry blossom precision in fabric that drapes like poetry, geisha grace in glances that speak volumes. Japanese artistry reimagined through a modern lens of sensuality. east meets ethereal in frames that feel like floating between worlds. timeless. refined. devastatingly beautiful. 🌸🇯🇵",
+    description: "Silk whispers of ancient elegance. Cherry blossom precision in fabric that drapes like poetry. Japanese artistry meets modern sensuality. 🌸🇯🇵",
     images: generatePostCollectionImages("17", 55),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "3 days ago",
@@ -487,7 +487,7 @@ export const collections: Record<string, Collection> = {
   "18": {
     id: "18",
     title: "Symbiote Chic",
-    description: "darkness becomes a second skin — venom energy coursing through every curve, anti-hero aesthetics that blur the line between villain and vixen. she doesn't wear the suit; she IS the suit. black liquid confidence that clings and commands. they say symbiotes choose their hosts carefully. she knows exactly why she was chosen. dangerous. powerful. intoxicating. we are... irresistible. 🕷️🖤",
+    description: "Darkness becomes a second skin. Venom energy coursing through every curve. Anti-hero aesthetics. Dangerous, powerful, intoxicating. 🕷️🖤",
     images: generatePostCollectionImages("18", 34),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "5 days ago",
@@ -506,7 +506,7 @@ export const collections: Record<string, Collection> = {
   "19": {
     id: "19",
     title: "Ultraviolet Dreams",
-    description: "purple light painting shadows across black lace — the city sleeps while she awakens in ultraviolet glory. lingerie that leaves just enough to imagination, lighting that turns skin into art. nocturnal content for nocturnal souls who understand that the best things happen after dark. there's different magic in the violet hour... softer, stranger, infinitely more seductive. this is her world. you're just visiting. 💜🖤",
+    description: "Purple light painting shadows across black lace. The city sleeps while she awakens in ultraviolet glory. Nocturnal magic. 💜🖤",
     images: generatePostCollectionImages("19", 12),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "1 week ago",
@@ -525,7 +525,7 @@ export const collections: Record<string, Collection> = {
   "20": {
     id: "20",
     title: "Tangerine Dreams",
-    description: "orange cozy knit that somehow makes comfort look this tempting — warm tones against warmer skin, sunset vibes in fabric form. she's a whole mood wrapped in citrus softness. the kind of cozy that makes you want to get closer, stay longer, forget the world exists. comfort and seduction aren't opposites; she's living proof. 🧡🍊",
+    description: "Orange cozy knit that makes comfort irresistible. Warm tones against warmer skin. Sunset vibes in fabric form. 🧡🍊",
     images: generatePostCollectionImages("20", 7),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "3 days ago",
@@ -542,7 +542,7 @@ export const collections: Record<string, Collection> = {
   "21": {
     id: "21",
     title: "Sailor Moon Energy",
-    description: "white and blue stripes that hug curves like ocean waves — nautical fantasy meets pin-up perfection. there's freedom in the sailor aesthetic, something about answering the call of the sea that translates to pure confidence. anchors up, inhibitions down. ready to set sail into whatever adventure finds her first. captain of her own ship and destination? wherever the mood takes her. ⚓🌊⛵",
+    description: "White and blue stripes hugging curves like ocean waves. Nautical fantasy meets pin-up perfection. Freedom in the sailor aesthetic. ⚓🌊⛵",
     images: generatePostCollectionImages("21", 0, [
       { index: 1, type: 'video', extension: 'mp4' },
       { index: 2, type: 'video', extension: 'mp4' },
@@ -568,7 +568,7 @@ export const collections: Record<string, Collection> = {
   "22": {
     id: "22",
     title: "Violet Hour",
-    description: "purple glow wrapping around curves like a lover's touch — cozy meets carnal in ultraviolet perfection. late night energy captured in fabric and light, the kind of sensual that doesn't need to try. she's lounging like tomorrow doesn't exist, looking like a dream you never want to wake from. soft yet smoldering. comfortable yet captivating. the perfect contradiction. 💜🌙",
+    description: "Purple glow wrapping around curves like a lover's touch. Cozy meets carnal in ultraviolet perfection. Soft yet smoldering. 💜🌙",
     images: generatePostCollectionImages("22", 12),
     user: { name: "Lannah", avatar: portrait1, verified: true },
     timestamp: "6 days ago",
@@ -586,7 +586,7 @@ export const collections: Record<string, Collection> = {
   "23": {
     id: "23",
     title: "Wanderlust Chronicles",
-    description: "travel fit locked and loaded — comfortable enough for long flights, cute enough for unexpected moments in foreign cities. passport ready, spirit free, aesthetic on point. there's something undeniably attractive about a woman who travels light but carries heavy confidence. adventure is calling and she already packed her best angles. every destination just a backdrop for moments worth capturing. ✈️🌍✨",
+    description: "Travel fit locked and loaded. Comfortable for long flights, cute for unexpected moments. Passport ready, spirit free. ✈️🌍✨",
     images: generatePostCollectionImages("23", 0, [
       { index: 1, type: 'image' },
       { index: 2, type: 'video', extension: 'mp4' },
@@ -627,7 +627,7 @@ export const collections: Record<string, Collection> = {
   "24": {
     id: "24",
     title: "Crimson Fire",
-    description: "red hair cascading like flames against bare shoulders — confidence burning brighter than any color could contain. she doesn't just have presence; she has dominion. every frame captures what words can't describe: that raw, untamed energy of a woman who knows exactly who she is and dares you to look away. spoiler: you can't. the fire in her eyes matches the fire in her hair. uncontainable. unforgettable. 🔥💪",
+    description: "Red hair cascading like flames against bare shoulders. Confidence burning brighter than any color could contain. Uncontainable energy. 🔥💪",
     images: generatePostCollectionImages("24", 0, [
       { index: 1, type: 'video', extension: 'mp4' },
       { index: 2, type: 'image' },
