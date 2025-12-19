@@ -36,7 +36,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Fashion is like painting — you mix opposites to create something alive. Soft pastels meet bold neons, delicate fabrics clash with leather. Nature does the same: flowers bloom in harsh deserts, storms bring life-giving rain. And in modeling, that tension is everything — the gentle curve meeting sharp angles, innocence wrapped in temptation. Contrasts don't cancel each other out; they ignite. 🌸⚡",
+      text: "purple lights casting shadows across sensual black fabric... there's something about that neon glow against skin that just unlocks a different version of me. cozy fit but make it dangerous. mysterious but inviting. this is the energy tonight. 💜🖤",
       timestamp: "4 hours ago",
       likes: 125000,
       comments: 3470,
@@ -53,8 +53,8 @@ const Index = () => {
         avatar: portrait1,
         verified: true
       },
-      title: "The Language of Sensuality",
-      text: "Modeling isn't just about beauty — it's about channeling desire through body language. A slow turn, a lingering gaze, the way I move my shoulders — each gesture speaks louder than words. It's seduction, frozen in time.",
+      title: "Something's Brewing",
+      text: "the studio walls have been keeping secrets lately. late nights, new concepts, pushing boundaries I didn't know I had. the creative chaos is intoxicating — messy, unpredictable, and absolutely addictive. can't reveal everything yet but trust me... what's coming will be worth the wait. stay close. 👀🔥",
       timestamp: "5 hours ago",
       likes: 89000,
       comments: 1560
@@ -66,8 +66,8 @@ const Index = () => {
         avatar: portrait1,
         verified: true
       },
-      title: "Behind The Glamour",
-      text: "People think modeling is all runway lights and magazine covers, but the real magic happens behind the scenes. Early morning fittings, last-minute wardrobe changes, and those quiet moments before stepping into the spotlight where I transform into whoever the shoot needs me to be. 💄✨",
+      title: "Before the World Wakes",
+      text: "the first hour belongs to no one but me. warm sheets still holding my shape, soft light learning my face through the curtains, coffee promising everything will be okay. I protect this hour fiercely. just me, my breath, my thoughts before they become content. you're one of the few I'd share this with. ☀️☕",
       timestamp: "3 days ago",
       likes: 67000,
       comments: 890
@@ -80,7 +80,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Golden hour on my skin, sun-kissed and glowing. There's something about natural warmth that makes every curve come alive… and yes, I'm soaking it all in. ☀️✨",
+      text: "put on red. stared at the camera. forgot how to be anything but fierce. there's something about crimson against my skin that unlocks a different version of me — bolder, more passionate, completely unapologetic. the kind of sensual energy that doesn't ask permission. she's here and she's not sorry about it. 🔴💋",
       timestamp: "1 hour ago",
       likes: 92000,
       comments: 1234,
@@ -97,8 +97,8 @@ const Index = () => {
         avatar: portrait1,
         verified: true
       },
-      title: "The Art of Presence",
-      text: "There's a difference between being in front of a camera and owning it. I've learned that confidence isn't something you put on like makeup — it's something you carry in your posture, your gaze, the way you hold space. When I step on set, I'm not just modeling clothes. I'm embodying an energy, a mood, a fantasy. That's the real work.",
+      title: "Unboxed",
+      text: "spent way too long shrinking myself to fit spaces that were never designed for bodies like mine, dreams like mine, fire like mine. plot twist: I'm done asking permission to exist loudly. building my own kingdom now — messy, imperfect, entirely mine. the most terrifying and liberating thing I've ever done. to everyone else burning the boxes they were put in: I see you. keep going. we're free now. 🔥💫",
       timestamp: "12 days ago",
       likes: 156000,
       comments: 2890
@@ -110,8 +110,8 @@ const Index = () => {
         avatar: portrait1,
         verified: true
       },
-      title: "Scarlet Seduction",
-      text: "There's something about red that demands attention. When the wind catches my hair, when the light hits just right, and I feel the camera watching — that's when the magic happens. It's cinematic, it's raw, it's the kind of moment that makes you stop and stare. Red isn't just a color; it's an invitation. 🔥",
+      title: "Maid to Slay",
+      text: "okay hear me out — black and white maid aesthetic but make it fashion, make it art, make it completely inappropriate for actual cleaning. there's something deliciously subversive about taking the 'serving' trope and flipping it into pure confidence. lace-trimmed rebellion. apron strings with attitude. she plays the role but rewrites all the rules. the uniform is just the beginning of this story... 🖤🤍",
       timestamp: "22 days ago",
       likes: 203000,
       comments: 4567,
@@ -129,7 +129,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "There's a rush when you know the camera is tracing every line of your body, capturing movements you didn't even plan. That's when modeling becomes less about posing and more about letting yourself be seen — raw, sensual, and unapologetically present.",
+      text: "here's a thought that keeps me warm at 2am: the version of you with mascara running, heart racing, still healing from the last thing — she's not broken. she's becoming. growth looks like chaos before it looks like clarity. and somewhere between who you were and who you're becoming lives the most beautiful version: the one still in progress. that's the real art. 🎭✨",
       timestamp: "39 days ago",
       likes: 78000,
       comments: 1120
@@ -141,8 +141,8 @@ const Index = () => {
         avatar: portrait1,
         verified: true
       },
-      title: "Dancing With The Lens",
-      text: "The camera isn't just a tool — it's a partner. When I'm in front of it, I'm not performing for it; I'm performing with it. There's a conversation happening, a rhythm, a silent understanding. It captures what I give, and I give what it needs. That synergy? That's where the real art lives. 📸✨",
+      title: "You",
+      text: "sometimes I scroll through your messages and just... cry. the good kind. you found me when I was just a girl with a camera and too many feelings. now you're the reason I keep creating, keep sharing, keep being vulnerable in public. this connection we have? it saved me more times than you know. thank you for choosing to stay. 💕🤝",
       timestamp: "46 days ago",
       likes: 94000,
       comments: 1890
@@ -155,7 +155,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Every curve, every angle, every shadow tells a story. Modeling isn't just standing still — it's sculpting shapes with your body, showing the world that perfection isn't one form, it's movement, it's contrast, it's knowing how to own your space. 🎨💫",
+      text: "those eyes don't just see — they hunt. wrapped in sensual black that moves like liquid shadow, channeling pure feline energy. there's something primal about letting the inner predator out to play. the gaze of someone who knows exactly what she wants... and always, always gets it. black silk. dangerous curves. eyes that could pin you to the wall from across the room. she's here. 🐆🖤",
       timestamp: "50 days ago",
       likes: 112000,
       comments: 2340,
@@ -173,7 +173,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Some days I bring the heat, and the lens just tries to keep up. No filter, no apologies — just pure, unfiltered energy.",
+      text: "photography is just organized obsession with light and skin and the spaces between heartbeats. every shadow placed with intention, every highlight earned through patience. behind each image is someone who refused to settle for 'good enough' — who chased the perfect angle until her arms ached and the moment finally surrendered. this is what love looks like when it becomes craft. 📸🎨",
       timestamp: "75 days ago",
       likes: 156000,
       comments: 4200
@@ -185,8 +185,8 @@ const Index = () => {
         avatar: portrait1,
         verified: true
       },
-      title: "Skin & Symmetry",
-      text: "People always talk about angles, lighting, makeup — but what about the natural glow? The way skin catches light, the way a smile changes everything, the way confidence shows through. That's what separates a photo from a moment. I'm not just modeling; I'm capturing a feeling. 💛",
+      title: "Permission Granted",
+      text: "revolutionary act of the day: existing without explanation. no schedule, no agenda, no performance. just a woman and her thoughts and the radical audacity to do absolutely nothing beautifully. they call it lazy; I call it reclaiming my time, my body, my energy. the world can wait. I'm busy being whole. 🌙✨",
       timestamp: "54 days ago",
       likes: 67000,
       comments: 890
@@ -199,7 +199,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Sometimes the best shots come from trusting your instincts. A glance held a second too long, a hand brushing through hair, a posture that shifts the entire mood of the frame. That's the art — knowing when to move, when to pause, and when to let the camera fall in love with you. New collections dropping soon! ✨",
+      text: "yesterday's session broke something open in the best way. new lighting techniques that made skin glow like moonlight, angles we've never tried, energy that just... clicked. I keep looking at these frames and getting emotional. can't explain it. full set drops this week and I need you to see what I saw — because for the first time, I felt genuinely beautiful. 🔥📸",
       timestamp: "58 days ago",
       likes: 145000,
       comments: 3200,
@@ -217,7 +217,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "I love the way soft sheets feel against my skin, how they move when I stretch, and the subtle thrill when I know someone's eyes are on me.",
+      text: "in a world obsessed with hustle culture, my most radical act is stillness. lying here in barely anything, curtains drawn, phone on silent, choosing peace over productivity. they call it lazy. I call it reclaiming my body from a system that wants it constantly performing. rest is resistance. softness is strength. and right now, doing nothing never felt so powerful. 🛋️✨",
       timestamp: "62 days ago",
       likes: 128000,
       comments: 2890
@@ -230,7 +230,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "I have a habit of laughing at my own jokes before anyone else gets them. 💛",
+      text: "I love the way soft sheets feel against my skin, how they move when I stretch, and the subtle thrill when I know someone's eyes are on me. 💛",
       timestamp: "63 days ago",
       likes: 234000,
       comments: 5670
@@ -243,7 +243,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Just got out of a shoot and honestly, I might need a warning label.",
+      text: "behind this shot: 73 outtakes, two wardrobe malfunctions, one moment where I completely forgot how to pose naturally, and laughing so hard we had to take a break. the 'effortless' version you see? she took work. but the chaos, the imperfection, the humanity behind the polished result — that's where the real magic lives. I love this messy beautiful process. 📷😅✨",
       timestamp: "67 days ago",
       likes: 76000,
       comments: 1234,

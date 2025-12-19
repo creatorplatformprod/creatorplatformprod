@@ -24,24 +24,25 @@ const FeedHeader = ({ onSearch, onLogoClick }: FeedHeaderProps) => {
   }, []);
 
   const searchSuggestions = [
-    "Golden Sun", "Nature's Bloom", "Crimson Mystery", "Sheer Elegance",
-    "Cowgirl Dreams", "Ocean Waves", "Velvet Desire", "Inner Peace",
-    "Scarlet Seduction", "Shadow Play", "Cozy Pink", "Body Appreciation",
-    "Gallery Muse", "Pure White", "Midnight Black", "Cozy Life",
-    "Daily Moments", "Exclusive Posts", "Crystal Dreams", "Moonlight Whispers",
-    "Golden Hour Glow", "Velvet Nights", "Rose Garden Romance", "Urban Elegance",
-    "Morning Light",
-    "White", "Black", "Pink", "Red", "Green", "Beige", "Grey", "Leather", "Lace",
-    "Lingerie", "Seduction", "Elegance", "Allure", "Comfort", "Desire",
-    "Temptation", "Gallery", "Ocean", "Nature", "Flowers", "Sunset",
-    "Cowgirl", "Art", "Sculpture", "Curves", "Shapes", "Cinematic",
-    "Bold", "Playful", "Confident", "Intimate", "Sophisticated", "Daring",
-    "Romantic", "Chic", "Minimal", "Cozy", "Sharp", "Soft", "Pure",
-    "Dark", "Light", "Shadow", "Golden Hour", "Sun", "Tanning", "Modeling",
-    "Sensuality", "Body Language", "Camera", "Photoshoot", "Behind Scenes",
-    "Crystal", "Moonlight", "Velvet", "Rose Garden", "Urban", "Morning",
-    "Shimmering", "Mysterious", "Captivating", "Luminous", "Graceful",
-    "Luxurious", "Textures", "Captivating", "Architectural", "Peaceful"
+    // Collection Titles
+    "Dripping in Midnight", "Creature of the Night", "Netflix & Thrill",
+    "Body as Canvas", "Dark Elegance", "Midnight Muse", "Crimson Sophistication",
+    "Whisper White", "Caramel Dreams", "Siren Song", "Dark Christmas",
+    "Shower Dreams", "Pink Fury", "X Marks the Heart", "Off Duty Heat",
+    "Kyoto Dreams", "Symbiote Chic", "Ultraviolet Dreams", "Tangerine Dreams",
+    "Sailor Moon Energy", "Violet Hour", "Wanderlust Chronicles", "Crimson Fire",
+    // Colors & Themes
+    "White", "Black", "Pink", "Red", "Purple", "Blue", "Orange", "Brown",
+    "Violet", "Crimson", "Midnight", "Caramel", "Tangerine",
+    // Moods & Vibes
+    "Sensual", "Cozy", "Elegant", "Intimate", "Playful", "Confident", "Mysterious",
+    "Seductive", "Sophisticated", "Artistic", "Bold", "Soft", "Dark", "Dreamy",
+    // Themes
+    "Halloween", "Christmas", "Sailor", "Japanese", "Venom", "Siren", "Feline",
+    "Shower", "Travel", "Everyday", "Night", "Comfort", "Fire", "Canvas",
+    // Style Keywords
+    "Lingerie", "Lace", "Silk", "Cozy Fit", "Minimal", "Body Art", "Photography",
+    "Behind Scenes", "Photoshoot", "Camera", "Curves", "Silhouette"
   ];
 
   const filteredSuggestions = searchSuggestions.filter(suggestion =>

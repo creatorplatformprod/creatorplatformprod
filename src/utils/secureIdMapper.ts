@@ -5,23 +5,29 @@
 
 export const secureIdMap: Record<string, string> = {
   // Collection ID -> Secure 11-digit ID
-  "1": "42857194638", // Golden Sun
-  "2": "91673248507", // Nature's Bloom
-  "3": "53928416752", // Crimson Mystery
-  "4": "78451392684", // Beige Bliss
-  "5": "26849173560", // Cowgirl Dreams
-  "6": "64937582104", // Ocean Waves
-  "7": "15782639408", // Velvet Desire
-  "8": "89264537219", // Inner Peace
-  "9": "37196845273", // Shadow Play
-  "10": "52814769380", // Scarlet Seduction
-  "11": "94167238501", // Cozy Pink
-  "12": "61395748026", // Body Appreciation
-  "13": "48726193405", // Gallery Muse
-  "14": "73048261957", // Pure White
-  "15": "25913784650", // Midnight Black
-  "16": "86257403921", // Cozy Life
-  "17": "14539872640", // Daily Moments & Exclusive Posts
+  "1": "42857194638",   // Dripping in Midnight
+  "2": "91673248507",   // Creature of the Night
+  "4": "78451392684",   // Netflix & Thrill
+  "5": "26849173560",   // Body as Canvas
+  "6": "64937582104",   // Dark Elegance
+  "7": "15782639408",   // Midnight Muse
+  "8": "89264537219",   // Crimson Sophistication
+  "9": "37196845273",   // Whisper White
+  "10": "52814769380",  // Caramel Dreams
+  "11": "94167238501",  // Siren Song
+  "12": "61395748026",  // Dark Christmas
+  "13": "48726193405",  // Shower Dreams
+  "14": "73048261957",  // Pink Fury
+  "15": "25913784650",  // X Marks the Heart
+  "16": "86257403921",  // Off Duty Heat
+  "17": "14539872640",  // Kyoto Dreams
+  "18": "29485716302",  // Symbiote Chic
+  "19": "58371926480",  // Ultraviolet Dreams
+  "20": "71629384057",  // Tangerine Dreams
+  "21": "46928175304",  // Sailor Moon Energy
+  "22": "83517492608",  // Violet Hour
+  "23": "19847362509",  // Wanderlust Chronicles
+  "24": "67293841057",  // Crimson Fire
 };
 
 // Special secure IDs for special pages

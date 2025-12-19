@@ -4,7 +4,7 @@ import { ArrowLeft, Loader2, CheckCircle2, Shield, Lock, Heart, AlertCircle } fr
 // Environment configuration
 const CONFIG = {
   API_URL: 'https://lannah.lannadelulu.workers.dev',
-  CONTENT_URL: 'https://lannaof.pages.dev'
+  CONTENT_URL: 'https://lannahof.pages.dev'
 };
 
 const TipCheckoutPage = () => {
