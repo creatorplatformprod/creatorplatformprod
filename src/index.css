@@ -1,0 +1,248 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Modern Social Feed Design System with Blue Sky Theme */
+
+@layer base {
+  :root {
+    /* Blue Sky Theme - Light Mode */
+    --background: 210 100% 98%;
+    --foreground: 215 25% 27%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 27%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 27%;
+
+    /* Sky Blue Primary */
+    --primary: 200 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 200 100% 85%;
+    --primary-dark: 200 100% 35%;
+
+    /* Cloud White Secondary */
+    --secondary: 210 20% 95%;
+    --secondary-foreground: 215 25% 27%;
+
+    --muted: 210 20% 92%;
+    --muted-foreground: 215 15% 55%;
+
+    /* Accent Ocean Blue */
+    --accent: 220 90% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 20% 90%;
+    --input: 210 20% 92%;
+    --ring: 200 100% 50%;
+
+    --radius: 0.75rem;
+
+    /* Feed Specific Colors */
+    --feed-bg: 210 50% 96%;
+    --post-bg: 0 0% 100%;
+    --post-hover: 210 30% 98%;
+    --blur-overlay: 200 50% 50%;
+    --like-color: 340 82% 52%;
+    
+    /* Gradients */
+    --gradient-sky: linear-gradient(135deg, hsl(200 100% 85%), hsl(220 90% 75%));
+    --gradient-post: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 20% 98%));
+    --gradient-blur: linear-gradient(45deg, hsla(200 100% 50% / 0.3), hsla(220 90% 60% / 0.3));
+    
+    /* Shadows */
+    --shadow-post: 0 2px 20px -5px hsl(200 50% 50% / 0.1);
+    --shadow-post-hover: 0 8px 40px -10px hsl(200 50% 50% / 0.15);
+    --shadow-blur: 0 8px 32px -8px hsl(200 100% 50% / 0.2);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark Blue Night Theme */
+    --background: 215 35% 8%;
+    --foreground: 210 40% 98%;
+
+    --card: 215 30% 12%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 215 30% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Bright Sky Blue Primary for dark mode */
+    --primary: 200 100% 60%;
+    --primary-foreground: 215 35% 8%;
+    --primary-light: 200 100% 75%;
+    --primary-dark: 200 100% 45%;
+
+    /* Dark Secondary */
+    --secondary: 215 25% 18%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 215 25% 15%;
+    --muted-foreground: 215 15% 65%;
+
+    /* Bright Ocean Blue Accent */
+    --accent: 220 90% 70%;
+    --accent-foreground: 215 35% 8%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 215 25% 20%;
+    --input: 215 25% 18%;
+    --ring: 200 100% 60%;
+
+    /* Feed Dark Colors */
+    --feed-bg: 215 40% 6%;
+    --post-bg: 215 30% 12%;
+    --post-hover: 215 25% 15%;
+    --blur-overlay: 200 50% 40%;
+    --like-color: 340 82% 62%;
+    
+    /* Dark Gradients */
+    --gradient-sky: linear-gradient(135deg, hsl(200 100% 25%), hsl(220 90% 35%));
+    --gradient-post: linear-gradient(145deg, hsl(215 30% 12%), hsl(215 25% 15%));
+    --gradient-blur: linear-gradient(45deg, hsla(200 100% 60% / 0.4), hsla(220 90% 70% / 0.4));
+    
+    /* Dark Shadows */
+    --shadow-post: 0 2px 20px -5px hsl(0 0% 0% / 0.3);
+    --shadow-post-hover: 0 8px 40px -10px hsl(0 0% 0% / 0.4);
+    --shadow-blur: 0 8px 32px -8px hsl(200 100% 60% / 0.3);
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer components {
+  .feed-gradient {
+    background: var(--gradient-sky);
+  }
+  
+  .post-card {
+    background: var(--gradient-post);
+    box-shadow: var(--shadow-post);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .post-card:hover {
+    box-shadow: var(--shadow-post-hover);
+    transform: translateY(-2px);
+  }
+  
+  .blur-overlay {
+    background: var(--gradient-blur);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-blur);
+  }
+  
+  .feed-bg {
+    background-color: hsl(var(--feed-bg));
+  }
+  
+  .post-bg {
+    background-color: hsl(var(--post-bg));
+  }
+  
+  .like-color {
+    color: hsl(var(--like-color));
+  }
+
+  /* ========================================
+     SKELETON SHIMMER LOADER - Social Media Style
+     ======================================== */
+  .skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+    background: #eff3f4; /* Very light gray like Twitter/X */
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Sweeping light effect */
+  .skeleton-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.5) 25%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 255, 255, 0.5) 75%,
+      transparent 100%
+    );
+    animation: shimmer-sweep 1.5s ease-in-out infinite;
+    transform: translateX(-100%);
+  }
+
+  /* Dark mode shimmer - matches page background */
+  .dark .skeleton-shimmer {
+    background: hsl(215, 30%, 14%); /* Matches dark theme background */
+  }
+
+  .dark .skeleton-shimmer::after {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.04) 25%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0.04) 75%,
+      transparent 100%
+    );
+  }
+
+  /* Sweeping animation */
+  @keyframes shimmer-sweep {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Image blur-up transition */
+  .image-loading {
+    filter: blur(10px);
+    transform: scale(1.02);
+  }
+
+  .image-loaded {
+    filter: blur(0);
+    transform: scale(1);
+    transition: filter 0.5s ease-out, transform 0.5s ease-out;
+  }
+}
