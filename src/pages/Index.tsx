@@ -643,7 +643,7 @@ const Index = () => {
                           <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                             Lannah
                           </h2>
-                          <p className="text-sm text-muted-foreground">17 Exclusive Collections</p>
+                          <p className="text-sm text-muted-foreground">24 Exclusive Collections</p>
                         </div>
                       </div>
                       <p className="text-muted-foreground text-sm">
@@ -701,7 +701,7 @@ const Index = () => {
                     >
                       <Heart className="w-4 h-4 fill-current text-primary" />
                       <span className="font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                        Unlock All 17 Collections
+                        Unlock All 24 Collections
                       </span>
                     </button>
                     <p className="text-center text-xs text-muted-foreground mb-6">

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
+import TipButton from "@/components/TipButton";
 
 interface FeedHeaderProps {
   onSearch: (query: string) => void;
@@ -128,6 +129,9 @@ const FeedHeader = ({ onSearch, onLogoClick }: FeedHeaderProps) => {
               <span className="hidden lg:inline">Unlock Everything</span>
               <span className="lg:hidden">Unlock</span>
             </Button>
+
+            {/* Tip Button */}
+            <TipButton onTipClick={() => {}} />
 
             <div className="w-px h-6 bg-border mx-1 lg:mx-2"></div>
 

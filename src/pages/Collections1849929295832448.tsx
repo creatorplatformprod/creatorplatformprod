@@ -482,7 +482,7 @@ const Collections1849929295832448 = () => {
                       <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                         Lannah
                       </h2>
-                      <p className="text-sm text-muted-foreground">17 Exclusive Collections</p>
+                      <p className="text-sm text-muted-foreground">24 Exclusive Collections</p>
                     </div>
                   </div>
                   <p className="text-muted-foreground text-sm">
