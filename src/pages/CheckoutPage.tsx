@@ -461,8 +461,8 @@ const CheckoutPage = () => {
           <div className="pt-4 border-t border-border">
             <p className="text-xs text-muted-foreground">
               Need help? Contact support at{" "}
-              <a href="mailto:support@tatianavolkova.com" className="text-primary hover:text-primary/80 transition-colors">
-                support@tatianavolkova.com
+              <a href="mailto:support@lannahof.com" className="text-primary hover:text-primary/80 transition-colors">
+                support@lannahof.com
               </a>
             </p>
           </div>

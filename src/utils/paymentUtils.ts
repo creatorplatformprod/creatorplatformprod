@@ -21,7 +21,7 @@ export interface AccessTokenData {
 export async function verifyAccessToken(token: string): Promise<AccessTokenData> {
   try {
     const response = await fetch(
-      `https://payment-handler.tatianavolk1998.workers.dev/api/payment/verify?token=${encodeURIComponent(token)}`
+      `https://lannah.lannadelulu.workers.dev/api/payment/verify?token=${encodeURIComponent(token)}`
     );
 
     if (!response.ok) {
