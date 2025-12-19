@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Loader2, CheckCircle2, Shield, Lock, Heart, AlertCircle } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle2, Gift, AlertCircle, Clock, ChevronDown, CreditCard } from "lucide-react";
 
 // Environment configuration
 const CONFIG = {
@@ -7,17 +7,21 @@ const CONFIG = {
   CONTENT_URL: 'https://lannahof.pages.dev'
 };
 
+// Rosy pink color - matches TipButton in FeedHeader
+const ROSE_COLOR = "#db2777";
+
 const TipCheckoutPage = () => {
   const [customerEmail, setCustomerEmail] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState("");
-  const [selectedProvider, setSelectedProvider] = useState(null);
-  const [availableProviders, setAvailableProviders] = useState([]);
+  const [selectedProvider, setSelectedProvider] = useState<any>(null);
+  const [availableProviders, setAvailableProviders] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [tipAmount, setTipAmount] = useState(null);
+  const [tipAmount, setTipAmount] = useState<number | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -55,7 +59,26 @@ const TipCheckoutPage = () => {
     }
   }, []);
 
-  const handleAccessTokenRedirect = async (accessToken) => {
+  // Fire purchase analytics event when payment succeeds
+  useEffect(() => {
+    if (paymentSuccess && tipAmount) {
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'purchase', {
+          transaction_id: Date.now().toString(),
+          value: tipAmount,
+          currency: 'USD',
+          items: [{
+            item_id: 'tip',
+            item_name: 'Tip / Support',
+            price: tipAmount,
+            quantity: 1
+          }]
+        });
+      }
+    }
+  }, [paymentSuccess, tipAmount]);
+
+  const handleAccessTokenRedirect = async (accessToken: string) => {
     if (!accessToken || accessToken.length !== 64 || !/^[a-f0-9]+$/.test(accessToken)) {
       setPaymentError('Invalid access token format');
       setRedirecting(false);
@@ -70,21 +93,22 @@ const TipCheckoutPage = () => {
     }, 2500);
   };
 
-  const fetchProviders = async (amount) => {
+  const fetchProviders = async (amount: string) => {
     setIsLoading(true);
     try {
       const response = await fetch(
         `${CONFIG.API_URL}/api/payment/providers?amount=${amount}&currency=USD`
       );
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch providers');
       }
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         setAvailableProviders(data.providers);
+        // Don't auto-select - let user choose like CheckoutPage
       } else {
         throw new Error(data.error || 'Failed to fetch available providers');
       }
@@ -96,7 +120,8 @@ const TipCheckoutPage = () => {
     }
   };
 
-  const isValidEmail = (email) => {
+  // PRODUCTION-READY EMAIL VALIDATION (RFC 5322 compliant) - same as CheckoutPage
+  const isValidEmail = (email: string) => {
     if (!email || typeof email !== 'string') return false;
     if (email.length > 254 || email.length < 3) return false;
     if (email.includes('..')) return false;
@@ -118,8 +143,8 @@ const TipCheckoutPage = () => {
     return true;
   };
 
-  const renderCardIcon = (cardType) => {
-    const icons = {
+  const renderCardIcon = (cardType: string) => {
+    const icons: Record<string, JSX.Element> = {
       visa: (
         <div className="w-8 h-5 bg-[#1A1F71] rounded flex items-center justify-center">
           <span className="text-white text-[9px] font-bold tracking-wide">VISA</span>
@@ -129,7 +154,7 @@ const TipCheckoutPage = () => {
         <div className="w-8 h-5 bg-white border border-gray-200 rounded flex items-center justify-center">
           <svg className="w-7 h-7" viewBox="0 0 48 48" fill="none">
             <circle cx="15" cy="24" r="12" fill="#EB001B"/>
-            <circle cx="33" cy="24" r="12" fill="#FF5F00"/>
+            <circle cx="33" cy="24" r="12" fill="#F79E1B"/>
             <path d="M24 13.5C21.2 16.8 19.5 20.2 19.5 24C19.5 27.8 21.2 31.2 24 34.5C26.8 31.2 28.5 27.8 28.5 24C28.5 20.2 26.8 16.8 24 13.5Z" fill="#FF5F00"/>
           </svg>
         </div>
@@ -139,16 +164,34 @@ const TipCheckoutPage = () => {
           <span className="text-white text-[8px] font-bold">AMEX</span>
         </div>
       ),
+      applepay: (
+        <div className="w-8 h-5 bg-black rounded flex items-center justify-center">
+          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+          </svg>
+        </div>
+      ),
+      googlepay: (
+        <div className="w-8 h-5 bg-white border border-gray-200 rounded flex items-center justify-center">
+          <span className="text-[8px] font-bold text-gray-700">GPay</span>
+        </div>
+      ),
+      robinhood: (
+        <div className="w-16 h-5 bg-[#00C805] rounded flex items-center justify-center px-2">
+          <span className="text-white text-[9px] font-bold">Robinhood</span>
+        </div>
+      ),
     };
     return icons[cardType] || null;
   };
 
-  const handleProviderSelect = async (provider) => {
+  const handlePayment = async () => {
+    // Enhanced email validation with better error message - same as CheckoutPage
     if (!customerEmail) {
       setPaymentError('Please enter your email address');
       return;
     }
-    
+
     if (!isValidEmail(customerEmail)) {
       setPaymentError('Please enter a valid email address (e.g., name@example.com)');
       return;
@@ -159,11 +202,21 @@ const TipCheckoutPage = () => {
       return;
     }
 
-    setSelectedProvider(provider.id);
+    if (tipAmount <= 0 || tipAmount > 10000) {
+      setPaymentError('Invalid amount. Please try again.');
+      return;
+    }
+
+    if (!selectedProvider) {
+      setPaymentError('Please select a payment method.');
+      return;
+    }
+
     setIsProcessing(true);
     setPaymentError("");
 
     try {
+      // Same API call as CheckoutPage - use 'all' as collectionId for tips
       const response = await fetch(
         `${CONFIG.API_URL}/api/payment/create-session`,
         {
@@ -171,9 +224,9 @@ const TipCheckoutPage = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             amount: tipAmount,
-            collectionId: 'tip',
+            collectionId: 'all',
             currency: 'USD',
-            provider: provider.id,
+            provider: selectedProvider.id,
             email: customerEmail.toLowerCase().trim()
           })
         }
@@ -184,17 +237,29 @@ const TipCheckoutPage = () => {
       if (!response.ok) {
         throw new Error(data.error || 'Failed to create payment session');
       }
-      
+
       if (data.success && data.paymentLink) {
+        // Google Analytics tracking
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'begin_checkout', {
+            collection_id: 'tip',
+            collection_title: 'Tip / Support',
+            value: tipAmount,
+            currency: 'USD',
+            payment_method: 'card2crypto',
+            provider: selectedProvider.id
+          });
+        }
+
+        // Redirect to Card2Crypto payment page
         window.location.href = data.paymentLink;
       } else {
         throw new Error('Invalid payment session response');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Payment error:', error);
       setPaymentError(error.message || 'Unable to process payment. Please try again.');
       setIsProcessing(false);
-      setSelectedProvider(null);
     }
   };
 
@@ -202,91 +267,96 @@ const TipCheckoutPage = () => {
     window.history.back();
   };
 
-  // Success screen
+  // Success screen (shown when redirected with access token)
   if (paymentSuccess) {
     return (
       <div className="min-h-screen feed-bg flex items-center justify-center p-4">
-        <div className="p-3 max-w-xs w-full text-center">
+        <div className="p-4 max-w-xs w-full text-center">
           <style>{`
             @keyframes scale-in {
               0% { transform: scale(0); opacity: 0; }
               50% { transform: scale(1.1); }
               100% { transform: scale(1); opacity: 1; }
             }
-            @keyframes bounce-once {
-              0%, 100% { transform: translateY(0); }
-              50% { transform: translateY(-10px); }
-            }
-            .animate-scale-in {
-              animation: scale-in 0.5s ease-out;
-            }
-            .animate-bounce-once {
-              animation: bounce-once 0.6s ease-out 0.3s;
-            }
-            .animate-fade-in {
-              animation: fadeIn 0.5s ease-out forwards;
-              opacity: 0;
-            }
             @keyframes fadeIn {
               to { opacity: 1; }
             }
+            .animate-scale-in { animation: scale-in 0.5s ease-out; }
+            .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; opacity: 0; }
           `}</style>
-          
-          <div className="relative mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-full flex items-center justify-center mx-auto shadow-md animate-scale-in">
-              <Heart className="w-6 h-6 text-white fill-current animate-bounce-once" />
+
+          {redirecting && !paymentError ? (
+            <>
+              <div className="relative mb-3">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto animate-scale-in" style={{ backgroundColor: `${ROSE_COLOR}15` }}>
+                  <Gift className="w-6 h-6" style={{ color: ROSE_COLOR }} />
                 </div>
-            <div className="absolute inset-0 w-10 h-10 mx-auto bg-red-500/20 rounded-full animate-ping"></div>
               </div>
-              
-          <h2 className="text-sm font-bold text-foreground mb-1 animate-fade-in">
+
+              <h2 className="text-base font-semibold text-foreground mb-1 animate-fade-in">
                 Thank You!
               </h2>
-              
-          <p className="text-muted-foreground text-xs mb-2 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            Your support means the world to me
+
+              <p className="text-muted-foreground text-sm mb-3 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                Your support means everything
               </p>
-              
-          <div className="flex flex-col gap-1 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-            <div className="flex items-center justify-center gap-1.5 text-[11px] text-primary">
-              <CheckCircle2 className="w-3 h-3" />
+
+              <div className="flex items-center justify-center gap-1.5 text-xs animate-fade-in" style={{ animationDelay: '0.4s', color: ROSE_COLOR }}>
+                <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Payment confirmed</span>
               </div>
-            <div className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
-              <Loader2 className="w-3 h-3 animate-spin" />
-              <span>Redirecting...</span>
+            </>
+          ) : (
+            <div className="space-y-4">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto" style={{ backgroundColor: `${ROSE_COLOR}15` }}>
+                <AlertCircle className="w-6 h-6" style={{ color: ROSE_COLOR }} />
+              </div>
+              <div>
+                <h2 className="text-base font-semibold text-foreground mb-1">
+                  Something went wrong
+                </h2>
+                <p className="text-sm text-muted-foreground mb-3">
+                  {paymentError || 'Unable to redirect'}
+                </p>
+                <button
+                  onClick={() => window.location.href = CONFIG.CONTENT_URL}
+                  className="px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors"
+                  style={{ backgroundColor: ROSE_COLOR }}
+                >
+                  Go to Homepage
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     );
   }
 
   // Session expired screen
-  if (sessionExpired) {
+  if (sessionExpired || (!tipAmount && !isLoading)) {
     return (
       <div className="min-h-screen feed-bg flex items-center justify-center p-4">
-        <div className="post-card rounded-2xl p-8 max-w-md w-full text-center space-y-6">
-          <div className="w-20 h-20 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto">
-            <AlertCircle className="w-10 h-10 text-yellow-500" />
+        <div className="post-card rounded-xl p-6 max-w-sm w-full text-center space-y-4">
+          <div className="w-14 h-14 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto">
+            <Clock className="w-7 h-7 text-amber-500" />
           </div>
-          
-          <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-foreground">Invalid Session</h2>
+
+          <div className="space-y-1">
+            <h2 className="text-lg font-semibold text-foreground">Session Expired</h2>
             <p className="text-muted-foreground text-sm">
-              Please return to the site and try again.
+              Please go back and try again.
             </p>
           </div>
-          
-          <div className="pt-4">
-          <button 
+
+          <button
             onClick={handleBack}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-white font-medium transition-colors"
+            style={{ backgroundColor: ROSE_COLOR }}
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Go Back</span>
           </button>
-        </div>
         </div>
       </div>
     );
@@ -295,8 +365,8 @@ const TipCheckoutPage = () => {
   return (
     <div className="min-h-screen feed-bg">
       <header className="sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b border-border">
-        <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
-          <button 
+        <div className="max-w-lg mx-auto p-4">
+          <button
             onClick={handleBack}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground transition-all duration-300"
           >
@@ -306,37 +376,37 @@ const TipCheckoutPage = () => {
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto p-4 py-8">
+      <main className="max-w-lg mx-auto p-4 py-8">
         <div className="post-card rounded-2xl p-6 shadow-lg">
+          {/* Header with Icon */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center shadow-md">
-              <Heart className="w-6 h-6 text-white fill-current" />
+            <div className="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center">
+              <Gift className="w-6 h-6" style={{ color: ROSE_COLOR }} />
             </div>
             <div>
-              <h2 className="text-xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
-                Support My Work
-              </h2>
-              <p className="text-xs text-muted-foreground">Thank you for your generosity</p>
+              <h2 className="text-lg font-bold text-foreground">Send a Tip</h2>
+              <p className="text-sm text-muted-foreground">Thank you for your support</p>
             </div>
           </div>
-          
-          <div className="mb-6 p-4 bg-secondary/20 rounded-xl">
+
+          {/* Tip Amount Display */}
+          <div className="mb-6 p-4 bg-secondary/30 rounded-xl border border-border">
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Tip Amount</span>
-              <span className="text-3xl font-bold text-foreground">${tipAmount}</span>
+              <span className="text-sm text-muted-foreground">Tip Amount</span>
+              <span className="text-3xl font-bold" style={{ color: ROSE_COLOR }}>${tipAmount}</span>
             </div>
           </div>
 
           {paymentError && (
-            <div className="mb-5 p-3 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-400 flex-1">{paymentError}</p>
+            <div className="mb-5 p-3 rounded-xl flex items-start gap-2" style={{ backgroundColor: `${ROSE_COLOR}10`, border: `1px solid ${ROSE_COLOR}20` }}>
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: ROSE_COLOR }} />
+              <p className="text-sm" style={{ color: ROSE_COLOR }}>{paymentError}</p>
             </div>
           )}
 
           {isLoading ? (
             <div className="py-12 flex flex-col items-center justify-center">
-              <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
+              <Loader2 className="w-10 h-10 animate-spin mb-4" style={{ color: ROSE_COLOR }} />
               <p className="text-muted-foreground">Loading payment options...</p>
             </div>
           ) : (
@@ -355,63 +425,118 @@ const TipCheckoutPage = () => {
                     }
                   }}
                   placeholder="name@example.com"
-                  className="w-full px-4 py-2.5 bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-2.5 bg-secondary/50 border-2 border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-rose-500/50 transition-all"
                   required
                   maxLength={254}
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  We'll send your receipt here
+                  We'll send your confirmation here
                 </p>
               </div>
 
-              <div className="space-y-2.5">
-                {availableProviders.map((provider) => (
+              {/* Payment Provider Dropdown */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Payment Provider
+                </label>
+                <div>
                   <button
-                    key={provider.id}
-                    onClick={() => handleProviderSelect(provider)}
-                    disabled={isProcessing || !customerEmail}
-                    className={`w-full p-3.5 rounded-xl border-2 transition-all text-left disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md ${
-                      selectedProvider === provider.id
-                        ? 'border-red-500 bg-red-500/10 shadow-md'
-                        : 'border-border hover:border-red-500/50 bg-secondary/20'
-                    }`}
+                    type="button"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className={`w-full px-4 py-3 bg-secondary/30 border border-border rounded-xl text-foreground flex items-center justify-between hover:bg-secondary/50 transition-all ${isDropdownOpen ? 'rounded-b-none border-b-0' : ''}`}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="font-semibold text-foreground mb-2 text-sm">
+                    <div className="flex items-center gap-3">
+                      <CreditCard className="w-5 h-5 text-muted-foreground" />
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">
+                          {selectedProvider ? selectedProvider.name : 'Select payment provider'}
+                        </span>
+                        {selectedProvider && (
+                          <div className="flex gap-1">
+                            {selectedProvider.cards?.slice(0, 3).map((card: string) => (
+                              <div key={card} className="scale-90">
+                                {renderCardIcon(card)}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {/* Dropdown options - flows in document, pushing content down */}
+                  <div className={`overflow-hidden transition-all duration-200 ${isDropdownOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                    <div className="bg-background border border-t-0 border-border rounded-b-xl overflow-hidden">
+                      {availableProviders.map((provider: any, index: number) => (
+                        <button
+                          key={provider.id}
+                          onClick={() => {
+                            setSelectedProvider(provider);
+                            setIsDropdownOpen(false);
+                          }}
+                          className={`w-full px-4 py-3 text-left hover:bg-secondary/50 transition-colors flex items-center justify-between ${
+                            selectedProvider?.id === provider.id ? 'bg-secondary/30' : ''
+                          } ${index !== availableProviders.length - 1 ? 'border-b border-border' : ''}`}
+                        >
+                          <div>
+                            <div className="font-medium text-foreground text-sm mb-1.5">
                               {provider.name}
                             </div>
-                        <div className="flex gap-1.5 flex-wrap">
-                          {provider.cards?.map((card) => (
+                            <div className="flex gap-1.5">
+                              {provider.cards?.slice(0, 5).map((card: string) => (
                                 <div key={card}>
                                   {renderCardIcon(card)}
                                 </div>
                               ))}
                             </div>
                           </div>
-                      {selectedProvider === provider.id && isProcessing && (
-                        <Loader2 className="w-5 h-5 animate-spin text-red-500 ml-4 flex-shrink-0" />
-                      )}
-                      {selectedProvider === provider.id && !isProcessing && (
-                        <CheckCircle2 className="w-5 h-5 text-red-500 ml-4 flex-shrink-0" />
+                          {selectedProvider?.id === provider.id && (
+                            <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: ROSE_COLOR }} />
                           )}
-                    </div>
                         </button>
                       ))}
                     </div>
-
-              <div className="mt-5 flex items-center justify-center gap-6 pt-5 border-t border-border">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Shield className="w-4 h-4 text-green-500" />
-                  <span>Secure Payment</span>
                   </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Lock className="w-4 h-4 text-green-500" />
-                  <span>SSL Encrypted</span>
                 </div>
+              </div>
+
+              {/* Pay Button */}
+              <button
+                onClick={handlePayment}
+                disabled={isProcessing || !customerEmail || !selectedProvider}
+                className="w-full py-3.5 rounded-xl text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:shadow-lg hover:scale-[1.02]"
+                style={{
+                  background: `linear-gradient(135deg, ${ROSE_COLOR}, ${ROSE_COLOR}dd)`,
+                }}
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Processing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Gift className="w-5 h-5" />
+                    <span>Send ${tipAmount} Tip</span>
+                  </>
+                )}
+              </button>
+
+              <div className="mt-5 pt-5 border-t border-border">
+                <p className="text-[11px] text-muted-foreground text-center">
+                  Protected by 256-bit SSL encryption
+                </p>
               </div>
             </>
           )}
+        </div>
+
+        {/* Footer Text */}
+        <div className="text-center mt-6">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Your tip is greatly appreciated and helps support future content creation.
+          </p>
         </div>
       </main>
     </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Loader2, CheckCircle2, Shield, Lock, Flame, ChevronDown, ChevronUp, Clock, AlertCircle } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle2, Shield, Lock, Flame, ChevronDown, ChevronUp, Clock, AlertCircle, CreditCard } from "lucide-react";
 
 // Environment configuration - NO HARDCODED URLS
 const CONFIG = {
@@ -20,6 +20,7 @@ const CheckoutPage = () => {
   const [sessionExpired, setSessionExpired] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
+  const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
 
   const toggleHowItWorks = () => setShowHowItWorks(!showHowItWorks);
 
@@ -706,41 +707,94 @@ const CheckoutPage = () => {
                     </p>
                   </div>
 
-                  <div className="space-y-2.5">
-                    {availableProviders.map((provider) => (
+                  {/* Payment Provider Dropdown */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Payment Provider
+                    </label>
+                    <div>
                       <button
-                        key={provider.id}
-                        onClick={() => handleProviderSelect(provider)}
-                        disabled={isProcessing || !customerEmail}
-                        className={`w-full p-3.5 rounded-xl border-2 transition-all text-left disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md ${
-                          selectedProvider === provider.id
-                            ? 'border-primary bg-primary/10 shadow-md'
-                            : 'border-border hover:border-primary/50 bg-secondary/20'
-                        }`}
+                        type="button"
+                        onClick={() => setIsProviderDropdownOpen(!isProviderDropdownOpen)}
+                        className={`w-full px-4 py-3 bg-secondary/30 border border-border rounded-xl text-foreground flex items-center justify-between hover:bg-secondary/50 transition-all ${isProviderDropdownOpen ? 'rounded-b-none border-b-0' : ''}`}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <div className="font-semibold text-foreground mb-2 text-sm">
+                        <div className="flex items-center gap-3">
+                          <CreditCard className="w-5 h-5 text-muted-foreground" />
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">
+                              {availableProviders.find((p) => p.id === selectedProvider)?.name || 'Select payment provider'}
+                            </span>
+                            {selectedProvider && (
+                              <div className="flex gap-1">
+                                {availableProviders.find((p) => p.id === selectedProvider)?.cards?.slice(0, 3).map((card) => (
+                                  <div key={card} className="scale-90">
+                                    {renderCardIcon(card)}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${isProviderDropdownOpen ? 'rotate-180' : ''}`} />
+                      </button>
+
+                      {/* Dropdown options - flows in document, pushing content down */}
+                      <div className={`overflow-hidden transition-all duration-200 ${isProviderDropdownOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                        <div className="bg-background border border-t-0 border-border rounded-b-xl overflow-hidden">
+                          {availableProviders.map((provider) => (
+                            <button
+                              key={provider.id}
+                              onClick={() => {
+                                setSelectedProvider(provider.id);
+                                setIsProviderDropdownOpen(false);
+                              }}
+                              className={`w-full px-4 py-3.5 text-left hover:bg-secondary/50 transition-colors flex items-center justify-between border-b border-border last:border-b-0 ${
+                                selectedProvider === provider.id ? 'bg-secondary/30' : ''
+                              }`}
+                            >
+                              <div>
+                                <div className="font-semibold text-foreground text-sm mb-1.5">
                                   {provider.name}
                                 </div>
                                 <div className="flex gap-1.5 flex-wrap">
-                              {provider.cards?.map((card) => (
+                                  {provider.cards?.slice(0, 5).map((card) => (
                                     <div key={card}>
                                       {renderCardIcon(card)}
                                     </div>
                                   ))}
                                 </div>
                               </div>
-                          {selectedProvider === provider.id && isProcessing && (
-                            <Loader2 className="w-5 h-5 animate-spin text-primary ml-4 flex-shrink-0" />
-                          )}
-                          {selectedProvider === provider.id && !isProcessing && (
-                            <CheckCircle2 className="w-5 h-5 text-primary ml-4 flex-shrink-0" />
+                              {selectedProvider === provider.id && (
+                                <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
                               )}
+                            </button>
+                          ))}
                         </div>
-                      </button>
-                    ))}
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Pay Button */}
+                  <button
+                    onClick={() => {
+                      const provider = availableProviders.find((p) => p.id === selectedProvider);
+                      if (provider) handleProviderSelect(provider);
+                    }}
+                    disabled={isProcessing || !customerEmail || !selectedProvider}
+                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span>Processing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="w-5 h-5" />
+                        <span>Pay ${checkoutData?.amount}</span>
+                      </>
+                    )}
+                  </button>
 
                   <div className="mt-5 flex items-center justify-center gap-6 pt-5 border-t border-border">
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">

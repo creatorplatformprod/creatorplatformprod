@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { X, Gift } from "lucide-react";
+import { X, Gift, Loader2 } from "lucide-react";
 
 interface TipButtonProps {
   onTipClick?: () => void;
@@ -9,6 +9,7 @@ const TipButton = ({ onTipClick }: TipButtonProps) => {
   const [showTipModal, setShowTipModal] = useState(false);
   const [tipEmail, setTipEmail] = useState("");
   const [tipError, setTipError] = useState("");
+  const [loadingAmount, setLoadingAmount] = useState<number | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -64,7 +65,7 @@ const TipButton = ({ onTipClick }: TipButtonProps) => {
       .substring(0, 254);
   };
 
-  const handleTipSelect = (amount: number) => {
+  const handleTipSelect = async (amount: number) => {
     const sanitizedEmail = sanitizeEmail(tipEmail);
 
     if (!sanitizedEmail) {
@@ -77,12 +78,18 @@ const TipButton = ({ onTipClick }: TipButtonProps) => {
       return;
     }
 
-    // Redirect to tip checkout page
-    const checkoutUrl = `/tip-checkout?` +
-      `amount=${amount}` +
-      `&email=${encodeURIComponent(sanitizedEmail)}`;
+    // Set loading state for this button
+    setLoadingAmount(amount);
 
-    window.location.href = checkoutUrl;
+    // Small delay to show loading state
+    setTimeout(() => {
+      // Redirect to tip checkout page
+      const checkoutUrl = `/tip-checkout?` +
+        `amount=${amount}` +
+        `&email=${encodeURIComponent(sanitizedEmail)}`;
+
+      window.location.href = checkoutUrl;
+    }, 500); // 500ms delay to show the loader
   };
 
   const handleButtonClick = () => {
@@ -170,9 +177,17 @@ const TipButton = ({ onTipClick }: TipButtonProps) => {
                 <button
                   key={amount}
                   onClick={() => handleTipSelect(amount)}
-                  className="py-2 bg-secondary/50 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 rounded-lg text-foreground font-medium transition-all text-xs"
+                  disabled={loadingAmount !== null}
+                  className="py-2 bg-secondary/50 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 rounded-lg text-foreground font-medium transition-all text-xs disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1"
                 >
-                  ${amount}
+                  {loadingAmount === amount ? (
+                    <>
+                      <Loader2 className="w-3 h-3 animate-spin" style={{ color: roseColor }} />
+                      <span>${amount}</span>
+                    </>
+                  ) : (
+                    `$${amount}`
+                  )}
                 </button>
               ))}
             </div>
