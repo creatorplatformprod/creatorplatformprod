@@ -17,7 +17,7 @@ const Preloader = ({ isVisible, onComplete }) => {
   if (!isVisible && !fadeOut) return null;
 
   return (
-    <div 
+    <div
       className={`fixed inset-0 z-50 flex items-center justify-center feed-bg transition-opacity duration-500 ${
         fadeOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
@@ -29,13 +29,14 @@ const Preloader = ({ isVisible, onComplete }) => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-primary/10 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '0.5s' }}></div>
       </div>
 
-      {/* Main Content - Flame logo only */}
-      <div className="relative z-10 flex items-center justify-center">
+      {/* Main Content */}
+      <div className="relative z-10">
+        {/* Logo Section */}
         <div className="relative">
-          <div className="w-14 h-14 md:w-16 md:h-16 rounded-xl md:rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-            <Flame className="w-8 h-8 md:w-9 md:h-9 text-primary-foreground fill-current" />
+          <div className="w-14 h-14 md:w-18 md:h-18 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl animate-pulse">
+            <Flame className="w-8 h-8 md:w-10 md:h-10 text-primary-foreground fill-current" />
           </div>
-          <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 md:w-3 md:h-3 bg-accent rounded-full animate-pulse"></div>
+          <div className="absolute -top-1 -right-1 w-4 h-4 md:w-5 md:h-5 bg-accent rounded-full animate-ping"></div>
         </div>
       </div>
     </div>
