@@ -38,7 +38,7 @@ const Index = () => {
       title: "",
       text: "Woke up feeling like today was meant for something special. Threw on my favorite outfit, grabbed my iced coffee, and just let the day unfold. Sometimes the best adventures are the unplanned ones. 🌺✨",
       timestamp: "4 hours ago",
-      likes: 125000,
+      likes: 12500,
       comments: 3470,
       media: {
         type: "image" as const,
@@ -56,7 +56,7 @@ const Index = () => {
       title: "A Little Life Update",
       text: "Been working on some exciting projects behind the scenes that I can't wait to share with you all. The creative process is messy, unpredictable, and absolutely thrilling. Stay tuned — big things are coming.",
       timestamp: "5 hours ago",
-      likes: 89000,
+      likes: 8900,
       comments: 1560
     },
     {
@@ -69,7 +69,7 @@ const Index = () => {
       title: "Morning Rituals",
       text: "My morning routine is sacred — skincare, playlist on shuffle, and 20 minutes of just existing before the world demands my attention. It's not about productivity, it's about starting the day on my own terms. ☕💭",
       timestamp: "3 days ago",
-      likes: 67000,
+      likes: 6700,
       comments: 890
     },
     {
@@ -82,7 +82,7 @@ const Index = () => {
       title: "",
       text: "That golden light hit different today. Dropped everything to capture this moment because some things just can't wait. Nature's timing is always perfect. ☀️🧡",
       timestamp: "1 hour ago",
-      likes: 92000,
+      likes: 9200,
       comments: 1234,
       media: {
         type: "image" as const,
@@ -100,7 +100,7 @@ const Index = () => {
       title: "Real Talk",
       text: "I spent years trying to fit into boxes that weren't made for me. Now I'm building my own. It's scary, it's liberating, and it's the most authentic thing I've ever done. Here's to everyone else doing the same.",
       timestamp: "12 days ago",
-      likes: 156000,
+      likes: 15600,
       comments: 2890
     },
     {
@@ -113,7 +113,7 @@ const Index = () => {
       title: "Feeling Bold",
       text: "There are days when you play it safe, and then there are days like this. Red lips, red nails, zero apologies. Something about this color makes me feel unstoppable. What's your power color? 🔥💋",
       timestamp: "22 days ago",
-      likes: 203000,
+      likes: 20300,
       comments: 4567,
       media: {
         type: "image" as const,
@@ -131,7 +131,7 @@ const Index = () => {
       title: "",
       text: "Plot twist: the messy, unfiltered, still-figuring-it-out version of you is just as worthy of love as the polished version. Maybe even more so. Embracing all of it today.",
       timestamp: "39 days ago",
-      likes: 78000,
+      likes: 7800,
       comments: 1120
     },
     {
@@ -144,7 +144,7 @@ const Index = () => {
       title: "Grateful Heart",
       text: "Taking a moment to appreciate everyone who's been supporting this journey. Every like, every comment, every DM saying my content made your day better — I see you and I'm so thankful. This community is everything. 💕📸",
       timestamp: "46 days ago",
-      likes: 94000,
+      likes: 9400,
       comments: 1890
     },
     {
@@ -157,7 +157,7 @@ const Index = () => {
       title: "",
       text: "Tried something completely new for this shoot and honestly? It scared me. But that's usually a sign I'm growing. Step outside the comfort zone, that's where the magic happens. 🎨✨",
       timestamp: "50 days ago",
-      likes: 112000,
+      likes: 11200,
       comments: 2340,
       media: {
         type: "image" as const,
@@ -175,7 +175,7 @@ const Index = () => {
       title: "",
       text: "Three things I refuse to apologize for: taking up space, having high standards, and loving myself loudly. Life's too short for dimming your own light. 🌟",
       timestamp: "75 days ago",
-      likes: 156000,
+      likes: 15600,
       comments: 4200
     },
     {
@@ -188,7 +188,7 @@ const Index = () => {
       title: "Weekend Mood",
       text: "Saturday plans: absolutely nothing scheduled and everything possible. Sometimes the best self-care is giving yourself permission to just be. No goals, no to-do lists, just existing. 🌙💫",
       timestamp: "54 days ago",
-      likes: 67000,
+      likes: 6700,
       comments: 890
     },
     {
@@ -201,7 +201,7 @@ const Index = () => {
       title: "",
       text: "Sneak peek from yesterday's session. We tried some new lighting techniques and I'm obsessed with how they turned out. Full collection dropping this week — you're not ready! 🔥",
       timestamp: "58 days ago",
-      likes: 145000,
+      likes: 14500,
       comments: 3200,
       media: {
         type: "image" as const,
@@ -219,7 +219,7 @@ const Index = () => {
       title: "",
       text: "Hot take: rest is not a reward for being productive. Rest is a right. Taking care of yourself isn't lazy — it's necessary. Normalize doing nothing sometimes. 🛋️✨",
       timestamp: "62 days ago",
-      likes: 128000,
+      likes: 12800,
       comments: 2890
     },
     {
@@ -232,7 +232,7 @@ const Index = () => {
       title: "",
       text: "Currently manifesting: good energy, creative breakthroughs, and flights to places I've never been. What are you manifesting today?🌍💭",
       timestamp: "63 days ago",
-      likes: 234000,
+      likes: 23400,
       comments: 5670
     },
     {
@@ -245,7 +245,7 @@ const Index = () => {
       title: "",
       text: "Behind every great photo is about 47 outtakes, three outfit changes, and probably a coffee spill. The glamour is real, folks. Worth it though. 📷😅",
       timestamp: "67 days ago",
-      likes: 76000,
+      likes: 7600,
       comments: 1234,
       media: {
         type: "image" as const,
