@@ -534,7 +534,7 @@ const Index = () => {
                   <p className="text-[10px] text-muted-foreground mb-1.5 text-center">Follow me</p>
                   <div className="flex items-center justify-center gap-2">
                     <a
-                      href="https://twitter.com/lannahof"
+                      href="https://twitter.com/lannaof"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-7 h-7 rounded-md bg-secondary flex items-center justify-center"
@@ -640,14 +640,14 @@ const Index = () => {
                         </div>
                         <div>
                           <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                            Lannah
+                            Lanna
                           </h2>
                           <p className="text-sm text-muted-foreground">24 Exclusive Collections</p>
                         </div>
                       </div>
                       <p className="text-muted-foreground text-sm">
-                        Discover premium photography, art, and exclusive content from Elena Muarova. 
-                        Join the community of creative enthusiasts exploring 17 unique visual collections.
+                        Discover premium photography, art, and exclusive content from Lanna.
+                        Join the community of creative enthusiasts exploring 24 unique visual collections.
                       </p>
                     </div>
 
@@ -688,7 +688,7 @@ const Index = () => {
                             </svg>
                           </a>
                         </div>
-                        <p className="text-sm text-muted-foreground">info@lannahof.com</p>
+                        <p className="text-sm text-muted-foreground">info@lannaof.com</p>
                       </div>
                     </div>
                   </div>
