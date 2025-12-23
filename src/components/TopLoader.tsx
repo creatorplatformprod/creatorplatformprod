@@ -25,7 +25,7 @@ const TopLoader = () => {
 
   return (
     <div 
-      className={`w-full flex items-center justify-center gap-2 py-4 transition-opacity duration-500 ${
+      className={`w-full flex items-center justify-center gap-2 py-2 transition-opacity duration-500 ${
         fadeOut ? 'opacity-0' : 'opacity-100'
       }`}
     >
