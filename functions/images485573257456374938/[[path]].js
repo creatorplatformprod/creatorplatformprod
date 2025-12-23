@@ -5,7 +5,7 @@ export async function onRequest(context) {
   // Your allowed domains
   const allowedDomains = [
     'lannaof.pages.dev',
-    'lannahof.com',
+    'lannadelulu.com',
     'lannah.lannadelulu.workers.dev',
     'localhost'
   ];
