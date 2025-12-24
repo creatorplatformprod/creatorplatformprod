@@ -31,7 +31,7 @@ const Index = () => {
     {
       id: "status-24820024",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -49,7 +49,7 @@ const Index = () => {
     {
       id: "status-19475368",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -62,7 +62,7 @@ const Index = () => {
     {
       id: "status-73926481",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -75,7 +75,7 @@ const Index = () => {
     {
       id: "status-58391627",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -93,7 +93,7 @@ const Index = () => {
     {
       id: "status-92847315",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -106,7 +106,7 @@ const Index = () => {
     {
       id: "status-46172953",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -124,7 +124,7 @@ const Index = () => {
     {
       id: "status-83659742",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -137,7 +137,7 @@ const Index = () => {
     {
       id: "status-37284561",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -150,7 +150,7 @@ const Index = () => {
     {
       id: "status-65918473",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -168,7 +168,7 @@ const Index = () => {
     {
       id: "status-19426837",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -181,7 +181,7 @@ const Index = () => {
     {
       id: "status-74853296",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -194,7 +194,7 @@ const Index = () => {
     {
       id: "status-52174639",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -212,7 +212,7 @@ const Index = () => {
     {
       id: "status-41739582",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -225,7 +225,7 @@ const Index = () => {
     {
       id: "status-87162493",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -238,7 +238,7 @@ const Index = () => {
     {
       id: "status-23685917",
       user: {
-        name: "Lannah",
+        name: "Lanna",
         avatar: portrait1,
         verified: true
       },
@@ -544,7 +544,7 @@ const Index = () => {
                       </svg>
                     </a>
                     <a
-                      href="https://instagram.com/cherryxtati"
+                      href="https://instagram.com/lannadelulu"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-7 h-7 rounded-md bg-secondary flex items-center justify-center"
@@ -677,7 +677,7 @@ const Index = () => {
                       <div>
                         <h3 className="font-semibold text-foreground mb-4">Connect</h3>
                         <div className="flex gap-3 mb-4">
-                          <a href="https://twitter.com/lannahof" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                          <a href="https://twitter.com/lannadelulu" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                               <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.040 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
                             </svg>
@@ -688,7 +688,7 @@ const Index = () => {
                             </svg>
                           </a>
                         </div>
-                        <p className="text-sm text-muted-foreground">info@lannaof.com</p>
+                        <p className="text-sm text-muted-foreground">info@lannadelulu.com</p>
                       </div>
                     </div>
                   </div>
@@ -710,7 +710,7 @@ const Index = () => {
 
                   <div className="border-t border-border pt-6 text-center">
                     <p className="text-xs text-muted-foreground">
-                      © {new Date().getFullYear()} Lannah. All rights reserved. 
+                      © {new Date().getFullYear()} Lanna. All rights reserved. 
                       <span className="mx-2">•</span>
                       <button className="bg-transparent border-none text-xs text-muted-foreground underline-none">Privacy Policy</button>
                       <span className="mx-2">•</span>

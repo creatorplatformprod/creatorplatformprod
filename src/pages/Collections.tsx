@@ -456,7 +456,7 @@ const Collections = () => {
                     </div>
                     <div>
                       <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                        Lannah
+                        Lanna
                       </h2>
                       <p className="text-sm text-muted-foreground">23 Exclusive Collections</p>
                     </div>
@@ -497,7 +497,7 @@ const Collections = () => {
 
               <div className="border-t border-border mt-8 pt-6 text-center">
                 <p className="text-xs text-muted-foreground">
-                  © {new Date().getFullYear()} Lannah. All rights reserved. 
+                  © {new Date().getFullYear()} Lanna. All rights reserved. 
                   <span className="mx-2">•</span>
                   <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
                   <span className="mx-2">•</span>
