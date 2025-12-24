@@ -482,12 +482,12 @@ const Collections1849929295832448 = () => {
                       <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                         Lannah
                       </h2>
-                      <p className="text-sm text-muted-foreground">24 Exclusive Collections</p>
+                      <p className="text-sm text-muted-foreground">23 Exclusive Collections</p>
                     </div>
                   </div>
                   <p className="text-muted-foreground text-sm">
-                    Discover premium photography, art, and exclusive content from Lannah. 
-                    Join the community of creative enthusiasts exploring 17 unique visual collections.
+                    Discover premium photography, art, and exclusive content from Lanna.
+                    Join the community of creative enthusiasts exploring 23 unique visual collections.
                   </p>
                 </div>
 
