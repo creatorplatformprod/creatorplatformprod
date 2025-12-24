@@ -36,7 +36,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Woke up feeling like today was meant for something special. Threw on my favorite outfit, grabbed my iced coffee, and just let the day unfold. Sometimes the best adventures are the unplanned ones. 🌺✨",
+      text: "Woke up feeling like today was going to be special. Put on my favorite outfit, grabbed my iced coffee, and just went with the flow. Sometimes the best days are the ones you don't plan.",
       timestamp: "4 hours ago",
       likes: 12500,
       comments: 3470,
@@ -111,7 +111,7 @@ const Index = () => {
         verified: true
       },
       title: "Feeling Bold",
-      text: "There are days when you play it safe, and then there are days like this. Red lips, red nails, zero apologies. Something about this color makes me feel unstoppable. What's your power color? 🔥💋",
+      text: "Some days you play it safe, and other days you go all out. Red lips, red nails, no regrets. This color just makes me feel powerful. What's your go-to color?",
       timestamp: "22 days ago",
       likes: 20300,
       comments: 4567,
@@ -155,7 +155,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Tried something completely new for this shoot and honestly? It scared me. But that's usually a sign I'm growing. Step outside the comfort zone, that's where the magic happens. 🎨✨",
+      text: "Tried something totally new for this shoot and honestly, it scared me a little. But that's usually when you know you're growing. Getting out of your comfort zone is where the good stuff happens.",
       timestamp: "50 days ago",
       likes: 11200,
       comments: 2340,
@@ -173,7 +173,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Three things I refuse to apologize for: taking up space, having high standards, and loving myself loudly. Life's too short for dimming your own light. 🌟",
+      text: "Three things I won't apologize for: taking up space, having high standards, and loving myself out loud. Life's too short to play small.",
       timestamp: "75 days ago",
       likes: 15600,
       comments: 4200
@@ -186,7 +186,7 @@ const Index = () => {
         verified: true
       },
       title: "Weekend Mood",
-      text: "Saturday plans: absolutely nothing scheduled and everything possible. Sometimes the best self-care is giving yourself permission to just be. No goals, no to-do lists, just existing. 🌙💫",
+      text: "Saturday plans: nothing scheduled but everything's possible. Sometimes the best thing you can do is just give yourself permission to relax. No pressure, just being.",
       timestamp: "54 days ago",
       likes: 6700,
       comments: 890
@@ -199,7 +199,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Sneak peek from yesterday's session. We tried some new lighting techniques and I'm obsessed with how they turned out. Full collection dropping this week — you're not ready! 🔥",
+      text: "Quick peek from yesterday's shoot. We tried some new lighting and I love how it came out. Full collection coming this week - you won't believe it!",
       timestamp: "58 days ago",
       likes: 14500,
       comments: 3200,
@@ -217,7 +217,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Hot take: rest is not a reward for being productive. Rest is a right. Taking care of yourself isn't lazy — it's necessary. Normalize doing nothing sometimes. 🛋️✨",
+      text: "Here's my opinion: rest isn't something you earn by working hard. Rest is something you deserve. Taking care of yourself isn't lazy - it's important. Let's normalize just chilling sometimes.",
       timestamp: "62 days ago",
       likes: 12800,
       comments: 2890

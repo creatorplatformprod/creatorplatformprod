@@ -64,7 +64,7 @@ export const collections: Record<string, Collection> = {
   "1": {
     id: "1",
     title: "Dripping in Midnight",
-    description: "Water cascades like liquid diamonds against midnight fabric. Crimson accents bleed through the darkness like forbidden poetry. Wet, wild, and completely unapologetic. 💧🔥",
+    description: "Getting completely soaked in this dark outfit. The red details really stand out against all the black. Just feeling wild and free.",
     images: generatePostCollectionImages("1", 34),
     user: { name: "Lanna", avatar: portrait1, verified: true },
     timestamp: "2 days ago",
@@ -83,7 +83,7 @@ export const collections: Record<string, Collection> = {
   "2": {
     id: "2",
     title: "Creature of the Night",
-    description: "Halloween isn't a holiday—it's a lifestyle. Bat-wing silhouettes dance across midnight fabric as shadows weave their own seduction. Gothic elegance meets pure temptation. 🦇🖤",
+    description: "Halloween is basically my whole vibe. Dark clothes with cool bat-like shapes, shadows everywhere. Gothic but sexy at the same time.",
     images: generatePostCollectionImages("2", 0, [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
@@ -120,7 +120,7 @@ export const collections: Record<string, Collection> = {
   "4": {
     id: "4",
     title: "Netflix & Thrill",
-    description: "Oversized blue knit barely covers anything. Screen glow paints shadows across bare skin. Movie night, but make it irresistible. Cozy never looked this tempting. 💙🎬",
+    description: "Wearing this big blue sweater that doesn't cover much. The screen light makes cool shadows on my skin. Movie night just got a lot more interesting.",
     images: generatePostCollectionImages("4", 0, [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
@@ -154,7 +154,7 @@ export const collections: Record<string, Collection> = {
   "5": {
     id: "5",
     title: "Body as Canvas",
-    description: "The female form reimagined in rose gold light. Every curve a brushstroke, every angle a masterpiece. Pink isn't soft—it's powerful and provocative. We are the gallery. 🌸💗",
+    description: "My body in this beautiful rose gold lighting. Every curve and angle looks amazing. Pink can be really sexy and powerful too.",
     images: generatePostCollectionImages("5", 0, [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
@@ -195,7 +195,7 @@ export const collections: Record<string, Collection> = {
   "6": {
     id: "6",
     title: "Dark Elegance",
-    description: "Black silk wrapped around confidence like a second skin. Elegant enough to command respect, playful enough to keep them guessing. The smile that follows the smolder is where the real danger lives. 🖤✨",
+    description: "Wearing this smooth black silk that fits like a second skin. It's elegant but also a bit playful. That smile after a serious look is what really gets people.",
     images: generatePostCollectionImages("6", 0, [
       { index: 1, type: 'image' },
       { index: 2, type: 'video', extension: 'mp4' },
@@ -226,7 +226,7 @@ export const collections: Record<string, Collection> = {
   "7": {
     id: "7",
     title: "Midnight Muse",
-    description: "Noir never looked this alive. She wears darkness like perfume—intoxicating and unforgettable. Every fold of black fabric holds midnight's promise. 🖤🌑",
+    description: "Black outfit that feels mysterious and alive. Darkness that sticks with you like a great perfume. Every part of this black fabric has its own appeal.",
     images: generatePostCollectionImages("7", 0, [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
@@ -378,7 +378,7 @@ export const collections: Record<string, Collection> = {
   "12": {
     id: "12",
     title: "Dark Christmas",
-    description: "Santa but make it sophisticated. Deep burgundy velvet clinging to curves. Holiday vibes with seduction. Naughty list never looked this good. 🎅🖤🎄",
+    description: "Santa outfit but way more sophisticated. Deep red velvet that hugs all the curves. Holiday season with a sexy twist.",
     images: generatePostCollectionImages("12", 13),
     user: { name: "Lanna", avatar: portrait1, verified: true },
     timestamp: "2 days ago",
@@ -397,7 +397,7 @@ export const collections: Record<string, Collection> = {
   "13": {
     id: "13",
     title: "Shower Dreams",
-    description: "Where water becomes worship and steam holds secrets. Crystalline droplets painting paths of purity. Sacred, vulnerable, powerful. 💧🤍",
+    description: "Getting wet with water everywhere and steam creating this mysterious atmosphere. Droplets making patterns on the skin. Feeling both vulnerable and strong.",
     images: generatePostCollectionImages("13", 14),
     user: { name: "Lanna", avatar: portrait1, verified: true },
     timestamp: "4 days ago",
@@ -416,7 +416,7 @@ export const collections: Record<string, Collection> = {
   "14": {
     id: "14",
     title: "Pink Fury",
-    description: "cotton candy chaos meets feline energy — soft pink fur and playful claws wrapped in pastel rebellion. she's adorable until she pounces, sweet until she scratches. cat-like grace with a hint of danger lurking behind innocent eyes. the kind of cute that bites back when you least expect it. don't let the soft exterior fool you; there's fire underneath all that pink. 🐱💗",
+    description: "Pink outfit with a wild, fun energy. Soft and cute on the outside but there's definitely some fire underneath. The kind of look that's sweet but can surprise you.",
     images: generatePostCollectionImages("14", 20),
     user: { name: "Lanna", avatar: portrait1, verified: true },
     timestamp: "1 day ago",
@@ -435,7 +435,7 @@ export const collections: Record<string, Collection> = {
   "15": {
     id: "15",
     title: "X Marks the Heart",
-    description: "She leaves her signature on souls. An X that marks the spot where you'll never forget her. Dramatic blacks cut with silver intention. ✖️🖤🌙",
+    description: "Black outfit with silver details and an X motif. Dramatic look that really makes an impression. The kind of style you won't forget.",
     images: generatePostCollectionImages("15", 10),
     user: { name: "Lanna", avatar: portrait1, verified: true },
     timestamp: "5 days ago",
@@ -473,7 +473,7 @@ export const collections: Record<string, Collection> = {
   "17": {
     id: "17",
     title: "Kyoto Dreams",
-    description: "Silk whispers of ancient elegance. Cherry blossom precision in fabric that drapes like poetry. Japanese artistry meets modern sensuality. 🌸🇯🇵",
+    description: "Smooth silk outfit with Japanese-inspired details. The fabric drapes beautifully. Mixing traditional elegance with modern style.",
     images: generatePostCollectionImages("17", 27),
     user: { name: "Lanna", avatar: portrait1, verified: true },
     timestamp: "3 days ago",
@@ -492,7 +492,7 @@ export const collections: Record<string, Collection> = {
   "18": {
     id: "18",
     title: "Symbiote Chic",
-    description: "Darkness becomes a second skin. Venom energy coursing through every curve. Anti-hero aesthetics. Dangerous, powerful, intoxicating. 🕷️🖤",
+    description: "Dark outfit that feels like a second skin. Edgy, powerful energy running through everything. Anti-hero kind of vibe.",
     images: generatePostCollectionImages("18", 34),
     user: { name: "Lanna", avatar: portrait1, verified: true },
     timestamp: "2 days ago",
@@ -511,7 +511,7 @@ export const collections: Record<string, Collection> = {
   "19": {
     id: "19",
     title: "Ultraviolet Dreams",
-    description: "Purple light painting shadows across black lace. The city sleeps while she awakens in ultraviolet glory. Nocturnal magic. 💜🖤",
+    description: "Black lace outfit with purple lighting creating cool shadows. Nighttime vibe with that ultraviolet glow. Really magical atmosphere.",
     images: generatePostCollectionImages("19", 12),
     user: { name: "Lanna", avatar: portrait1, verified: true },
     timestamp: "5 days ago",
@@ -640,7 +640,7 @@ export const collections: Record<string, Collection> = {
   "24": {
     id: "24",
     title: "Crimson Fire",
-    description: "Red hair cascading like flames against bare shoulders. Confidence burning brighter than any color could contain. Uncontainable energy. 🔥💪",
+    description: "Red hair flowing over bare shoulders. Confidence that's really strong. Just full of energy and power.",
     images: generatePostCollectionImages("24", 0, [
       { index: 1, type: 'video', extension: 'mp4' },
       { index: 2, type: 'image' },
