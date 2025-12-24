@@ -4,7 +4,7 @@ import { ArrowLeft, Loader2, CheckCircle2, Shield, Lock, Flame, ChevronDown, Che
 // Environment configuration - NO HARDCODED URLS
 const CONFIG = {
   API_URL: 'https://lannah.lannadelulu.workers.dev',
-  CONTENT_URL: 'https://lannahof.pages.dev'
+  CONTENT_URL: 'https://lannadelulu.com'
 };
 
 const CheckoutPage = () => {

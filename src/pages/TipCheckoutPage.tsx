@@ -4,7 +4,7 @@ import { ArrowLeft, Loader2, CheckCircle2, Gift, AlertCircle, Clock, ChevronDown
 // Environment configuration
 const CONFIG = {
   API_URL: 'https://lannah.lannadelulu.workers.dev',
-  CONTENT_URL: 'https://lannahof.pages.dev'
+  CONTENT_URL: 'https://lannadelulu.com'
 };
 
 // Rosy pink color - matches TipButton in FeedHeader
