@@ -36,7 +36,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Woke up feeling like today was going to be special. Put on my favorite outfit, grabbed my iced coffee, and just went with the flow. Sometimes the best days are the ones you don't plan.",
+      text: "Today felt special from the moment I woke up. Favorite outfit, iced coffee, and going with the flow. Sometimes unplanned days are the best ones.",
       timestamp: "4 hours ago",
       likes: 12500,
       comments: 3470,
@@ -54,7 +54,7 @@ const Index = () => {
         verified: true
       },
       title: "A Little Life Update",
-      text: "Been working on some exciting projects behind the scenes that I can't wait to share with you all. The creative process is messy, unpredictable, and absolutely thrilling. Stay tuned — big things are coming.",
+      text: "Exciting projects brewing behind the scenes. The creative process is messy, unpredictable, and totally thrilling. Stay tuned for big things!",
       timestamp: "5 hours ago",
       likes: 8900,
       comments: 1560
@@ -67,7 +67,7 @@ const Index = () => {
         verified: true
       },
       title: "Morning Rituals",
-      text: "My morning routine is sacred — skincare, playlist on shuffle, and 20 minutes of just existing before the world demands my attention. It's not about productivity, it's about starting the day on my own terms. ☕💭",
+      text: "My morning routine is sacred — skincare, playlist on shuffle, and 20 minutes of just existing before the world demands my attention. It's not about productivity, it's about starting the day on my own terms.",
       timestamp: "3 days ago",
       likes: 6700,
       comments: 890
@@ -80,7 +80,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "That golden light hit different today. Dropped everything to capture this moment because some things just can't wait. Nature's timing is always perfect. ☀️🧡",
+      text: "That golden light hit different today. Dropped everything to capture this moment because some things just can't wait. Nature's timing is always perfect.",
       timestamp: "1 hour ago",
       likes: 9200,
       comments: 1234,
@@ -129,7 +129,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Plot twist: the messy, unfiltered, still-figuring-it-out version of you is just as worthy of love as the polished version. Maybe even more so. Embracing all of it today.",
+      text: "Plot twist: your messy, unfiltered self is just as worthy of love as the polished version. Maybe even more so. Embracing it all today.",
       timestamp: "39 days ago",
       likes: 7800,
       comments: 1120
@@ -142,7 +142,7 @@ const Index = () => {
         verified: true
       },
       title: "Grateful Heart",
-      text: "Taking a moment to appreciate everyone who's been supporting this journey. Every like, every comment, every DM saying my content made your day better — I see you and I'm so thankful. This community is everything. 💕📸",
+      text: "Grateful for everyone supporting this journey. Every like, comment, and DM means the world. This community is everything.",
       timestamp: "46 days ago",
       likes: 9400,
       comments: 1890
@@ -217,7 +217,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Here's my opinion: rest isn't something you earn by working hard. Rest is something you deserve. Taking care of yourself isn't lazy - it's important. Let's normalize just chilling sometimes.",
+      text: "Rest isn't earned by working hard — it's deserved. Self-care isn't lazy, it's essential. Let's normalize chilling sometimes.",
       timestamp: "62 days ago",
       likes: 12800,
       comments: 2890
@@ -230,7 +230,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Currently manifesting: good energy, creative breakthroughs, and flights to places I've never been. What are you manifesting today?🌍💭",
+      text: "Currently manifesting: good energy, creative breakthroughs, and flights to places I've never been. What are you manifesting today?",
       timestamp: "63 days ago",
       likes: 23400,
       comments: 5670
@@ -243,7 +243,7 @@ const Index = () => {
         verified: true
       },
       title: "",
-      text: "Behind every great photo is about 47 outtakes, three outfit changes, and probably a coffee spill. The glamour is real, folks. Worth it though. 📷😅",
+      text: "Behind every great photo is about 47 outtakes, three outfit changes, and probably a coffee spill. The glamour is real, folks. Worth it though.",
       timestamp: "67 days ago",
       likes: 7600,
       comments: 1234,
