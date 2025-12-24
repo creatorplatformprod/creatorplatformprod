@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import { Heart, ArrowLeft, Moon, Sun } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Preloader from "../components/Preloader";
 import { getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
+import { isValidSecureId, isCollectionsSecureId } from "@/utils/secureIdMapper";
 
 const Collections1849929295832448 = () => {
   const navigate = useNavigate();
+  const { secureId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [loadedImages, setLoadedImages] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
@@ -19,10 +21,16 @@ const Collections1849929295832448 = () => {
   const [measuredDims, setMeasuredDims] = useState({});
 
   useEffect(() => {
+    // Validate secureId - only allow access if it's the special collections ID
+    if (!secureId || !isCollectionsSecureId(secureId)) {
+      navigate('/');
+      return;
+    }
+
     const savedTheme = window.localStorage?.getItem('theme') || 'dark';
     setTheme(savedTheme);
     document.documentElement.className = savedTheme;
-  }, []);
+  }, [secureId, navigate]);
 
   const toggleTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
