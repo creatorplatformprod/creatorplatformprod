@@ -394,17 +394,17 @@ const PostDetailBlurred = () => {
         </div>
 
         {/* Payment Modal - Mobile Optimized */}
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
           style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
+            backgroundColor: 'transparent',
+            backdropFilter: 'none',
+            WebkitBackdropFilter: 'none',
             overscrollBehavior: 'contain'
           }}
         >
           <div 
-            className="bg-background/95 dark:bg-background/90 border border-border rounded-2xl p-3.5 sm:p-6 w-full max-w-[310px] sm:max-w-md shadow-2xl"
+            className="bg-transparent rounded-2xl p-3.5 sm:p-6 w-full max-w-[310px] sm:max-w-md"
             style={{
               maxHeight: '85vh',
               overflowY: 'auto',
@@ -418,13 +418,13 @@ const PostDetailBlurred = () => {
               <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1.5 sm:mb-2">
                 Unlock "{collection.title}"
               </h2>
-              <p className="text-xs sm:text-base text-muted-foreground mb-3.5 sm:mb-6">
+              <p className="text-xs sm:text-base text-white mb-3.5 sm:mb-6">
                 Get instant access to {collection.images?.length || 0} exclusive items
               </p>
               
               {paymentError && (
-                <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                  <p className="text-xs sm:text-sm text-red-500">{paymentError}</p>
+                <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-red-500/20 border border-red-500/40 rounded-lg">
+                  <p className="text-xs sm:text-sm text-white">{paymentError}</p>
                 </div>
               )}
               
@@ -468,18 +468,18 @@ const PostDetailBlurred = () => {
                 </div>
               </div>
               
-              <div className="flex items-center justify-center gap-2.5 sm:gap-4 mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-border">
-                <div className="flex items-center gap-1 sm:gap-1.5 text-xs text-muted-foreground">
+              <div className="flex items-center justify-center gap-2.5 sm:gap-4 mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-white/20">
+                <div className="flex items-center gap-1 sm:gap-1.5 text-xs text-white">
                   <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
                   <span>Secure Payment</span>
                 </div>
-                <div className="flex items-center gap-1 sm:gap-1.5 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1 sm:gap-1.5 text-xs text-white">
                   <Lock className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
                   <span>SSL Encrypted</span>
                 </div>
               </div>
 
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-white">
                 One-time purchase • Instant access • No subscriptions
               </p>
             </div>
