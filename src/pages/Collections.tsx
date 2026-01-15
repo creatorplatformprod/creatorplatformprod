@@ -354,9 +354,9 @@ const Collections = () => {
               <div
                 className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
                 style={{
-                  backgroundColor: 'transparent',
-                  backdropFilter: 'none',
-                  WebkitBackdropFilter: 'none',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
                   overscrollBehavior: 'contain'
                 }}
               >
@@ -411,7 +411,7 @@ const Collections = () => {
                         <button 
                           onClick={handleCardPaymentClick}
                           disabled={isCardPaymentLoading}
-                          className="w-full bg-secondary/80 hover:bg-secondary text-foreground py-2 sm:py-3.5 rounded-xl text-xs sm:text-base font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-none"
+                          className="bg-secondary/80 hover:bg-secondary text-foreground py-2 sm:py-3.5 px-3 sm:px-4 rounded-xl text-xs sm:text-base font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-none"
                         >
                           {isCardPaymentLoading ? (
                             <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-foreground" />
