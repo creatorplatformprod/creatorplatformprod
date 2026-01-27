@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Flame, ArrowLeft, CreditCard, Shield, Lock, Loader2 } from "lucide-react";
+import { Flame, ArrowLeft, CreditCard, Loader2 } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Preloader from "../components/Preloader";
 import { collections, getAllCollectionIds, getCollection } from "@/collections/collectionsData";
@@ -275,12 +275,17 @@ const Collections = () => {
       {!showPreloader && (
         <div className="min-h-screen feed-bg">
           <main className="max-w-7xl mx-auto px-4 py-6 relative">
-          <button 
+          <button
             onClick={() => window.history.back()}
-            className="fixed top-4 left-4 z-[60] w-10 h-10 rounded-full bg-secondary/80 backdrop-blur-xl hover:bg-secondary flex items-center justify-center text-foreground transition-all duration-300 shadow-lg"
+            className="fixed top-4 left-4 z-[60] w-8 h-8 rounded-full bg-secondary/80 backdrop-blur-xl hover:bg-secondary flex items-center justify-center text-foreground transition-all duration-300 shadow-lg"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
+
+          <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[60] flex flex-col items-center">
+            <span className="text-xs text-white font-medium drop-shadow-lg">Scroll down to preview</span>
+            <span className="text-lg text-white mt-1 animate-bounce drop-shadow-lg" style={{ animationDuration: '2s' }}>↓</span>
+          </div>
             <ResponsiveMasonry
               columnsCountBreakPoints={{350: 1, 750: 3, 900: 4}}
             >
@@ -361,7 +366,7 @@ const Collections = () => {
                 }}
               >
                 <div 
-                  className="bg-transparent rounded-2xl p-3.5 sm:p-6 w-full max-w-[310px] sm:max-w-md"
+                  className="bg-transparent rounded-2xl p-3.5 sm:p-6 w-full max-w-[280px] sm:max-w-sm"
                   style={{
                     maxHeight: '85vh',
                     overflowY: 'auto',
@@ -369,8 +374,8 @@ const Collections = () => {
                   }}
                 >
                   <div className="text-center">
-                    <div className="w-10 h-10 sm:w-16 sm:h-16 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center mx-auto mb-2.5 sm:mb-4">
-                      <Flame className="w-5 h-5 sm:w-8 sm:h-8 text-primary-foreground fill-current" />
+                    <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center mx-auto mb-2.5 sm:mb-4">
+                      <Flame className="w-4 h-4 sm:w-6 sm:h-6 text-primary-foreground fill-current" />
                     </div>
                     <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1.5 sm:mb-2">
                       Unlock Everything
@@ -424,21 +429,6 @@ const Collections = () => {
                         </button>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center justify-center gap-2.5 sm:gap-4 mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-white/20">
-                      <div className="flex items-center gap-1 sm:gap-1.5 text-xs text-white">
-                        <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
-                        <span>Secure Payment</span>
-                      </div>
-                      <div className="flex items-center gap-1 sm:gap-1.5 text-xs text-white">
-                        <Lock className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
-                        <span>SSL Encrypted</span>
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-white">
-                      One-time purchase • Instant access • No subscriptions
-                    </p>
                   </div>
                 </div>
               </div>

@@ -33,8 +33,8 @@ const Preloader = ({ isVisible, onComplete }) => {
       <div className="relative z-10">
         {/* Logo Section */}
         <div className="relative">
-          <div className="w-14 h-14 md:w-18 md:h-18 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl animate-pulse">
-            <Flame className="w-8 h-8 md:w-10 md:h-10 text-primary-foreground fill-current" />
+          <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl animate-pulse">
+            <Flame className="w-6 h-6 md:w-8 md:h-8 text-primary-foreground fill-current" />
           </div>
           <div className="absolute -top-1 -right-1 w-4 h-4 md:w-5 md:h-5 bg-accent rounded-full animate-ping"></div>
         </div>

@@ -1,7 +1,7 @@
 // components/PostCard.tsx - UPDATED WITH SINGLE SHIMMER FOR WHOLE CARD
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, Share2, Check } from "lucide-react";
+import { Heart, Share2, Check, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Collection } from "@/collections/collectionsData";
 import { getBlurredPostUrl } from "@/utils/linkHelpers";
@@ -109,26 +109,34 @@ const PostCard = ({ collection }: PostCardProps) => {
                   className="w-full h-full object-cover group-hover:scale-100 transition-transform duration-500"
                   onLoad={handleImageLoad}
                 />
-                {index === previewImages.length - 1 && images.length > cardLayout.maxImages && (
-                  <div className="absolute bottom-3 right-4 z-20">
-                    <span className="text-white text-lg font-bold drop-shadow-lg">
-                      +{images.length - cardLayout.maxImages}
-                    </span>
-                  </div>
-                )}
               </div>
             );
           })}
+
+          {/* Additional images indicator - positioned relative to entire image area */}
+          {images.length > cardLayout.maxImages && (
+            <div className="absolute bottom-3 right-4 z-10">
+              <span className="text-white text-sm font-bold drop-shadow-lg">
+                +{images.length - cardLayout.maxImages}
+              </span>
+            </div>
+          )}
         </div>
-        
+
         <div className="absolute inset-0 bg-black bg-opacity-10 backdrop-blur-[6px] group-hover:bg-opacity-5 group-hover:backdrop-blur-[4px] transition-all duration-300 z-[5]"></div>
-        
+
+        {/* Center unlock button */}
         <div className="absolute inset-0 flex items-center justify-center z-[6]">
-          <div className="text-center text-white max-w-md px-4">
-            <h3 className="text-2xl font-bold mb-3">{collection.title}</h3>
-            <p className="text-sm opacity-90 mb-2">{collection.description}</p>
-            <p className="text-xs opacity-75">Click to view collection</p>
-          </div>
+          <Button
+            className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm px-6 py-2 rounded-full font-medium"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/post-blurred/${collection.id}`);
+            }}
+          >
+            <Lock className="w-4 h-4 mr-2" />
+            Unlock
+          </Button>
         </div>
       </div>
     );
