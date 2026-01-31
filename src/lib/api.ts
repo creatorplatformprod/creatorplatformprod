@@ -3,7 +3,10 @@
  * Centralized API calls for frontend
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://your-worker.workers.dev';
+const RAW_API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  'https://creator-platform-api-production.creatorplatformprod.workers.dev';
+const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '');
 
 // Helper to get auth token
 const getToken = (): string | null => {

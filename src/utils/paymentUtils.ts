@@ -13,6 +13,11 @@ export interface AccessTokenData {
   reason?: string;
 }
 
+const RAW_API_URL =
+  import.meta.env.VITE_API_URL ||
+  'https://creator-platform-api-production.creatorplatformprod.workers.dev';
+const API_URL = RAW_API_URL.replace(/\/+$/, '');
+
 /**
  * Verify access token with Cloudflare Worker (Card2Crypto payments)
  * @param token - Access token from URL parameter
@@ -21,7 +26,7 @@ export interface AccessTokenData {
 export async function verifyAccessToken(token: string): Promise<AccessTokenData> {
   try {
     const response = await fetch(
-      `https://lannah.lannadelulu.workers.dev/api/payment/verify?token=${encodeURIComponent(token)}`
+      `${API_URL}/api/payment/verify?token=${encodeURIComponent(token)}`
     );
 
     if (!response.ok) {

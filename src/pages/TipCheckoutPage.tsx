@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Loader2, CheckCircle2, Gift, AlertCircle, Clock, ChevronDown, CreditCard } from "lucide-react";
 
+const RAW_API_URL =
+  import.meta.env.VITE_API_URL ||
+  'https://creator-platform-api-production.creatorplatformprod.workers.dev';
+
 // Environment configuration
 const CONFIG = {
-  API_URL: 'https://lannah.lannadelulu.workers.dev',
+  API_URL: RAW_API_URL.replace(/\/+$/, ''),
   CONTENT_URL: 'https://lannadelulu.com'
 };
 
