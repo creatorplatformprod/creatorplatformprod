@@ -129,10 +129,15 @@ const Collections = () => {
     return ratios[index % ratios.length];
   }
 
+  const collectionCount = collectionIds.length;
+  const totalItems = allImages.length;
+  const videoCount = allImages.filter((item) => item.mediaType === 'video').length;
+  const imageCount = totalItems - videoCount;
+
   const startIndex = (currentPage - 1) * imagesPerPage;
   const endIndex = startIndex + imagesPerPage;
   const currentImages = allImages.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(allImages.length / imagesPerPage);
+  const totalPages = Math.ceil(totalItems / imagesPerPage);
 
   const preloadFirstPageImages = () => {
     const firstPageImages = currentImages;
@@ -258,7 +263,7 @@ const Collections = () => {
       `amount=199.99` +
       `&collectionId=all` +
       `&collectionTitle=${encodeURIComponent('All Exclusive Collections')}` +
-      `&itemCount=${allImages.length}` +
+      `&itemCount=${totalItems}` +
       `&email=${encodeURIComponent(sanitizedEmail)}`;
 
     window.location.href = checkoutUrl;
@@ -349,7 +354,7 @@ const Collections = () => {
             <div className="flex justify-center mt-8">
               <div className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-full backdrop-blur-sm">
                 <span className="text-sm text-muted-foreground">
-                  {allImages.length} exclusive items from {collectionIds.length} collections
+                  {totalItems} exclusive items from {collectionCount} collections
                 </span>
               </div>
             </div>
@@ -381,7 +386,8 @@ const Collections = () => {
                       Unlock Everything
                     </h2>
                     <p className="text-xs sm:text-base text-white mb-3.5 sm:mb-6">
-                      Get instant access to all {collectionIds.length} exclusive collections with {allImages.length} premium items
+                      Get instant access to all {collectionCount} exclusive collections with {totalItems} premium items
+                      {videoCount > 0 ? `, including ${videoCount} videos` : ''}
                     </p>
                     
                     {paymentError && (
@@ -448,12 +454,14 @@ const Collections = () => {
                       <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                         Lanna
                       </h2>
-                      <p className="text-sm text-muted-foreground">23 Exclusive Collections</p>
+                      <p className="text-sm text-muted-foreground">
+                        {collectionCount} Exclusive Collections
+                      </p>
                     </div>
                   </div>
                   <p className="text-muted-foreground text-sm">
                     Discover premium photography, art, and exclusive content from Lanna.
-                    Join the community of creative enthusiasts exploring 23 unique visual collections.
+                    Join the community of creative enthusiasts exploring {collectionCount} unique visual collections.
                   </p>
                 </div>
 
