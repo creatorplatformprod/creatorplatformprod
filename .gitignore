@@ -1,4 +1,4 @@
-﻿dist/
+dist/
 .vs/
 bin/
 obj/
@@ -6,3 +6,13 @@ obj/
 *.suo
 node_modules/
 .vscode/
+
+# Keep backend out of frontend repo
+backend/
+
+# Local project docs (not for repo)
+IMPLEMENTATION_*.md
+PROJECT_STATUS.md
+QUICK_SETUP_CHECKLIST.md
+REQUIREMENTS_VERIFICATION.md
+SETUP_AND_TESTING_PLAN.md
