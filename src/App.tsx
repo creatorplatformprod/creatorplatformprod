@@ -4,6 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Landing from "./pages/Landing";
+import CreatorDashboard from "./pages/CreatorDashboard";
+import CreatorProfile from "./pages/CreatorProfile";
 import Index from "./pages/Index";
 import PostDetail from "./pages/PostDetail";
 import PostDetailBlurred from "./pages/PostDetailBlurred";
@@ -12,6 +15,7 @@ import Collections from "./pages/Collections";
 import Collections1849929295832448 from "./pages/Collections1849929295832448";
 import CheckoutPage from "./pages/CheckoutPage";
 import TipCheckoutPage from "./pages/TipCheckoutPage";
+import AuthCallback from "./pages/AuthCallback";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +27,12 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            {/* Landing Page - must be first */}
+            <Route path="/" element={<Landing />} />
+            
+            {/* Creator Platform Routes */}
+            <Route path="/dashboard" element={<CreatorDashboard />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             
             {/* Post Routes */}
             {/* Blurred uses simple ID, full access uses secure 11-digit ID */}
@@ -39,6 +48,12 @@ const App = () => (
             {/* Checkout Routes */}
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/tip-checkout" element={<TipCheckoutPage />} />
+            
+            {/* Legacy Index (for existing content) */}
+            <Route path="/index" element={<Index />} />
+
+            {/* Public Creator Profile Route - must come last to catch /username */}
+            <Route path="/:username" element={<CreatorProfile />} />
 
             {/* Fallback route for 404 */}
             <Route path="*" element={<NotFound />} />

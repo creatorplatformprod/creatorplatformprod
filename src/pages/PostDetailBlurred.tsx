@@ -6,6 +6,7 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { getCollection } from "@/collections/collectionsData";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
+import { api } from "@/lib/api";
 
 const PostDetailBlurred = () => {
   const { id } = useParams();
@@ -15,6 +16,8 @@ const PostDetailBlurred = () => {
   const [paymentError, setPaymentError] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [isCardPaymentLoading, setIsCardPaymentLoading] = useState(false);
+  const [remoteCollection, setRemoteCollection] = useState<any>(null);
+  const [remoteLoading, setRemoteLoading] = useState(false);
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -85,7 +88,57 @@ const PostDetailBlurred = () => {
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   };
 
-  const collection = getCollection(id as string);
+  const localCollection = getCollection(id as string);
+
+  const loadRemoteCollection = async () => {
+    if (!id || localCollection) return;
+    setRemoteLoading(true);
+    try {
+      const collectionResult = await api.getCollection(id);
+      if (collectionResult?.success && collectionResult.collection) {
+        const creatorId = collectionResult.collection.creatorId;
+        let creatorUser = null;
+        if (creatorId) {
+          const userResult = await api.getUserById(creatorId);
+          if (userResult?.success) {
+            creatorUser = userResult.user;
+          }
+        }
+
+        const mapped = {
+          id: collectionResult.collection._id,
+          title: collectionResult.collection.title,
+          description: collectionResult.collection.description || '',
+          images: (collectionResult.collection.media || []).map((media: any) => ({
+            full: media.url,
+            thumb: media.thumbnailUrl || media.url
+          })),
+          user: {
+            name: creatorUser?.displayName || creatorUser?.username || 'Creator',
+            avatar: creatorUser?.avatar || '/images485573257456374938/1img.jpg',
+            verified: creatorUser?.isVerified || false
+          },
+          timestamp: collectionResult.collection.createdAt
+            ? new Date(collectionResult.collection.createdAt).toLocaleDateString()
+            : 'Recently',
+          price: collectionResult.collection.price || 4.99
+        };
+
+        setRemoteCollection(mapped);
+      }
+    } catch (error) {
+      console.error('Failed to load collection:', error);
+      setRemoteCollection(null);
+    } finally {
+      setRemoteLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadRemoteCollection();
+  }, [id]);
+
+  const collection = remoteCollection || localCollection;
   
   // Get the price for this collection (default to 4.99 if no price set)
   const collectionPrice = collection?.price || 4.99;
@@ -221,6 +274,17 @@ const PostDetailBlurred = () => {
   const handleUnlockClick = () => {
     // Modal is already visible
   };
+
+  if (remoteLoading && !collection) {
+    return (
+      <div className="min-h-screen feed-bg flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading collection...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!collection) {
     return (

@@ -8,6 +8,7 @@ import { getCollection } from "@/collections/collectionsData";
 import { getCollectionId, isValidSecureId } from "@/utils/secureIdMapper";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
+import { api } from "@/lib/api";
 
 const PostDetail = () => {
   const { secureId } = useParams();
@@ -16,6 +17,9 @@ const PostDetail = () => {
   const [currentImagePage, setCurrentImagePage] = useState(1);
   const [isLoadingImages, setIsLoadingImages] = useState(false);
   const [measuredDims, setMeasuredDims] = useState({});
+  const [remoteCollection, setRemoteCollection] = useState<any>(null);
+  const [remoteLoading, setRemoteLoading] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   const imagesPerPage = 12;
 
@@ -58,7 +62,80 @@ const PostDetail = () => {
     return getCollection(actualId);
   };
 
-  const collection = getCollectionFromSecureId();
+  const loadRemoteCollection = async () => {
+    if (!secureId || isValidSecureId(secureId)) return;
+    setRemoteLoading(true);
+    setAccessDenied(false);
+
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const accessToken = params.get('access');
+
+      if (!accessToken) {
+        setAccessDenied(true);
+        return;
+      }
+
+      let accessOk = false;
+      try {
+        const verify = await api.verifyAccessToken(accessToken);
+        accessOk = !!verify?.valid;
+      } catch (verifyError) {
+        accessOk = false;
+      }
+
+      if (!accessOk) {
+        setAccessDenied(true);
+        return;
+      }
+
+      const collectionResult = await api.getCollection(secureId);
+      if (collectionResult?.success && collectionResult.collection) {
+        const creatorId = collectionResult.collection.creatorId;
+        let creatorUser = null;
+        if (creatorId) {
+          const userResult = await api.getUserById(creatorId);
+          if (userResult?.success) {
+            creatorUser = userResult.user;
+          }
+        }
+
+        const mapped = {
+          id: collectionResult.collection._id,
+          title: collectionResult.collection.title,
+          description: collectionResult.collection.description || '',
+          images: (collectionResult.collection.media || []).map((media: any) => ({
+            full: media.url,
+            thumb: media.thumbnailUrl || media.url
+          })),
+          user: {
+            name: creatorUser?.displayName || creatorUser?.username || 'Creator',
+            avatar: creatorUser?.avatar || '/images485573257456374938/1img.jpg',
+            verified: creatorUser?.isVerified || false
+          },
+          timestamp: collectionResult.collection.createdAt
+            ? new Date(collectionResult.collection.createdAt).toLocaleDateString()
+            : 'Recently'
+        };
+
+        setRemoteCollection(mapped);
+      } else {
+        setRemoteCollection(null);
+      }
+    } catch (error) {
+      console.error('Failed to load collection:', error);
+      setRemoteCollection(null);
+    } finally {
+      setRemoteLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadRemoteCollection();
+  }, [secureId]);
+
+  const localCollection = getCollectionFromSecureId();
+  const collection = remoteCollection || localCollection;
 
   const getRandomDimensions = (index: number) => {
     const ratios = [
@@ -168,6 +245,31 @@ const PostDetail = () => {
       }, 300);
     }
   };
+
+  if (accessDenied && secureId && !isValidSecureId(secureId)) {
+    return (
+      <div className="min-h-screen feed-bg flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Access Required</h1>
+          <p className="text-muted-foreground mb-6">Purchase this collection to unlock full access.</p>
+          <Button onClick={() => navigate(`/post-blurred/${secureId}`)} variant="outline">
+            View Preview
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (remoteLoading && !collection) {
+    return (
+      <div className="min-h-screen feed-bg flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+          <p className="text-muted-foreground">Loading collection...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!collection) {
     return (

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Loader2, CheckCircle2, Shield, Lock, Flame, ChevronDown, ChevronUp, Clock, AlertCircle, CreditCard } from "lucide-react";
 
-// Environment configuration - NO HARDCODED URLS
+// Environment configuration - no hardcoded URLs
 const CONFIG = {
-  API_URL: 'https://lannah.lannadelulu.workers.dev',
-  CONTENT_URL: 'https://lannadelulu.com'
+  API_URL: import.meta.env.VITE_API_URL || window.location.origin,
+  CONTENT_URL: import.meta.env.VITE_CONTENT_URL || window.location.origin
 };
 
 const CheckoutPage = () => {
@@ -99,8 +99,9 @@ const CheckoutPage = () => {
   // Input validation helpers - ENHANCED
   const isValidCollectionId = (id) => {
     if (id === 'all') return true;
-    const numId = parseInt(id);
-    return !isNaN(numId) && numId >= 1 && numId <= 22;
+    if (/^[a-f0-9]{24}$/i.test(id)) return true;
+    const numId = parseInt(id, 10);
+    return !isNaN(numId) && numId >= 1;
   };
 
   const sanitizeString = (str) => {

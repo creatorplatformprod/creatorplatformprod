@@ -9,9 +9,16 @@ interface FeedHeaderProps {
   onSearch: (query: string) => void;
   onLogoClick?: () => void;
   sidebarOpen?: boolean;
+  title?: string;
+  subtitle?: string;
 }
 
-const FeedHeader = ({ onSearch, onLogoClick }: FeedHeaderProps) => {
+const FeedHeader = ({
+  onSearch,
+  onLogoClick,
+  title = "Creator",
+  subtitle = "Exclusive Content",
+}: FeedHeaderProps) => {
   const { theme, setTheme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -86,9 +93,9 @@ const FeedHeader = ({ onSearch, onLogoClick }: FeedHeaderProps) => {
             </div>
             <div className="hidden sm:block">
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Lanna
+                {title}
               </h1>
-              <p className="text-xs text-muted-foreground -mt-1">Exclusive Content</p>
+              <p className="text-xs text-muted-foreground -mt-1">{subtitle}</p>
             </div>
           </div>
 
