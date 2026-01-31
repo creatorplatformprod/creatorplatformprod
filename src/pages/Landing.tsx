@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowRight, UserCircle2, Sparkles, ShieldCheck, Zap } from 'lucide-react';
+import { LockKeyhole, ArrowRight } from 'lucide-react';
 import { api } from '@/lib/api';
 
 const Landing = () => {
@@ -58,89 +58,25 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen feed-bg">
-      <style>{`
-        @keyframes floaty {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-          100% { transform: translateY(0px); }
-        }
-        @keyframes fadeUp {
-          0% { opacity: 0; transform: translateY(12px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
-
-      {/* Navbar */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/70 border-b border-border/60">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent text-white grid place-items-center shadow-lg">
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <div className="leading-tight">
-              <p className="text-sm uppercase tracking-[0.22em] text-muted-foreground font-['Space_Grotesk']">
-                Creator Platform
-              </p>
-              <p className="text-lg font-semibold text-foreground font-['Space_Grotesk']">
-                CreatorPlatform
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/60 hover:bg-secondary/80 text-foreground transition-all"
-            aria-label="Go to dashboard"
-          >
-            <UserCircle2 className="w-5 h-5" />
-            <span className="text-sm font-medium">Dashboard</span>
-          </button>
+      {/* Banner Section */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary via-accent to-primary/80 py-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+            Sell Your Content
+          </h1>
+          <h2 className="text-3xl md:text-4xl font-semibold text-white/90 mb-8 drop-shadow-lg">
+            Get Paid from Card to Crypto
+          </h2>
+          <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
+            Create your exclusive content platform. Upload collections, manage your profile, 
+            and monetize your content with seamless payment processing.
+          </p>
         </div>
-      </header>
+      </div>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,165,233,0.28),transparent_45%),radial-gradient(circle_at_30%_80%,rgba(219,39,119,0.22),transparent_50%),radial-gradient(circle_at_90%_20%,rgba(34,197,94,0.18),transparent_50%)]" />
-        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-gradient-to-br from-accent/30 to-primary/30 blur-2xl animate-[floaty_6s_ease-in-out_infinite]" />
-        <div className="absolute bottom-[-80px] -left-10 w-80 h-80 rounded-full bg-gradient-to-br from-primary/25 to-emerald-400/20 blur-2xl animate-[floaty_7s_ease-in-out_infinite]" />
-
-        <div className="relative max-w-6xl mx-auto px-4 pt-16 pb-10">
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-start">
-            <div className="text-left">
-              <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-white/80 bg-white/10 px-3 py-1.5 rounded-full border border-white/15 backdrop-blur">
-                <Zap className="w-3.5 h-3.5" />
-                2026 creator stack
-              </p>
-              <h1 className="mt-6 text-5xl md:text-6xl font-semibold text-white leading-[1.05] font-['Space_Grotesk'] animate-[fadeUp_0.6s_ease-out]">
-                Launch a premium
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-200 to-white">
-                  creator storefront
-                </span>
-              </h1>
-              <p className="mt-5 text-lg md:text-xl text-white/85 max-w-xl animate-[fadeUp_0.7s_ease-out]">
-                A modern platform for exclusive drops, token‑gated access, and frictionless
-                card‑to‑crypto payments. Ship fast, look elite.
-              </p>
-
-              <div className="mt-8 grid sm:grid-cols-3 gap-3">
-                {[
-                  { label: 'Instant payouts', icon: Zap },
-                  { label: 'Secure access', icon: ShieldCheck },
-                  { label: 'Smart analytics', icon: Sparkles },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur px-4 py-3 text-white flex items-center gap-3"
-                  >
-                    <item.icon className="w-4 h-4" />
-                    <span className="text-sm font-medium">{item.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Registration/Login Form */}
-            <div className="post-card rounded-2xl p-7 shadow-xl backdrop-blur-xl border border-border/60 bg-background/80 animate-[fadeUp_0.6s_ease-out]">
+      {/* Registration/Login Form */}
+      <div className="max-w-md mx-auto mt-12 px-4">
+        <div className="post-card rounded-xl p-8">
           <div className="flex gap-4 mb-6">
             <Button
               variant={!isLogin ? 'default' : 'ghost'}
@@ -271,12 +207,11 @@ const Landing = () => {
           <p className="text-xs text-muted-foreground text-center mt-6">
             By signing up, you agree to our Terms of Service and Privacy Policy
           </p>
-            </div>
-          </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };
 
 export default Landing;
+
