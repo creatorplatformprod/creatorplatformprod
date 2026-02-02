@@ -321,6 +321,62 @@ export const api = {
     return apiRequest(`/api/payment/verify?token=${token}`);
   },
 
+  // ==================== Analytics ====================
+
+  /**
+   * Get sales summary for analytics graph
+   */
+  getSalesSummary: async (params: {
+    range?: string;
+    start?: string;
+    end?: string;
+    groupBy?: 'day' | 'week' | 'month';
+    metric?: 'revenue' | 'orders' | 'net' | 'platformFee';
+    status?: string;
+    collectionId?: string;
+    currency?: string;
+  }) => {
+    const query = new URLSearchParams();
+    if (params.range) query.set('range', params.range);
+    if (params.start) query.set('start', params.start);
+    if (params.end) query.set('end', params.end);
+    if (params.groupBy) query.set('groupBy', params.groupBy);
+    if (params.metric) query.set('metric', params.metric);
+    if (params.status) query.set('status', params.status);
+    if (params.collectionId) query.set('collectionId', params.collectionId);
+    if (params.currency) query.set('currency', params.currency);
+    return apiRequest(`/api/analytics/sales/summary?${query.toString()}`);
+  },
+
+  /**
+   * Get sales list for analytics table
+   */
+  getSalesList: async (params: {
+    range?: string;
+    start?: string;
+    end?: string;
+    status?: string;
+    collectionId?: string;
+    currency?: string;
+    limit?: number;
+    offset?: number;
+    sort?: string;
+    search?: string;
+  }) => {
+    const query = new URLSearchParams();
+    if (params.range) query.set('range', params.range);
+    if (params.start) query.set('start', params.start);
+    if (params.end) query.set('end', params.end);
+    if (params.status) query.set('status', params.status);
+    if (params.collectionId) query.set('collectionId', params.collectionId);
+    if (params.currency) query.set('currency', params.currency);
+    if (params.limit !== undefined) query.set('limit', String(params.limit));
+    if (params.offset !== undefined) query.set('offset', String(params.offset));
+    if (params.sort) query.set('sort', params.sort);
+    if (params.search) query.set('search', params.search);
+    return apiRequest(`/api/analytics/sales/list?${query.toString()}`);
+  },
+
   // ==================== Health Check ====================
 
   /**

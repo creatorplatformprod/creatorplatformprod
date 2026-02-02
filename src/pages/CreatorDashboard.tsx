@@ -4,6 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer 
+} from 'recharts';
+import { eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval, format, parseISO } from 'date-fns';
+import { 
   Settings, 
   Image, 
   Lock, 
@@ -15,13 +25,14 @@ import {
   Wallet,
   Mail,
   MessageSquare,
-  Eye
+  Eye,
+  BarChart3
 } from 'lucide-react';
 import { api } from '@/lib/api';
 
 const CreatorDashboard = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'profile' | 'status-cards' | 'collections'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'status-cards' | 'collections' | 'analytics'>('profile');
   const [user, setUser] = useState<any>(null);
   const [statusCards, setStatusCards] = useState<any[]>([]);
   const [collections, setCollections] = useState<any[]>([]);
@@ -33,6 +44,28 @@ const CreatorDashboard = () => {
   const [uploadingCollectionMedia, setUploadingCollectionMedia] = useState(false);
   const [statusCardFile, setStatusCardFile] = useState<File | null>(null);
   const [uploadingStatusCardMedia, setUploadingStatusCardMedia] = useState(false);
+
+  // Analytics state
+  const [analyticsRange, setAnalyticsRange] = useState('30');
+  const [analyticsGroupBy, setAnalyticsGroupBy] = useState<'day' | 'week' | 'month'>('day');
+  const [analyticsMetric, setAnalyticsMetric] = useState<'revenue' | 'orders' | 'net' | 'platformFee'>('revenue');
+  const [analyticsStatus, setAnalyticsStatus] = useState('completed');
+  const [analyticsCollectionId, setAnalyticsCollectionId] = useState('all');
+  const [analyticsCurrency, setAnalyticsCurrency] = useState('all');
+  const [analyticsSeries, setAnalyticsSeries] = useState<any[]>([]);
+  const [analyticsTotals, setAnalyticsTotals] = useState({
+    revenue: 0,
+    orders: 0,
+    net: 0,
+    platformFee: 0
+  });
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [salesList, setSalesList] = useState<any[]>([]);
+  const [salesTotal, setSalesTotal] = useState(0);
+  const [salesLimit, setSalesLimit] = useState(25);
+  const [salesOffset, setSalesOffset] = useState(0);
+  const [salesSort, setSalesSort] = useState('createdAt_desc');
+  const [salesSearch, setSalesSearch] = useState('');
 
   // Profile form state
   const [profileData, setProfileData] = useState({
@@ -289,6 +322,159 @@ const CreatorDashboard = () => {
     }
   };
 
+  const formatMoney = (value: number, currencyCode?: string) => {
+    const safeCurrency = currencyCode && currencyCode !== 'all' ? currencyCode : 'USD';
+    try {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: safeCurrency
+      }).format(value || 0);
+    } catch {
+      return `$${(value || 0).toFixed(2)}`;
+    }
+  };
+
+  const buildChartSeries = (summary: any) => {
+    if (!summary?.range?.start || !summary?.range?.end) return [];
+    const start = parseISO(summary.range.start);
+    const end = parseISO(summary.range.end);
+    const map = new Map<string, any>();
+    (summary.series || []).forEach((row: any) => {
+      map.set(row.period, row);
+    });
+
+    const metricKey = analyticsMetric;
+    if (analyticsGroupBy === 'month') {
+      const months = eachMonthOfInterval({ start, end });
+      return months.map((date) => {
+        const period = format(date, 'yyyy-MM');
+        const row = map.get(period) || {};
+        return {
+          period,
+          label: format(date, 'MMM yyyy'),
+          revenue: row.revenue || 0,
+          orders: row.orders || 0,
+          net: row.net || 0,
+          platformFee: row.platformFee || 0,
+          value: row[metricKey] || 0
+        };
+      });
+    }
+
+    if (analyticsGroupBy === 'week') {
+      const weeks = eachWeekOfInterval({ start, end }, { weekStartsOn: 1 });
+      return weeks.map((date) => {
+        const period = format(date, 'yyyy-ww', { weekStartsOn: 1 });
+        const row = map.get(period) || {};
+        return {
+          period,
+          label: `Wk ${format(date, 'ww', { weekStartsOn: 1 })}`,
+          revenue: row.revenue || 0,
+          orders: row.orders || 0,
+          net: row.net || 0,
+          platformFee: row.platformFee || 0,
+          value: row[metricKey] || 0
+        };
+      });
+    }
+
+    const days = eachDayOfInterval({ start, end });
+    return days.map((date) => {
+      const period = format(date, 'yyyy-MM-dd');
+      const row = map.get(period) || {};
+      return {
+        period,
+        label: format(date, 'MMM d'),
+        revenue: row.revenue || 0,
+        orders: row.orders || 0,
+        net: row.net || 0,
+        platformFee: row.platformFee || 0,
+        value: row[metricKey] || 0
+      };
+    });
+  };
+
+  const loadAnalytics = async () => {
+    if (!user?.username) return;
+    try {
+      setAnalyticsLoading(true);
+      setError('');
+
+      const collectionParam =
+        analyticsCollectionId === 'bundle'
+          ? 'all'
+          : analyticsCollectionId !== 'all'
+            ? analyticsCollectionId
+            : undefined;
+
+      const summaryResult = await api.getSalesSummary({
+        range: analyticsRange,
+        groupBy: analyticsGroupBy,
+        metric: analyticsMetric,
+        status: analyticsStatus,
+        collectionId: collectionParam,
+        currency: analyticsCurrency !== 'all' ? analyticsCurrency : undefined
+      });
+
+      if (summaryResult.success) {
+        setAnalyticsTotals({
+          revenue: summaryResult.totals?.revenue || 0,
+          orders: summaryResult.totals?.orders || 0,
+          net: summaryResult.totals?.net || 0,
+          platformFee: summaryResult.totals?.platformFee || 0
+        });
+        setAnalyticsSeries(buildChartSeries(summaryResult));
+      } else {
+        setAnalyticsTotals({ revenue: 0, orders: 0, net: 0, platformFee: 0 });
+        setAnalyticsSeries([]);
+      }
+
+      const listResult = await api.getSalesList({
+        range: analyticsRange,
+        status: analyticsStatus,
+        collectionId: collectionParam,
+        currency: analyticsCurrency !== 'all' ? analyticsCurrency : undefined,
+        limit: salesLimit,
+        offset: salesOffset,
+        sort: salesSort,
+        search: salesSearch || undefined
+      });
+
+      if (listResult.success) {
+        setSalesList(listResult.sales || []);
+        setSalesTotal(listResult.total || 0);
+      } else {
+        setSalesList([]);
+        setSalesTotal(0);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to load analytics');
+    } finally {
+      setAnalyticsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab !== 'analytics') return;
+    loadAnalytics();
+  }, [
+    activeTab,
+    analyticsRange,
+    analyticsGroupBy,
+    analyticsMetric,
+    analyticsStatus,
+    analyticsCollectionId,
+    analyticsCurrency,
+    salesOffset,
+    salesLimit,
+    salesSort,
+    salesSearch
+  ]);
+
+  useEffect(() => {
+    setSalesOffset(0);
+  }, [analyticsRange, analyticsGroupBy, analyticsMetric, analyticsStatus, analyticsCollectionId, analyticsCurrency, salesSearch]);
+
   return (
     <div className="min-h-screen feed-bg">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
@@ -363,6 +549,21 @@ const CreatorDashboard = () => {
               >
                 <Image className="w-4 h-4 inline mr-2" />
                 Collections
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab('analytics');
+                  setError('');
+                  setSuccess('');
+                }}
+                className={`whitespace-nowrap px-4 py-2 font-medium transition-colors ${
+                  activeTab === 'analytics'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <BarChart3 className="w-4 h-4 inline mr-2" />
+                Analytics
               </button>
             </div>
           </div>
@@ -753,6 +954,281 @@ const CreatorDashboard = () => {
                     </div>
                   ))
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Analytics Tab */}
+        {activeTab === 'analytics' && (
+          <div className="space-y-6">
+            <div className="post-card rounded-xl p-6 space-y-4">
+              <div className="flex flex-col gap-2">
+                <h2 className="text-2xl font-bold text-foreground">Sales Analytics</h2>
+                <p className="text-sm text-muted-foreground">
+                  Choose different filters to explore revenue, orders, and payout performance.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">Range</label>
+                  <select
+                    value={analyticsRange}
+                    onChange={(e) => setAnalyticsRange(e.target.value)}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                  >
+                    <option value="7">Last 7 days</option>
+                    <option value="30">Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                    <option value="365">Last 12 months</option>
+                    <option value="all">All time</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">Group By</label>
+                  <select
+                    value={analyticsGroupBy}
+                    onChange={(e) => setAnalyticsGroupBy(e.target.value as 'day' | 'week' | 'month')}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                  >
+                    <option value="day">Day</option>
+                    <option value="week">Week</option>
+                    <option value="month">Month</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">Metric</label>
+                  <select
+                    value={analyticsMetric}
+                    onChange={(e) => setAnalyticsMetric(e.target.value as 'revenue' | 'orders' | 'net' | 'platformFee')}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                  >
+                    <option value="revenue">Gross Revenue</option>
+                    <option value="orders">Orders</option>
+                    <option value="net">Creator Net</option>
+                    <option value="platformFee">Platform Fee</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">Status</label>
+                  <select
+                    value={analyticsStatus}
+                    onChange={(e) => setAnalyticsStatus(e.target.value)}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                  >
+                    <option value="completed">Completed</option>
+                    <option value="all">All</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">Collection</label>
+                  <select
+                    value={analyticsCollectionId}
+                    onChange={(e) => setAnalyticsCollectionId(e.target.value)}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                  >
+                    <option value="all">All collections</option>
+                    <option value="bundle">Unlock Everything</option>
+                    {collections.map((collection) => (
+                      <option key={collection._id} value={collection._id}>
+                        {collection.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">Currency</label>
+                  <select
+                    value={analyticsCurrency}
+                    onChange={(e) => setAnalyticsCurrency(e.target.value)}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                  >
+                    <option value="all">All currencies</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="USDC">USDC</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="text-xs text-muted-foreground">
+                Tip: filter by currency if you want clean revenue totals for a single currency.
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+              <div className="post-card rounded-xl p-4">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">Gross Revenue</p>
+                <p className="text-2xl font-bold text-foreground mt-2">
+                  {formatMoney(analyticsTotals.revenue, analyticsCurrency)}
+                </p>
+              </div>
+              <div className="post-card rounded-xl p-4">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">Orders</p>
+                <p className="text-2xl font-bold text-foreground mt-2">{analyticsTotals.orders}</p>
+              </div>
+              <div className="post-card rounded-xl p-4">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">Creator Net</p>
+                <p className="text-2xl font-bold text-foreground mt-2">
+                  {formatMoney(analyticsTotals.net, analyticsCurrency)}
+                </p>
+              </div>
+              <div className="post-card rounded-xl p-4">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">Platform Fee</p>
+                <p className="text-2xl font-bold text-foreground mt-2">
+                  {formatMoney(analyticsTotals.platformFee, analyticsCurrency)}
+                </p>
+              </div>
+            </div>
+
+            <div className="post-card rounded-xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-foreground">Sales Trend</h3>
+                {analyticsLoading && (
+                  <span className="text-xs text-muted-foreground">Loading...</span>
+                )}
+              </div>
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={analyticsSeries}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="label" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                    <YAxis
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                      tickFormatter={(value) =>
+                        analyticsMetric === 'orders'
+                          ? `${value}`
+                          : formatMoney(Number(value), analyticsCurrency)
+                      }
+                    />
+                    <Tooltip
+                      formatter={(value: any) =>
+                        analyticsMetric === 'orders'
+                          ? `${value} orders`
+                          : formatMoney(Number(value), analyticsCurrency)
+                      }
+                      labelStyle={{ color: 'hsl(var(--foreground))' }}
+                      contentStyle={{ background: 'hsl(var(--background))', border: '1px solid hsl(var(--border))' }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="value"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="post-card rounded-xl p-6 space-y-4">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <h3 className="text-xl font-bold text-foreground">Sales List</h3>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Input
+                    value={salesSearch}
+                    onChange={(e) => setSalesSearch(e.target.value)}
+                    placeholder="Search order, email, txid..."
+                    className="sm:w-64"
+                  />
+                  <select
+                    value={salesSort}
+                    onChange={(e) => setSalesSort(e.target.value)}
+                    className="px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                  >
+                    <option value="createdAt_desc">Newest first</option>
+                    <option value="createdAt_asc">Oldest first</option>
+                    <option value="amount_desc">Highest amount</option>
+                    <option value="amount_asc">Lowest amount</option>
+                  </select>
+                  <select
+                    value={salesLimit}
+                    onChange={(e) => setSalesLimit(parseInt(e.target.value, 10))}
+                    className="px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                  >
+                    <option value="10">10 rows</option>
+                    <option value="25">25 rows</option>
+                    <option value="50">50 rows</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto border border-border rounded-lg">
+                <table className="min-w-full text-sm">
+                  <thead className="bg-muted/40">
+                    <tr>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Date</th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Collection</th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Amount</th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Net</th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Buyer</th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">Order</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {salesList.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="px-4 py-6 text-center text-muted-foreground">
+                          No sales to show for these filters.
+                        </td>
+                      </tr>
+                    ) : (
+                      salesList.map((sale: any) => (
+                        <tr key={sale.id} className="border-t border-border">
+                          <td className="px-4 py-3 text-foreground">
+                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : '—'}
+                          </td>
+                          <td className="px-4 py-3 text-foreground">{sale.collectionTitle}</td>
+                          <td className="px-4 py-3 text-foreground">
+                            {formatMoney(sale.amount, sale.currency)}
+                          </td>
+                          <td className="px-4 py-3 text-foreground">
+                            {formatMoney(sale.creatorAmount, sale.currency)}
+                          </td>
+                          <td className="px-4 py-3 text-foreground capitalize">{sale.status}</td>
+                          <td className="px-4 py-3 text-foreground">{sale.emailMasked || '—'}</td>
+                          <td className="px-4 py-3 text-muted-foreground">{sale.orderId}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                <span>
+                  Showing {salesList.length} of {salesTotal} sales
+                </span>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSalesOffset(Math.max(salesOffset - salesLimit, 0))}
+                    disabled={salesOffset === 0}
+                  >
+                    Previous
+                  </Button>
+                  <span>
+                    Page {Math.floor(salesOffset / salesLimit) + 1} of {Math.max(1, Math.ceil(salesTotal / salesLimit))}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSalesOffset(salesOffset + salesLimit)}
+                    disabled={salesOffset + salesLimit >= salesTotal}
+                  >
+                    Next
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
