@@ -315,6 +315,13 @@ const CreatorProfile = () => {
   const twitchUrl = formatSocialUrl(creatorData?.twitchUrl);
   const telegramUrl = creatorData?.telegramUsername ? `https://t.me/${creatorData.telegramUsername}` : '';
   const emailUrl = creatorData?.domainEmail ? `mailto:${creatorData.domainEmail}` : '';
+  const pageMode = typeof window !== 'undefined'
+    ? new URL(window.location.href).searchParams.get('mode')
+    : null;
+  const isPublicRoute = typeof window !== 'undefined'
+    ? window.location.pathname.startsWith('/public/')
+    : false;
+  const showHelp = (isPublicRoute ? 'clean' : pageMode) !== 'clean';
 
   const renderSocialIcon = (
     url: string,
@@ -397,7 +404,7 @@ const CreatorProfile = () => {
               </button>
             </div>
 
-            {allCollections.length === 0 && (
+            {showHelp && allCollections.length === 0 && (
               <div className="px-4 py-3 border-b border-border">
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   The sidebar will list the titles of every collection you publish for quick navigation. Below you will also see your total collections and post counts.
@@ -450,7 +457,7 @@ const CreatorProfile = () => {
                   <div className="text-[10px] text-muted-foreground">Posts</div>
                 </div>
               </div>
-              {allCollections.length === 0 && formattedStatusData.length === 0 && (
+              {showHelp && allCollections.length === 0 && formattedStatusData.length === 0 && (
                 <p className="text-[10px] text-muted-foreground text-center mt-2">
                   Totals update automatically as you publish content.
                 </p>
@@ -522,7 +529,7 @@ const CreatorProfile = () => {
                   "rounded-md"
                 )}
               </div>
-              {!creatorData.telegramUsername && !creatorData.domainEmail && !twitterUrl && !instagramUrl && !tiktokUrl && !twitchUrl && (
+              {showHelp && !creatorData.telegramUsername && !creatorData.domainEmail && !twitterUrl && !instagramUrl && !tiktokUrl && !twitchUrl && (
                 <p className="text-[10px] text-muted-foreground text-center mt-2">
                   Add social links in Profile Settings to show them here and on your public page.
                 </p>
@@ -584,7 +591,7 @@ const CreatorProfile = () => {
 
               <TopLoader />
               <div className="space-y-6">
-                {!searchQuery && filteredFeedData.length === 0 && (
+                {showHelp && !searchQuery && filteredFeedData.length === 0 && (
                   <div className="post-card rounded-xl p-6 sm:p-8 text-center animate-fade-in">
                     <h3 className="text-xl font-bold text-foreground mb-2">Your content will appear here</h3>
                     <p className="text-muted-foreground">
@@ -747,9 +754,11 @@ const CreatorProfile = () => {
                     {creatorData.domainEmail ? (
                       <p className="text-sm text-muted-foreground">{creatorData.domainEmail}</p>
                     ) : (
-                      <p className="text-xs text-muted-foreground">
-                        Add a business email in Profile Settings to show it here.
-                      </p>
+                      showHelp && (
+                        <p className="text-xs text-muted-foreground">
+                          Add a business email in Profile Settings to show it here.
+                        </p>
+                      )
                     )}
                   </div>
                 </div>

@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import CreatorDashboard from "./pages/CreatorDashboard";
 import CreatorProfile from "./pages/CreatorProfile";
+import PublicWebsitePreview from "./pages/PublicWebsitePreview";
+import PublicWebsiteUnavailable from "./pages/PublicWebsiteUnavailable";
 import Index from "./pages/Index";
 import PostDetail from "./pages/PostDetail";
 import PostDetailBlurred from "./pages/PostDetailBlurred";
@@ -33,6 +35,9 @@ const App = () => (
             {/* Creator Platform Routes */}
             <Route path="/dashboard" element={<CreatorDashboard />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/preview/:username" element={<PublicWebsitePreview />} />
+            <Route path="/public/:username" element={<CreatorProfile />} />
+            <Route path="/public-unavailable" element={<PublicWebsiteUnavailable />} />
             
             {/* Post Routes */}
             {/* Blurred uses simple ID, full access uses secure 11-digit ID */}

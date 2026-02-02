@@ -345,6 +345,22 @@ const CreatorDashboard = () => {
     }
   };
 
+  const handlePreviewPublic = () => {
+    if (user?.username) {
+      navigate(`/preview/${user.username}`);
+    }
+  };
+
+  const handlePublicWebsite = () => {
+    if (!user?.username) return;
+    const isPublished = localStorage.getItem(`publicWebsitePublished:${user.username}`) === 'true';
+    if (isPublished) {
+      navigate(`/public/${user.username}`);
+    } else {
+      navigate(`/public-unavailable?username=${encodeURIComponent(user.username)}`);
+    }
+  };
+
   const formatMoney = (value: number, currencyCode?: string) => {
     const safeCurrency = currencyCode && currencyCode !== 'all' ? currencyCode : 'USD';
     try {
@@ -507,10 +523,15 @@ const CreatorDashboard = () => {
               <h1 className="text-3xl font-bold text-foreground">Creator Dashboard</h1>
               <p className="text-muted-foreground mt-1">Manage your content and profile</p>
             </div>
-            <Button onClick={handleViewProfile} variant="outline" className="w-full sm:w-auto">
-              <Eye className="w-4 h-4 mr-2" />
-              View Public Profile
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <Button onClick={handlePreviewPublic} variant="outline" className="w-full sm:w-auto">
+                <Eye className="w-4 h-4 mr-2" />
+                Preview Public
+              </Button>
+              <Button onClick={handlePublicWebsite} className="w-full sm:w-auto">
+                Public Website
+              </Button>
+            </div>
           </div>
 
         {/* Success/Error Messages */}
