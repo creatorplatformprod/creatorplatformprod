@@ -1,9 +1,18 @@
-import { Moon, Sun, Search, Flame } from "lucide-react";
+import { Moon, Sun, Search, Flame, User, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import TipButton from "@/components/TipButton";
+import { api } from "@/lib/api";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 interface FeedHeaderProps {
   onSearch: (query: string) => void;
@@ -23,12 +32,35 @@ const FeedHeader = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
     const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
     checkDesktop();
     window.addEventListener('resize', checkDesktop);
     return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
+
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setCurrentUser(null);
+        return;
+      }
+      try {
+        const result = await api.getCurrentUser();
+        if (result?.success && result.user) {
+          setCurrentUser(result.user);
+        } else {
+          setCurrentUser(null);
+        }
+      } catch (error) {
+        setCurrentUser(null);
+      }
+    };
+
+    loadCurrentUser();
   }, []);
 
   const searchSuggestions = [
@@ -157,6 +189,52 @@ const FeedHeader = ({
                 <Moon className="w-5 h-5 text-primary" />
               )}
             </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-9 h-9 rounded-full bg-secondary/70 hover:bg-secondary flex items-center justify-center transition-all duration-200 border border-border">
+                  {currentUser?.avatar ? (
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={currentUser.avatar} alt={currentUser.displayName || currentUser.username || 'User'} />
+                      <AvatarFallback>
+                        {(currentUser.displayName || currentUser.username || 'U').slice(0, 1).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <User className="w-4 h-4 text-foreground" />
+                  )}
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {currentUser ? (
+                  <>
+                    <DropdownMenuItem onClick={() => window.location.href = '/dashboard'}>
+                      <LayoutDashboard className="w-4 h-4 mr-2" />
+                      Dashboard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => window.location.href = `/${currentUser.username}`}>
+                      <User className="w-4 h-4 mr-2" />
+                      Public Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => {
+                        localStorage.removeItem('token');
+                        window.location.href = '/';
+                      }}
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Log out
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem onClick={() => window.location.href = '/'}>
+                    <User className="w-4 h-4 mr-2" />
+                    Creator Login
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { Heart, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Flame, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather } from "lucide-react";
+import { Heart, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Flame, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather, LogOut, LayoutDashboard } from "lucide-react";
 import FeedHeader from "@/components/FeedHeader";
 import PostCard from "@/components/PostCard";
 import StatusCard from "@/components/StatusCard";
@@ -18,10 +18,33 @@ const CreatorProfile = () => {
   const [creatorData, setCreatorData] = useState<any>(null);
   const [collections, setCollections] = useState<any[]>([]);
   const [statusCards, setStatusCards] = useState<any[]>([]);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
     loadCreatorProfile();
   }, [username]);
+
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setCurrentUser(null);
+        return;
+      }
+      try {
+        const result = await api.getCurrentUser();
+        if (result?.success && result.user) {
+          setCurrentUser(result.user);
+        } else {
+          setCurrentUser(null);
+        }
+      } catch (error) {
+        setCurrentUser(null);
+      }
+    };
+
+    loadCurrentUser();
+  }, []);
 
   const loadCreatorProfile = async () => {
     try {
@@ -266,6 +289,11 @@ const CreatorProfile = () => {
     return formattedCollections;
   }, [formattedCollections]);
 
+  const isOwnerProfile = useMemo(() => {
+    if (!currentUser?.username || !username) return false;
+    return currentUser.username === username;
+  }, [currentUser, username]);
+
   const handleCollectionClick = (collectionId: string) => {
     const element = document.getElementById(`collection-${collectionId}`);
     if (element) {
@@ -397,6 +425,28 @@ const CreatorProfile = () => {
                   </a>
                 )}
               </div>
+
+              {isOwnerProfile && (
+                <div className="mt-3 grid grid-cols-1 gap-2">
+                  <button
+                    onClick={() => window.location.href = '/dashboard'}
+                    className="w-full text-xs px-3 py-2 rounded-md bg-secondary text-foreground flex items-center justify-center gap-2 hover:bg-secondary/80 transition-colors"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Dashboard
+                  </button>
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem('token');
+                      window.location.href = '/';
+                    }}
+                    className="w-full text-xs px-3 py-2 rounded-md bg-destructive/10 text-destructive flex items-center justify-center gap-2 hover:bg-destructive/20 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Log out
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </aside>

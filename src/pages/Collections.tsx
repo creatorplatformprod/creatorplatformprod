@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Flame, ArrowLeft, CreditCard, Loader2 } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Preloader from "../components/Preloader";
-import { collections, getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
+import { api } from "@/lib/api";
 
 const Collections = () => {
   const [showUnlockModal, setShowUnlockModal] = useState(true);
@@ -17,6 +17,7 @@ const Collections = () => {
   const [customerEmail, setCustomerEmail] = useState("");
   const [paymentError, setPaymentError] = useState("");
   const [isCardPaymentLoading, setIsCardPaymentLoading] = useState(false);
+  const [collectionsData, setCollectionsData] = useState([]);
 
   const imagesPerPage = 24;
 
@@ -85,38 +86,33 @@ const Collections = () => {
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   };
 
-  const collectionIds = getAllCollectionIds();
-  const allImages = [];
-  
-  collectionIds.forEach(id => {
-    const collection = getCollection(id);
-    if (collection) {
-      collection.images.forEach((imageData, index) => {
-        const imageSrc = typeof imageData === 'string' ? imageData : imageData.full;
-        let thumbSrc = typeof imageData === 'string' 
-          ? imageSrc.replace('/collection', '/thumbs/collection')
-          : imageData.thumb;
-        
-        const mediaType = isVideoUrl(imageSrc) ? 'video' : 'image';
-        
-        // For videos, try to get a jpg thumbnail instead of the video file
-        if (mediaType === 'video') {
-          thumbSrc = imageSrc.replace('/collection', '/thumbs/collection')
-                             .replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
+  useEffect(() => {
+    const loadCollections = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setCollectionsData([]);
+          return;
         }
-        
-        allImages.push({
-          src: imageSrc,
-          thumb: thumbSrc,
-          collectionId: id,
-          collectionTitle: collection.title,
-          imageIndex: index,
-          mediaType: mediaType,
-          ...getRandomDimensions(allImages.length)
-        });
-      });
-    }
-  });
+
+        const result = await api.getMyCollections();
+        if (result?.success) {
+          setCollectionsData(result.collections || []);
+          return;
+        }
+
+        setCollectionsData([]);
+      } catch (error) {
+        console.error('Error loading collections:', error);
+        setCollectionsData([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCollections();
+  }, []);
 
   function getRandomDimensions(index) {
     const ratios = [
@@ -129,7 +125,44 @@ const Collections = () => {
     return ratios[index % ratios.length];
   }
 
-  const collectionCount = collectionIds.length;
+  const visibleCollections = useMemo(() => {
+    return (collectionsData || []).filter((col) => col && col._id !== 'all' && !col.isBundle);
+  }, [collectionsData]);
+
+  const allImages = useMemo(() => {
+    const items = [];
+
+    visibleCollections.forEach((collection) => {
+      const mediaItems = collection.media || [];
+      mediaItems.forEach((mediaItem, index) => {
+        if (!mediaItem?.url) {
+          return;
+        }
+        const imageSrc = mediaItem.url;
+        let thumbSrc = mediaItem.thumbnailUrl || mediaItem.url;
+        const mediaType = mediaItem.mediaType || (isVideoUrl(imageSrc) ? 'video' : 'image');
+
+        if (mediaType === 'video') {
+          thumbSrc = thumbSrc.replace('/collection', '/thumbs/collection')
+                             .replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
+        }
+
+        items.push({
+          src: imageSrc,
+          thumb: thumbSrc,
+          collectionId: collection._id,
+          collectionTitle: collection.title,
+          imageIndex: index,
+          mediaType: mediaType,
+          ...getRandomDimensions(items.length)
+        });
+      });
+    });
+
+    return items;
+  }, [visibleCollections]);
+
+  const collectionCount = visibleCollections.length;
   const totalItems = allImages.length;
   const videoCount = allImages.filter((item) => item.mediaType === 'video').length;
   const imageCount = totalItems - videoCount;
@@ -202,8 +235,24 @@ const Collections = () => {
   };
 
   useEffect(() => {
+    setLoadedImages(new Set());
+    setMeasuredDims({});
+    setIsPreloading(true);
+  }, [totalItems]);
+
+  useEffect(() => {
+    if (currentImages.length === 0) {
+      setIsPreloading(false);
+      return;
+    }
     preloadFirstPageImages();
-  }, []);
+  }, [currentImages]);
+
+  useEffect(() => {
+    if (collectionCount === 0) {
+      setShowUnlockModal(false);
+    }
+  }, [collectionCount]);
 
   const handleUnlockClick = () => {
     setShowUnlockModal(true);

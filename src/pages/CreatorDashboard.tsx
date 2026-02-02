@@ -263,18 +263,18 @@ const CreatorDashboard = () => {
 
   return (
     <div className="min-h-screen feed-bg">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Creator Dashboard</h1>
-            <p className="text-muted-foreground mt-1">Manage your content and profile</p>
+        <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+          {/* Header */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Creator Dashboard</h1>
+              <p className="text-muted-foreground mt-1">Manage your content and profile</p>
+            </div>
+            <Button onClick={handleViewProfile} variant="outline" className="w-full sm:w-auto">
+              <Eye className="w-4 h-4 mr-2" />
+              View Public Profile
+            </Button>
           </div>
-          <Button onClick={handleViewProfile} variant="outline">
-            <Eye className="w-4 h-4 mr-2" />
-            View Public Profile
-          </Button>
-        </div>
 
         {/* Success/Error Messages */}
         {success && (
@@ -289,53 +289,55 @@ const CreatorDashboard = () => {
         )}
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6 border-b border-border">
-          <button
-            onClick={() => {
-              setActiveTab('profile');
-              setError('');
-              setSuccess('');
-            }}
-            className={`px-4 py-2 font-medium transition-colors ${
-              activeTab === 'profile'
-                ? 'text-primary border-b-2 border-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Settings className="w-4 h-4 inline mr-2" />
-            Profile Settings
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('status-cards');
-              setError('');
-              setSuccess('');
-            }}
-            className={`px-4 py-2 font-medium transition-colors ${
-              activeTab === 'status-cards'
-                ? 'text-primary border-b-2 border-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <MessageSquare className="w-4 h-4 inline mr-2" />
-            Status Cards
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('collections');
-              setError('');
-              setSuccess('');
-            }}
-            className={`px-4 py-2 font-medium transition-colors ${
-              activeTab === 'collections'
-                ? 'text-primary border-b-2 border-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Image className="w-4 h-4 inline mr-2" />
-            Collections
-          </button>
-        </div>
+          <div className="mb-6 border-b border-border">
+            <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
+              <button
+                onClick={() => {
+                  setActiveTab('profile');
+                  setError('');
+                  setSuccess('');
+                }}
+                className={`whitespace-nowrap px-4 py-2 font-medium transition-colors ${
+                  activeTab === 'profile'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Settings className="w-4 h-4 inline mr-2" />
+                Profile Settings
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab('status-cards');
+                  setError('');
+                  setSuccess('');
+                }}
+                className={`whitespace-nowrap px-4 py-2 font-medium transition-colors ${
+                  activeTab === 'status-cards'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <MessageSquare className="w-4 h-4 inline mr-2" />
+                Status Cards
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab('collections');
+                  setError('');
+                  setSuccess('');
+                }}
+                className={`whitespace-nowrap px-4 py-2 font-medium transition-colors ${
+                  activeTab === 'collections'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Image className="w-4 h-4 inline mr-2" />
+                Collections
+              </button>
+            </div>
+          </div>
 
         {/* Profile Tab */}
         {activeTab === 'profile' && (
