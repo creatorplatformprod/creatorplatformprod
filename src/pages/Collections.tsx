@@ -17,7 +17,9 @@ const Collections = () => {
   const [customerEmail, setCustomerEmail] = useState("");
   const [paymentError, setPaymentError] = useState("");
   const [isCardPaymentLoading, setIsCardPaymentLoading] = useState(false);
-  const [collectionsData, setCollectionsData] = useState([]);
+    const [collectionsData, setCollectionsData] = useState([]);
+    const [bundlePrice, setBundlePrice] = useState(199.99);
+    const [bundleCurrency, setBundleCurrency] = useState('USD');
 
   const imagesPerPage = 24;
 
@@ -99,6 +101,12 @@ const Collections = () => {
         const result = await api.getMyCollections();
         if (result?.success) {
           setCollectionsData(result.collections || []);
+          if (result.bundle?.price) {
+            setBundlePrice(result.bundle.price);
+          }
+          if (result.bundle?.currency) {
+            setBundleCurrency(result.bundle.currency);
+          }
           return;
         }
 
@@ -308,12 +316,13 @@ const Collections = () => {
     setIsCardPaymentLoading(true);
     setPaymentError("");
 
-    const checkoutUrl = `/checkout?` +
-      `amount=199.99` +
-      `&collectionId=all` +
-      `&collectionTitle=${encodeURIComponent('All Exclusive Collections')}` +
-      `&itemCount=${totalItems}` +
-      `&email=${encodeURIComponent(sanitizedEmail)}`;
+      const checkoutUrl = `/checkout?` +
+        `amount=${bundlePrice}` +
+        `&collectionId=all` +
+        `&collectionTitle=${encodeURIComponent('All Exclusive Collections')}` +
+        `&itemCount=${totalItems}` +
+        `&currency=${encodeURIComponent(bundleCurrency)}` +
+        `&email=${encodeURIComponent(sanitizedEmail)}`;
 
     window.location.href = checkoutUrl;
   };

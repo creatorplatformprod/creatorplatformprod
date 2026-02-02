@@ -137,6 +137,8 @@ export const api = {
     telegramChatId?: string;
     domainEmail?: string;
     avatar?: string;
+    unlockAllPrice?: number | null;
+    unlockAllCurrency?: string | null;
   }) => {
     return apiRequest('/api/users/profile', {
       method: 'PUT',

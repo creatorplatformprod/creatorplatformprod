@@ -41,7 +41,9 @@ const CreatorDashboard = () => {
     walletAddress: '',
     telegramBotToken: '',
     telegramChatId: '',
-    domainEmail: ''
+    domainEmail: '',
+    unlockAllPrice: 0,
+    unlockAllCurrency: 'USD'
   });
 
   // Status card form state
@@ -90,7 +92,9 @@ const CreatorDashboard = () => {
           walletAddress: userResult.user.walletAddress || '',
           telegramBotToken: userResult.user.telegramBotToken || '',
           telegramChatId: userResult.user.telegramChatId || '',
-          domainEmail: userResult.user.domainEmail || ''
+          domainEmail: userResult.user.domainEmail || '',
+          unlockAllPrice: userResult.user.unlockAllPrice || 0,
+          unlockAllCurrency: userResult.user.unlockAllCurrency || 'USD'
         });
       }
 
@@ -186,6 +190,32 @@ const CreatorDashboard = () => {
       }
     } catch (err: any) {
       setError(err.message || 'Failed to create collection');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveUnlockAllPrice = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      setSuccess('');
+      const parsedPrice = Number.isFinite(profileData.unlockAllPrice)
+        ? profileData.unlockAllPrice
+        : parseFloat(String(profileData.unlockAllPrice));
+      const priceValue = Number.isFinite(parsedPrice) ? parsedPrice : null;
+      const result = await api.updateProfile({
+        unlockAllPrice: priceValue,
+        unlockAllCurrency: profileData.unlockAllCurrency || 'USD'
+      });
+      if (result.success) {
+        setSuccess('Unlock Everything price saved!');
+        await loadUserData();
+      } else {
+        setError(result.error || 'Failed to save unlock price');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to save unlock price');
     } finally {
       setLoading(false);
     }
@@ -540,6 +570,46 @@ const CreatorDashboard = () => {
         {/* Collections Tab */}
         {activeTab === 'collections' && (
           <div className="space-y-6">
+            {/* Unlock Everything Price */}
+            <div className="post-card rounded-xl p-6">
+              <h2 className="text-2xl font-bold text-foreground mb-2">Unlock Everything Price</h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                Set the price for the “Unlock Everything” button. This gives clients access to all of your collections.
+              </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">
+                    Price
+                  </label>
+                  <Input
+                    type="number"
+                    value={profileData.unlockAllPrice}
+                    onChange={(e) => setProfileData({ ...profileData, unlockAllPrice: parseFloat(e.target.value) })}
+                    placeholder="199.99"
+                    step="0.01"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">
+                    Currency
+                  </label>
+                  <select
+                    value={profileData.unlockAllCurrency}
+                    onChange={(e) => setProfileData({ ...profileData, unlockAllCurrency: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                  >
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                  </select>
+                </div>
+              </div>
+              <Button onClick={handleSaveUnlockAllPrice} className="w-full mt-4">
+                <Save className="w-4 h-4 mr-2" />
+                Save Unlock Price
+              </Button>
+            </div>
+
             {/* Add Collection Form */}
             <div className="post-card rounded-xl p-6">
               <h2 className="text-2xl font-bold text-foreground mb-4">Create Collection</h2>

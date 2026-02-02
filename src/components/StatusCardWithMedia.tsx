@@ -255,11 +255,9 @@ const StatusCardWithMedia = ({
             >
               <Share2 className="w-4 h-4 mr-2" />
               Share
-              {currentShares > 0 && (
-                <span className="ml-2 text-xs text-muted-foreground">
-                  {formatLikeCount(currentShares)}
-                </span>
-              )}
+              <span className="ml-2 text-xs text-muted-foreground">
+                {formatLikeCount(currentShares)}
+              </span>
             </Button>
           </div>
         </div>

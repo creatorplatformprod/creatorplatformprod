@@ -264,11 +264,9 @@ const PostCard = ({ collection }: PostCardProps) => {
                 <Share2 className="w-4 h-4 mr-2" />
               )}
               {shareSuccess ? 'Copied!' : 'Share'}
-              {currentShares > 0 && (
-                <span className="ml-2 text-xs text-muted-foreground">
-                  {formatLikeCount(currentShares)}
-                </span>
-              )}
+              <span className="ml-2 text-xs text-muted-foreground">
+                {formatLikeCount(currentShares)}
+              </span>
               {shareSuccess && (
                 <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                   Link copied!

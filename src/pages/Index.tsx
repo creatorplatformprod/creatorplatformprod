@@ -149,9 +149,7 @@ const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string 
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors px-3 py-1 rounded-lg hover:bg-secondary"
           >
             <span>Share</span>
-            {currentShares > 0 && (
-              <span className="text-xs text-muted-foreground">{formatCount(currentShares)}</span>
-            )}
+            <span className="text-xs text-muted-foreground">{formatCount(currentShares)}</span>
           </button>
         </div>
       </div>
