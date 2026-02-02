@@ -26,7 +26,9 @@ import {
   Mail,
   MessageSquare,
   Eye,
-  BarChart3
+  BarChart3,
+  Twitter,
+  Instagram
 } from 'lucide-react';
 import { api } from '@/lib/api';
 
@@ -75,6 +77,8 @@ const CreatorDashboard = () => {
     telegramUsername: '',
     telegramBotToken: '',
     telegramChatId: '',
+    twitterUrl: '',
+    instagramUrl: '',
     domainEmail: '',
     unlockAllPrice: 0,
     unlockAllCurrency: 'USD'
@@ -127,6 +131,8 @@ const CreatorDashboard = () => {
           telegramUsername: userResult.user.telegramUsername || '',
           telegramBotToken: userResult.user.telegramBotToken || '',
           telegramChatId: userResult.user.telegramChatId || '',
+          twitterUrl: userResult.user.twitterUrl || '',
+          instagramUrl: userResult.user.instagramUrl || '',
           domainEmail: userResult.user.domainEmail || '',
           unlockAllPrice: userResult.user.unlockAllPrice || 0,
           unlockAllCurrency: userResult.user.unlockAllCurrency || 'USD'
@@ -612,6 +618,30 @@ const CreatorDashboard = () => {
                 <p className="text-xs text-muted-foreground mt-2">
                   Social links saved here appear on your public profile sidebar and footer.
                 </p>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
+                  <Twitter className="w-4 h-4" />
+                  Twitter / X URL
+                </label>
+                <Input
+                  value={profileData.twitterUrl}
+                  onChange={(e) => setProfileData({ ...profileData, twitterUrl: e.target.value })}
+                  placeholder="https://twitter.com/yourhandle"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
+                  <Instagram className="w-4 h-4" />
+                  Instagram URL
+                </label>
+                <Input
+                  value={profileData.instagramUrl}
+                  onChange={(e) => setProfileData({ ...profileData, instagramUrl: e.target.value })}
+                  placeholder="https://instagram.com/yourhandle"
+                />
               </div>
 
               <div>

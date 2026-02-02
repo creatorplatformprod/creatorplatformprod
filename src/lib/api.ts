@@ -135,6 +135,9 @@ export const api = {
     telegramUsername?: string;
     telegramBotToken?: string;
     telegramChatId?: string;
+    twitterUrl?: string;
+    instagramUrl?: string;
+    websiteUrl?: string;
     domainEmail?: string;
     avatar?: string;
     unlockAllPrice?: number | null;
