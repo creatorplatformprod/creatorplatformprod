@@ -53,7 +53,7 @@ const PublicWebsitePreview = () => {
             <div className="relative mx-auto max-w-[980px]">
               <div className="bg-[#0c1119] rounded-[20px] p-3 border border-white/10 shadow-[0_30px_80px_rgba(2,6,23,0.6)]">
                 <div className="bg-black rounded-[14px] overflow-hidden border border-white/5">
-                  <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.44] lg:[--scale:0.62] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                  <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.42] lg:[--scale:0.58] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                     <iframe
                       title="Desktop preview"
                       src={previewUrl}
@@ -75,7 +75,7 @@ const PublicWebsitePreview = () => {
             <div className="bg-[#0b0f16] rounded-[40px] p-4 shadow-[0_25px_70px_rgba(2,6,23,0.55)] border border-white/10 w-[320px]">
               <div className="bg-black rounded-[32px] overflow-hidden border border-white/5 relative">
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#0f1219] rounded-full border border-white/5 z-10" />
-                <div className="relative mx-auto [--viewport-w:430px] [--viewport-h:932px] [--scale:0.6] lg:[--scale:0.72] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                <div className="relative mx-auto [--viewport-w:430px] [--viewport-h:932px] [--scale:0.56] lg:[--scale:0.68] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                   <iframe
                     title="Mobile preview"
                     src={previewUrl}
