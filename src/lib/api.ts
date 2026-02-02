@@ -138,6 +138,7 @@ export const api = {
     twitterUrl?: string;
     instagramUrl?: string;
     tiktokUrl?: string;
+    twitchUrl?: string;
     websiteUrl?: string;
     domainEmail?: string;
     avatar?: string;

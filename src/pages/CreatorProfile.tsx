@@ -312,6 +312,7 @@ const CreatorProfile = () => {
   const twitterUrl = formatSocialUrl(creatorData?.twitterUrl);
   const instagramUrl = formatSocialUrl(creatorData?.instagramUrl);
   const tiktokUrl = formatSocialUrl(creatorData?.tiktokUrl);
+  const twitchUrl = formatSocialUrl(creatorData?.twitchUrl);
 
   if (isLoading || showPreloader) {
     return <Preloader isVisible={true} onComplete={handlePreloaderComplete} />;
@@ -463,6 +464,18 @@ const CreatorProfile = () => {
                     </svg>
                   </a>
                 )}
+                {twitchUrl && (
+                  <a
+                    href={twitchUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-7 h-7 rounded-md bg-secondary flex items-center justify-center"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M4 3h16v10h-5l-3 3h-2v-3H4V3zm2 2v6h4v3.5L13 11h5V5H6zm11.5 9.5h2.5V21h-6v-3h4v-3.5z"/>
+                    </svg>
+                  </a>
+                )}
                 {creatorData.telegramUsername && (
                   <a
                     href={`https://t.me/${creatorData.telegramUsername}`}
@@ -486,7 +499,7 @@ const CreatorProfile = () => {
                   </a>
                 )}
               </div>
-              {!creatorData.telegramUsername && !creatorData.domainEmail && !twitterUrl && !instagramUrl && !tiktokUrl && (
+              {!creatorData.telegramUsername && !creatorData.domainEmail && !twitterUrl && !instagramUrl && !tiktokUrl && !twitchUrl && (
                 <p className="text-[10px] text-muted-foreground text-center mt-2">
                   Add social links in Profile Settings to show them here and on your public page.
                 </p>
@@ -665,6 +678,13 @@ const CreatorProfile = () => {
                         <a href={tiktokUrl} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
                           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.8v13.1a2.48 2.48 0 0 1-2.47 2.48 2.48 2.48 0 0 1-2.48-2.48 2.48 2.48 0 0 1 2.48-2.48c.24 0 .47.03.69.08V8.72a6.06 6.06 0 0 0-.69-.04A6.42 6.42 0 0 0 3.13 15.1a6.42 6.42 0 0 0 6.42 6.42 6.42 6.42 0 0 0 6.42-6.42V9.78a8.7 8.7 0 0 0 3.62.78z"/>
+                          </svg>
+                        </a>
+                      )}
+                      {twitchUrl && (
+                        <a href={twitchUrl} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4 3h16v10h-5l-3 3h-2v-3H4V3zm2 2v6h4v3.5L13 11h5V5H6zm11.5 9.5h2.5V21h-6v-3h4v-3.5z"/>
                           </svg>
                         </a>
                       )}

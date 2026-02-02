@@ -80,6 +80,7 @@ const CreatorDashboard = () => {
     twitterUrl: '',
     instagramUrl: '',
     tiktokUrl: '',
+    twitchUrl: '',
     domainEmail: '',
     unlockAllPrice: 0,
     unlockAllCurrency: 'USD'
@@ -135,6 +136,7 @@ const CreatorDashboard = () => {
           twitterUrl: userResult.user.twitterUrl || '',
           instagramUrl: userResult.user.instagramUrl || '',
           tiktokUrl: userResult.user.tiktokUrl || '',
+          twitchUrl: userResult.user.twitchUrl || '',
           domainEmail: userResult.user.domainEmail || '',
           unlockAllPrice: userResult.user.unlockAllPrice || 0,
           unlockAllCurrency: userResult.user.unlockAllCurrency || 'USD'
@@ -659,6 +661,22 @@ const CreatorDashboard = () => {
                   value={profileData.tiktokUrl}
                   onChange={(e) => setProfileData({ ...profileData, tiktokUrl: e.target.value })}
                   placeholder="https://tiktok.com/@yourhandle"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
+                  <span className="w-4 h-4 inline-flex items-center justify-center">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M4 3h16v10h-5l-3 3h-2v-3H4V3zm2 2v6h4v3.5L13 11h5V5H6zm11.5 9.5h2.5V21h-6v-3h4v-3.5z"/>
+                    </svg>
+                  </span>
+                  Twitch URL
+                </label>
+                <Input
+                  value={profileData.twitchUrl}
+                  onChange={(e) => setProfileData({ ...profileData, twitchUrl: e.target.value })}
+                  placeholder="https://twitch.tv/yourhandle"
                 />
               </div>
 
