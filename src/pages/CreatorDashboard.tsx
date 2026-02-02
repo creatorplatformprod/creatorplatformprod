@@ -480,7 +480,7 @@ const CreatorDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
           {/* Header */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
-            <div>
+            <div className="text-center sm:text-left">
               <h1 className="text-3xl font-bold text-foreground">Creator Dashboard</h1>
               <p className="text-muted-foreground mt-1">Manage your content and profile</p>
             </div>
@@ -504,14 +504,14 @@ const CreatorDashboard = () => {
 
         {/* Tabs */}
           <div className="mb-6 border-b border-border">
-            <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
+            <div className="flex flex-wrap justify-center gap-2 pb-2 sm:justify-start sm:gap-2">
               <button
                 onClick={() => {
                   setActiveTab('profile');
                   setError('');
                   setSuccess('');
                 }}
-                className={`whitespace-nowrap px-4 py-2 font-medium transition-colors ${
+                className={`w-[calc(50%-0.25rem)] sm:w-auto px-4 py-2 font-medium transition-colors flex items-center justify-center ${
                   activeTab === 'profile'
                     ? 'text-primary border-b-2 border-primary'
                     : 'text-muted-foreground hover:text-foreground'
@@ -526,7 +526,7 @@ const CreatorDashboard = () => {
                   setError('');
                   setSuccess('');
                 }}
-                className={`whitespace-nowrap px-4 py-2 font-medium transition-colors ${
+                className={`w-[calc(50%-0.25rem)] sm:w-auto px-4 py-2 font-medium transition-colors flex items-center justify-center ${
                   activeTab === 'status-cards'
                     ? 'text-primary border-b-2 border-primary'
                     : 'text-muted-foreground hover:text-foreground'
@@ -541,7 +541,7 @@ const CreatorDashboard = () => {
                   setError('');
                   setSuccess('');
                 }}
-                className={`whitespace-nowrap px-4 py-2 font-medium transition-colors ${
+                className={`w-[calc(50%-0.25rem)] sm:w-auto px-4 py-2 font-medium transition-colors flex items-center justify-center ${
                   activeTab === 'collections'
                     ? 'text-primary border-b-2 border-primary'
                     : 'text-muted-foreground hover:text-foreground'
@@ -556,7 +556,7 @@ const CreatorDashboard = () => {
                   setError('');
                   setSuccess('');
                 }}
-                className={`whitespace-nowrap px-4 py-2 font-medium transition-colors ${
+                className={`w-[calc(50%-0.25rem)] sm:w-auto px-4 py-2 font-medium transition-colors flex items-center justify-center ${
                   activeTab === 'analytics'
                     ? 'text-primary border-b-2 border-primary'
                     : 'text-muted-foreground hover:text-foreground'
@@ -1063,7 +1063,7 @@ const CreatorDashboard = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-4">
               <div className="post-card rounded-xl p-4">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Gross Revenue</p>
                 <p className="text-2xl font-bold text-foreground mt-2">
@@ -1095,7 +1095,7 @@ const CreatorDashboard = () => {
                   <span className="text-xs text-muted-foreground">Loading...</span>
                 )}
               </div>
-              <div className="h-72">
+              <div className="h-64 md:h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={analyticsSeries}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -1161,7 +1161,59 @@ const CreatorDashboard = () => {
                 </div>
               </div>
 
-              <div className="overflow-x-auto border border-border rounded-lg">
+              <div className="md:hidden space-y-3">
+                {salesList.length === 0 ? (
+                  <div className="border border-border rounded-lg p-4 text-center text-muted-foreground">
+                    No sales to show for these filters.
+                  </div>
+                ) : (
+                  salesList.map((sale: any) => (
+                    <div key={sale.id} className="border border-border rounded-lg p-4 space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Date</p>
+                          <p className="text-sm text-foreground font-medium">
+                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : '—'}
+                          </p>
+                        </div>
+                        <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                          {sale.status || 'unknown'}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Collection</p>
+                        <p className="text-sm text-foreground font-medium">{sale.collectionTitle}</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Amount</p>
+                          <p className="text-sm text-foreground font-medium">
+                            {formatMoney(sale.amount, sale.currency)}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Net</p>
+                          <p className="text-sm text-foreground font-medium">
+                            {formatMoney(sale.creatorAmount, sale.currency)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Buyer</p>
+                          <p className="text-sm text-foreground font-medium">{sale.emailMasked || '—'}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Order</p>
+                          <p className="text-xs text-foreground font-medium break-all">{sale.orderId}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <div className="hidden md:block overflow-x-auto border border-border rounded-lg">
                 <table className="min-w-full text-sm">
                   <thead className="bg-muted/40">
                     <tr>
