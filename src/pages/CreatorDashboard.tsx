@@ -41,6 +41,7 @@ const CreatorDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [infoMessage, setInfoMessage] = useState('');
   const [selectedCollectionId, setSelectedCollectionId] = useState('');
   const [collectionFile, setCollectionFile] = useState<File | null>(null);
   const [uploadingCollectionMedia, setUploadingCollectionMedia] = useState(false);
@@ -106,10 +107,20 @@ const CreatorDashboard = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tokenParam = params.get('token');
+    const tabParam = params.get('tab');
+    const noticeParam = params.get('notice');
     if (tokenParam) {
       localStorage.setItem('token', tokenParam);
       navigate('/dashboard', { replace: true });
       return;
+    }
+
+    if (tabParam === 'profile') {
+      setActiveTab('profile');
+    }
+
+    if (noticeParam === 'fill-links') {
+      setInfoMessage('Fill in your profile links to activate these icons on your public page.');
     }
 
     const token = localStorage.getItem('token');
@@ -503,6 +514,11 @@ const CreatorDashboard = () => {
           </div>
 
         {/* Success/Error Messages */}
+        {infoMessage && (
+          <div className="mb-4 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+            <p className="text-sm text-blue-600 dark:text-blue-400">{infoMessage}</p>
+          </div>
+        )}
         {success && (
           <div className="mb-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
             <p className="text-sm text-green-600 dark:text-green-400">{success}</p>
@@ -522,6 +538,7 @@ const CreatorDashboard = () => {
                   setActiveTab('profile');
                   setError('');
                   setSuccess('');
+                  setInfoMessage('');
                 }}
                 className={`w-[calc(50%-0.25rem)] sm:w-auto px-4 py-2 font-medium transition-colors flex items-center justify-center ${
                   activeTab === 'profile'
@@ -537,6 +554,7 @@ const CreatorDashboard = () => {
                   setActiveTab('status-cards');
                   setError('');
                   setSuccess('');
+                  setInfoMessage('');
                 }}
                 className={`w-[calc(50%-0.25rem)] sm:w-auto px-4 py-2 font-medium transition-colors flex items-center justify-center ${
                   activeTab === 'status-cards'
@@ -552,6 +570,7 @@ const CreatorDashboard = () => {
                   setActiveTab('collections');
                   setError('');
                   setSuccess('');
+                  setInfoMessage('');
                 }}
                 className={`w-[calc(50%-0.25rem)] sm:w-auto px-4 py-2 font-medium transition-colors flex items-center justify-center ${
                   activeTab === 'collections'
@@ -567,6 +586,7 @@ const CreatorDashboard = () => {
                   setActiveTab('analytics');
                   setError('');
                   setSuccess('');
+                  setInfoMessage('');
                 }}
                 className={`w-[calc(50%-0.25rem)] sm:w-auto px-4 py-2 font-medium transition-colors flex items-center justify-center ${
                   activeTab === 'analytics'

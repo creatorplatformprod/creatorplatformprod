@@ -334,6 +334,12 @@ const CreatorProfile = () => {
         aria-label={label}
         title={hasUrl ? label : `Add ${label} in Profile Settings`}
         className={baseClass}
+        onClick={(event) => {
+          if (!hasUrl) {
+            event.preventDefault();
+            window.location.href = "/dashboard?tab=profile&notice=fill-links";
+          }
+        }}
       >
         {iconClass ? (
           <span className={iconClass}>{icon}</span>
