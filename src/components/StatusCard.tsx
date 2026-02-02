@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Heart, Share2, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { readEngagement, writeEngagement } from "@/lib/engagement";
+import { fetchEngagement, registerEngagementShare, setEngagementLike } from "@/lib/engagement";
 
 interface StatusCardProps {
   id: string;
@@ -29,23 +29,25 @@ const StatusCard = ({
   const [isLiked, setIsLiked] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(0);
   const [currentShares, setCurrentShares] = useState(0);
+  const [pending, setPending] = useState(false);
 
   useEffect(() => {
-    const saved = readEngagement(engagementId);
-    setIsLiked(saved.liked);
-    setCurrentLikes(saved.likes);
-    setCurrentShares(saved.shares);
+    let active = true;
+    fetchEngagement('status', id).then((state) => {
+      if (!active) return;
+      setIsLiked(state.viewerLiked);
+      setCurrentLikes(state.likes);
+      setCurrentShares(state.shares);
+    });
+    return () => {
+      active = false;
+    };
   }, [engagementId]);
 
   const persistEngagement = (nextLikes: number, nextShares: number, nextLiked: boolean) => {
     setCurrentLikes(nextLikes);
     setCurrentShares(nextShares);
     setIsLiked(nextLiked);
-    writeEngagement(engagementId, {
-      likes: nextLikes,
-      shares: nextShares,
-      liked: nextLiked
-    });
   };
 
   const formatLikeCount = (count: number) => {
@@ -59,9 +61,22 @@ const StatusCard = ({
   };
 
   const handleLike = () => {
+    if (pending) return;
+    setPending(true);
     const nextLiked = !isLiked;
     const nextLikes = Math.max(0, currentLikes + (nextLiked ? 1 : -1));
     persistEngagement(nextLikes, currentShares, nextLiked);
+    setEngagementLike('status', id, nextLiked)
+      .then((state) => {
+        setIsLiked(state.viewerLiked);
+        setCurrentLikes(state.likes);
+        setCurrentShares(state.shares);
+      })
+      .catch(() => {
+        setIsLiked(isLiked);
+        setCurrentLikes(currentLikes);
+      })
+      .finally(() => setPending(false));
   };
 
   const handleShare = () => {
@@ -70,11 +85,23 @@ const StatusCard = ({
       text: text,
       url: window.location.origin + `/status/${id}`
     }).then(() => {
-      persistEngagement(currentLikes, currentShares + 1, isLiked);
+      registerEngagementShare('status', id)
+        .then((state) => {
+          setIsLiked(state.viewerLiked);
+          setCurrentLikes(state.likes);
+          setCurrentShares(state.shares);
+        })
+        .catch(() => {});
     }).catch(() => {
       navigator.clipboard.writeText(window.location.origin + `/status/${id}`)
         .then(() => {
-          persistEngagement(currentLikes, currentShares + 1, isLiked);
+          registerEngagementShare('status', id)
+            .then((state) => {
+              setIsLiked(state.viewerLiked);
+              setCurrentLikes(state.likes);
+              setCurrentShares(state.shares);
+            })
+            .catch(() => {});
         })
         .catch(() => {});
     });

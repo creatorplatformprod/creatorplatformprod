@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Collection } from "@/collections/collectionsData";
 import { getBlurredPostUrl } from "@/utils/linkHelpers";
 import ProgressiveImage from "@/components/ProgressiveImage";
-import { readEngagement, writeEngagement } from "@/lib/engagement";
+import { fetchEngagement, registerEngagementShare, setEngagementLike } from "@/lib/engagement";
 
 interface PostCardProps {
   collection: Collection;
@@ -18,26 +18,28 @@ const PostCard = ({ collection }: PostCardProps) => {
   const [currentLikes, setCurrentLikes] = useState(0);
   const [currentShares, setCurrentShares] = useState(0);
   const [shareSuccess, setShareSuccess] = useState(false);
+  const [pending, setPending] = useState(false);
   const [allImagesLoaded, setAllImagesLoaded] = useState(false);
   const [loadedCount, setLoadedCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const saved = readEngagement(engagementId);
-    setIsLiked(saved.liked);
-    setCurrentLikes(saved.likes);
-    setCurrentShares(saved.shares);
+    let active = true;
+    fetchEngagement('collection', collection.id).then((state) => {
+      if (!active) return;
+      setIsLiked(state.viewerLiked);
+      setCurrentLikes(state.likes);
+      setCurrentShares(state.shares);
+    });
+    return () => {
+      active = false;
+    };
   }, [engagementId]);
 
   const persistEngagement = (nextLikes: number, nextShares: number, nextLiked: boolean) => {
     setCurrentLikes(nextLikes);
     setCurrentShares(nextShares);
     setIsLiked(nextLiked);
-    writeEngagement(engagementId, {
-      likes: nextLikes,
-      shares: nextShares,
-      liked: nextLiked
-    });
   };
 
   const handleClick = () => {
@@ -46,9 +48,22 @@ const PostCard = ({ collection }: PostCardProps) => {
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (pending) return;
+    setPending(true);
     const nextLiked = !isLiked;
     const nextLikes = Math.max(0, currentLikes + (nextLiked ? 1 : -1));
     persistEngagement(nextLikes, currentShares, nextLiked);
+    setEngagementLike('collection', collection.id, nextLiked)
+      .then((state) => {
+        setIsLiked(state.viewerLiked);
+        setCurrentLikes(state.likes);
+        setCurrentShares(state.shares);
+      })
+      .catch(() => {
+        setIsLiked(isLiked);
+        setCurrentLikes(currentLikes);
+      })
+      .finally(() => setPending(false));
   };
 
   const handleShare = async (e: React.MouseEvent) => {
@@ -57,10 +72,6 @@ const PostCard = ({ collection }: PostCardProps) => {
     const blurredUrl = getBlurredPostUrl(collection.id);
     const fullUrl = window.location.origin + blurredUrl;
     
-    const recordShare = () => {
-      persistEngagement(currentLikes, currentShares + 1, isLiked);
-    };
-
     try {
       if (navigator.share) {
         await navigator.share({
@@ -68,12 +79,24 @@ const PostCard = ({ collection }: PostCardProps) => {
           text: collection.description,
           url: fullUrl,
         });
-        recordShare();
+        registerEngagementShare('collection', collection.id)
+          .then((state) => {
+            setIsLiked(state.viewerLiked);
+            setCurrentLikes(state.likes);
+            setCurrentShares(state.shares);
+          })
+          .catch(() => {});
       } else {
         await navigator.clipboard.writeText(fullUrl);
         setShareSuccess(true);
         setTimeout(() => setShareSuccess(false), 2000);
-        recordShare();
+        registerEngagementShare('collection', collection.id)
+          .then((state) => {
+            setIsLiked(state.viewerLiked);
+            setCurrentLikes(state.likes);
+            setCurrentShares(state.shares);
+          })
+          .catch(() => {});
       }
     } catch (error) {
       console.error('Error sharing:', error);
@@ -81,7 +104,13 @@ const PostCard = ({ collection }: PostCardProps) => {
         await navigator.clipboard.writeText(fullUrl);
         setShareSuccess(true);
         setTimeout(() => setShareSuccess(false), 2000);
-        recordShare();
+        registerEngagementShare('collection', collection.id)
+          .then((state) => {
+            setIsLiked(state.viewerLiked);
+            setCurrentLikes(state.likes);
+            setCurrentShares(state.shares);
+          })
+          .catch(() => {});
       } catch (clipboardError) {
         console.error('Clipboard error:', clipboardError);
         alert(`Share this link: ${fullUrl}`);
