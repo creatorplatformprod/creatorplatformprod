@@ -1,12 +1,12 @@
 // components/PostCard.tsx - UPDATED WITH SINGLE SHIMMER FOR WHOLE CARD
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, Share2, Check, Lock } from "lucide-react";
+import { Heart, Share2, Check, Lock, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Collection } from "@/collections/collectionsData";
 import { getBlurredPostUrl } from "@/utils/linkHelpers";
 import ProgressiveImage from "@/components/ProgressiveImage";
-import { fetchEngagement, registerEngagementShare, setEngagementLike } from "@/lib/engagement";
+import { fetchEngagement, registerEngagementShare, registerEngagementView, setEngagementLike } from "@/lib/engagement";
 
 interface PostCardProps {
   collection: Collection;
@@ -17,11 +17,14 @@ const PostCard = ({ collection }: PostCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(0);
   const [currentShares, setCurrentShares] = useState(0);
+  const [currentViews, setCurrentViews] = useState(0);
   const [shareSuccess, setShareSuccess] = useState(false);
   const [pending, setPending] = useState(false);
   const [allImagesLoaded, setAllImagesLoaded] = useState(false);
   const [loadedCount, setLoadedCount] = useState(0);
   const navigate = useNavigate();
+  const viewRef = useRef<HTMLDivElement | null>(null);
+  const viewTrackedRef = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -30,10 +33,31 @@ const PostCard = ({ collection }: PostCardProps) => {
       setIsLiked(state.viewerLiked);
       setCurrentLikes(state.likes);
       setCurrentShares(state.shares);
+      setCurrentViews(state.views);
     });
     return () => {
       active = false;
     };
+  }, [engagementId]);
+
+  useEffect(() => {
+    const element = viewRef.current;
+    if (!element || viewTrackedRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || viewTrackedRef.current) return;
+        viewTrackedRef.current = true;
+        registerEngagementView('collection', collection.id)
+          .then((state) => {
+            setCurrentViews(state.views);
+          })
+          .catch(() => {});
+        observer.disconnect();
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
   }, [engagementId]);
 
   const persistEngagement = (nextLikes: number, nextShares: number, nextLiked: boolean) => {
@@ -58,6 +82,7 @@ const PostCard = ({ collection }: PostCardProps) => {
         setIsLiked(state.viewerLiked);
         setCurrentLikes(state.likes);
         setCurrentShares(state.shares);
+        setCurrentViews(state.views);
       })
       .catch(() => {
         setIsLiked(isLiked);
@@ -84,6 +109,7 @@ const PostCard = ({ collection }: PostCardProps) => {
             setIsLiked(state.viewerLiked);
             setCurrentLikes(state.likes);
             setCurrentShares(state.shares);
+            setCurrentViews(state.views);
           })
           .catch(() => {});
       } else {
@@ -95,6 +121,7 @@ const PostCard = ({ collection }: PostCardProps) => {
             setIsLiked(state.viewerLiked);
             setCurrentLikes(state.likes);
             setCurrentShares(state.shares);
+            setCurrentViews(state.views);
           })
           .catch(() => {});
       }
@@ -109,6 +136,7 @@ const PostCard = ({ collection }: PostCardProps) => {
             setIsLiked(state.viewerLiked);
             setCurrentLikes(state.likes);
             setCurrentShares(state.shares);
+            setCurrentViews(state.views);
           })
           .catch(() => {});
       } catch (clipboardError) {
@@ -203,7 +231,7 @@ const PostCard = ({ collection }: PostCardProps) => {
   };
 
   return (
-    <article className="post-card rounded-xl overflow-hidden animate-fade-in bg-post-bg border border-border">
+    <article ref={viewRef} className="post-card rounded-xl overflow-hidden animate-fade-in bg-post-bg border border-border">
       {renderCollectionPreview()}
       
       <div className="p-4 border-t border-border">
@@ -216,6 +244,10 @@ const PostCard = ({ collection }: PostCardProps) => {
               <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground'}`} />
               <span className={isLiked ? 'text-rose-500' : 'text-muted-foreground'}>{formatLikeCount(currentLikes)}</span>
             </button>
+            <div className="flex items-center gap-2 px-3 py-1.5 text-muted-foreground">
+              <Eye className="w-4 h-4" />
+              <span>{formatLikeCount(currentViews)}</span>
+            </div>
           </div>
           
           <div className="flex items-center gap-1">

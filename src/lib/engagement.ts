@@ -1,6 +1,7 @@
 type EngagementState = {
   likes: number;
   shares: number;
+  views: number;
   viewerLiked: boolean;
   viewerShared: boolean;
 };
@@ -13,6 +14,7 @@ const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '');
 const DEFAULT_STATE: EngagementState = {
   likes: 0,
   shares: 0,
+  views: 0,
   viewerLiked: false,
   viewerShared: false
 };
@@ -44,6 +46,7 @@ export const fetchEngagement = async (type: string, id: string): Promise<Engagem
     return {
       likes: result.likes || 0,
       shares: result.shares || 0,
+      views: result.views || 0,
       viewerLiked: !!result.viewerLiked,
       viewerShared: !!result.viewerShared
     };
@@ -61,6 +64,7 @@ export const setEngagementLike = async (type: string, id: string, liked: boolean
   return {
     likes: result.likes || 0,
     shares: result.shares || 0,
+    views: result.views || 0,
     viewerLiked: !!result.viewerLiked,
     viewerShared: !!result.viewerShared
   };
@@ -75,6 +79,22 @@ export const registerEngagementShare = async (type: string, id: string): Promise
   return {
     likes: result.likes || 0,
     shares: result.shares || 0,
+    views: result.views || 0,
+    viewerLiked: !!result.viewerLiked,
+    viewerShared: !!result.viewerShared
+  };
+};
+
+export const registerEngagementView = async (type: string, id: string): Promise<EngagementState> => {
+  const result = await apiRequest('/api/engagement/view', {
+    method: 'POST',
+    body: JSON.stringify({ type, id })
+  });
+
+  return {
+    likes: result.likes || 0,
+    shares: result.shares || 0,
+    views: result.views || 0,
     viewerLiked: !!result.viewerLiked,
     viewerShared: !!result.viewerShared
   };

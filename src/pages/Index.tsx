@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { Flame, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Heart, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Flame, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Heart, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather, Eye } from "lucide-react";
 import FeedHeader from "@/components/FeedHeader";
 import PostCard from "@/components/PostCard";
 import StatusCard from "@/components/StatusCard";
@@ -7,7 +7,7 @@ import StatusCardWithMedia from "../components/StatusCardWithMedia";
 import Preloader from "@/components/Preloader";
 import TopLoader from "@/components/TopLoader";
 import { collections, getAllCollectionIds, getCollection } from "@/collections/collectionsData";
-import { fetchEngagement, registerEngagementShare, setEngagementLike } from "@/lib/engagement";
+import { fetchEngagement, registerEngagementShare, registerEngagementView, setEngagementLike } from "@/lib/engagement";
 
 const portrait1 = "/images485573257456374938/1img.jpg";
 
@@ -15,7 +15,10 @@ const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string 
   const [isLiked, setIsLiked] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(0);
   const [currentShares, setCurrentShares] = useState(0);
+  const [currentViews, setCurrentViews] = useState(0);
   const [pending, setPending] = useState(false);
+  const viewRef = useRef<HTMLDivElement | null>(null);
+  const viewTrackedRef = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -24,10 +27,31 @@ const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string 
       setIsLiked(state.viewerLiked);
       setCurrentLikes(state.likes);
       setCurrentShares(state.shares);
+      setCurrentViews(state.views);
     });
     return () => {
       active = false;
     };
+  }, [engagementId]);
+
+  useEffect(() => {
+    const element = viewRef.current;
+    if (!element || viewTrackedRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || viewTrackedRef.current) return;
+        viewTrackedRef.current = true;
+        registerEngagementView('text', engagementId)
+          .then((state) => {
+            setCurrentViews(state.views);
+          })
+          .catch(() => {});
+        observer.disconnect();
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
   }, [engagementId]);
 
   const persistEngagement = (nextLikes: number, nextShares: number, nextLiked: boolean) => {
@@ -57,6 +81,7 @@ const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string 
         setIsLiked(state.viewerLiked);
         setCurrentLikes(state.likes);
         setCurrentShares(state.shares);
+        setCurrentViews(state.views);
       })
       .catch(() => {
         setIsLiked(isLiked);
@@ -76,6 +101,7 @@ const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string 
           setIsLiked(state.viewerLiked);
           setCurrentLikes(state.likes);
           setCurrentShares(state.shares);
+          setCurrentViews(state.views);
         })
         .catch(() => {});
     }).catch(() => {
@@ -86,6 +112,7 @@ const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string 
               setIsLiked(state.viewerLiked);
               setCurrentLikes(state.likes);
               setCurrentShares(state.shares);
+              setCurrentViews(state.views);
             })
             .catch(() => {});
         })
@@ -94,7 +121,7 @@ const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string 
   };
 
   return (
-    <article className="post-card rounded-xl overflow-hidden">
+    <article ref={viewRef} className="post-card rounded-xl overflow-hidden">
       <div className="p-5 sm:p-8">
         <h2 className="text-base sm:text-lg font-bold text-foreground mb-3">{post.title}</h2>
         <p className="text-sm text-muted-foreground leading-relaxed">{post.description}</p>
@@ -112,6 +139,10 @@ const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string 
               <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground'}`} />
               <span className={isLiked ? 'text-rose-500' : 'text-muted-foreground'}>{formatCount(currentLikes)}</span>
             </button>
+            <div className="flex items-center gap-2 px-3 py-1 text-muted-foreground">
+              <Eye className="w-4 h-4" />
+              <span>{formatCount(currentViews)}</span>
+            </div>
           </div>
           <button
             onClick={handleShare}
