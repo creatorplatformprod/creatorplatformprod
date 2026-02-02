@@ -325,21 +325,18 @@ const CreatorProfile = () => {
     roundedClass: string
   ) => {
     const hasUrl = Boolean(url);
+    if (!hasUrl) {
+      return null;
+    }
     const baseClass = `${sizeClass} ${roundedClass} bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors`;
     return (
       <a
-        href={hasUrl ? url : "#"}
-        target={hasUrl ? "_blank" : undefined}
-        rel={hasUrl ? "noopener noreferrer" : undefined}
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
         aria-label={label}
-        title={hasUrl ? label : `Add ${label} in Profile Settings`}
+        title={label}
         className={baseClass}
-        onClick={(event) => {
-          if (!hasUrl) {
-            event.preventDefault();
-            window.location.href = "/dashboard?tab=profile&notice=fill-links";
-          }
-        }}
       >
         {iconClass ? (
           <span className={iconClass}>{icon}</span>
