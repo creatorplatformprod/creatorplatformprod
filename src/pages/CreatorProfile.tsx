@@ -324,36 +324,23 @@ const CreatorProfile = () => {
     iconClass: string,
     roundedClass: string
   ) => {
-    const baseClass = `${sizeClass} ${roundedClass} bg-secondary flex items-center justify-center`;
-    if (url) {
-      return (
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={label}
-          className={`${baseClass} hover:bg-secondary/80 transition-colors`}
-        >
-          {iconClass ? (
-            <span className={iconClass}>{icon}</span>
-          ) : (
-            icon
-          )}
-        </a>
-      );
-    }
+    const hasUrl = Boolean(url);
+    const baseClass = `${sizeClass} ${roundedClass} bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors`;
     return (
-      <span
-        aria-label={`${label} (add in Profile Settings)`}
-        title={`Add ${label} in Profile Settings`}
-        className={`${baseClass} opacity-40 cursor-not-allowed`}
+      <a
+        href={hasUrl ? url : "#"}
+        target={hasUrl ? "_blank" : undefined}
+        rel={hasUrl ? "noopener noreferrer" : undefined}
+        aria-label={label}
+        title={hasUrl ? label : `Add ${label} in Profile Settings`}
+        className={baseClass}
       >
         {iconClass ? (
           <span className={iconClass}>{icon}</span>
         ) : (
           icon
         )}
-      </span>
+      </a>
     );
   };
 
