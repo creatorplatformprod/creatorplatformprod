@@ -62,21 +62,21 @@ const Landing = () => {
         <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/15 blur-3xl" />
         <div className="absolute bottom-[-140px] right-[-80px] h-96 w-96 rounded-full bg-accent/15 blur-3xl" />
 
-        <div className="max-w-6xl mx-auto px-4 py-16">
-          <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 items-start">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
+          <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-8 sm:gap-10 items-start">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-secondary/40 px-3 py-1 text-xs text-muted-foreground">
                 <LockKeyhole className="w-3.5 h-3.5" />
                 Secure creator access
               </div>
-              <h1 className="mt-6 text-4xl md:text-5xl font-semibold text-foreground">
+              <h1 className="mt-6 text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground">
                 Sell your content with a clean, modern flow
               </h1>
-              <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-xl">
+              <p className="mt-4 text-sm sm:text-base md:text-lg text-muted-foreground max-w-xl">
                 Build your exclusive library, accept card-to-crypto payments, and keep your
                 audience in one minimal experience.
               </p>
-              <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm text-muted-foreground">
+              <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
                 <div className="rounded-xl border border-border/60 bg-secondary/30 px-3 py-2">
                   Fast checkout
                 </div>
@@ -89,8 +89,8 @@ const Landing = () => {
               </div>
             </div>
 
-            <div className="post-card rounded-2xl p-8 shadow-lg border border-border/60 bg-background/85 backdrop-blur">
-              <div className="flex gap-4 mb-6">
+            <div className="post-card rounded-2xl p-5 sm:p-6 lg:p-8 shadow-lg border border-border/60 bg-background/85 backdrop-blur">
+              <div className="flex gap-4 mb-5 sm:mb-6">
                 <Button
                   variant={!isLogin ? 'default' : 'ghost'}
                   onClick={() => setIsLogin(false)}
@@ -113,11 +113,11 @@ const Landing = () => {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
                 {!isLogin && (
                   <>
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">
+                      <label className="text-sm font-medium text-foreground mb-1.5 sm:mb-2 block">
                         Username
                       </label>
                       <Input
@@ -130,7 +130,7 @@ const Landing = () => {
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">
+                      <label className="text-sm font-medium text-foreground mb-1.5 sm:mb-2 block">
                         Display Name
                       </label>
                       <Input
@@ -146,7 +146,7 @@ const Landing = () => {
                 )}
 
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
+                  <label className="text-sm font-medium text-foreground mb-1.5 sm:mb-2 block">
                     Email
                   </label>
                   <Input
@@ -160,7 +160,7 @@ const Landing = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
+                  <label className="text-sm font-medium text-foreground mb-1.5 sm:mb-2 block">
                     Password
                   </label>
                   <Input
@@ -179,7 +179,7 @@ const Landing = () => {
                 </Button>
               </form>
 
-              <div className="mt-6">
+              <div className="mt-5 sm:mt-6">
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t border-border" />
@@ -217,7 +217,7 @@ const Landing = () => {
                 </Button>
               </div>
 
-              <p className="text-xs text-muted-foreground text-center mt-6">
+              <p className="text-[11px] sm:text-xs text-muted-foreground text-center mt-5 sm:mt-6">
                 By signing up, you agree to our Terms of Service and Privacy Policy
               </p>
             </div>

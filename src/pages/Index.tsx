@@ -394,8 +394,8 @@ const Index = () => {
     if (post.feedType === 'text-only') {
       return (
         <article className="post-card rounded-xl overflow-hidden">
-          <div className="p-8">
-            <h2 className="text-lg font-bold text-foreground mb-3">{post.title}</h2>
+          <div className="p-5 sm:p-8">
+            <h2 className="text-base sm:text-lg font-bold text-foreground mb-3">{post.title}</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">{post.description}</p>
             <div className="text-muted-foreground text-xs mt-4 opacity-75">
               {post.timestamp}
@@ -569,10 +569,10 @@ const Index = () => {
             )}
 
             <div className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'lg:ml-[380px]' : 'lg:ml-0'}`} style={{ marginTop: '0px' }}>
-              <main className="max-w-4xl mx-auto px-4 py-6">
-                <div className="space-y-6">
+              <main className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+                <div className="space-y-4 sm:space-y-6">
                   {searchQuery && (
-                    <div className="post-card rounded-xl p-4 animate-fade-in">
+                    <div className="post-card rounded-xl p-3 sm:p-4 animate-fade-in">
                       <p className="text-muted-foreground">
                         Showing results for: <span className="font-medium text-foreground">"{searchQuery}"</span>
                         <button 
@@ -586,13 +586,13 @@ const Index = () => {
                   )}
 
                   <TopLoader />
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     {createStatusGroups(filteredFeedData).map((group, groupIndex) => {
                       if (group.type === 'status-pair') {
                         return (
                           <div 
                             key={`group-${groupIndex}`}
-                            className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in"
+                            className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 animate-fade-in"
                             style={{ animationDelay: `${groupIndex * 0.1}s` }}
                           >
                             {group.posts.map((post, postIndex) => (
@@ -619,7 +619,7 @@ const Index = () => {
                   </div>
 
                   {searchQuery && filteredFeedData.length === 0 && (
-                    <div className="post-card rounded-xl p-8 text-center animate-fade-in">
+                    <div className="post-card rounded-xl p-6 sm:p-8 text-center animate-fade-in">
                       <h3 className="text-xl font-bold text-foreground mb-2">No results found</h3>
                       <p className="text-muted-foreground">
                         Try searching for something else or clear your search to see all posts.
@@ -628,7 +628,7 @@ const Index = () => {
                   )}
                 </div>
 
-                <footer className="post-card rounded-xl p-6 mt-12">
+                <footer className="post-card rounded-xl p-5 sm:p-6 mt-8 sm:mt-12">
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="md:col-span-2">
                       <div className="flex items-center gap-3 mb-4">
@@ -726,4 +726,3 @@ const Index = () => {
     </div>
   );
 };export default Index;
-

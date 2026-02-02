@@ -328,12 +328,12 @@ const Collections = () => {
       
       {!showPreloader && (
         <div className="min-h-screen feed-bg">
-          <main className="max-w-7xl mx-auto px-4 py-6 relative">
+          <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 relative">
           <button
             onClick={() => window.history.back()}
-            className="fixed top-4 left-4 z-[60] w-8 h-8 rounded-full bg-secondary/80 backdrop-blur-xl hover:bg-secondary flex items-center justify-center text-foreground transition-all duration-300 shadow-lg"
+            className="fixed top-4 left-4 z-[60] w-9 h-9 sm:w-8 sm:h-8 rounded-full bg-secondary/80 backdrop-blur-xl hover:bg-secondary flex items-center justify-center text-foreground transition-all duration-300 shadow-lg"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5 sm:w-5 sm:h-5" />
           </button>
 
           <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[60] flex flex-col items-center">
@@ -402,7 +402,7 @@ const Collections = () => {
 
             <div className="flex justify-center mt-8">
               <div className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-full backdrop-blur-sm">
-                <span className="text-sm text-muted-foreground">
+                <span className="text-xs sm:text-sm text-muted-foreground">
                   {totalItems} exclusive items from {collectionCount} collections
                 </span>
               </div>
@@ -420,7 +420,7 @@ const Collections = () => {
                 }}
               >
                 <div 
-                  className="bg-transparent rounded-2xl p-3.5 sm:p-6 w-full max-w-[280px] sm:max-w-sm"
+                  className="bg-transparent rounded-2xl p-4 sm:p-6 w-full max-w-[340px] sm:max-w-sm"
                   style={{
                     maxHeight: '85vh',
                     overflowY: 'auto',
@@ -428,8 +428,8 @@ const Collections = () => {
                   }}
                 >
                   <div className="text-center">
-                    <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center mx-auto mb-2.5 sm:mb-4">
-                      <Flame className="w-4 h-4 sm:w-6 sm:h-6 text-primary-foreground fill-current" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center mx-auto mb-2.5 sm:mb-4">
+                      <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground fill-current" />
                     </div>
                     <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1.5 sm:mb-2">
                       Unlock Everything
@@ -460,7 +460,7 @@ const Collections = () => {
                             handleCardPaymentClick();
                           }
                         }}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-none"
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-none"
                         required
                         maxLength={254}
                       />
@@ -471,7 +471,7 @@ const Collections = () => {
                         <button 
                           onClick={handleCardPaymentClick}
                           disabled={isCardPaymentLoading}
-                          className="bg-secondary/80 hover:bg-secondary text-foreground py-2 sm:py-3.5 px-3 sm:px-4 rounded-xl text-xs sm:text-base font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-none"
+                          className="bg-secondary/80 hover:bg-secondary text-foreground py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-xs sm:text-base font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-none"
                         >
                           {isCardPaymentLoading ? (
                             <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-foreground" />
@@ -489,7 +489,7 @@ const Collections = () => {
               </div>
             )}
 
-            <footer className="post-card rounded-xl p-6 mt-8">
+            <footer className="post-card rounded-xl p-5 sm:p-6 mt-6 sm:mt-8">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="md:col-span-2">
                   <div className="flex items-center gap-3 mb-4">

@@ -290,7 +290,7 @@ const PostDetail = () => {
 
   return (
     <div className="min-h-screen feed-bg">
-      <header className="sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b border-border p-4">
+      <header className="sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b border-border p-3 sm:p-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Button 
             onClick={() => navigate("/")} 
@@ -307,11 +307,11 @@ const PostDetail = () => {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6">
+      <main className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
         <div className="space-y-6">
           <div className="post-card rounded-xl p-6 animate-fade-in">
-            <h1 className="text-3xl font-bold text-foreground mb-3">{collection.title}</h1>
-            <p className="text-muted-foreground text-lg leading-relaxed">{collection.description}</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">{collection.title}</h1>
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed">{collection.description}</p>
             <div className="text-muted-foreground text-sm mt-4">
               {collection.timestamp}
             </div>
@@ -392,7 +392,7 @@ const PostDetail = () => {
                   <button
                     onClick={loadMoreImages}
                     disabled={isLoadingImages}
-                    className="px-8 py-3 bg-gradient-to-r from-primary via-primary to-accent text-primary-foreground rounded-xl font-medium hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md hover:scale-105"
+                    className="px-6 py-2.5 sm:px-8 sm:py-3 bg-gradient-to-r from-primary via-primary to-accent text-primary-foreground rounded-xl font-medium hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md hover:scale-105"
                   >
                     {isLoadingImages ? (
                       <>
@@ -411,7 +411,7 @@ const PostDetail = () => {
 
               <div className="flex justify-center mt-4">
                 <div className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-full backdrop-blur-sm">
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs sm:text-sm text-muted-foreground">
                     Showing {Math.min(currentImagePage * imagesPerPage, collection.images.length)} of {collection.images.length} items
                   </span>
                 </div>
@@ -419,7 +419,7 @@ const PostDetail = () => {
             </>
           )}
 
-          <footer className="post-card rounded-xl p-6 mt-8">
+          <footer className="post-card rounded-xl p-5 sm:p-6 mt-6 sm:mt-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="md:col-span-2">
                 <div className="flex items-center gap-3 mb-4">

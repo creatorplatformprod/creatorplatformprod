@@ -369,10 +369,10 @@ const TipCheckoutPage = () => {
   return (
     <div className="min-h-screen feed-bg">
       <header className="sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b border-border">
-        <div className="max-w-lg mx-auto p-4">
+        <div className="max-w-lg mx-auto p-3 sm:p-4">
           <button
             onClick={handleBack}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground transition-all duration-300"
+            className="flex items-center gap-2 px-3 py-2 sm:px-4 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground transition-all duration-300"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm font-medium">Back</span>
@@ -380,15 +380,15 @@ const TipCheckoutPage = () => {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto p-4 py-8">
-        <div className="post-card rounded-2xl p-6 shadow-lg">
+      <main className="max-w-lg mx-auto px-3 sm:px-4 py-6 sm:py-8">
+        <div className="post-card rounded-2xl p-5 sm:p-6 shadow-lg">
           {/* Header with Icon */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center">
-              <Gift className="w-6 h-6" style={{ color: ROSE_COLOR }} />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-secondary/50 flex items-center justify-center">
+              <Gift className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: ROSE_COLOR }} />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-foreground">Send a Tip</h2>
+              <h2 className="text-base sm:text-lg font-bold text-foreground">Send a Tip</h2>
               <p className="text-sm text-muted-foreground">Thank you for your support</p>
             </div>
           </div>
@@ -397,7 +397,7 @@ const TipCheckoutPage = () => {
           <div className="mb-6 p-4 bg-secondary/30 rounded-xl border border-border">
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Tip Amount</span>
-              <span className="text-3xl font-bold" style={{ color: ROSE_COLOR }}>${tipAmount}</span>
+              <span className="text-2xl sm:text-3xl font-bold" style={{ color: ROSE_COLOR }}>${tipAmount}</span>
             </div>
           </div>
 
@@ -429,7 +429,7 @@ const TipCheckoutPage = () => {
                     }
                   }}
                   placeholder="name@example.com"
-                  className="w-full px-4 py-2.5 bg-secondary/50 border-2 border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-rose-500/50 transition-all"
+                  className="w-full px-4 py-2.5 sm:py-3 bg-secondary/50 border-2 border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-rose-500/50 transition-all"
                   required
                   maxLength={254}
                 />
@@ -447,7 +447,7 @@ const TipCheckoutPage = () => {
                   <button
                     type="button"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className={`w-full px-4 py-3 bg-secondary/30 border border-border rounded-xl text-foreground flex items-center justify-between hover:bg-secondary/50 transition-all ${isDropdownOpen ? 'rounded-b-none border-b-0' : ''}`}
+                    className={`w-full px-4 py-2.5 sm:py-3 bg-secondary/30 border border-border rounded-xl text-foreground flex items-center justify-between hover:bg-secondary/50 transition-all ${isDropdownOpen ? 'rounded-b-none border-b-0' : ''}`}
                   >
                     <div className="flex items-center gap-3">
                       <CreditCard className="w-5 h-5 text-muted-foreground" />
@@ -509,7 +509,7 @@ const TipCheckoutPage = () => {
               <button
                 onClick={handlePayment}
                 disabled={isProcessing || !customerEmail || !selectedProvider}
-                className="w-full py-3.5 rounded-xl text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:shadow-lg hover:scale-[1.02]"
+                className="w-full py-3 sm:py-3.5 rounded-xl text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:shadow-lg hover:scale-[1.02]"
                 style={{
                   background: `linear-gradient(135deg, ${ROSE_COLOR}, ${ROSE_COLOR}dd)`,
                 }}

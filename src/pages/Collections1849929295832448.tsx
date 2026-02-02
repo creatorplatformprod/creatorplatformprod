@@ -347,7 +347,7 @@ const Collections1849929295832448 = () => {
       
       {!showPreloader && (
         <div className="min-h-screen feed-bg">
-          <header className="sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b border-border p-4">
+          <header className="sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b border-border p-3 sm:p-4">
             <div className="max-w-6xl mx-auto flex items-center justify-between">
               <Button 
                 onClick={() => navigate('/')} 
@@ -376,7 +376,7 @@ const Collections1849929295832448 = () => {
             </div>
           </header>
 
-          <main className="max-w-7xl mx-auto px-4 py-6 relative">
+          <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 relative">
             <ResponsiveMasonry
               columnsCountBreakPoints={{350: 1, 750: 3, 900: 4}}
             >
@@ -435,12 +435,12 @@ const Collections1849929295832448 = () => {
               </Masonry>
             </ResponsiveMasonry>
 
-            <div className="flex justify-center gap-4 mt-8">
+            <div className="flex justify-center gap-3 sm:gap-4 mt-6 sm:mt-8">
               {currentPage > 1 && (
                 <button
                   onClick={loadPreviousImages}
                   disabled={isLoading}
-                  className="px-6 py-3 bg-secondary hover:bg-secondary/80 text-foreground rounded-xl font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm hover:shadow-md"
+                  className="px-4 py-2.5 sm:px-6 sm:py-3 bg-secondary hover:bg-secondary/80 text-foreground rounded-xl font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm hover:shadow-md"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Previous
@@ -451,7 +451,7 @@ const Collections1849929295832448 = () => {
                 <button
                   onClick={loadMoreImages}
                   disabled={isLoading}
-                  className="px-8 py-3 bg-gradient-to-r from-primary via-primary to-accent text-primary-foreground rounded-xl font-medium hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md hover:scale-105"
+                  className="px-6 py-2.5 sm:px-8 sm:py-3 bg-gradient-to-r from-primary via-primary to-accent text-primary-foreground rounded-xl font-medium hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md hover:scale-105"
                 >
                   {isLoading ? (
                     <>
@@ -470,13 +470,13 @@ const Collections1849929295832448 = () => {
 
             <div className="flex justify-center mt-4">
               <div className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-full backdrop-blur-sm">
-                <span className="text-sm text-muted-foreground">
+                <span className="text-xs sm:text-sm text-muted-foreground">
                   Showing {Math.min(endIndex, allImages.length)} of {allImages.length} exclusive items from {collectionIds.length} collections
                 </span>
               </div>
             </div>
 
-            <footer className="post-card rounded-xl p-6 mt-8">
+            <footer className="post-card rounded-xl p-5 sm:p-6 mt-6 sm:mt-8">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="md:col-span-2">
                   <div className="flex items-center gap-3 mb-4">

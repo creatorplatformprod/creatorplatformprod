@@ -28,10 +28,10 @@ const AuthCallback = () => {
   }, [navigate, searchParams]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="post-card rounded-xl p-8 text-center max-w-md w-full">
-        <h1 className="text-2xl font-semibold mb-3">Signing in</h1>
-        <p className="text-muted-foreground">{message}</p>
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <div className="post-card rounded-xl p-6 sm:p-8 text-center max-w-md w-full">
+        <h1 className="text-xl sm:text-2xl font-semibold mb-3">Signing in</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">{message}</p>
       </div>
     </div>
   );

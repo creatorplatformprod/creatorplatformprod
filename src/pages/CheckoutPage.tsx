@@ -488,10 +488,10 @@ const CheckoutPage = () => {
   return (
     <div className="min-h-screen feed-bg">
       <header className="sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b border-border">
-        <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button 
             onClick={handleBack}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground transition-all duration-300"
+            className="flex items-center gap-2 px-3 py-2 sm:px-4 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground transition-all duration-300"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm font-medium">Back</span>
@@ -499,10 +499,10 @@ const CheckoutPage = () => {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto p-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <main className="max-w-6xl mx-auto px-3 sm:px-4 py-5 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <div>
-            <div className="post-card rounded-2xl shadow-lg p-6 lg:p-6">
+            <div className="post-card rounded-2xl shadow-lg p-5 sm:p-6 lg:p-6">
               <div className="lg:hidden">
                 <button
                   onClick={() => setShowOrderDetails(!showOrderDetails)}
@@ -567,7 +567,7 @@ const CheckoutPage = () => {
                     <div className="text-sm text-muted-foreground mb-1">Total due today</div>
                     <div className="text-xs text-muted-foreground/70">USD</div>
                   </div>
-                  <div className="text-3xl font-bold text-foreground bg-clip-text">
+                  <div className="text-2xl sm:text-3xl font-bold text-foreground bg-clip-text">
                     ${checkoutData.amount}
                   </div>
                 </div>
@@ -665,8 +665,8 @@ const CheckoutPage = () => {
           </div>
 
           <div>
-            <div className="post-card rounded-2xl p-6 shadow-lg">
-              <h1 className="text-lg font-bold text-foreground mb-2">Payment Method</h1>
+            <div className="post-card rounded-2xl p-5 sm:p-6 shadow-lg">
+              <h1 className="text-base sm:text-lg font-bold text-foreground mb-2">Payment Method</h1>
               <p className="text-xs text-muted-foreground mb-5">
                 All transactions are secure and encrypted
               </p>
@@ -699,7 +699,7 @@ const CheckoutPage = () => {
                         }
                       }}
                       placeholder="name@example.com"
-                      className="w-full px-4 py-2.5 bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      className="w-full px-4 py-2.5 sm:py-3 bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                       required
                       maxLength={254}
                     />
@@ -717,7 +717,7 @@ const CheckoutPage = () => {
                       <button
                         type="button"
                         onClick={() => setIsProviderDropdownOpen(!isProviderDropdownOpen)}
-                        className={`w-full px-4 py-3 bg-secondary/30 border border-border rounded-xl text-foreground flex items-center justify-between hover:bg-secondary/50 transition-all ${isProviderDropdownOpen ? 'rounded-b-none border-b-0' : ''}`}
+                        className={`w-full px-4 py-2.5 sm:py-3 bg-secondary/30 border border-border rounded-xl text-foreground flex items-center justify-between hover:bg-secondary/50 transition-all ${isProviderDropdownOpen ? 'rounded-b-none border-b-0' : ''}`}
                       >
                         <div className="flex items-center gap-3">
                           <CreditCard className="w-5 h-5 text-muted-foreground" />
@@ -749,7 +749,7 @@ const CheckoutPage = () => {
                                 setSelectedProvider(provider.id);
                                 setIsProviderDropdownOpen(false);
                               }}
-                              className={`w-full px-4 py-3.5 text-left hover:bg-secondary/50 transition-colors flex items-center justify-between border-b border-border last:border-b-0 ${
+                              className={`w-full px-4 py-3 text-left hover:bg-secondary/50 transition-colors flex items-center justify-between border-b border-border last:border-b-0 ${
                                 selectedProvider === provider.id ? 'bg-secondary/30' : ''
                               }`}
                             >
@@ -782,7 +782,7 @@ const CheckoutPage = () => {
                       if (provider) handleProviderSelect(provider);
                     }}
                     disabled={isProcessing || !customerEmail || !selectedProvider}
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2"
+                    className="w-full py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2"
                   >
                     {isProcessing ? (
                       <>
