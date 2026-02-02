@@ -351,6 +351,14 @@ const CreatorProfile = () => {
               </button>
             </div>
 
+            {allCollections.length === 0 && (
+              <div className="px-4 py-3 border-b border-border">
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  The sidebar will list the titles of every collection you publish for quick navigation. Below you will also see your total collections and post counts.
+                </p>
+              </div>
+            )}
+
             {/* Collections List */}
             <div className="flex-1 py-3 px-3 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <div className="space-y-1">
@@ -396,6 +404,11 @@ const CreatorProfile = () => {
                   <div className="text-[10px] text-muted-foreground">Posts</div>
                 </div>
               </div>
+              {allCollections.length === 0 && formattedStatusData.length === 0 && (
+                <p className="text-[10px] text-muted-foreground text-center mt-2">
+                  Totals update automatically as you publish content.
+                </p>
+              )}
             </div>
 
             {/* Social Links */}
@@ -425,6 +438,11 @@ const CreatorProfile = () => {
                   </a>
                 )}
               </div>
+              {!creatorData.telegramUsername && !creatorData.domainEmail && (
+                <p className="text-[10px] text-muted-foreground text-center mt-2">
+                  Add social links in Profile Settings to show them here and on your public page.
+                </p>
+              )}
 
               {isOwnerProfile && (
                 <div className="mt-3 grid grid-cols-1 gap-2">
@@ -482,6 +500,14 @@ const CreatorProfile = () => {
 
               <TopLoader />
               <div className="space-y-6">
+                {!searchQuery && filteredFeedData.length === 0 && (
+                  <div className="post-card rounded-xl p-6 sm:p-8 text-center animate-fade-in">
+                    <h3 className="text-xl font-bold text-foreground mb-2">Your content will appear here</h3>
+                    <p className="text-muted-foreground">
+                      This main feed is where your statuses, posts, and collections will show once you publish them.
+                    </p>
+                  </div>
+                )}
                 {createStatusGroups(filteredFeedData).map((group, groupIndex) => {
                   if (group.type === 'status-pair') {
                     return (
@@ -581,8 +607,12 @@ const CreatorProfile = () => {
                         </a>
                       )}
                     </div>
-                    {creatorData.domainEmail && (
+                    {creatorData.domainEmail ? (
                       <p className="text-sm text-muted-foreground">{creatorData.domainEmail}</p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground">
+                        Add a business email in Profile Settings to show it here.
+                      </p>
                     )}
                   </div>
                 </div>

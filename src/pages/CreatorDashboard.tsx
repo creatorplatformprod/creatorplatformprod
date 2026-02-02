@@ -72,6 +72,7 @@ const CreatorDashboard = () => {
     displayName: '',
     bio: '',
     walletAddress: '',
+    telegramUsername: '',
     telegramBotToken: '',
     telegramChatId: '',
     domainEmail: '',
@@ -123,6 +124,7 @@ const CreatorDashboard = () => {
           displayName: userResult.user.displayName || '',
           bio: userResult.user.bio || '',
           walletAddress: userResult.user.walletAddress || '',
+          telegramUsername: userResult.user.telegramUsername || '',
           telegramBotToken: userResult.user.telegramBotToken || '',
           telegramChatId: userResult.user.telegramChatId || '',
           domainEmail: userResult.user.domainEmail || '',
@@ -599,6 +601,21 @@ const CreatorDashboard = () => {
 
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4" />
+                  Telegram Username (Public)
+                </label>
+                <Input
+                  value={profileData.telegramUsername}
+                  onChange={(e) => setProfileData({ ...profileData, telegramUsername: e.target.value })}
+                  placeholder="yourusername"
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Social links saved here appear on your public profile sidebar and footer.
+                </p>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
                   <Wallet className="w-4 h-4" />
                   Wallet Address
                 </label>
@@ -651,7 +668,7 @@ const CreatorDashboard = () => {
                   placeholder="alina@yourdomain.com"
                 />
                 <p className="text-xs text-muted-foreground mt-2">
-                  Use a sender address from your domain (for example, alina@yourplatformdomain.com). This is the From email for access links.
+                  Use a sender address from your domain (for example, alina@yourplatformdomain.com). This is the From email for access links and the business email shown in your public footer.
                 </p>
               </div>
             </div>
