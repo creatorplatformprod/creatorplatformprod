@@ -27,10 +27,12 @@ const PublicWebsitePreview = () => {
               Back
             </Button>
             <div>
-            <h1 className="text-2xl font-bold text-foreground">Public Website Preview</h1>
-            <p className="text-sm text-muted-foreground">
-              Desktop and mobile views update live as you edit your profile.
-            </p>
+              <h1 className="text-2xl font-bold text-foreground">
+                Public Website Preview
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Desktop and mobile views update live as you edit your profile.
+              </p>
             </div>
           </div>
           <Button onClick={handlePublish} className="px-6">
@@ -46,31 +48,37 @@ const PublicWebsitePreview = () => {
           </div>
         )}
 
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
+        <div className="flex flex-col lg:flex-row gap-10 items-start">
           <div className="flex-1 min-w-0 w-full">
-            <div className="bg-[#141821] rounded-[28px] p-5 shadow-2xl border border-white/5">
-              <div className="flex items-center gap-2 px-2 pb-3">
-                <span className="w-3 h-3 rounded-full bg-red-400" />
-                <span className="w-3 h-3 rounded-full bg-yellow-400" />
-                <span className="w-3 h-3 rounded-full bg-green-400" />
-              </div>
-              <div className="rounded-2xl overflow-hidden bg-black">
-                <div className="relative w-full pb-[58%]">
-                  <iframe
-                    title="Desktop preview"
-                    src={previewUrl}
-                    className="absolute inset-0 w-full h-full"
-                  />
+            <div className="relative mx-auto max-w-[980px]">
+              <div className="bg-[#0c1119] rounded-[26px] p-4 border border-white/10 shadow-[0_30px_80px_rgba(2,6,23,0.6)]">
+                <div className="bg-black rounded-[18px] overflow-hidden border border-white/5">
+                  <div className="relative w-full pb-[60%]">
+                    <iframe
+                      title="Desktop preview"
+                      src={previewUrl}
+                      className="absolute inset-0 w-full h-full"
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="mt-4 mx-auto w-40 h-3 bg-white/10 rounded-full" />
+              <div className="mt-4 flex justify-center">
+                <div className="w-[92%] h-[18px] bg-gradient-to-b from-[#1a2230] to-[#0c0f16] rounded-[999px] shadow-[0_18px_40px_rgba(2,6,23,0.5)]" />
+              </div>
+              <div className="mt-1 flex justify-center">
+                <div className="w-[70%] h-[10px] bg-gradient-to-b from-[#2b3342] to-[#141822] rounded-[999px] [transform:perspective(1200px)_rotateX(12deg)] shadow-[0_10px_24px_rgba(2,6,23,0.45)]" />
+              </div>
+              <div className="mt-3 flex justify-center">
+                <div className="w-40 h-3 bg-white/10 rounded-full" />
+              </div>
             </div>
           </div>
 
           <div className="w-full lg:w-[360px] flex justify-center">
-            <div className="bg-[#10131a] rounded-[44px] p-3.5 shadow-2xl border border-white/10 w-[320px]">
-              <div className="bg-black rounded-[32px] overflow-hidden">
-                <div className="relative w-full pb-[206%]">
+            <div className="bg-[#0b0f16] rounded-[40px] p-4 shadow-[0_25px_70px_rgba(2,6,23,0.55)] border border-white/10 w-[320px]">
+              <div className="bg-black rounded-[32px] overflow-hidden border border-white/5 relative">
+                <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#0f1219] rounded-full border border-white/5" />
+                <div className="relative w-full pb-[210%]">
                   <iframe
                     title="Mobile preview"
                     src={previewUrl}
@@ -79,7 +87,7 @@ const PublicWebsitePreview = () => {
                 </div>
               </div>
               <div className="mt-3 flex justify-center">
-                <div className="w-24 h-1.5 bg-white/20 rounded-full" />
+                <div className="w-20 h-1.5 bg-white/20 rounded-full" />
               </div>
             </div>
           </div>
