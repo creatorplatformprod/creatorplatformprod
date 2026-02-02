@@ -79,6 +79,7 @@ const CreatorDashboard = () => {
     telegramChatId: '',
     twitterUrl: '',
     instagramUrl: '',
+    tiktokUrl: '',
     domainEmail: '',
     unlockAllPrice: 0,
     unlockAllCurrency: 'USD'
@@ -133,6 +134,7 @@ const CreatorDashboard = () => {
           telegramChatId: userResult.user.telegramChatId || '',
           twitterUrl: userResult.user.twitterUrl || '',
           instagramUrl: userResult.user.instagramUrl || '',
+          tiktokUrl: userResult.user.tiktokUrl || '',
           domainEmail: userResult.user.domainEmail || '',
           unlockAllPrice: userResult.user.unlockAllPrice || 0,
           unlockAllCurrency: userResult.user.unlockAllCurrency || 'USD'
@@ -641,6 +643,22 @@ const CreatorDashboard = () => {
                   value={profileData.instagramUrl}
                   onChange={(e) => setProfileData({ ...profileData, instagramUrl: e.target.value })}
                   placeholder="https://instagram.com/yourhandle"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
+                  <span className="w-4 h-4 inline-flex items-center justify-center">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.8v13.1a2.48 2.48 0 0 1-2.47 2.48 2.48 2.48 0 0 1-2.48-2.48 2.48 2.48 0 0 1 2.48-2.48c.24 0 .47.03.69.08V8.72a6.06 6.06 0 0 0-.69-.04A6.42 6.42 0 0 0 3.13 15.1a6.42 6.42 0 0 0 6.42 6.42 6.42 6.42 0 0 0 6.42-6.42V9.78a8.7 8.7 0 0 0 3.62.78z"/>
+                    </svg>
+                  </span>
+                  TikTok URL
+                </label>
+                <Input
+                  value={profileData.tiktokUrl}
+                  onChange={(e) => setProfileData({ ...profileData, tiktokUrl: e.target.value })}
+                  placeholder="https://tiktok.com/@yourhandle"
                 />
               </div>
 

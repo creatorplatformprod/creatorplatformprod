@@ -137,6 +137,7 @@ export const api = {
     telegramChatId?: string;
     twitterUrl?: string;
     instagramUrl?: string;
+    tiktokUrl?: string;
     websiteUrl?: string;
     domainEmail?: string;
     avatar?: string;
