@@ -39,7 +39,6 @@ const CreatorDashboard = () => {
     displayName: '',
     bio: '',
     walletAddress: '',
-    telegramUsername: '',
     telegramBotToken: '',
     telegramChatId: '',
     domainEmail: ''
@@ -89,7 +88,6 @@ const CreatorDashboard = () => {
           displayName: userResult.user.displayName || '',
           bio: userResult.user.bio || '',
           walletAddress: userResult.user.walletAddress || '',
-          telegramUsername: userResult.user.telegramUsername || '',
           telegramBotToken: userResult.user.telegramBotToken || '',
           telegramChatId: userResult.user.telegramChatId || '',
           domainEmail: userResult.user.domainEmail || ''
@@ -383,18 +381,6 @@ const CreatorDashboard = () => {
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
                   <MessageSquare className="w-4 h-4" />
-                  Telegram Username
-                </label>
-                <Input
-                  value={profileData.telegramUsername}
-                  onChange={(e) => setProfileData({ ...profileData, telegramUsername: e.target.value })}
-                  placeholder="@username"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4" />
                   Telegram Bot Token
                 </label>
                 <Input
@@ -402,6 +388,9 @@ const CreatorDashboard = () => {
                   onChange={(e) => setProfileData({ ...profileData, telegramBotToken: e.target.value })}
                   placeholder="123456:ABCDEF..."
                 />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Create a Telegram bot (via BotFather) and paste the token here. Payment events will be sent to your Telegram.
+                </p>
               </div>
 
               <div>
@@ -414,6 +403,9 @@ const CreatorDashboard = () => {
                   onChange={(e) => setProfileData({ ...profileData, telegramChatId: e.target.value })}
                   placeholder="123456789"
                 />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Add your bot to a chat and use that chat’s ID. You’ll get a message for each payment and completion.
+                </p>
               </div>
 
               <div className="md:col-span-2">
@@ -425,8 +417,11 @@ const CreatorDashboard = () => {
                   type="email"
                   value={profileData.domainEmail}
                   onChange={(e) => setProfileData({ ...profileData, domainEmail: e.target.value })}
-                  placeholder="contact@yourdomain.com"
+                  placeholder="alina@yourdomain.com"
                 />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Use a sender address from your domain (for example, alina@yourplatformdomain.com). This is the From email for access links.
+                </p>
               </div>
             </div>
 
@@ -517,7 +512,12 @@ const CreatorDashboard = () => {
               <h3 className="text-xl font-bold text-foreground mb-4">Your Status Cards</h3>
               <div className="space-y-4">
                 {statusCards.length === 0 ? (
-                  <p className="text-muted-foreground text-center py-8">No status cards yet</p>
+                  <div className="text-muted-foreground text-center py-8 space-y-2">
+                    <p className="font-medium text-foreground">No status cards yet</p>
+                    <p className="text-sm text-muted-foreground">
+                      Status cards appear on your homepage and highlight updates. Add your first one above.
+                    </p>
+                  </div>
                 ) : (
                   statusCards.map((card, index) => (
                     <div key={index} className="border border-border rounded-lg p-4">
@@ -665,7 +665,12 @@ const CreatorDashboard = () => {
               <h3 className="text-xl font-bold text-foreground mb-4">Your Collections</h3>
               <div className="space-y-4">
                 {collections.length === 0 ? (
-                  <p className="text-muted-foreground text-center py-8">No collections yet</p>
+                  <div className="text-muted-foreground text-center py-8 space-y-2">
+                    <p className="font-medium text-foreground">No collections yet</p>
+                    <p className="text-sm text-muted-foreground">
+                      Collections show up in your sidebar and feed. Create one to start selling access.
+                    </p>
+                  </div>
                 ) : (
                   collections.map((collection, index) => (
                     <div key={index} className="border border-border rounded-lg p-4">

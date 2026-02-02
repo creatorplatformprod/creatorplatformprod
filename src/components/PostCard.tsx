@@ -1,22 +1,44 @@
 // components/PostCard.tsx - UPDATED WITH SINGLE SHIMMER FOR WHOLE CARD
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart, Share2, Check, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Collection } from "@/collections/collectionsData";
 import { getBlurredPostUrl } from "@/utils/linkHelpers";
 import ProgressiveImage from "@/components/ProgressiveImage";
+import { readEngagement, writeEngagement } from "@/lib/engagement";
 
 interface PostCardProps {
   collection: Collection;
 }
 
 const PostCard = ({ collection }: PostCardProps) => {
+  const engagementId = `collection:${collection.id}`;
   const [isLiked, setIsLiked] = useState(false);
+  const [currentLikes, setCurrentLikes] = useState(0);
+  const [currentShares, setCurrentShares] = useState(0);
   const [shareSuccess, setShareSuccess] = useState(false);
   const [allImagesLoaded, setAllImagesLoaded] = useState(false);
   const [loadedCount, setLoadedCount] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const saved = readEngagement(engagementId);
+    setIsLiked(saved.liked);
+    setCurrentLikes(saved.likes);
+    setCurrentShares(saved.shares);
+  }, [engagementId]);
+
+  const persistEngagement = (nextLikes: number, nextShares: number, nextLiked: boolean) => {
+    setCurrentLikes(nextLikes);
+    setCurrentShares(nextShares);
+    setIsLiked(nextLiked);
+    writeEngagement(engagementId, {
+      likes: nextLikes,
+      shares: nextShares,
+      liked: nextLiked
+    });
+  };
 
   const handleClick = () => {
     navigate(`/post-blurred/${collection.id}`);
@@ -24,7 +46,9 @@ const PostCard = ({ collection }: PostCardProps) => {
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsLiked(!isLiked);
+    const nextLiked = !isLiked;
+    const nextLikes = Math.max(0, currentLikes + (nextLiked ? 1 : -1));
+    persistEngagement(nextLikes, currentShares, nextLiked);
   };
 
   const handleShare = async (e: React.MouseEvent) => {
@@ -33,6 +57,10 @@ const PostCard = ({ collection }: PostCardProps) => {
     const blurredUrl = getBlurredPostUrl(collection.id);
     const fullUrl = window.location.origin + blurredUrl;
     
+    const recordShare = () => {
+      persistEngagement(currentLikes, currentShares + 1, isLiked);
+    };
+
     try {
       if (navigator.share) {
         await navigator.share({
@@ -40,10 +68,12 @@ const PostCard = ({ collection }: PostCardProps) => {
           text: collection.description,
           url: fullUrl,
         });
+        recordShare();
       } else {
         await navigator.clipboard.writeText(fullUrl);
         setShareSuccess(true);
         setTimeout(() => setShareSuccess(false), 2000);
+        recordShare();
       }
     } catch (error) {
       console.error('Error sharing:', error);
@@ -51,6 +81,7 @@ const PostCard = ({ collection }: PostCardProps) => {
         await navigator.clipboard.writeText(fullUrl);
         setShareSuccess(true);
         setTimeout(() => setShareSuccess(false), 2000);
+        recordShare();
       } catch (clipboardError) {
         console.error('Clipboard error:', clipboardError);
         alert(`Share this link: ${fullUrl}`);
@@ -154,7 +185,7 @@ const PostCard = ({ collection }: PostCardProps) => {
               className="flex items-center gap-2 px-3 py-1.5 rounded-md"
             >
               <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground'}`} />
-              <span className={isLiked ? 'text-rose-500' : 'text-muted-foreground'}>{formatLikeCount(collection.likes + (isLiked ? 1 : 0))}</span>
+              <span className={isLiked ? 'text-rose-500' : 'text-muted-foreground'}>{formatLikeCount(currentLikes)}</span>
             </button>
           </div>
           
@@ -172,6 +203,11 @@ const PostCard = ({ collection }: PostCardProps) => {
                 <Share2 className="w-4 h-4 mr-2" />
               )}
               {shareSuccess ? 'Copied!' : 'Share'}
+              {currentShares > 0 && (
+                <span className="ml-2 text-xs text-muted-foreground">
+                  {formatLikeCount(currentShares)}
+                </span>
+              )}
               {shareSuccess && (
                 <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                   Link copied!

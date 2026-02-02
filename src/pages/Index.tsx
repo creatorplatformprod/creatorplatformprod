@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Flame, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Heart, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather } from "lucide-react";
 import FeedHeader from "@/components/FeedHeader";
 import PostCard from "@/components/PostCard";
@@ -7,8 +7,99 @@ import StatusCardWithMedia from "../components/StatusCardWithMedia";
 import Preloader from "@/components/Preloader";
 import TopLoader from "@/components/TopLoader";
 import { collections, getAllCollectionIds, getCollection } from "@/collections/collectionsData";
+import { readEngagement, writeEngagement } from "@/lib/engagement";
 
 const portrait1 = "/images485573257456374938/1img.jpg";
+
+const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string }) => {
+  const [isLiked, setIsLiked] = useState(false);
+  const [currentLikes, setCurrentLikes] = useState(0);
+  const [currentShares, setCurrentShares] = useState(0);
+
+  useEffect(() => {
+    const saved = readEngagement(engagementId);
+    setIsLiked(saved.liked);
+    setCurrentLikes(saved.likes);
+    setCurrentShares(saved.shares);
+  }, [engagementId]);
+
+  const persistEngagement = (nextLikes: number, nextShares: number, nextLiked: boolean) => {
+    setCurrentLikes(nextLikes);
+    setCurrentShares(nextShares);
+    setIsLiked(nextLiked);
+    writeEngagement(engagementId, {
+      likes: nextLikes,
+      shares: nextShares,
+      liked: nextLiked
+    });
+  };
+
+  const formatCount = (count: number) => {
+    if (count >= 1000000) {
+      return (count / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    }
+    if (count >= 1000) {
+      return (count / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    }
+    return count.toString();
+  };
+
+  const handleLike = () => {
+    const nextLiked = !isLiked;
+    const nextLikes = Math.max(0, currentLikes + (nextLiked ? 1 : -1));
+    persistEngagement(nextLikes, currentShares, nextLiked);
+  };
+
+  const handleShare = () => {
+    navigator.share?.({
+      title: post.title,
+      text: post.description,
+      url: window.location.origin
+    }).then(() => {
+      persistEngagement(currentLikes, currentShares + 1, isLiked);
+    }).catch(() => {
+      navigator.clipboard.writeText(window.location.origin)
+        .then(() => {
+          persistEngagement(currentLikes, currentShares + 1, isLiked);
+        })
+        .catch(() => {});
+    });
+  };
+
+  return (
+    <article className="post-card rounded-xl overflow-hidden">
+      <div className="p-5 sm:p-8">
+        <h2 className="text-base sm:text-lg font-bold text-foreground mb-3">{post.title}</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">{post.description}</p>
+        <div className="text-muted-foreground text-xs mt-4 opacity-75">
+          {post.timestamp}
+        </div>
+      </div>
+      <div className="p-4 border-t border-border bg-post-bg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleLike}
+              className="flex items-center gap-2 text-muted-foreground hover:text-like active:bg-transparent transition-colors px-3 py-1 hover:bg-secondary rounded-lg"
+            >
+              <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground'}`} />
+              <span className={isLiked ? 'text-rose-500' : 'text-muted-foreground'}>{formatCount(currentLikes)}</span>
+            </button>
+          </div>
+          <button
+            onClick={handleShare}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors px-3 py-1 rounded-lg hover:bg-secondary"
+          >
+            <span>Share</span>
+            {currentShares > 0 && (
+              <span className="text-xs text-muted-foreground">{formatCount(currentShares)}</span>
+            )}
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+};
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -393,25 +484,10 @@ const Index = () => {
   const renderPost = (post, index) => {
     if (post.feedType === 'text-only') {
       return (
-        <article className="post-card rounded-xl overflow-hidden">
-          <div className="p-5 sm:p-8">
-            <h2 className="text-base sm:text-lg font-bold text-foreground mb-3">{post.title}</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">{post.description}</p>
-            <div className="text-muted-foreground text-xs mt-4 opacity-75">
-              {post.timestamp}
-            </div>
-          </div>
-          <div className="p-4 border-t border-border bg-post-bg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <button className="flex items-center gap-2 text-muted-foreground hover:text-like active:bg-transparent transition-colors px-3 py-1 hover:bg-secondary rounded-lg">
-                  <Heart className="w-4 h-4" />
-                  {(post.likes / 1000).toFixed(0)}k
-                </button>
-              </div>
-            </div>
-          </div>
-        </article>
+        <TextPostCard
+          post={post}
+          engagementId={`text:${post.id || post.title || index}`}
+        />
       );
     } else if (post.feedType === 'collection') {
       return <PostCard collection={post} />;
@@ -449,6 +525,8 @@ const Index = () => {
       .map(item => item.collection);
   }, [collectionIds]);
 
+  const showEmptySidebarHint = allCollections.length === 0;
+
   const handleCollectionClick = (collectionId: string) => {
     const element = document.getElementById(`collection-${collectionId}`);
     if (element) {
@@ -484,6 +562,14 @@ const Index = () => {
                     Close
                   </button>
                 </div>
+
+                {showEmptySidebarHint && (
+                  <div className="px-4 py-3 border-b border-border">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      The sidebar lists your collections for quick navigation. It will populate as soon as you create collections.
+                    </p>
+                  </div>
+                )}
 
                 <div className="flex-1 py-3 px-3 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                   <div className="space-y-1">
@@ -587,6 +673,14 @@ const Index = () => {
 
                   <TopLoader />
                   <div className="space-y-4 sm:space-y-6">
+                    {!searchQuery && filteredFeedData.length === 0 && (
+                      <div className="post-card rounded-xl p-6 sm:p-8 text-center animate-fade-in">
+                        <h3 className="text-xl font-bold text-foreground mb-2">Your feed will appear here</h3>
+                        <p className="text-muted-foreground">
+                          This main view fills with your status updates, posts, and collections once you publish content.
+                        </p>
+                      </div>
+                    )}
                     {createStatusGroups(filteredFeedData).map((group, groupIndex) => {
                       if (group.type === 'status-pair') {
                         return (

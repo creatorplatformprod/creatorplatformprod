@@ -1,8 +1,9 @@
 // components/StatusCardWithMedia.tsx - UPDATED WITH SINGLE SHIMMER
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Heart, Share2, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProgressiveImage from "@/components/ProgressiveImage";
+import { readEngagement, writeEngagement } from "@/lib/engagement";
 
 interface StatusCardWithMediaProps {
   id: string;
@@ -33,10 +34,30 @@ const StatusCardWithMedia = ({
   likes,
   media
 }: StatusCardWithMediaProps) => {
+  const engagementId = `status:${id}`;
   const [isLiked, setIsLiked] = useState(false);
-  const [currentLikes, setCurrentLikes] = useState(likes);
+  const [currentLikes, setCurrentLikes] = useState(0);
+  const [currentShares, setCurrentShares] = useState(0);
   const [showVideoControls, setShowVideoControls] = useState(false);
   const [isMediaLoaded, setIsMediaLoaded] = useState(false);
+
+  useEffect(() => {
+    const saved = readEngagement(engagementId);
+    setIsLiked(saved.liked);
+    setCurrentLikes(saved.likes);
+    setCurrentShares(saved.shares);
+  }, [engagementId]);
+
+  const persistEngagement = (nextLikes: number, nextShares: number, nextLiked: boolean) => {
+    setCurrentLikes(nextLikes);
+    setCurrentShares(nextShares);
+    setIsLiked(nextLiked);
+    writeEngagement(engagementId, {
+      likes: nextLikes,
+      shares: nextShares,
+      liked: nextLiked
+    });
+  };
 
   const formatLikeCount = (count: number) => {
     if (count >= 1000000) {
@@ -49,12 +70,9 @@ const StatusCardWithMedia = ({
   };
 
   const handleLike = () => {
-    if (isLiked) {
-      setCurrentLikes(prev => prev - 1);
-    } else {
-      setCurrentLikes(prev => prev + 1);
-    }
-    setIsLiked(!isLiked);
+    const nextLiked = !isLiked;
+    const nextLikes = Math.max(0, currentLikes + (nextLiked ? 1 : -1));
+    persistEngagement(nextLikes, currentShares, nextLiked);
   };
 
   const handleShare = () => {
@@ -62,8 +80,14 @@ const StatusCardWithMedia = ({
       title: title,
       text: text,
       url: window.location.origin + `/status/${id}`
+    }).then(() => {
+      persistEngagement(currentLikes, currentShares + 1, isLiked);
     }).catch(() => {
-      navigator.clipboard.writeText(window.location.origin + `/status/${id}`);
+      navigator.clipboard.writeText(window.location.origin + `/status/${id}`)
+        .then(() => {
+          persistEngagement(currentLikes, currentShares + 1, isLiked);
+        })
+        .catch(() => {});
     });
   };
 
@@ -173,6 +197,11 @@ const StatusCardWithMedia = ({
             >
               <Share2 className="w-4 h-4 mr-2" />
               Share
+              {currentShares > 0 && (
+                <span className="ml-2 text-xs text-muted-foreground">
+                  {formatLikeCount(currentShares)}
+                </span>
+              )}
             </Button>
           </div>
         </div>
