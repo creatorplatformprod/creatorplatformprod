@@ -129,11 +129,10 @@ const PublicWebsitePreview = () => {
 
         <div className="flex flex-col lg:flex-row gap-10 items-start">
           <div className="flex-1 min-w-0 w-full">
-            <div className="relative mx-auto max-w-[980px] lg:max-w-[1040px]">
-              <div className="bg-[#0c1119] rounded-[22px] p-3 border border-white/10 shadow-[0_30px_80px_rgba(2,6,23,0.6)]">
-                <div className="bg-black rounded-[16px] overflow-hidden border border-white/5 relative">
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-14 h-1.5 bg-white/15 rounded-full" />
-                  <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.34] sm:[--scale:0.4] lg:[--scale:0.6] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+            <div className="relative mx-auto max-w-[920px]">
+              <div className="bg-[#0c1119] rounded-[20px] p-3 border border-white/10 shadow-[0_30px_80px_rgba(2,6,23,0.6)]">
+                <div className="bg-black rounded-[14px] overflow-hidden border border-white/5">
+                  <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.4] lg:[--scale:0.56] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                     <iframe
                       title="Desktop preview"
                       src={previewUrl}
@@ -143,19 +142,19 @@ const PublicWebsitePreview = () => {
                 </div>
               </div>
               <div className="mt-5 flex justify-center">
-                <div className="w-[88%] sm:w-[92%] lg:w-[94%] h-[22px] bg-gradient-to-b from-[#1b2331] to-[#0f131b] rounded-[999px] shadow-[0_20px_45px_rgba(2,6,23,0.55)]" />
+                <div className="w-[92%] h-[22px] bg-gradient-to-b from-[#1b2331] to-[#0f131b] rounded-[999px] shadow-[0_20px_45px_rgba(2,6,23,0.55)]" />
               </div>
               <div className="mt-1 flex justify-center">
-                <div className="w-[68%] sm:w-[76%] lg:w-[80%] h-[12px] bg-gradient-to-b from-[#2f3746] to-[#171c27] rounded-[999px] [transform:perspective(1200px)_rotateX(10deg)] shadow-[0_12px_28px_rgba(2,6,23,0.5)]" />
+                <div className="w-[78%] h-[12px] bg-gradient-to-b from-[#2f3746] to-[#171c27] rounded-[999px] [transform:perspective(1200px)_rotateX(10deg)] shadow-[0_12px_28px_rgba(2,6,23,0.5)]" />
               </div>
             </div>
           </div>
 
           <div className="w-full lg:w-[380px] flex justify-center">
-            <div className="bg-[#0b0f16] rounded-[40px] p-3 sm:p-4 shadow-[0_25px_70px_rgba(2,6,23,0.55)] border border-white/10 w-[248px] sm:w-[280px] lg:w-[340px]">
+            <div className="bg-[#0b0f16] rounded-[40px] p-4 shadow-[0_25px_70px_rgba(2,6,23,0.55)] border border-white/10 w-[340px]">
               <div className="bg-black rounded-[32px] overflow-hidden border border-white/5 relative">
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#0f1219] rounded-full border border-white/5 z-10" />
-                <div className="relative mx-auto [--viewport-w:430px] [--viewport-h:932px] [--scale:0.48] sm:[--scale:0.54] lg:[--scale:0.7] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                <div className="relative mx-auto [--viewport-w:430px] [--viewport-h:932px] [--scale:0.58] lg:[--scale:0.7] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                   <iframe
                     title="Mobile preview"
                     src={previewUrl}
@@ -164,7 +163,7 @@ const PublicWebsitePreview = () => {
                 </div>
               </div>
               <div className="mt-3 flex justify-center">
-                <div className="w-16 sm:w-20 h-1.5 bg-white/20 rounded-full" />
+                <div className="w-20 h-1.5 bg-white/20 rounded-full" />
               </div>
             </div>
           </div>
