@@ -133,7 +133,7 @@ const PublicWebsitePreview = () => {
               <div className="bg-[#0c1119] rounded-[22px] p-3 border border-white/10 shadow-[0_30px_80px_rgba(2,6,23,0.6)]">
                 <div className="bg-black rounded-[16px] overflow-hidden border border-white/5 relative">
                   <div className="absolute top-2 left-1/2 -translate-x-1/2 w-14 h-1.5 bg-white/15 rounded-full" />
-                  <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.38] sm:[--scale:0.44] lg:[--scale:0.6] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                  <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.34] sm:[--scale:0.4] lg:[--scale:0.6] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                     <iframe
                       title="Desktop preview"
                       src={previewUrl}
@@ -152,10 +152,10 @@ const PublicWebsitePreview = () => {
           </div>
 
           <div className="w-full lg:w-[380px] flex justify-center">
-            <div className="bg-[#0b0f16] rounded-[40px] p-3 sm:p-4 shadow-[0_25px_70px_rgba(2,6,23,0.55)] border border-white/10 w-[270px] sm:w-[300px] lg:w-[340px]">
+            <div className="bg-[#0b0f16] rounded-[40px] p-3 sm:p-4 shadow-[0_25px_70px_rgba(2,6,23,0.55)] border border-white/10 w-[248px] sm:w-[280px] lg:w-[340px]">
               <div className="bg-black rounded-[32px] overflow-hidden border border-white/5 relative">
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#0f1219] rounded-full border border-white/5 z-10" />
-                <div className="relative mx-auto [--viewport-w:430px] [--viewport-h:932px] [--scale:0.52] sm:[--scale:0.58] lg:[--scale:0.7] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                <div className="relative mx-auto [--viewport-w:430px] [--viewport-h:932px] [--scale:0.48] sm:[--scale:0.54] lg:[--scale:0.7] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                   <iframe
                     title="Mobile preview"
                     src={previewUrl}
