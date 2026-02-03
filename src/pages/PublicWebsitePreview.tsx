@@ -71,8 +71,8 @@ const PublicWebsitePreview = () => {
             </div>
           </div>
 
-          <div className="w-full lg:w-[320px] flex justify-center">
-            <div className="bg-[#0b0f16] rounded-[40px] p-4 shadow-[0_25px_70px_rgba(2,6,23,0.55)] border border-white/10 w-[280px]">
+          <div className="w-full lg:w-[360px] flex justify-center">
+            <div className="bg-[#0b0f16] rounded-[40px] p-4 shadow-[0_25px_70px_rgba(2,6,23,0.55)] border border-white/10 w-[320px]">
               <div className="bg-black rounded-[32px] overflow-hidden border border-white/5 relative">
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#0f1219] rounded-full border border-white/5 z-10" />
                 <div className="relative mx-auto [--viewport-w:430px] [--viewport-h:932px] [--scale:0.58] lg:[--scale:0.7] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
