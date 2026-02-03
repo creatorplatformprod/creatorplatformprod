@@ -1,21 +1,82 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import AccountMenu from "@/components/AccountMenu";
+import { api } from "@/lib/api";
 
 const PublicWebsitePreview = () => {
   const { username } = useParams();
   const navigate = useNavigate();
   const [published, setPublished] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const previewUrl = useMemo(() => {
     if (!username) return "#";
     return `/${username}?mode=preview`;
   }, [username]);
 
+  const refreshPublishState = () => {
+    if (!username) return;
+    const isPublished =
+      localStorage.getItem(`publicWebsitePublished:${username}`) === "true";
+    const isDirty =
+      localStorage.getItem(`publicWebsiteDirty:${username}`) === "true";
+    setPublished(isPublished);
+    setHasChanges(isDirty);
+  };
+
+  useEffect(() => {
+    refreshPublishState();
+  }, [username]);
+
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setCurrentUser(null);
+        return;
+      }
+      try {
+        const result = await api.getCurrentUser();
+        if (result?.success && result.user) {
+          setCurrentUser(result.user);
+        } else {
+          setCurrentUser(null);
+        }
+      } catch (error) {
+        setCurrentUser(null);
+      }
+    };
+
+    loadCurrentUser();
+  }, []);
+
+  useEffect(() => {
+    const handleStorage = (event: StorageEvent) => {
+      if (!username) return;
+      if (
+        event.key === `publicWebsitePublished:${username}` ||
+        event.key === `publicWebsiteDirty:${username}`
+      ) {
+        refreshPublishState();
+      }
+    };
+
+    const intervalId = window.setInterval(refreshPublishState, 2000);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.clearInterval(intervalId);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, [username]);
+
   const handlePublish = () => {
     if (!username) return;
     localStorage.setItem(`publicWebsitePublished:${username}`, "true");
+    localStorage.setItem(`publicWebsiteDirty:${username}`, "false");
     setPublished(true);
+    setHasChanges(false);
   };
 
   return (
@@ -35,15 +96,33 @@ const PublicWebsitePreview = () => {
               </p>
             </div>
           </div>
-          <Button onClick={handlePublish} className="px-6">
-            Publish
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={handlePublish}
+              className="px-6"
+              disabled={published && !hasChanges}
+            >
+              {published && !hasChanges
+                ? "Published"
+                : hasChanges && published
+                ? "Publish changes"
+                : "Publish"}
+            </Button>
+            <AccountMenu currentUser={currentUser} />
+          </div>
         </div>
 
-        {published && (
+        {published && !hasChanges && (
           <div className="mb-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
             <p className="text-sm text-green-600 dark:text-green-400">
               Published. Your public website is now available.
+            </p>
+          </div>
+        )}
+        {published && hasChanges && (
+          <div className="mb-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+            <p className="text-sm text-amber-600 dark:text-amber-400">
+              You have unpublished changes. Publish to update your public site.
             </p>
           </div>
         )}

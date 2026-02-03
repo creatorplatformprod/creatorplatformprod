@@ -31,6 +31,7 @@ import {
   Instagram
 } from 'lucide-react';
 import { api } from '@/lib/api';
+import AccountMenu from '@/components/AccountMenu';
 
 const CreatorDashboard = () => {
   const navigate = useNavigate();
@@ -131,6 +132,11 @@ const CreatorDashboard = () => {
     loadUserData();
   }, []);
 
+  const markPublicWebsiteDirty = () => {
+    if (!user?.username) return;
+    localStorage.setItem(`publicWebsiteDirty:${user.username}`, 'true');
+  };
+
   const loadUserData = async () => {
     try {
       setLoading(true);
@@ -184,6 +190,7 @@ const CreatorDashboard = () => {
       const result = await api.updateProfile(profileData);
       if (result.success) {
         setSuccess('Profile saved successfully!');
+        markPublicWebsiteDirty();
         await loadUserData();
       } else {
         setError(result.error || 'Failed to save profile');
@@ -208,6 +215,7 @@ const CreatorDashboard = () => {
       });
       if (result.success) {
         setSuccess('Status card added!');
+        markPublicWebsiteDirty();
         setStatusCardForm({ text: '', imageUrl: '', isLocked: false, order: 0 });
         setStatusCardFile(null);
         await loadUserData();
@@ -237,6 +245,7 @@ const CreatorDashboard = () => {
       });
       if (result.success) {
         setSuccess('Collection created!');
+        markPublicWebsiteDirty();
         setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
         setSelectedCollectionId('');
         setCollectionFile(null);
@@ -266,6 +275,7 @@ const CreatorDashboard = () => {
       });
       if (result.success) {
         setSuccess('Unlock Everything price saved!');
+        markPublicWebsiteDirty();
         await loadUserData();
       } else {
         setError(result.error || 'Failed to save unlock price');
@@ -325,12 +335,13 @@ const CreatorDashboard = () => {
         size: uploadResult.size
       });
 
-      if (attachResult.success) {
-        setSuccess('Media added to collection!');
-        setCollectionFile(null);
-        await loadUserData();
-      } else {
-        setError(attachResult.error || 'Failed to attach media');
+        if (attachResult.success) {
+          setSuccess('Media added to collection!');
+          markPublicWebsiteDirty();
+          setCollectionFile(null);
+          await loadUserData();
+        } else {
+          setError(attachResult.error || 'Failed to attach media');
       }
     } catch (err: any) {
       setError(err.message || 'Failed to upload media');
@@ -518,21 +529,24 @@ const CreatorDashboard = () => {
     <div className="min-h-screen feed-bg">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
           {/* Header */}
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
-            <div className="text-center sm:text-left">
-              <h1 className="text-3xl font-bold text-foreground">Creator Dashboard</h1>
-              <p className="text-muted-foreground mt-1">Manage your content and profile</p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
+              <div className="text-center sm:text-left">
+                <h1 className="text-3xl font-bold text-foreground">Creator Dashboard</h1>
+                <p className="text-muted-foreground mt-1">Manage your content and profile</p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto sm:items-center sm:justify-end">
+                <Button onClick={handlePreviewPublic} variant="outline" className="w-full sm:w-auto">
+                  <Eye className="w-4 h-4 mr-2" />
+                  Preview Public
+                </Button>
+                <Button onClick={handlePublicWebsite} className="w-full sm:w-auto">
+                  Public Website
+                </Button>
+                <div className="flex justify-center sm:justify-end">
+                  <AccountMenu currentUser={user} />
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-              <Button onClick={handlePreviewPublic} variant="outline" className="w-full sm:w-auto">
-                <Eye className="w-4 h-4 mr-2" />
-                Preview Public
-              </Button>
-              <Button onClick={handlePublicWebsite} className="w-full sm:w-auto">
-                Public Website
-              </Button>
-            </div>
-          </div>
 
         {/* Success/Error Messages */}
         {infoMessage && (
