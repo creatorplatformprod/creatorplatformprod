@@ -132,7 +132,7 @@ const PublicWebsitePreview = () => {
             <div className="relative mx-auto max-w-[920px]">
               <div className="bg-[#0c1119] rounded-[20px] p-3 border border-white/10 shadow-[0_30px_80px_rgba(2,6,23,0.6)]">
                 <div className="bg-black rounded-[14px] overflow-hidden border border-white/5">
-                  <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.28] sm:[--scale:0.32] lg:[--scale:0.56] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                  <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.26] sm:[--scale:0.3] lg:[--scale:0.56] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                     <iframe
                       title="Desktop preview"
                       src={previewUrl}
