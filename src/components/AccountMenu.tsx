@@ -48,11 +48,11 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() =>
-                (window.location.href = `/${currentUser.username || ""}`)
+                (window.location.href = `/public/${currentUser.username || ""}`)
               }
             >
               <User className="w-4 h-4 mr-2" />
-              Public Profile
+              Public Website
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

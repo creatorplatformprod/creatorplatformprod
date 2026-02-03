@@ -43,6 +43,8 @@ const CreatorDashboard = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [infoMessage, setInfoMessage] = useState('');
+  const [hasPublicChanges, setHasPublicChanges] = useState(false);
+  const [isPublicPublished, setIsPublicPublished] = useState(false);
   const [selectedCollectionId, setSelectedCollectionId] = useState('');
   const [collectionFile, setCollectionFile] = useState<File | null>(null);
   const [uploadingCollectionMedia, setUploadingCollectionMedia] = useState(false);
@@ -132,9 +134,20 @@ const CreatorDashboard = () => {
     loadUserData();
   }, []);
 
+  const refreshPublicWebsiteState = (username?: string) => {
+    if (!username) return;
+    const isPublished =
+      localStorage.getItem(`publicWebsitePublished:${username}`) === 'true';
+    const isDirty =
+      localStorage.getItem(`publicWebsiteDirty:${username}`) === 'true';
+    setIsPublicPublished(isPublished);
+    setHasPublicChanges(isDirty);
+  };
+
   const markPublicWebsiteDirty = () => {
     if (!user?.username) return;
     localStorage.setItem(`publicWebsiteDirty:${user.username}`, 'true');
+    refreshPublicWebsiteState(user.username);
   };
 
   const loadUserData = async () => {
@@ -143,6 +156,7 @@ const CreatorDashboard = () => {
       const userResult = await api.getCurrentUser();
       if (userResult.success && userResult.user) {
         setUser(userResult.user);
+        refreshPublicWebsiteState(userResult.user.username);
         setProfileData({
           displayName: userResult.user.displayName || '',
           bio: userResult.user.bio || '',
@@ -180,6 +194,36 @@ const CreatorDashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    if (!user?.username) return;
+    refreshPublicWebsiteState(user.username);
+    const handleStorage = (event: StorageEvent) => {
+      if (
+        event.key === `publicWebsitePublished:${user.username}` ||
+        event.key === `publicWebsiteDirty:${user.username}`
+      ) {
+        refreshPublicWebsiteState(user.username);
+      }
+    };
+
+    const intervalId = window.setInterval(
+      () => refreshPublicWebsiteState(user.username),
+      2000
+    );
+    window.addEventListener('storage', handleStorage);
+    return () => {
+      window.clearInterval(intervalId);
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, [user?.username]);
+
+  const handleUpdateWebsite = () => {
+    if (!user?.username) return;
+    localStorage.setItem(`publicWebsitePublished:${user.username}`, 'true');
+    localStorage.setItem(`publicWebsiteDirty:${user.username}`, 'false');
+    refreshPublicWebsiteState(user.username);
   };
 
   const handleSaveProfile = async () => {
@@ -535,12 +579,21 @@ const CreatorDashboard = () => {
                 <p className="text-muted-foreground mt-1">Manage your content and profile</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto sm:items-center sm:justify-end">
+                {hasPublicChanges && (
+                  <Button
+                    onClick={handleUpdateWebsite}
+                    variant="secondary"
+                    className="w-full sm:w-auto"
+                  >
+                    Update Website
+                  </Button>
+                )}
                 <Button onClick={handlePreviewPublic} variant="outline" className="w-full sm:w-auto">
                   <Eye className="w-4 h-4 mr-2" />
                   Preview Public
                 </Button>
                 <Button onClick={handlePublicWebsite} className="w-full sm:w-auto">
-                  Public Website
+                  {isPublicPublished && !hasPublicChanges ? 'Public Website' : 'Publish Website'}
                 </Button>
                 <div className="flex justify-center sm:justify-end">
                   <AccountMenu currentUser={user} />
@@ -675,7 +728,7 @@ const CreatorDashboard = () => {
                   placeholder="yourusername"
                 />
                 <p className="text-xs text-muted-foreground mt-2">
-                  Social links saved here appear on your public profile sidebar and footer.
+                  Social links saved here appear on your public website sidebar and footer.
                 </p>
               </div>
 
