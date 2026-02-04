@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
-import { Heart, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Flame, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather } from "lucide-react";
+import { useParams, useSearchParams } from "react-router-dom";
+import { Heart, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Flame, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather, Info } from "lucide-react";
 import FeedHeader from "@/components/FeedHeader";
 import PostCard from "@/components/PostCard";
 import StatusCard from "@/components/StatusCard";
@@ -8,9 +8,12 @@ import StatusCardWithMedia from "@/components/StatusCardWithMedia";
 import Preloader from "@/components/Preloader";
 import TopLoader from "@/components/TopLoader";
 import { api } from "@/lib/api";
+import { collections as mockCollectionsData, getRandomCollections } from "@/collections/collectionsData";
 
 const CreatorProfile = () => {
   const { username } = useParams();
+  const [searchParams] = useSearchParams();
+  const isPreviewMode = searchParams.get('mode') === 'preview';
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showPreloader, setShowPreloader] = useState(true);
@@ -18,6 +21,61 @@ const CreatorProfile = () => {
   const [creatorData, setCreatorData] = useState<any>(null);
   const [collections, setCollections] = useState<any[]>([]);
   const [statusCards, setStatusCards] = useState<any[]>([]);
+  
+  // Check if creator has any real content
+  const hasRealContent = collections.length > 0 || statusCards.length > 0;
+  
+  // Mock status cards for empty preview
+  const mockStatusCards = useMemo(() => [
+    {
+      id: "mock-status-1",
+      user: {
+        name: creatorData?.displayName || "Your Name",
+        avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
+        verified: true
+      },
+      title: "",
+      text: "This is an example status post! Share updates, thoughts, or behind-the-scenes moments with your audience. Add images to make your posts more engaging.",
+      timestamp: "2 hours ago",
+      likes: 1234,
+      comments: 89,
+      media: {
+        type: "image" as const,
+        url: "https://images.pexels.com/photos/3622614/pexels-photo-3622614.jpeg?auto=compress&cs=tinysrgb&w=800",
+        alt: "Example status image"
+      },
+      isMockData: true
+    },
+    {
+      id: "mock-status-2",
+      user: {
+        name: creatorData?.displayName || "Your Name",
+        avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
+        verified: true
+      },
+      title: "Life Update",
+      text: "Text-only posts work great too! Share your thoughts, ask questions, or give sneak peeks of upcoming content.",
+      timestamp: "5 hours ago",
+      likes: 567,
+      comments: 45,
+      isMockData: true
+    }
+  ], [creatorData]);
+
+  // Get mock collections for empty preview
+  const mockCollections = useMemo(() => {
+    const samples = getRandomCollections(3);
+    return samples.map(col => ({
+      ...col,
+      user: {
+        name: creatorData?.displayName || "Your Name",
+        avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
+        verified: true
+      },
+      isMockData: true
+    }));
+  }, [creatorData]);
+
   useEffect(() => {
     loadCreatorProfile();
   }, [username]);
@@ -105,20 +163,25 @@ const CreatorProfile = () => {
   }, [collections, creatorData]);
 
   // Create mixed feed (status cards + collections)
+  // Use mock data in preview mode when no real content exists
   const feedData = useMemo(() => {
     const mixedFeed = [];
     
+    // Determine which data to use
+    const statusToUse = formattedStatusData.length > 0 ? formattedStatusData : (isPreviewMode ? mockStatusCards : []);
+    const collectionsToUse = formattedCollections.length > 0 ? formattedCollections : (isPreviewMode ? mockCollections : []);
+    
     // Add first status card at the beginning
-    if (formattedStatusData.length > 0) {
+    if (statusToUse.length > 0) {
       mixedFeed.push({
-        ...formattedStatusData[0],
+        ...statusToUse[0],
         sortOrder: 0,
         feedType: 'status'
       });
     }
 
     // Add collections
-    formattedCollections.forEach((collection, index) => {
+    collectionsToUse.forEach((collection, index) => {
       mixedFeed.push({
         ...collection,
         sortOrder: (index * 1.5) + 1,
@@ -127,7 +190,7 @@ const CreatorProfile = () => {
     });
 
     // Add remaining status cards
-    formattedStatusData.slice(1).forEach((status, index) => {
+    statusToUse.slice(1).forEach((status, index) => {
       mixedFeed.push({
         ...status,
         sortOrder: (index * 2.1) + 1.5,
@@ -136,7 +199,7 @@ const CreatorProfile = () => {
     });
 
     return mixedFeed.sort((a, b) => a.sortOrder - b.sortOrder);
-  }, [formattedStatusData, formattedCollections]);
+  }, [formattedStatusData, formattedCollections, isPreviewMode, mockStatusCards, mockCollections]);
 
   const filteredFeedData = useMemo(() => {
     if (!searchQuery) return feedData;
@@ -232,10 +295,30 @@ const CreatorProfile = () => {
   };
 
   const renderPost = (post: any, index: number) => {
+    const isMock = post.isMockData;
+    
+    // Wrapper for mock data badge
+    const MockBadgeWrapper = ({ children }: { children: React.ReactNode }) => (
+      <div className="relative">
+        {isMock && (
+          <div className="absolute top-3 right-3 z-10 px-2 py-1 bg-amber-500/90 text-white text-[10px] font-bold rounded shadow-lg">
+            EXAMPLE
+          </div>
+        )}
+        {children}
+      </div>
+    );
+    
     if (post.feedType === 'collection') {
-      return <PostCard collection={post} />;
+      return isMock ? (
+        <MockBadgeWrapper>
+          <PostCard collection={post} />
+        </MockBadgeWrapper>
+      ) : (
+        <PostCard collection={post} />
+      );
     } else if (post.feedType === 'status') {
-      return post.media ? (
+      const statusCard = post.media ? (
         <StatusCardWithMedia
           id={post.id}
           user={post.user}
@@ -257,13 +340,19 @@ const CreatorProfile = () => {
           comments={post.comments}
         />
       );
+      
+      return isMock ? <MockBadgeWrapper>{statusCard}</MockBadgeWrapper> : statusCard;
     }
     return null;
   };
 
   const allCollections = useMemo(() => {
+    // Use mock collections in preview mode when no real content
+    if (formattedCollections.length === 0 && isPreviewMode) {
+      return mockCollections;
+    }
     return formattedCollections;
-  }, [formattedCollections]);
+  }, [formattedCollections, isPreviewMode, mockCollections]);
 
   const handleCollectionClick = (collectionId: string) => {
     const element = document.getElementById(`collection-${collectionId}`);
@@ -375,10 +464,19 @@ const CreatorProfile = () => {
               </button>
             </div>
 
-            {showHelp && allCollections.length === 0 && (
+            {showHelp && formattedCollections.length === 0 && !isPreviewMode && (
               <div className="px-4 py-3 border-b border-border">
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   The sidebar will list the titles of every collection you publish for quick navigation. Below you will also see your total collections and post counts.
+                </p>
+              </div>
+            )}
+            
+            {isPreviewMode && formattedCollections.length === 0 && mockCollections.length > 0 && (
+              <div className="px-4 py-3 border-b border-border bg-amber-500/5">
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  <span className="inline-flex items-center px-1.5 py-0.5 bg-amber-500/20 text-amber-600 text-[10px] font-medium rounded mr-1">EXAMPLE</span>
+                  These are sample collections. Create your own from the Dashboard.
                 </p>
               </div>
             )}
@@ -540,8 +638,27 @@ const CreatorProfile = () => {
               )}
 
               <TopLoader />
+              
+              {/* Mock Data Explanation Banner - Only in preview mode with mock data */}
+              {isPreviewMode && !hasRealContent && filteredFeedData.length > 0 && (
+                <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl p-4 mb-4 animate-fade-in">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <Info className="w-4 h-4 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-foreground text-sm mb-1">Preview Mode - Example Content</h4>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        This is how your page will look with content. Items marked <span className="inline-flex items-center px-1.5 py-0.5 bg-amber-500/20 text-amber-600 text-[10px] font-medium rounded">EXAMPLE</span> are templates. 
+                        Add your own content from the Dashboard to replace them.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <div className="space-y-6">
-                {showHelp && !searchQuery && filteredFeedData.length === 0 && (
+                {showHelp && !searchQuery && filteredFeedData.length === 0 && !isPreviewMode && (
                   <div className="post-card rounded-xl p-6 sm:p-8 text-center animate-fade-in">
                     <h3 className="text-xl font-bold text-foreground mb-2">Your content will appear here</h3>
                     <p className="text-muted-foreground">
