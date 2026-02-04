@@ -168,7 +168,7 @@ const FeedHeader = ({
           <div className="flex items-center gap-2 lg:gap-3 flex-shrink-0">
             <Button
               onClick={() => window.location.href = '/collections'}
-              className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all duration-300 px-4 py-2 rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-105"
+              className="hidden sm:flex items-center gap-2 btn-67 transition-all duration-300 px-4 py-2 rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-105"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
@@ -187,7 +187,7 @@ const FeedHeader = ({
               variant="ghost"
               size="icon"
               onClick={handleThemeToggle}
-              className="hover:bg-secondary/80 rounded-full transition-all duration-200 hover:scale-105"
+              className="hover-foreground rounded-full transition-all duration-200 hover:scale-105"
             >
               {currentTheme === "dark" ? (
                 <Sun className="w-5 h-5 text-amber-500" />
@@ -202,7 +202,7 @@ const FeedHeader = ({
         <div className="md:hidden mt-4 space-y-3">
           <Button
             onClick={() => window.location.href = '/collections'}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all duration-300 py-3 rounded-full font-semibold shadow-lg"
+            className="w-full flex items-center justify-center gap-2 btn-67 transition-all duration-300 py-3 rounded-full font-semibold shadow-lg"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>

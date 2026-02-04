@@ -276,6 +276,57 @@
   }
 
   /* ========================================
+     DASHBOARD MOBILE-FRIENDLY SIZING
+     ======================================== */
+  /* Mobile: 16px inputs to prevent iOS zoom, proper touch targets */
+  @media (max-width: 767px) {
+    .dashboard-input input,
+    .dashboard-input textarea,
+    .dashboard-input select {
+      font-size: 1rem !important;
+      min-height: 2.75rem;
+    }
+    
+    .dashboard-label {
+      font-size: 0.9375rem;
+    }
+    
+    .dashboard-card {
+      padding: 1.25rem;
+    }
+    
+    .dashboard-title {
+      font-size: 1.375rem;
+    }
+    
+    .dashboard-btn {
+      min-height: 2.75rem;
+      font-size: 0.9375rem;
+    }
+  }
+  
+  /* Desktop: standard sizing */
+  @media (min-width: 768px) {
+    .dashboard-input input,
+    .dashboard-input textarea,
+    .dashboard-input select {
+      font-size: 0.875rem;
+    }
+    
+    .dashboard-label {
+      font-size: 0.875rem;
+    }
+    
+    .dashboard-card {
+      padding: 1.5rem;
+    }
+    
+    .dashboard-title {
+      font-size: 1.5rem;
+    }
+  }
+
+  /* ========================================
      SKELETON SHIMMER LOADER - Social Media Style
      ======================================== */
   .skeleton-shimmer {

@@ -638,7 +638,7 @@ const CreatorDashboard = () => {
                   onClick={handlePreviewPublic} 
                   variant="ghost" 
                   size="sm" 
-                  className="hidden sm:flex hover:bg-sky-500 hover:text-white transition-colors"
+                  className="hidden sm:flex hover-foreground transition-colors"
                 >
                   <Eye className="w-4 h-4 mr-2" />
                   Preview
@@ -646,7 +646,7 @@ const CreatorDashboard = () => {
                 <Button 
                   onClick={handlePublicWebsite} 
                   size="sm"
-                  className="bg-sky-500 hover:bg-sky-600 text-white"
+                  className="btn-67"
                 >
                   Public Website
                 </Button>
@@ -654,7 +654,7 @@ const CreatorDashboard = () => {
                   variant="outline"
                   size="icon"
                   onClick={toggleTheme}
-                  className="rounded-full w-9 h-9 hover:bg-sky-500 hover:text-white hover:border-sky-500 transition-colors"
+                  className="rounded-full w-9 h-9 hover-foreground transition-colors"
                 >
                   {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                 </Button>
@@ -953,7 +953,7 @@ const CreatorDashboard = () => {
               </div>
             </div>
 
-            <Button onClick={handleSaveProfile} className="w-full md:w-auto bg-sky-500 hover:bg-sky-600 text-white">
+            <Button onClick={handleSaveProfile} className="w-full md:w-auto btn-67">
               <Save className="w-4 h-4 mr-2" />
               Save Profile
             </Button>
@@ -1028,7 +1028,7 @@ const CreatorDashboard = () => {
                   </div>
                 )}
 
-                <Button onClick={handleAddStatusCard} className="w-full bg-sky-500 hover:bg-sky-600 text-white">
+                <Button onClick={handleAddStatusCard} className="w-full btn-67">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Status Card
                 </Button>
@@ -1102,7 +1102,7 @@ const CreatorDashboard = () => {
                   </select>
                 </div>
               </div>
-              <Button onClick={handleSaveUnlockAllPrice} className="w-full mt-4 bg-sky-500 hover:bg-sky-600 text-white">
+              <Button onClick={handleSaveUnlockAllPrice} className="w-full mt-4 btn-67">
                 <Save className="w-4 h-4 mr-2" />
                 Save Unlock Price
               </Button>
@@ -1177,7 +1177,7 @@ const CreatorDashboard = () => {
                   />
                 </div>
 
-                <Button onClick={handleAddCollection} className="w-full bg-sky-500 hover:bg-sky-600 text-white">
+                <Button onClick={handleAddCollection} className="w-full btn-67">
                   <Plus className="w-4 h-4 mr-2" />
                   Create Collection
                 </Button>
@@ -1221,7 +1221,7 @@ const CreatorDashboard = () => {
                   type="button"
                   onClick={handleUploadCollectionMedia}
                   disabled={uploadingCollectionMedia}
-                  className="w-full bg-sky-500 hover:bg-sky-600 text-white"
+                  className="w-full btn-67"
                 >
                   {uploadingCollectionMedia ? 'Uploading...' : 'Upload Media'}
                 </Button>
