@@ -52,7 +52,7 @@ const CreatorProfile = () => {
       id: card._id || `status-${index}`,
       user: {
         name: creatorData?.displayName || creatorData?.username || 'Creator',
-        avatar: creatorData?.avatar || '/images485573257456374938/1img.jpg',
+        avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop',
         verified: creatorData?.isVerified || false
       },
       title: "",
@@ -82,7 +82,7 @@ const CreatorProfile = () => {
       })),
       user: {
         name: creatorData?.displayName || creatorData?.username || 'Creator',
-        avatar: creatorData?.avatar || '/images485573257456374938/1img.jpg',
+        avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop',
         verified: creatorData?.isVerified || false
       },
       timestamp: col.createdAt ? new Date(col.createdAt).toLocaleDateString() : 'Recently',

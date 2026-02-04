@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { LockKeyhole, ArrowRight } from 'lucide-react';
+import { LockKeyhole, ArrowRight, Sparkles, Palette, CreditCard, Globe, Zap, Shield } from 'lucide-react';
 import { api } from '@/lib/api';
 
 const Landing = () => {
@@ -63,28 +63,83 @@ const Landing = () => {
         <div className="absolute bottom-[-140px] right-[-80px] h-96 w-96 rounded-full bg-accent/15 blur-3xl" />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
-          <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-8 sm:gap-10 items-start">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-secondary/40 px-3 py-1 text-xs text-muted-foreground">
-                <LockKeyhole className="w-3.5 h-3.5" />
-                Secure creator access
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 sm:gap-12 items-start">
+            {/* Left Column - Redesigned */}
+            <div className="space-y-8">
+              {/* Brand Block */}
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs text-primary font-medium">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  SixSeven Creator Platform
+                </div>
+                <h1 className="font-fraunces text-4xl sm:text-5xl md:text-6xl font-semibold text-foreground leading-[1.1]">
+                  Build your{' '}
+                  <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    content empire
+                  </span>
+                </h1>
+                <p className="font-space-grotesk text-base sm:text-lg text-muted-foreground max-w-lg leading-relaxed">
+                  Create, preview, and publish premium content with seamless card-to-crypto payments. 
+                  Your audience, your platform, your rules.
+                </p>
               </div>
-              <h1 className="mt-6 text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground">
-                Sell your content with a clean, modern flow
-              </h1>
-              <p className="mt-4 text-sm sm:text-base md:text-lg text-muted-foreground max-w-xl">
-                Build your exclusive library, accept card-to-crypto payments, and keep your
-                audience in one minimal experience.
-              </p>
-              <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
-                <div className="rounded-xl border border-border/60 bg-secondary/30 px-3 py-2">
-                  Fast checkout
+
+              {/* Preview Cards */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 p-4 border border-primary/20 hover:border-primary/40 transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center mb-3">
+                    <Palette className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="font-space-grotesk font-semibold text-foreground text-sm mb-1">Collections</h3>
+                  <p className="text-xs text-muted-foreground">Organize media into premium bundles</p>
                 </div>
-                <div className="rounded-xl border border-border/60 bg-secondary/30 px-3 py-2">
-                  Access control
+                <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-accent/20 to-primary/10 p-4 border border-accent/20 hover:border-accent/40 transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center mb-3">
+                    <CreditCard className="w-5 h-5 text-accent" />
+                  </div>
+                  <h3 className="font-space-grotesk font-semibold text-foreground text-sm mb-1">Payments</h3>
+                  <p className="text-xs text-muted-foreground">Card to crypto, instant access</p>
                 </div>
-                <div className="rounded-xl border border-border/60 bg-secondary/30 px-3 py-2">
-                  Creator tools
+              </div>
+
+              {/* Workflow Tiles */}
+              <div className="space-y-3">
+                <p className="font-space-grotesk text-xs uppercase tracking-wider text-muted-foreground">How it works</p>
+                <div className="flex flex-wrap gap-2">
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border/60">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">1</div>
+                    <span className="text-sm text-foreground">Sign up</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border/60">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">2</div>
+                    <span className="text-sm text-foreground">Upload content</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border/60">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">3</div>
+                    <span className="text-sm text-foreground">Set prices</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border/60">
+                    <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
+                      <Zap className="w-3 h-3 text-green-500" />
+                    </div>
+                    <span className="text-sm text-foreground">Go live</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Trust Indicators */}
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1.5">
+                  <Shield className="w-4 h-4 text-green-500" />
+                  <span>Secure payments</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Globe className="w-4 h-4 text-primary" />
+                  <span>Global access</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <LockKeyhole className="w-4 h-4 text-accent" />
+                  <span>Creator control</span>
                 </div>
               </div>
             </div>

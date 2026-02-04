@@ -8,7 +8,7 @@ const RAW_API_URL =
 // Environment configuration
 const CONFIG = {
   API_URL: RAW_API_URL.replace(/\/+$/, ''),
-  CONTENT_URL: 'https://lannadelulu.com'
+  CONTENT_URL: 'https://sixsevencreator.com'
 };
 
 // Rosy pink color - matches TipButton in FeedHeader

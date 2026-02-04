@@ -9,7 +9,22 @@ import TopLoader from "@/components/TopLoader";
 import { collections, getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 import { fetchEngagement, registerEngagementShare, registerEngagementView, setEngagementLike } from "@/lib/engagement";
 
-const portrait1 = "/images485573257456374938/1img.jpg";
+// Pexels URL helper for consistent sizing
+const pexelsUrl = (photoId: number, width: number = 400): string =>
+  `https://images.pexels.com/photos/${photoId}/pexels-photo-${photoId}.jpeg?auto=compress&cs=tinysrgb&w=${width}&fit=crop`;
+
+// Creator avatar using Pexels portrait
+const portrait1 = pexelsUrl(1239291, 400); // Professional woman portrait
+
+// Status media images from Pexels
+const statusMediaImages = {
+  behindScenes: pexelsUrl(3622614, 800),    // Lifestyle photo
+  goldenHour: pexelsUrl(2681751, 800),       // Golden hour moment
+  redFashion: pexelsUrl(1536619, 800),       // Fashion/red theme
+  artisticPose: pexelsUrl(2709388, 800),     // Artistic portrait
+  creativeMoment: pexelsUrl(2896840, 800),   // Purple/creative lighting
+  creativeSession: pexelsUrl(3807517, 800),  // Creative session
+};
 
 const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -178,7 +193,7 @@ const Index = () => {
     {
       id: "status-24820024",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -189,14 +204,14 @@ const Index = () => {
       comments: 3470,
       media: {
         type: "image" as const,
-        url: "./images485573257456374938/14.jpg",
+        url: statusMediaImages.behindScenes,
         alt: "Behind the scenes moment"
       }
     },
     {
       id: "status-19475368",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -209,7 +224,7 @@ const Index = () => {
     {
       id: "status-73926481",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -222,7 +237,7 @@ const Index = () => {
     {
       id: "status-58391627",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -233,14 +248,14 @@ const Index = () => {
       comments: 1234,
       media: {
         type: "image" as const,
-        url: "./images485573257456374938/collection22/11.jpg",
+        url: statusMediaImages.goldenHour,
         alt: "Golden hour moment"
       }
     },
     {
       id: "status-92847315",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -253,7 +268,7 @@ const Index = () => {
     {
       id: "status-46172953",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -264,14 +279,14 @@ const Index = () => {
       comments: 4567,
       media: {
         type: "image" as const,
-        url: "./images485573257456374938/collection15/4.jpg",
+        url: statusMediaImages.redFashion,
         alt: "Red fashion moment"
       }
     },
     {
       id: "status-83659742",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -284,7 +299,7 @@ const Index = () => {
     {
       id: "status-37284561",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -297,7 +312,7 @@ const Index = () => {
     {
       id: "status-65918473",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -308,14 +323,14 @@ const Index = () => {
       comments: 2340,
       media: {
         type: "image" as const,
-        url: "./images485573257456374938/collection6/4.jpg",
+        url: statusMediaImages.artisticPose,
         alt: "Artistic pose"
       }
     },
     {
       id: "status-19426837",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -328,7 +343,7 @@ const Index = () => {
     {
       id: "status-74853296",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -341,7 +356,7 @@ const Index = () => {
     {
       id: "status-52174639",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -352,14 +367,14 @@ const Index = () => {
       comments: 3200,
       media: {
         type: "image" as const,
-        url: "./images485573257456374938/collection19/8.jpg",
+        url: statusMediaImages.creativeMoment,
         alt: "Creative moment"
       }
     },
     {
       id: "status-41739582",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -372,7 +387,7 @@ const Index = () => {
     {
       id: "status-87162493",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -385,7 +400,7 @@ const Index = () => {
     {
       id: "status-23685917",
       user: {
-        name: "Lanna",
+        name: "Creator",
         avatar: portrait1,
         verified: true
       },
@@ -396,7 +411,7 @@ const Index = () => {
       comments: 1234,
       media: {
         type: "image" as const,
-        url: "./images485573257456374938/collection5/11.jpg",
+        url: statusMediaImages.creativeSession,
         alt: "Creative Session"
       }
     }
@@ -673,10 +688,10 @@ const Index = () => {
                 </div>
 
                 <div className="px-3 py-2 border-t border-border flex-shrink-0">
-                  <p className="text-[10px] text-muted-foreground mb-1.5 text-center">Follow me</p>
+                  <p className="text-[10px] text-muted-foreground mb-1.5 text-center">Follow us</p>
                   <div className="flex items-center justify-center gap-2">
                     <a
-                      href="https://twitter.com/lannaof"
+                      href="https://twitter.com/sixsevencreator"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-7 h-7 rounded-md bg-secondary flex items-center justify-center"
@@ -686,7 +701,7 @@ const Index = () => {
                       </svg>
                     </a>
                     <a
-                      href="https://instagram.com/lannadelulu"
+                      href="https://instagram.com/sixsevencreator"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-7 h-7 rounded-md bg-secondary flex items-center justify-center"
@@ -790,14 +805,14 @@ const Index = () => {
                         </div>
                         <div>
                           <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                            Lanna
+                            SixSeven Creator
                           </h2>
-                          <p className="text-sm text-muted-foreground">23 Exclusive Collections</p>
+                          <p className="text-sm text-muted-foreground">Build Your Content Platform</p>
                         </div>
                       </div>
                       <p className="text-muted-foreground text-sm">
-                        Discover premium photography, art, and exclusive content from Lanna.
-                        Join the community of creative enthusiasts exploring 23 unique visual collections.
+                        Create your exclusive content platform with SixSeven Creator.
+                        Build, preview, and publish premium collections with card-to-crypto payments.
                       </p>
                     </div>
 
@@ -827,18 +842,18 @@ const Index = () => {
                       <div>
                         <h3 className="font-semibold text-foreground mb-4">Connect</h3>
                         <div className="flex gap-3 mb-4">
-                          <a href="https://twitter.com/lannadelulu" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                          <a href="https://twitter.com/sixsevencreator" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                               <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.040 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
                             </svg>
                           </a>
-                          <a href="https://instagram.com/lannadelulu" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                          <a href="https://instagram.com/sixsevencreator" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                               <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.40s-.644-1.44-1.439-1.40z"/>
                             </svg>
                           </a>
                         </div>
-                        <p className="text-sm text-muted-foreground">info@lannadelulu.com</p>
+                        <p className="text-sm text-muted-foreground">support@sixsevencreator.com</p>
                       </div>
                     </div>
                   </div>
@@ -850,7 +865,7 @@ const Index = () => {
                     >
                       <Heart className="w-4 h-4 fill-current text-primary" />
                       <span className="font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                        Unlock All 24 Collections
+                        Unlock All Collections
                       </span>
                     </button>
                     <p className="text-center text-xs text-muted-foreground mb-6">
@@ -860,10 +875,10 @@ const Index = () => {
 
                   <div className="border-t border-border pt-6 text-center">
                     <p className="text-xs text-muted-foreground">
-                      © {new Date().getFullYear()} Lanna. All rights reserved. 
-                      <span className="mx-2">•</span>
+                      © {new Date().getFullYear()} SixSeven Creator. All rights reserved. 
+                      <span className="mx-2">|</span>
                       <button className="bg-transparent border-none text-xs text-muted-foreground underline-none">Privacy Policy</button>
-                      <span className="mx-2">•</span>
+                      <span className="mx-2">|</span>
                       <button className="bg-transparent border-none text-xs text-muted-foreground underline-none">Terms of Service</button>
                     </p>
                   </div>

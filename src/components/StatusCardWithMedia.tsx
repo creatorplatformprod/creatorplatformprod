@@ -1,9 +1,10 @@
-// components/StatusCardWithMedia.tsx - UPDATED WITH SINGLE SHIMMER
+// components/StatusCardWithMedia.tsx - UPDATED WITH SINGLE SHIMMER AND LIVE TIME
 import { useEffect, useRef, useState } from "react";
 import { Heart, Share2, Play, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import { fetchEngagement, registerEngagementShare, registerEngagementView, setEngagementLike } from "@/lib/engagement";
+import { formatRelativeTime } from "@/utils/relativeTime";
 
 interface StatusCardWithMediaProps {
   id: string;
@@ -14,7 +15,7 @@ interface StatusCardWithMediaProps {
   };
   title: string;
   text: string;
-  timestamp: string;
+  timestamp: string | number | Date;
   likes: number;
   comments: number;
   media?: {
@@ -42,8 +43,28 @@ const StatusCardWithMedia = ({
   const [pending, setPending] = useState(false);
   const [showVideoControls, setShowVideoControls] = useState(false);
   const [isMediaLoaded, setIsMediaLoaded] = useState(false);
+  const [displayTime, setDisplayTime] = useState(() => 
+    typeof timestamp === 'string' && !timestamp.includes('T') 
+      ? timestamp 
+      : formatRelativeTime(timestamp)
+  );
   const viewRef = useRef<HTMLDivElement | null>(null);
   const viewTrackedRef = useRef(false);
+
+  // Live update timestamp every minute
+  useEffect(() => {
+    // Skip if timestamp is already a formatted string like "4 hours ago"
+    if (typeof timestamp === 'string' && !timestamp.includes('T')) {
+      setDisplayTime(timestamp);
+      return;
+    }
+    
+    const updateTime = () => setDisplayTime(formatRelativeTime(timestamp));
+    updateTime();
+    
+    const intervalId = window.setInterval(updateTime, 60000);
+    return () => window.clearInterval(intervalId);
+  }, [timestamp]);
 
   useEffect(() => {
     let active = true;
@@ -173,7 +194,7 @@ const StatusCardWithMedia = ({
                   </svg>
                 )}
               </div>
-              <p className="text-xs text-muted-foreground">{timestamp}</p>
+              <p className="text-xs text-muted-foreground">{displayTime}</p>
             </div>
           </div>
         </div>

@@ -463,8 +463,8 @@ const CheckoutPage = () => {
           <div className="pt-4 border-t border-border">
             <p className="text-xs text-muted-foreground">
               Need help? Contact support at{" "}
-              <a href="mailto:support@lannadelulu.com" className="text-primary hover:text-primary/80 transition-colors">
-                support@lannadelulu.com
+              <a href="mailto:support@sixsevencreator.com" className="text-primary hover:text-primary/80 transition-colors">
+                support@sixsevencreator.com
               </a>
             </p>
           </div>

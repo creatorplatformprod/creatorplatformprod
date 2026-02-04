@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Heart, Share2, MoreHorizontal, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fetchEngagement, registerEngagementShare, registerEngagementView, setEngagementLike } from "@/lib/engagement";
+import { formatRelativeTime } from "@/utils/relativeTime";
 
 interface StatusCardProps {
   id: string;
@@ -12,7 +13,7 @@ interface StatusCardProps {
   };
   title: string;
   text: string;
-  timestamp: string;
+  timestamp: string | number | Date;
   likes: number;
   comments: number;
 }
@@ -31,8 +32,28 @@ const StatusCard = ({
   const [currentShares, setCurrentShares] = useState(0);
   const [currentViews, setCurrentViews] = useState(0);
   const [pending, setPending] = useState(false);
+  const [displayTime, setDisplayTime] = useState(() => 
+    typeof timestamp === 'string' && !timestamp.includes('T') 
+      ? timestamp 
+      : formatRelativeTime(timestamp)
+  );
   const viewRef = useRef<HTMLDivElement | null>(null);
   const viewTrackedRef = useRef(false);
+
+  // Live update timestamp every minute
+  useEffect(() => {
+    // Skip if timestamp is already a formatted string like "4 hours ago"
+    if (typeof timestamp === 'string' && !timestamp.includes('T')) {
+      setDisplayTime(timestamp);
+      return;
+    }
+    
+    const updateTime = () => setDisplayTime(formatRelativeTime(timestamp));
+    updateTime();
+    
+    const intervalId = window.setInterval(updateTime, 60000);
+    return () => window.clearInterval(intervalId);
+  }, [timestamp]);
 
   useEffect(() => {
     let active = true;
@@ -154,7 +175,7 @@ const StatusCard = ({
                   </svg>
                 )}
               </div>
-              <p className="text-xs text-muted-foreground">{timestamp}</p>
+              <p className="text-xs text-muted-foreground">{displayTime}</p>
             </div>
           </div>
         </div>

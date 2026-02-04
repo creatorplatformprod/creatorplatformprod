@@ -97,17 +97,27 @@ const PublicWebsitePreview = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Button
-              onClick={handlePublish}
-              className="px-6"
-              disabled={published && !hasChanges}
-            >
-              {published && !hasChanges
-                ? "Published"
-                : hasChanges && published
-                ? "Update"
-                : "Publish"}
-            </Button>
+            {published && hasChanges ? (
+              <>
+                <Button
+                  onClick={handlePublish}
+                  className="px-6"
+                >
+                  Update Website
+                </Button>
+                <span className="px-3 py-2 text-sm text-green-600 dark:text-green-400 bg-green-500/10 border border-green-500/20 rounded-lg">
+                  Published
+                </span>
+              </>
+            ) : (
+              <Button
+                onClick={handlePublish}
+                className="px-6"
+                disabled={published && !hasChanges}
+              >
+                {published && !hasChanges ? "Published" : "Publish"}
+              </Button>
+            )}
             <AccountMenu currentUser={currentUser} />
           </div>
         </div>
