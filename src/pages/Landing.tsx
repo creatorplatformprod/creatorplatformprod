@@ -61,47 +61,18 @@ const Landing = () => {
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
           
-          {/* Left Side - 67 + 3D Text with gray shadow */}
-          <div className="flex-1 text-center lg:text-left">
-            {/* 67 on left side too */}
-            <div className="mb-4 sm:mb-6">
-              <span 
-                className="text-7xl sm:text-8xl lg:text-9xl font-black leading-none"
-                style={{
-                  background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                67
-              </span>
+          {/* Left Side - Happy Creator Image */}
+          <div className="flex-1 hidden lg:block">
+            <div className="relative">
+              <img 
+                src="https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Happy creator looking at phone"
+                className="w-full max-w-md mx-auto rounded-2xl shadow-2xl object-cover"
+                style={{ aspectRatio: '3/4' }}
+              />
+              {/* Subtle gradient overlay */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
             </div>
-            
-            <h1 
-              className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight"
-              style={{
-                textShadow: '2px 2px 0px #6b7280, 4px 4px 0px #4b5563, 6px 6px 12px rgba(0,0,0,0.3)'
-              }}
-            >
-              Sell your content
-            </h1>
-            <h2 
-              className="text-2xl sm:text-3xl lg:text-4xl font-black text-white mt-2"
-              style={{
-                textShadow: '2px 2px 0px #6b7280, 4px 4px 0px #4b5563, 6px 6px 12px rgba(0,0,0,0.3)'
-              }}
-            >
-              get paid
-            </h2>
-            <p 
-              className="text-lg sm:text-xl lg:text-2xl font-bold text-white/90 mt-3"
-              style={{
-                textShadow: '1px 1px 0px #6b7280, 2px 2px 8px rgba(0,0,0,0.2)'
-              }}
-            >
-              card 2 crypto
-            </p>
           </div>
 
           {/* Right - Auth Form with 67 on top */}
