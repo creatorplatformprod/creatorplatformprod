@@ -1,4 +1,4 @@
-import { Moon, Sun, Search, Flame } from "lucide-react";
+import { Moon, Sun, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "next-themes";
@@ -82,21 +82,21 @@ const FeedHeader = ({
         <div className="flex items-center justify-between gap-4 lg:gap-8">
           <div 
             onClick={handleLogoClick}
-            className={`flex items-center gap-3 lg:gap-4 flex-shrink-0 transition-opacity ${
+            className={`flex items-center gap-3 flex-shrink-0 transition-opacity ${
               isDesktop ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
             }`}
           >
-            <div className="relative">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-                <Flame className="w-6 h-6 text-primary-foreground fill-current" />
+            {/* 67 Logo */}
+            <div className="flex items-center gap-2">
+              <span className="text-3xl font-black bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent leading-none">
+                67
+              </span>
+              <div className="hidden sm:block">
+                <h1 className="text-lg font-bold text-foreground leading-tight">
+                  {title}
+                </h1>
+                <p className="text-[10px] text-muted-foreground">{subtitle}</p>
               </div>
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse"></div>
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                {title}
-              </h1>
-              <p className="text-xs text-muted-foreground -mt-1">{subtitle}</p>
             </div>
           </div>
 

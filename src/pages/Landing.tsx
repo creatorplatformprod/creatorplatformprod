@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { LockKeyhole, ArrowRight, Sparkles, Palette, CreditCard, Globe, Zap, Shield } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { api } from '@/lib/api';
 
 const Landing = () => {
@@ -57,224 +57,170 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen feed-bg">
-      <div className="relative overflow-hidden">
-        <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/15 blur-3xl" />
-        <div className="absolute bottom-[-140px] right-[-80px] h-96 w-96 rounded-full bg-accent/15 blur-3xl" />
+    <div className="min-h-screen feed-bg flex items-center justify-center">
+      <div className="relative overflow-hidden w-full">
+        {/* Subtle background elements */}
+        <div className="absolute top-0 left-1/4 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 sm:gap-12 items-start">
-            {/* Left Column - Redesigned */}
-            <div className="space-y-8">
-              {/* Brand Block */}
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs text-primary font-medium">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  SixSeven Creator Platform
-                </div>
-                <h1 className="font-fraunces text-4xl sm:text-5xl md:text-6xl font-semibold text-foreground leading-[1.1]">
-                  Build your{' '}
-                  <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                    content empire
-                  </span>
-                </h1>
-                <p className="font-space-grotesk text-base sm:text-lg text-muted-foreground max-w-lg leading-relaxed">
-                  Create, preview, and publish premium content with seamless card-to-crypto payments. 
-                  Your audience, your platform, your rules.
-                </p>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+            
+            {/* Left - 67 Branding */}
+            <div className="flex-1 text-center lg:text-left">
+              {/* 67 Logo */}
+              <div className="mb-6">
+                <span className="text-8xl sm:text-9xl lg:text-[160px] font-black bg-gradient-to-br from-primary via-primary to-accent bg-clip-text text-transparent leading-none">
+                  67
+                </span>
               </div>
-
-              {/* Preview Cards */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 p-4 border border-primary/20 hover:border-primary/40 transition-all">
-                  <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center mb-3">
-                    <Palette className="w-5 h-5 text-primary" />
-                  </div>
-                  <h3 className="font-space-grotesk font-semibold text-foreground text-sm mb-1">Collections</h3>
-                  <p className="text-xs text-muted-foreground">Organize media into premium bundles</p>
-                </div>
-                <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-accent/20 to-primary/10 p-4 border border-accent/20 hover:border-accent/40 transition-all">
-                  <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center mb-3">
-                    <CreditCard className="w-5 h-5 text-accent" />
-                  </div>
-                  <h3 className="font-space-grotesk font-semibold text-foreground text-sm mb-1">Payments</h3>
-                  <p className="text-xs text-muted-foreground">Card to crypto, instant access</p>
-                </div>
-              </div>
-
-              {/* Workflow Tiles */}
-              <div className="space-y-3">
-                <p className="font-space-grotesk text-xs uppercase tracking-wider text-muted-foreground">How it works</p>
-                <div className="flex flex-wrap gap-2">
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border/60">
-                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">1</div>
-                    <span className="text-sm text-foreground">Sign up</span>
-                  </div>
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border/60">
-                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">2</div>
-                    <span className="text-sm text-foreground">Upload content</span>
-                  </div>
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border/60">
-                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">3</div>
-                    <span className="text-sm text-foreground">Set prices</span>
-                  </div>
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border/60">
-                    <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
-                      <Zap className="w-3 h-3 text-green-500" />
-                    </div>
-                    <span className="text-sm text-foreground">Go live</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Trust Indicators */}
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <div className="flex items-center gap-1.5">
-                  <Shield className="w-4 h-4 text-green-500" />
-                  <span>Secure payments</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Globe className="w-4 h-4 text-primary" />
-                  <span>Global access</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <LockKeyhole className="w-4 h-4 text-accent" />
-                  <span>Creator control</span>
-                </div>
-              </div>
+              
+              {/* Brand name */}
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
+                67creator
+              </h1>
+              
+              {/* Tagline */}
+              <p className="text-muted-foreground text-base sm:text-lg max-w-md mx-auto lg:mx-0">
+                Create and monetize your exclusive content
+              </p>
             </div>
 
-            <div className="post-card rounded-2xl p-5 sm:p-6 lg:p-8 shadow-lg border border-border/60 bg-background/85 backdrop-blur">
-              <div className="flex gap-4 mb-5 sm:mb-6">
-                <Button
-                  variant={!isLogin ? 'default' : 'ghost'}
-                  onClick={() => setIsLogin(false)}
-                  className="flex-1"
-                >
-                  Sign Up
-                </Button>
-                <Button
-                  variant={isLogin ? 'default' : 'ghost'}
-                  onClick={() => setIsLogin(true)}
-                  className="flex-1"
-                >
-                  Login
-                </Button>
-              </div>
-
-              {error && (
-                <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                  <p className="text-sm text-destructive">{error}</p>
+            {/* Right - Auth Form */}
+            <div className="w-full max-w-md">
+              <div className="post-card rounded-2xl p-6 sm:p-8 shadow-xl border border-border/60 bg-background/90 backdrop-blur">
+                {/* Tabs */}
+                <div className="flex gap-2 mb-6">
+                  <Button
+                    variant={!isLogin ? 'default' : 'ghost'}
+                    onClick={() => setIsLogin(false)}
+                    className="flex-1"
+                  >
+                    Sign Up
+                  </Button>
+                  <Button
+                    variant={isLogin ? 'default' : 'ghost'}
+                    onClick={() => setIsLogin(true)}
+                    className="flex-1"
+                  >
+                    Login
+                  </Button>
                 </div>
-              )}
 
-              <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
-                {!isLogin && (
-                  <>
-                    <div>
-                      <label className="text-sm font-medium text-foreground mb-1.5 sm:mb-2 block">
-                        Username
-                      </label>
-                      <Input
-                        type="text"
-                        placeholder="Choose a username"
-                        value={formData.username}
-                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                        required
-                        disabled={loading}
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-foreground mb-1.5 sm:mb-2 block">
-                        Display Name
-                      </label>
-                      <Input
-                        type="text"
-                        placeholder="Your display name"
-                        value={formData.displayName}
-                        onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
-                        required
-                        disabled={loading}
-                      />
-                    </div>
-                  </>
+                {error && (
+                  <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                    <p className="text-sm text-destructive">{error}</p>
+                  </div>
                 )}
 
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 sm:mb-2 block">
-                    Email
-                  </label>
-                  <Input
-                    type="email"
-                    placeholder="your@email.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                    disabled={loading}
-                  />
-                </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {!isLogin && (
+                    <>
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-2 block">
+                          Username
+                        </label>
+                        <Input
+                          type="text"
+                          placeholder="Choose a username"
+                          value={formData.username}
+                          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                          required
+                          disabled={loading}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-2 block">
+                          Display Name
+                        </label>
+                        <Input
+                          type="text"
+                          placeholder="Your display name"
+                          value={formData.displayName}
+                          onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
+                          required
+                          disabled={loading}
+                        />
+                      </div>
+                    </>
+                  )}
 
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 sm:mb-2 block">
-                    Password
-                  </label>
-                  <Input
-                    type="password"
-                    placeholder="********"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    required
-                    disabled={loading}
-                  />
-                </div>
-
-                <Button type="submit" className="w-full" size="lg" disabled={loading}>
-                  {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Create Account')}
-                  {!loading && <ArrowRight className="w-4 h-4 ml-2" />}
-                </Button>
-              </form>
-
-              <div className="mt-5 sm:mt-6">
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-border" />
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">
+                      Email
+                    </label>
+                    <Input
+                      type="email"
+                      placeholder="your@email.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      required
+                      disabled={loading}
+                    />
                   </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-post-bg px-2 text-muted-foreground">Or continue with</span>
+
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">
+                      Password
+                    </label>
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      required
+                      disabled={loading}
+                    />
                   </div>
+
+                  <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                    {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Get Started')}
+                    {!loading && <ArrowRight className="w-4 h-4 ml-2" />}
+                  </Button>
+                </form>
+
+                <div className="mt-6">
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-border" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-3 text-muted-foreground">or</span>
+                    </div>
+                  </div>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full mt-4"
+                    onClick={handleGoogleAuth}
+                  >
+                    <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                      <path
+                        fill="currentColor"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                      />
+                      <path
+                        fill="currentColor"
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      />
+                      <path
+                        fill="currentColor"
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                      />
+                      <path
+                        fill="currentColor"
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                      />
+                    </svg>
+                    Continue with Google
+                  </Button>
                 </div>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full mt-4"
-                  onClick={handleGoogleAuth}
-                >
-                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                    <path
-                      fill="currentColor"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    />
-                  </svg>
-                  Continue with Google
-                </Button>
+                <p className="text-xs text-muted-foreground text-center mt-6">
+                  By signing up, you agree to our Terms of Service and Privacy Policy
+                </p>
               </div>
-
-              <p className="text-[11px] sm:text-xs text-muted-foreground text-center mt-5 sm:mt-6">
-                By signing up, you agree to our Terms of Service and Privacy Policy
-              </p>
             </div>
           </div>
         </div>

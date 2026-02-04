@@ -574,9 +574,12 @@ const CreatorDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
           {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
-              <div className="text-center sm:text-left">
-                <h1 className="text-3xl font-bold text-foreground">Creator Dashboard</h1>
-                <p className="text-muted-foreground mt-1">Manage your content and profile</p>
+              <div className="text-center sm:text-left flex items-center gap-3 justify-center sm:justify-start">
+                <span className="text-4xl font-black bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">67</span>
+                <div>
+                  <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+                  <p className="text-muted-foreground text-sm">Manage your content</p>
+                </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto sm:items-center sm:justify-end">
                 {hasPublicChanges && (

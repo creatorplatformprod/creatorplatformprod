@@ -87,13 +87,16 @@ const PublicWebsitePreview = () => {
             <Button variant="outline" onClick={() => navigate("/dashboard")}>
               Back
             </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                Public Website Preview
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Desktop and mobile views update live as you edit your profile.
-              </p>
+            <div className="flex items-center gap-3">
+              <span className="text-3xl font-black bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">67</span>
+              <div>
+                <h1 className="text-xl font-bold text-foreground">
+                  Preview
+                </h1>
+                <p className="text-xs text-muted-foreground">
+                  Desktop and mobile views update live
+                </p>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
