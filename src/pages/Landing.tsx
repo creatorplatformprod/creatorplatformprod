@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowRight, Moon, Sun, X, Cookie } from 'lucide-react';
+import { ArrowRight, X, Cookie } from 'lucide-react';
 import { api } from '@/lib/api';
 
 // Toggle between images to test - change this to 1 or 2
@@ -19,12 +19,6 @@ const Landing = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showBanner, setShowBanner] = useState(true);
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark');
-    }
-    return true;
-  });
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -32,16 +26,6 @@ const Landing = () => {
     displayName: ''
   });
   const [showCookies, setShowCookies] = useState(false);
-
-  const toggleTheme = () => {
-    const newIsDark = !isDark;
-    setIsDark(newIsDark);
-    if (newIsDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,13 +67,29 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen feed-bg flex flex-col">
+    <div className="min-h-screen feed-bg flex flex-col relative">
+      {/* Mobile only: full-page blurred background */}
+      <div className="fixed inset-0 z-0 md:hidden" aria-hidden>
+        <img
+          src={IMAGES[2]}
+          alt=""
+          className="w-full h-full object-cover opacity-40"
+          style={{ transform: 'scale(1.5) translateY(-8%)' }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(14, 165, 233, 0.15) 0%, rgba(2, 132, 199, 0.10) 40%, hsl(var(--background) / 0.8) 100%)'
+          }}
+        />
+      </div>
+
       {/* Promo Banner */}
       {showBanner && (
-        <div className="bg-secondary border-b border-border text-foreground py-2.5 px-4 text-center relative">
+        <div className="relative z-10 bg-secondary border-b border-border text-foreground py-2.5 px-4 text-center">
           <p className="text-xs sm:text-sm leading-relaxed pr-6">
             <span className="hidden sm:inline">Try SixSevenCreator free for 1 month — No credit card required</span>
-            <span className="sm:hidden">Free for 1 month</span>
+            <span className="sm:hidden">Start your 1-month free trial — no credit card required.</span>
             <button 
               onClick={() => navigate('/pricing')}
               className="ml-2 underline hover:no-underline font-medium"
@@ -106,27 +106,15 @@ const Landing = () => {
         </div>
       )}
 
-      {/* Theme Toggle */}
-      <div className="absolute right-4 z-50" style={{ top: showBanner ? '52px' : '16px' }}>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={toggleTheme}
-          className="rounded-full w-10 h-10 bg-background/80 backdrop-blur"
-        >
-          {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-        </Button>
-      </div>
-
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center px-4 py-6">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-6">
         {/* Main Container */}
         <div className="w-full max-w-5xl">
           {/* Wrapper for 67 positioning */}
           <div className="relative">
             {/* 67 OUTSIDE and BEHIND the card */}
             <div 
-              className="absolute left-1/2 md:left-auto md:right-[26%] -translate-x-1/2 md:translate-x-1/2 z-0 select-none pointer-events-none -top-[74px] sm:-top-20 md:-top-[130px]"
+              className="absolute right-8 md:left-auto md:right-[26%] md:translate-x-1/2 z-0 select-none pointer-events-none -top-[74px] sm:-top-20 md:-top-[130px]"
             >
               <span 
                 className="text-[100px] sm:text-[140px] md:text-[180px] font-black leading-none"
@@ -147,7 +135,7 @@ const Landing = () => {
               {/* Left - Image with floating text */}
               <div className="md:w-1/2 relative hidden md:block">
                 <img 
-                  src={IMAGES[IMAGE_OPTION as keyof typeof IMAGES]}
+                  src={IMAGES[2]}
                   alt="Creator"
                   className="w-full h-full object-cover absolute inset-0"
                 />
@@ -178,14 +166,14 @@ const Landing = () => {
                   <Button
                     variant={!isLogin ? 'default' : 'ghost'}
                     onClick={() => setIsLogin(false)}
-                    className="flex-1"
+                    className={`flex-1 ${!isLogin ? 'btn-67' : 'hover-foreground'}`}
                   >
                     Sign Up
                   </Button>
                   <Button
                     variant={isLogin ? 'default' : 'ghost'}
                     onClick={() => setIsLogin(true)}
-                    className="flex-1"
+                    className={`flex-1 ${isLogin ? 'btn-67' : 'hover-foreground'}`}
                   >
                     Login
                   </Button>
@@ -257,7 +245,7 @@ const Landing = () => {
                     />
                   </div>
 
-                  <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                  <Button type="submit" className="w-full btn-67" size="lg" disabled={loading}>
                     {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Get Started')}
                     {!loading && <ArrowRight className="w-4 h-4 ml-2" />}
                   </Button>
@@ -276,7 +264,7 @@ const Landing = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full mt-3"
+                    className="w-full mt-3 hover-foreground"
                     onClick={handleGoogleAuth}
                   >
                     <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
@@ -322,7 +310,7 @@ const Landing = () => {
             <Button
               size="sm"
               onClick={() => setShowCookies(false)}
-              className="w-full"
+              className="w-full btn-67"
             >
               Accept All Cookies
             </Button>
@@ -330,7 +318,7 @@ const Landing = () => {
               size="sm"
               variant="outline"
               onClick={() => setShowCookies(false)}
-              className="w-full"
+              className="w-full hover-foreground"
             >
               Essential Only
             </Button>
