@@ -28,7 +28,9 @@ import {
   Eye,
   BarChart3,
   Twitter,
-  Instagram
+  Instagram,
+  Camera,
+  Upload
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
@@ -77,6 +79,7 @@ const CreatorDashboard = () => {
   const [profileData, setProfileData] = useState({
     displayName: '',
     bio: '',
+    avatar: '',
     walletAddress: '',
     telegramUsername: '',
     telegramBotToken: '',
@@ -89,6 +92,8 @@ const CreatorDashboard = () => {
     unlockAllPrice: 0,
     unlockAllCurrency: 'USD'
   });
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   // Status card form state
   const [statusCardForm, setStatusCardForm] = useState({
@@ -160,6 +165,7 @@ const CreatorDashboard = () => {
         setProfileData({
           displayName: userResult.user.displayName || '',
           bio: userResult.user.bio || '',
+          avatar: userResult.user.avatar || '',
           walletAddress: userResult.user.walletAddress || '',
           telegramUsername: userResult.user.telegramUsername || '',
           telegramBotToken: userResult.user.telegramBotToken || '',
@@ -243,6 +249,26 @@ const CreatorDashboard = () => {
       setError(err.message || 'Failed to save profile');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUploadAvatar = async () => {
+    if (!avatarFile) return;
+    try {
+      setUploadingAvatar(true);
+      setError('');
+      const uploadResult = await api.uploadFile(avatarFile);
+      if (uploadResult?.url) {
+        setProfileData({ ...profileData, avatar: uploadResult.url });
+        setAvatarFile(null);
+        setSuccess('Avatar uploaded! Click Save Profile to apply.');
+      } else {
+        setError('Failed to upload avatar');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to upload avatar');
+    } finally {
+      setUploadingAvatar(false);
     }
   };
 
@@ -571,38 +597,35 @@ const CreatorDashboard = () => {
 
   return (
     <div className="min-h-screen feed-bg">
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
-          {/* Header */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
-              <div className="text-center sm:text-left flex items-center gap-3 justify-center sm:justify-start">
-                <span className="text-4xl font-black bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">67</span>
-                <div>
-                  <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-                  <p className="text-muted-foreground text-sm">Manage your content</p>
+        {/* Top Navbar */}
+        <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex items-center justify-between h-14">
+              {/* Left - Navigation */}
+              <div className="flex items-center gap-6">
+                <span className="text-xl font-bold text-foreground">Creator Data</span>
+                <div className="hidden sm:flex items-center gap-1">
+                  <span className="text-muted-foreground">|</span>
+                  <span className="text-lg font-semibold text-primary ml-1">Dashboard</span>
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto sm:items-center sm:justify-end">
-                {hasPublicChanges && (
-                  <Button
-                    onClick={handleUpdateWebsite}
-                    variant="secondary"
-                    className="w-full sm:w-auto"
-                  >
-                    Update Website
-                  </Button>
-                )}
-                <Button onClick={handlePreviewPublic} variant="outline" className="w-full sm:w-auto">
+              
+              {/* Right - Actions */}
+              <div className="flex items-center gap-2">
+                <Button onClick={handlePreviewPublic} variant="ghost" size="sm" className="hidden sm:flex">
                   <Eye className="w-4 h-4 mr-2" />
-                  Preview Public
+                  Preview
                 </Button>
-                <Button onClick={handlePublicWebsite} className="w-full sm:w-auto">
-                  {isPublicPublished && !hasPublicChanges ? 'Public Website' : 'Publish Website'}
+                <Button onClick={handlePublicWebsite} size="sm">
+                  Public Website
                 </Button>
-                <div className="flex justify-center sm:justify-end">
-                  <AccountMenu currentUser={user} />
-                </div>
+                <AccountMenu currentUser={user} />
               </div>
             </div>
+          </div>
+        </nav>
+
+        <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
 
         {/* Success/Error Messages */}
         {infoMessage && (
@@ -695,6 +718,47 @@ const CreatorDashboard = () => {
         {activeTab === 'profile' && (
           <div className="post-card rounded-xl p-6 space-y-6">
             <h2 className="text-2xl font-bold text-foreground">Profile Settings</h2>
+
+            {/* Profile Picture Upload */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-secondary/30 rounded-xl">
+              <div className="relative">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-secondary border-2 border-border">
+                  {profileData.avatar ? (
+                    <img 
+                      src={profileData.avatar} 
+                      alt="Profile" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Camera className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <h3 className="font-semibold text-foreground mb-1">Profile Picture</h3>
+                <p className="text-xs text-muted-foreground mb-3">
+                  This will be shown on your public website and preview
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
+                    className="text-sm"
+                  />
+                  <Button
+                    onClick={handleUploadAvatar}
+                    disabled={!avatarFile || uploadingAvatar}
+                    size="sm"
+                  >
+                    <Upload className="w-4 h-4 mr-1" />
+                    {uploadingAvatar ? 'Uploading...' : 'Upload'}
+                  </Button>
+                </div>
+              </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>

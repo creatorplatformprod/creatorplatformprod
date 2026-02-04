@@ -100,42 +100,30 @@ const PublicWebsitePreview = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {published && hasChanges ? (
-              <>
-                <Button
-                  onClick={handlePublish}
-                  className="px-6"
-                >
-                  Update Website
-                </Button>
-                <span className="px-3 py-2 text-sm text-green-600 dark:text-green-400 bg-green-500/10 border border-green-500/20 rounded-lg">
-                  Published
-                </span>
-              </>
-            ) : (
-              <Button
-                onClick={handlePublish}
-                className="px-6"
-                disabled={published && !hasChanges}
-              >
-                {published && !hasChanges ? "Published" : "Publish"}
+            {hasChanges ? (
+              <Button onClick={handlePublish} className="px-6">
+                Save Changes
               </Button>
+            ) : (
+              <span className="px-4 py-2 text-sm text-muted-foreground bg-secondary/50 border border-border rounded-lg">
+                {published ? "Changes published" : "No changes made"}
+              </span>
             )}
             <AccountMenu currentUser={currentUser} />
           </div>
         </div>
 
-        {published && !hasChanges && (
-          <div className="mb-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
-            <p className="text-sm text-green-600 dark:text-green-400">
-              Published. Your public website is now available.
+        {hasChanges && (
+          <div className="mb-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+            <p className="text-sm text-amber-600 dark:text-amber-400">
+              You have unsaved changes. Click "Save Changes" to publish them.
             </p>
           </div>
         )}
-        {published && hasChanges && (
-          <div className="mb-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-            <p className="text-sm text-amber-600 dark:text-amber-400">
-              You have unpublished changes. Publish to update your public site.
+        {!hasChanges && published && (
+          <div className="mb-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+            <p className="text-sm text-green-600 dark:text-green-400">
+              All changes are published. Your public website is up to date.
             </p>
           </div>
         )}
