@@ -638,10 +638,10 @@ const CreatorDashboard = () => {
                   onClick={handlePreviewPublic} 
                   variant="ghost" 
                   size="sm" 
-                  className="hidden sm:flex hover-foreground transition-colors"
+                  className="flex hover-foreground transition-colors"
                 >
-                  <Eye className="w-4 h-4 mr-2" />
-                  Preview
+                  <Eye className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Preview</span>
                 </Button>
                 <Button 
                   onClick={handlePublicWebsite} 
