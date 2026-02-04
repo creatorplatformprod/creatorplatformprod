@@ -18,6 +18,7 @@ import Collections1849929295832448 from "./pages/Collections1849929295832448";
 import CheckoutPage from "./pages/CheckoutPage";
 import TipCheckoutPage from "./pages/TipCheckoutPage";
 import AuthCallback from "./pages/AuthCallback";
+import Pricing from "./pages/Pricing";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
           <Routes>
             {/* Landing Page - must be first */}
             <Route path="/" element={<Landing />} />
+            <Route path="/pricing" element={<Pricing />} />
             
             {/* Creator Platform Routes */}
             <Route path="/dashboard" element={<CreatorDashboard />} />

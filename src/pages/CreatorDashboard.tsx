@@ -30,7 +30,9 @@ import {
   Twitter,
   Instagram,
   Camera,
-  Upload
+  Upload,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
@@ -39,6 +41,26 @@ const CreatorDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'profile' | 'status-cards' | 'collections' | 'analytics'>('profile');
   const [user, setUser] = useState<any>(null);
+  
+  // Theme state
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return true;
+  });
+
+  const toggleTheme = () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    if (newTheme) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
   const [statusCards, setStatusCards] = useState<any[]>([]);
   const [collections, setCollections] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -616,8 +638,20 @@ const CreatorDashboard = () => {
                   <Eye className="w-4 h-4 mr-2" />
                   Preview
                 </Button>
-                <Button onClick={handlePublicWebsite} size="sm">
+                <Button 
+                  onClick={handlePublicWebsite} 
+                  size="sm"
+                  className="bg-sky-500 hover:bg-sky-600 text-white"
+                >
                   Public Website
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={toggleTheme}
+                  className="rounded-full w-9 h-9"
+                >
+                  {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                 </Button>
                 <AccountMenu currentUser={user} />
               </div>
@@ -914,7 +948,7 @@ const CreatorDashboard = () => {
               </div>
             </div>
 
-            <Button onClick={handleSaveProfile} className="w-full md:w-auto">
+            <Button onClick={handleSaveProfile} className="w-full md:w-auto bg-sky-500 hover:bg-sky-600 text-white">
               <Save className="w-4 h-4 mr-2" />
               Save Profile
             </Button>
@@ -989,7 +1023,7 @@ const CreatorDashboard = () => {
                   </div>
                 )}
 
-                <Button onClick={handleAddStatusCard} className="w-full">
+                <Button onClick={handleAddStatusCard} className="w-full bg-sky-500 hover:bg-sky-600 text-white">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Status Card
                 </Button>
@@ -1063,7 +1097,7 @@ const CreatorDashboard = () => {
                   </select>
                 </div>
               </div>
-              <Button onClick={handleSaveUnlockAllPrice} className="w-full mt-4">
+              <Button onClick={handleSaveUnlockAllPrice} className="w-full mt-4 bg-sky-500 hover:bg-sky-600 text-white">
                 <Save className="w-4 h-4 mr-2" />
                 Save Unlock Price
               </Button>
@@ -1138,7 +1172,7 @@ const CreatorDashboard = () => {
                   />
                 </div>
 
-                <Button onClick={handleAddCollection} className="w-full">
+                <Button onClick={handleAddCollection} className="w-full bg-sky-500 hover:bg-sky-600 text-white">
                   <Plus className="w-4 h-4 mr-2" />
                   Create Collection
                 </Button>
@@ -1182,7 +1216,7 @@ const CreatorDashboard = () => {
                   type="button"
                   onClick={handleUploadCollectionMedia}
                   disabled={uploadingCollectionMedia}
-                  className="w-full"
+                  className="w-full bg-sky-500 hover:bg-sky-600 text-white"
                 >
                   {uploadingCollectionMedia ? 'Uploading...' : 'Upload Media'}
                 </Button>

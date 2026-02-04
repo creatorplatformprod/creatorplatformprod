@@ -2,20 +2,46 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Moon, Sun, X, Cookie } from 'lucide-react';
 import { api } from '@/lib/api';
+
+// Toggle between images to test - change this to 1 or 2
+const IMAGE_OPTION = 1;
+
+const IMAGES = {
+  1: 'https://images.pexels.com/photos/7219129/pexels-photo-7219129.jpeg?auto=compress&cs=tinysrgb&w=800',
+  2: 'https://images.pexels.com/photos/7081145/pexels-photo-7081145.jpeg?auto=compress&cs=tinysrgb&w=800'
+};
 
 const Landing = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showBanner, setShowBanner] = useState(true);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return true;
+  });
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
     displayName: ''
   });
+  const [showCookies, setShowCookies] = useState(false);
+
+  const toggleTheme = () => {
+    const newIsDark = !isDark;
+    setIsDark(newIsDark);
+    if (newIsDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,33 +83,53 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen feed-bg flex items-center justify-center">
-      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-          
-          {/* Left Side - Happy Creator Image */}
-          <div className="flex-1 hidden lg:block">
-            <div className="relative">
-              <img 
-                src="https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&cs=tinysrgb&w=800"
-                alt="Happy creator looking at phone"
-                className="w-full max-w-md mx-auto rounded-2xl shadow-2xl object-cover"
-                style={{ aspectRatio: '3/4' }}
-              />
-              {/* Subtle gradient overlay */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-            </div>
-          </div>
+    <div className="min-h-screen feed-bg flex flex-col">
+      {/* Promo Banner */}
+      {showBanner && (
+        <div className="bg-secondary border-b border-border text-foreground py-2.5 px-4 text-center relative">
+          <p className="text-xs sm:text-sm leading-relaxed pr-6">
+            <span className="hidden sm:inline">Try SixSevenCreator free for 1 month — No credit card required</span>
+            <span className="sm:hidden">Free for 1 month</span>
+            <button 
+              onClick={() => navigate('/pricing')}
+              className="ml-2 underline hover:no-underline font-medium"
+            >
+              Pricing
+            </button>
+          </p>
+          <button 
+            onClick={() => setShowBanner(false)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
-          {/* Right - Auth Form with 67 on top */}
-          <div className="w-full max-w-md relative">
-            {/* 67 Behind the form - centered on top, 77% opacity */}
+      {/* Theme Toggle */}
+      <div className="absolute right-4 z-50" style={{ top: showBanner ? '52px' : '16px' }}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={toggleTheme}
+          className="rounded-full w-10 h-10 bg-background/80 backdrop-blur"
+        >
+          {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+        </Button>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex items-center justify-center px-4 py-6">
+        {/* Main Container */}
+        <div className="w-full max-w-5xl">
+          {/* Wrapper for 67 positioning */}
+          <div className="relative">
+            {/* 67 OUTSIDE and BEHIND the card */}
             <div 
-              className="absolute left-1/2 -translate-x-1/2 -top-16 sm:-top-20 select-none pointer-events-none z-0"
-              style={{ opacity: 0.77 }}
+              className="absolute left-1/2 md:left-auto md:right-[26%] -translate-x-1/2 md:translate-x-1/2 z-0 select-none pointer-events-none -top-[74px] sm:-top-20 md:-top-[130px]"
             >
               <span 
-                className="text-[140px] sm:text-[180px] lg:text-[200px] font-black leading-none"
+                className="text-[100px] sm:text-[140px] md:text-[180px] font-black leading-none"
                 style={{
                   background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%)',
                   WebkitBackgroundClip: 'text',
@@ -95,147 +141,202 @@ const Landing = () => {
               </span>
             </div>
 
-            {/* Form Card */}
-            <div className="relative z-10 post-card rounded-2xl p-5 sm:p-6 md:p-8 shadow-2xl border border-border/60 bg-background/95 backdrop-blur-sm mt-16 sm:mt-20">
-              {/* Tabs */}
-              <div className="flex gap-2 mb-5">
-                <Button
-                  variant={!isLogin ? 'default' : 'ghost'}
-                  onClick={() => setIsLogin(false)}
-                  className="flex-1 text-sm sm:text-base"
-                >
-                  Sign Up
-                </Button>
-                <Button
-                  variant={isLogin ? 'default' : 'ghost'}
-                  onClick={() => setIsLogin(true)}
-                  className="flex-1 text-sm sm:text-base"
-                >
-                  Login
-                </Button>
+            {/* Connected Card - Image + Form */}
+            <div className="relative z-10 flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-xl border border-border/40 bg-background/95 backdrop-blur mt-16 sm:mt-20 max-w-5xl mx-auto">
+              
+              {/* Left - Image with floating text */}
+              <div className="md:w-1/2 relative hidden md:block">
+                <img 
+                  src={IMAGES[IMAGE_OPTION as keyof typeof IMAGES]}
+                  alt="Creator"
+                  className="w-full h-full object-cover absolute inset-0"
+                />
+                {/* Dark overlay for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                
+                {/* Floating sentence - Bottom Left */}
+                <div className="absolute bottom-4 left-4 right-4">
+                  <p 
+                    className="text-xl font-bold text-white leading-tight"
+                    style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
+                  >
+                    Create content. Get paid.
+                  </p>
+                  <p 
+                    className="text-sm text-white/80 mt-1"
+                    style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}
+                  >
+                    Card to crypto, instantly.
+                  </p>
+                </div>
               </div>
 
-              {error && (
-                <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                  <p className="text-sm text-destructive">{error}</p>
+              {/* Right - Form */}
+              <div className="md:w-1/2 p-8">
+                {/* Tabs */}
+                <div className="flex gap-2 mb-4">
+                  <Button
+                    variant={!isLogin ? 'default' : 'ghost'}
+                    onClick={() => setIsLogin(false)}
+                    className="flex-1"
+                  >
+                    Sign Up
+                  </Button>
+                  <Button
+                    variant={isLogin ? 'default' : 'ghost'}
+                    onClick={() => setIsLogin(true)}
+                    className="flex-1"
+                  >
+                    Login
+                  </Button>
                 </div>
-              )}
 
-              <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-                {!isLogin && (
-                  <>
-                    <div>
-                      <label className="text-xs sm:text-sm font-medium text-foreground mb-1.5 block">
-                        Username
-                      </label>
-                      <Input
-                        type="text"
-                        placeholder="Choose a username"
-                        value={formData.username}
-                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                        required
-                        disabled={loading}
-                        className="text-sm sm:text-base"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs sm:text-sm font-medium text-foreground mb-1.5 block">
-                        Display Name
-                      </label>
-                      <Input
-                        type="text"
-                        placeholder="Your display name"
-                        value={formData.displayName}
-                        onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
-                        required
-                        disabled={loading}
-                        className="text-sm sm:text-base"
-                      />
-                    </div>
-                  </>
+                {error && (
+                  <div className="mb-3 p-2.5 bg-destructive/10 border border-destructive/20 rounded-lg">
+                    <p className="text-sm text-destructive">{error}</p>
+                  </div>
                 )}
 
-                <div>
-                  <label className="text-xs sm:text-sm font-medium text-foreground mb-1.5 block">
-                    Email
-                  </label>
-                  <Input
-                    type="email"
-                    placeholder="your@email.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                    disabled={loading}
-                    className="text-sm sm:text-base"
-                  />
-                </div>
+                <form onSubmit={handleSubmit} className="space-y-3">
+                  {!isLogin && (
+                    <>
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-1.5 block">
+                          Username
+                        </label>
+                        <Input
+                          type="text"
+                          placeholder="Choose a username"
+                          value={formData.username}
+                          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                          required
+                          disabled={loading}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-1.5 block">
+                          Display Name
+                        </label>
+                        <Input
+                          type="text"
+                          placeholder="Your display name"
+                          value={formData.displayName}
+                          onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
+                          required
+                          disabled={loading}
+                        />
+                      </div>
+                    </>
+                  )}
 
-                <div>
-                  <label className="text-xs sm:text-sm font-medium text-foreground mb-1.5 block">
-                    Password
-                  </label>
-                  <Input
-                    type="password"
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    required
-                    disabled={loading}
-                    className="text-sm sm:text-base"
-                  />
-                </div>
-
-                <Button type="submit" className="w-full text-sm sm:text-base" size="lg" disabled={loading}>
-                  {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Get Started')}
-                  {!loading && <ArrowRight className="w-4 h-4 ml-2" />}
-                </Button>
-              </form>
-
-              <div className="mt-5">
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-border" />
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">
+                      Email
+                    </label>
+                    <Input
+                      type="email"
+                      placeholder="your@email.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      required
+                      disabled={loading}
+                    />
                   </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-3 text-muted-foreground">or</span>
+
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">
+                      Password
+                    </label>
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      required
+                      disabled={loading}
+                    />
                   </div>
+
+                  <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                    {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Get Started')}
+                    {!loading && <ArrowRight className="w-4 h-4 ml-2" />}
+                  </Button>
+                </form>
+
+                <div className="mt-4">
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-border" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">or</span>
+                    </div>
+                  </div>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full mt-3"
+                    onClick={handleGoogleAuth}
+                  >
+                    <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                      <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                      <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                      <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    </svg>
+                    Continue with Google
+                  </Button>
                 </div>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full mt-4 text-sm sm:text-base"
-                  onClick={handleGoogleAuth}
-                >
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" viewBox="0 0 24 24">
-                    <path
-                      fill="currentColor"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    />
-                  </svg>
-                  Continue with Google
-                </Button>
+                <p className="text-xs text-muted-foreground text-center mt-4">
+                  By signing up, you agree to our Terms of Service and Privacy Policy
+                </p>
               </div>
-
-              <p className="text-[10px] sm:text-xs text-muted-foreground text-center mt-5">
-                By signing up, you agree to our Terms of Service and Privacy Policy
-              </p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Cookies - Bottom Left */}
+      {!showCookies ? (
+        <button
+          onClick={() => setShowCookies(true)}
+          className="fixed bottom-6 left-6 w-12 h-12 bg-background border border-border rounded-full shadow-lg flex items-center justify-center z-[100] hover:bg-secondary transition-colors"
+          title="Cookie Settings"
+        >
+          <Cookie className="w-5 h-5 text-foreground" />
+        </button>
+      ) : (
+        <div className="fixed bottom-6 left-6 max-w-sm bg-background border border-border rounded-xl shadow-2xl p-5 z-[100]">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="font-semibold text-foreground">Cookie Settings</h4>
+            <button onClick={() => setShowCookies(false)} className="text-muted-foreground hover:text-foreground">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
+            We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. Essential cookies are required for basic functionality.
+          </p>
+          <div className="flex flex-col gap-2">
+            <Button
+              size="sm"
+              onClick={() => setShowCookies(false)}
+              className="w-full"
+            >
+              Accept All Cookies
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setShowCookies(false)}
+              className="w-full"
+            >
+              Essential Only
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

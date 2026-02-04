@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import AccountMenu from "@/components/AccountMenu";
 import { api } from "@/lib/api";
+import { Moon, Sun } from "lucide-react";
 
 const PublicWebsitePreview = () => {
   const { username } = useParams();
@@ -10,6 +11,26 @@ const PublicWebsitePreview = () => {
   const [published, setPublished] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  
+  // Theme state for full page (not the frames)
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return true;
+  });
+
+  const toggleTheme = () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    if (newTheme) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
 
   const previewUrl = useMemo(() => {
     if (!username) return "#";
@@ -101,7 +122,7 @@ const PublicWebsitePreview = () => {
           </div>
           <div className="flex items-center gap-3">
             {hasChanges ? (
-              <Button onClick={handlePublish} className="px-6">
+              <Button onClick={handlePublish} className="px-6 bg-sky-500 hover:bg-sky-600 text-white">
                 Save Changes
               </Button>
             ) : (
@@ -109,6 +130,15 @@ const PublicWebsitePreview = () => {
                 {published ? "Changes published" : "No changes made"}
               </span>
             )}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={toggleTheme}
+              className="rounded-full w-9 h-9"
+              title="Toggle page theme (frames have their own toggle)"
+            >
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </Button>
             <AccountMenu currentUser={currentUser} />
           </div>
         </div>
