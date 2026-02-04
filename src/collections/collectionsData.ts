@@ -25,11 +25,12 @@ export interface Collection {
 }
 
 // Pexels URL builder for consistent image sizing
-const pexelsUrl = (photoId: number, width: number = 1280): string =>
+// Using smaller sizes to prevent ERR_INSUFFICIENT_RESOURCES
+const pexelsUrl = (photoId: number, width: number = 640): string =>
   `https://images.pexels.com/photos/${photoId}/pexels-photo-${photoId}.jpeg?auto=compress&cs=tinysrgb&w=${width}&fit=crop`;
 
-const pexelsFull = (photoId: number): string => pexelsUrl(photoId, 1280);
-const pexelsThumb = (photoId: number): string => pexelsUrl(photoId, 400);
+const pexelsFull = (photoId: number): string => pexelsUrl(photoId, 640);
+const pexelsThumb = (photoId: number): string => pexelsUrl(photoId, 280);
 
 // Pexels video URL builder (uses their video CDN)
 const pexelsVideoUrl = (videoId: number): string =>
@@ -122,7 +123,7 @@ export const collections: Record<string, Collection> = {
     id: "1",
     title: "Dripping in Midnight",
     description: "Getting completely soaked in this dark outfit. The red details really stand out against all the black. Just feeling wild and free.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.darkFashion.slice(0, 34)),
+    images: generatePexelsCollectionImages(pexelsPhotoSets.darkFashion.slice(0, 6)),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "2 days ago",
     likes: 23400,
@@ -131,7 +132,7 @@ export const collections: Record<string, Collection> = {
     price: 4.99,
     cardLayout: {
       gridType: "masonry",
-      maxImages: 7,
+      maxImages: 6,
       gridClasses: "grid grid-cols-3 gap-1 h-full",
       imageSpans: { 0: "col-span-2", 3: "row-span-2" }
     }
@@ -141,29 +142,13 @@ export const collections: Record<string, Collection> = {
     id: "2",
     title: "Creature of the Night",
     description: "Halloween is basically my whole vibe. Dark clothes with cool bat-like shapes, shadows everywhere. Gothic but sexy at the same time.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.darkFashion.slice(0, 22), [
+    images: generatePexelsCollectionImages(pexelsPhotoSets.darkFashion.slice(6, 12), [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
       { index: 3, type: 'image' },
       { index: 4, type: 'image' },
-      { index: 5, type: 'image' },
-      { index: 6, type: 'image' },
-      { index: 7, type: 'video' },
-      { index: 8, type: 'video' },
-      { index: 9, type: 'video' },
-      { index: 10, type: 'image' },
-      { index: 11, type: 'image' },
-      { index: 12, type: 'image' },
-      { index: 13, type: 'image' },
-      { index: 14, type: 'image' },
-      { index: 15, type: 'image' },
-      { index: 16, type: 'image' },
-      { index: 17, type: 'image' },
-      { index: 18, type: 'image' },
-      { index: 19, type: 'image' },
-      { index: 20, type: 'image' },
-      { index: 21, type: 'image' },
-      { index: 22, type: 'image' }
+      { index: 5, type: 'video' },
+      { index: 6, type: 'image' }
     ]),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "1 day ago",
@@ -178,21 +163,13 @@ export const collections: Record<string, Collection> = {
     id: "4",
     title: "Netflix & Thrill",
     description: "Wearing this big blue sweater that doesn't cover much. The screen light makes cool shadows on my skin. Movie night just got a lot more interesting.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.cozyHome.slice(0, 14), [
+    images: generatePexelsCollectionImages(pexelsPhotoSets.cozyHome.slice(0, 6), [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
       { index: 3, type: 'image' },
-      { index: 4, type: 'image' },
+      { index: 4, type: 'video' },
       { index: 5, type: 'image' },
-      { index: 6, type: 'image' },
-      { index: 7, type: 'video' },
-      { index: 8, type: 'video' },
-      { index: 9, type: 'image' },
-      { index: 10, type: 'image' },
-      { index: 11, type: 'image' },
-      { index: 12, type: 'image' },
-      { index: 13, type: 'image' },
-      { index: 14, type: 'image' }
+      { index: 6, type: 'image' }
     ]),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "2 days ago",
@@ -212,28 +189,13 @@ export const collections: Record<string, Collection> = {
     id: "5",
     title: "Body as Canvas",
     description: "My body in this beautiful rose gold lighting. Every curve and angle looks amazing. Pink can be really sexy and powerful too.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.pinkArtistic.slice(0, 21), [
+    images: generatePexelsCollectionImages(pexelsPhotoSets.pinkArtistic.slice(0, 6), [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
       { index: 3, type: 'video' },
       { index: 4, type: 'image' },
       { index: 5, type: 'image' },
-      { index: 6, type: 'image' },
-      { index: 7, type: 'image' },
-      { index: 8, type: 'image' },
-      { index: 9, type: 'image' },
-      { index: 10, type: 'image' },
-      { index: 11, type: 'image' },
-      { index: 12, type: 'image' },
-      { index: 13, type: 'image' },
-      { index: 14, type: 'image' },
-      { index: 15, type: 'image' },
-      { index: 16, type: 'image' },
-      { index: 17, type: 'image' },
-      { index: 18, type: 'image' },
-      { index: 19, type: 'image' },
-      { index: 20, type: 'image' },
-      { index: 21, type: 'image' }
+      { index: 6, type: 'image' }
     ]),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "1 day ago",
@@ -243,7 +205,7 @@ export const collections: Record<string, Collection> = {
     price: 9.99,
     cardLayout: {
       gridType: "asymmetric",
-      maxImages: 7,
+      maxImages: 6,
       gridClasses: "grid grid-cols-2 grid-rows-2 gap-1 h-full",
       imageSpans: { 0: "row-span-2" }
     }
@@ -253,23 +215,13 @@ export const collections: Record<string, Collection> = {
     id: "6",
     title: "Dark Elegance",
     description: "Wearing this smooth black silk that fits like a second skin. It's elegant but also a bit playful. That smile after a serious look is what really gets people.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.elegantFormal.slice(0, 16), [
+    images: generatePexelsCollectionImages(pexelsPhotoSets.elegantFormal.slice(0, 6), [
       { index: 1, type: 'image' },
       { index: 2, type: 'video' },
-      { index: 3, type: 'video' },
+      { index: 3, type: 'image' },
       { index: 4, type: 'image' },
       { index: 5, type: 'image' },
-      { index: 6, type: 'image' },
-      { index: 7, type: 'image' },
-      { index: 8, type: 'image' },
-      { index: 9, type: 'image' },
-      { index: 10, type: 'image' },
-      { index: 11, type: 'image' },
-      { index: 12, type: 'video' },
-      { index: 13, type: 'video' },
-      { index: 14, type: 'image' },
-      { index: 15, type: 'image' },
-      { index: 16, type: 'image' }
+      { index: 6, type: 'image' }
     ]),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "4 days ago",
@@ -277,43 +229,20 @@ export const collections: Record<string, Collection> = {
     comments: 1234,
     type: "collection",
     price: 9.99,
-    cardLayout: { gridType: "double", maxImages: 8, gridClasses: "grid grid-cols-2 grid-rows-2 gap-1 h-full" }
+    cardLayout: { gridType: "double", maxImages: 4, gridClasses: "grid grid-cols-2 grid-rows-2 gap-1 h-full" }
   },
 
   "7": {
     id: "7",
     title: "Midnight Muse",
     description: "Black outfit that feels mysterious and alive. Darkness that sticks with you like a great perfume. Every part of this black fabric has its own appeal.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.nightAesthetic.slice(0, 29), [
+    images: generatePexelsCollectionImages(pexelsPhotoSets.nightAesthetic.slice(0, 6), [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
       { index: 3, type: 'image' },
       { index: 4, type: 'image' },
       { index: 5, type: 'video' },
-      { index: 6, type: 'image' },
-      { index: 7, type: 'image' },
-      { index: 8, type: 'image' },
-      { index: 9, type: 'image' },
-      { index: 10, type: 'image' },
-      { index: 11, type: 'image' },
-      { index: 12, type: 'image' },
-      { index: 13, type: 'image' },
-      { index: 14, type: 'image' },
-      { index: 15, type: 'image' },
-      { index: 16, type: 'image' },
-      { index: 17, type: 'image' },
-      { index: 18, type: 'image' },
-      { index: 19, type: 'image' },
-      { index: 20, type: 'image' },
-      { index: 21, type: 'image' },
-      { index: 22, type: 'image' },
-      { index: 23, type: 'image' },
-      { index: 24, type: 'image' },
-      { index: 25, type: 'image' },
-      { index: 26, type: 'image' },
-      { index: 27, type: 'image' },
-      { index: 28, type: 'image' },
-      { index: 29, type: 'image' }
+      { index: 6, type: 'image' }
     ]),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "6 hours ago",
@@ -333,21 +262,13 @@ export const collections: Record<string, Collection> = {
     id: "8",
     title: "Crimson Sophistication",
     description: "Red dress clinging in all the right places. Designer shades reflecting a world she's about to conquer. This isn't confidence—it's a declaration. Unforgettable.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.elegantFormal.slice(0, 14), [
+    images: generatePexelsCollectionImages(pexelsPhotoSets.elegantFormal.slice(6, 12), [
       { index: 1, type: 'image' },
       { index: 2, type: 'video' },
-      { index: 3, type: 'video' },
+      { index: 3, type: 'image' },
       { index: 4, type: 'image' },
       { index: 5, type: 'image' },
-      { index: 6, type: 'image' },
-      { index: 7, type: 'image' },
-      { index: 8, type: 'image' },
-      { index: 9, type: 'image' },
-      { index: 10, type: 'image' },
-      { index: 11, type: 'image' },
-      { index: 12, type: 'image' },
-      { index: 13, type: 'image' },
-      { index: 14, type: 'image' }
+      { index: 6, type: 'image' }
     ]),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "2 days ago",
@@ -357,7 +278,7 @@ export const collections: Record<string, Collection> = {
     price: 9.99,
     cardLayout: {
       gridType: "asymmetric",
-      maxImages: 10,
+      maxImages: 4,
       gridClasses: "grid grid-cols-3 grid-rows-2 gap-1 h-full",
       imageSpans: { 0: "col-span-2", 3: "col-span-2" }
     }
@@ -367,17 +288,11 @@ export const collections: Record<string, Collection> = {
     id: "9",
     title: "Whisper White",
     description: "Where fabric becomes suggestion and skin becomes poetry. Pure white against warm curves. Minimal threads, maximum tension. Impossible to look away.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.whiteMinimal.slice(0, 10), [
+    images: generatePexelsCollectionImages(pexelsPhotoSets.whiteMinimal.slice(0, 4), [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
-      { index: 3, type: 'image' },
-      { index: 4, type: 'image' },
-      { index: 5, type: 'video' },
-      { index: 6, type: 'image' },
-      { index: 7, type: 'image' },
-      { index: 8, type: 'image' },
-      { index: 9, type: 'image' },
-      { index: 10, type: 'image' }
+      { index: 3, type: 'video' },
+      { index: 4, type: 'image' }
     ]),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "1 week ago",
@@ -392,7 +307,7 @@ export const collections: Record<string, Collection> = {
     id: "10",
     title: "Caramel Dreams",
     description: "Wrapped in autumn's warmest embrace. Caramel knits and cocoa tones that feel like the first chapter of a love story. Comfort never looked this tempting.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.warmAutumn.slice(0, 9)),
+    images: generatePexelsCollectionImages(pexelsPhotoSets.warmAutumn.slice(0, 4)),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "3 days ago",
     likes: 56700,
@@ -406,17 +321,11 @@ export const collections: Record<string, Collection> = {
     id: "11",
     title: "Siren Song",
     description: "She rose from depths unknown. Cerulean and crimson cascading like ocean fire. Part warning, part invitation. Mythical energy in mortal beauty.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.oceanBlue.slice(0, 10), [
+    images: generatePexelsCollectionImages(pexelsPhotoSets.oceanBlue.slice(0, 4), [
       { index: 1, type: 'image' },
       { index: 2, type: 'image' },
-      { index: 3, type: 'image' },
-      { index: 4, type: 'video' },
-      { index: 5, type: 'image' },
-      { index: 6, type: 'image' },
-      { index: 7, type: 'image' },
-      { index: 8, type: 'image' },
-      { index: 9, type: 'image' },
-      { index: 10, type: 'image' }
+      { index: 3, type: 'video' },
+      { index: 4, type: 'image' }
     ]),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "12 hours ago",
@@ -426,7 +335,7 @@ export const collections: Record<string, Collection> = {
     price: 9.99,
     cardLayout: {
       gridType: "asymmetric",
-      maxImages: 10,
+      maxImages: 4,
       gridClasses: "grid grid-cols-3 grid-rows-2 gap-1 h-full",
       imageSpans: { 0: "col-span-2", 3: "col-span-2" }
     }
@@ -436,7 +345,7 @@ export const collections: Record<string, Collection> = {
     id: "12",
     title: "Dark Christmas",
     description: "Santa outfit but way more sophisticated. Deep red velvet that hugs all the curves. Holiday season with a sexy twist.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.holidayFestive.slice(0, 13)),
+    images: generatePexelsCollectionImages(pexelsPhotoSets.holidayFestive.slice(0, 5)),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "2 days ago",
     likes: 45600,
@@ -455,7 +364,7 @@ export const collections: Record<string, Collection> = {
     id: "13",
     title: "Shower Dreams",
     description: "Getting wet with water everywhere and steam creating this mysterious atmosphere. Droplets making patterns on the skin. Feeling both vulnerable and strong.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.waterTheme.slice(0, 14)),
+    images: generatePexelsCollectionImages(pexelsPhotoSets.waterTheme.slice(0, 4)),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "4 days ago",
     likes: 83400,
@@ -464,7 +373,7 @@ export const collections: Record<string, Collection> = {
     price: 4.99,
     cardLayout: {
       gridType: "asymmetric",
-      maxImages: 10,
+      maxImages: 4,
       gridClasses: "grid grid-cols-3 grid-rows-2 gap-1 h-full",
       imageSpans: { 0: "col-span-2", 3: "col-span-2" }
     }
@@ -474,7 +383,7 @@ export const collections: Record<string, Collection> = {
     id: "14",
     title: "Pink Fury",
     description: "Pink outfit with a wild, fun energy. Soft and cute on the outside but there's definitely some fire underneath. The kind of look that's sweet but can surprise you.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.pinkArtistic.slice(0, 20)),
+    images: generatePexelsCollectionImages(pexelsPhotoSets.pinkArtistic.slice(6, 12)),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "1 day ago",
     likes: 61200,
@@ -493,7 +402,7 @@ export const collections: Record<string, Collection> = {
     id: "15",
     title: "X Marks the Heart",
     description: "Black outfit with silver details and an X motif. Dramatic look that really makes an impression. The kind of style you won't forget.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.boldDramatic.slice(0, 10)),
+    images: generatePexelsCollectionImages(pexelsPhotoSets.boldDramatic.slice(0, 6)),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "5 days ago",
     likes: 78900,
@@ -502,7 +411,7 @@ export const collections: Record<string, Collection> = {
     price: 4.99,
     cardLayout: {
       gridType: "masonry",
-      maxImages: 7,
+      maxImages: 6,
       gridClasses: "grid grid-cols-3 gap-1 h-full",
       imageSpans: { 1: "col-span-2", 4: "row-span-2" }
     }
@@ -512,7 +421,7 @@ export const collections: Record<string, Collection> = {
     id: "16",
     title: "Off Duty Heat",
     description: "Jeans that hug in all the right places. Casual top that screams 'look at me.' Grocery runs become runways. Confidence in the mundane.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.casualStreet.slice(0, 14)),
+    images: generatePexelsCollectionImages(pexelsPhotoSets.casualStreet.slice(0, 6)),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "1 week ago",
     likes: 56700,
@@ -531,7 +440,7 @@ export const collections: Record<string, Collection> = {
     id: "17",
     title: "Kyoto Dreams",
     description: "Smooth silk outfit with Japanese-inspired details. The fabric drapes beautifully. Mixing traditional elegance with modern style.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.asianSilk.slice(0, 27)),
+    images: generatePexelsCollectionImages(pexelsPhotoSets.asianSilk.slice(0, 6)),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "3 days ago",
     likes: 44500,
@@ -550,7 +459,7 @@ export const collections: Record<string, Collection> = {
     id: "18",
     title: "Symbiote Chic",
     description: "Dark outfit that feels like a second skin. Edgy, powerful energy running through everything. Anti-hero kind of vibe.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.darkEdgy.slice(0, 34)),
+    images: generatePexelsCollectionImages(pexelsPhotoSets.darkEdgy.slice(0, 5)),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "2 days ago",
     likes: 52300,
@@ -569,7 +478,7 @@ export const collections: Record<string, Collection> = {
     id: "19",
     title: "Ultraviolet Dreams",
     description: "Black lace outfit with purple lighting creating cool shadows. Nighttime vibe with that ultraviolet glow. Really magical atmosphere.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.nightAesthetic.slice(0, 12)),
+    images: generatePexelsCollectionImages(pexelsPhotoSets.nightAesthetic.slice(6, 12)),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "5 days ago",
     likes: 39800,
@@ -578,7 +487,7 @@ export const collections: Record<string, Collection> = {
     price: 4.99,
     cardLayout: {
       gridType: "asymmetric",
-      maxImages: 7,
+      maxImages: 4,
       gridClasses: "grid grid-cols-2 grid-rows-2 gap-1 h-full",
       imageSpans: { 0: "row-span-2" }
     }
@@ -588,7 +497,7 @@ export const collections: Record<string, Collection> = {
     id: "20",
     title: "Tangerine Dreams",
     description: "Orange cozy knit that makes comfort irresistible. Warm tones against warmer skin. Sunset vibes in fabric form.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.warmAutumn.slice(0, 7)),
+    images: generatePexelsCollectionImages(pexelsPhotoSets.warmAutumn.slice(4, 7)),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "4 days ago",
     likes: 28700,
@@ -597,7 +506,7 @@ export const collections: Record<string, Collection> = {
     price: 4.99,
     cardLayout: {
       gridType: "asymmetric",
-      maxImages: 7,
+      maxImages: 3,
       gridClasses: "grid grid-cols-2 grid-rows-2 gap-1 h-full",
       imageSpans: { 0: "row-span-2" }
     }
@@ -607,18 +516,11 @@ export const collections: Record<string, Collection> = {
     id: "21",
     title: "Sailor Moon Energy",
     description: "White and blue stripes hugging curves like ocean waves. Nautical fantasy meets pin-up perfection. Freedom in the sailor aesthetic.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.oceanBlue.slice(0, 11), [
+    images: generatePexelsCollectionImages(pexelsPhotoSets.oceanBlue.slice(4, 8), [
       { index: 1, type: 'video' },
-      { index: 2, type: 'video' },
+      { index: 2, type: 'image' },
       { index: 3, type: 'image' },
-      { index: 4, type: 'image' },
-      { index: 5, type: 'image' },
-      { index: 6, type: 'image' },
-      { index: 7, type: 'image' },
-      { index: 8, type: 'image' },
-      { index: 9, type: 'image' },
-      { index: 10, type: 'image' },
-      { index: 11, type: 'image' }
+      { index: 4, type: 'image' }
     ]),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "1 week ago",
@@ -628,7 +530,7 @@ export const collections: Record<string, Collection> = {
     price: 9.99,
     cardLayout: {
       gridType: "asymmetric",
-      maxImages: 9,
+      maxImages: 4,
       gridClasses: "grid grid-cols-2 grid-rows-2 gap-1 h-full",
       imageSpans: { 0: "row-span-2" }
     }
@@ -638,7 +540,7 @@ export const collections: Record<string, Collection> = {
     id: "22",
     title: "Violet Hour",
     description: "Purple glow wrapping around curves like a lover's touch. Cozy meets carnal in ultraviolet perfection. Soft yet smoldering.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.purpleViolet.slice(0, 12)),
+    images: generatePexelsCollectionImages(pexelsPhotoSets.purpleViolet.slice(0, 6)),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "3 days ago",
     likes: 53400,
@@ -647,7 +549,7 @@ export const collections: Record<string, Collection> = {
     price: 4.99,
     cardLayout: {
       gridType: "masonry",
-      maxImages: 10,
+      maxImages: 6,
       gridClasses: "grid grid-cols-3 gap-1 h-full",
       imageSpans: { 1: "col-span-2", 4: "row-span-2" }
     }
@@ -657,28 +559,13 @@ export const collections: Record<string, Collection> = {
     id: "23",
     title: "Wanderlust Chronicles",
     description: "Travel fit locked and loaded. Comfortable for long flights, cute for unexpected moments. Passport ready, spirit free.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.travelAdventure.slice(0, 21), [
+    images: generatePexelsCollectionImages(pexelsPhotoSets.travelAdventure.slice(0, 6), [
       { index: 1, type: 'image' },
       { index: 2, type: 'video' },
       { index: 3, type: 'image' },
       { index: 4, type: 'image' },
       { index: 5, type: 'image' },
-      { index: 6, type: 'image' },
-      { index: 7, type: 'image' },
-      { index: 8, type: 'image' },
-      { index: 9, type: 'image' },
-      { index: 10, type: 'image' },
-      { index: 11, type: 'image' },
-      { index: 12, type: 'image' },
-      { index: 13, type: 'image' },
-      { index: 14, type: 'image' },
-      { index: 15, type: 'image' },
-      { index: 16, type: 'image' },
-      { index: 17, type: 'image' },
-      { index: 18, type: 'image' },
-      { index: 19, type: 'image' },
-      { index: 20, type: 'image' },
-      { index: 21, type: 'image' }
+      { index: 6, type: 'image' }
     ]),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "6 days ago",
@@ -688,7 +575,7 @@ export const collections: Record<string, Collection> = {
     price: 9.99,
     cardLayout: {
       gridType: "asymmetric",
-      maxImages: 8,
+      maxImages: 6,
       gridClasses: "grid grid-cols-3 grid-rows-3 gap-1 h-full",
       imageSpans: { 0: "col-span-2 row-span-2", 3: "row-span-2" }
     }
@@ -698,14 +585,11 @@ export const collections: Record<string, Collection> = {
     id: "24",
     title: "Crimson Fire",
     description: "Red hair flowing over bare shoulders. Confidence that's really strong. Just full of energy and power.",
-    images: generatePexelsCollectionImages(pexelsPhotoSets.fieryRed.slice(0, 7), [
+    images: generatePexelsCollectionImages(pexelsPhotoSets.fieryRed.slice(0, 4), [
       { index: 1, type: 'video' },
       { index: 2, type: 'image' },
       { index: 3, type: 'image' },
-      { index: 4, type: 'image' },
-      { index: 5, type: 'image' },
-      { index: 6, type: 'image' },
-      { index: 7, type: 'image' }
+      { index: 4, type: 'image' }
     ]),
     user: { name: "Creator", avatar: creatorAvatar, verified: true },
     timestamp: "1 day ago",
@@ -715,7 +599,7 @@ export const collections: Record<string, Collection> = {
     price: 9.99,
     cardLayout: {
       gridType: "asymmetric",
-      maxImages: 7,
+      maxImages: 4,
       gridClasses: "grid grid-cols-3 grid-rows-2 gap-1 h-full",
       imageSpans: { 0: "col-span-2", 3: "col-span-2" }
     }

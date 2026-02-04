@@ -23,6 +23,22 @@ const FeedHeader = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  
+  // Check if we're inside an iframe (preview mode)
+  const [isInIframe, setIsInIframe] = useState(false);
+  const [localTheme, setLocalTheme] = useState<'dark' | 'light'>('dark');
+
+  useEffect(() => {
+    // Detect if we're in an iframe
+    const inIframe = window.self !== window.top;
+    setIsInIframe(inIframe);
+    
+    // If in iframe, use local theme state (isolated from parent)
+    if (inIframe) {
+      const isDark = document.documentElement.classList.contains('dark');
+      setLocalTheme(isDark ? 'dark' : 'light');
+    }
+  }, []);
 
   useEffect(() => {
     const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
@@ -30,6 +46,27 @@ const FeedHeader = ({
     window.addEventListener('resize', checkDesktop);
     return () => window.removeEventListener('resize', checkDesktop);
   }, []);
+  
+  // Toggle theme - isolated for iframe, shared for main page
+  const handleThemeToggle = () => {
+    if (isInIframe) {
+      // Isolated theme toggle - only affects this iframe's document
+      const newTheme = localTheme === 'dark' ? 'light' : 'dark';
+      setLocalTheme(newTheme);
+      if (newTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      // Don't touch localStorage - keep it isolated
+    } else {
+      // Normal theme toggle for main pages
+      setTheme(theme === "dark" ? "light" : "dark");
+    }
+  };
+  
+  // Get current theme state
+  const currentTheme = isInIframe ? localTheme : theme;
 
 
   const searchSuggestions = [
@@ -149,10 +186,10 @@ const FeedHeader = ({
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              onClick={handleThemeToggle}
               className="hover:bg-secondary/80 rounded-full transition-all duration-200 hover:scale-105"
             >
-              {theme === "dark" ? (
+              {currentTheme === "dark" ? (
                 <Sun className="w-5 h-5 text-amber-500" />
               ) : (
                 <Moon className="w-5 h-5 text-primary" />
