@@ -634,7 +634,12 @@ const CreatorDashboard = () => {
               
               {/* Right - Actions */}
               <div className="flex items-center gap-2">
-                <Button onClick={handlePreviewPublic} variant="ghost" size="sm" className="hidden sm:flex">
+                <Button 
+                  onClick={handlePreviewPublic} 
+                  variant="ghost" 
+                  size="sm" 
+                  className="hidden sm:flex hover:bg-sky-500 hover:text-white transition-colors"
+                >
                   <Eye className="w-4 h-4 mr-2" />
                   Preview
                 </Button>
@@ -649,7 +654,7 @@ const CreatorDashboard = () => {
                   variant="outline"
                   size="icon"
                   onClick={toggleTheme}
-                  className="rounded-full w-9 h-9"
+                  className="rounded-full w-9 h-9 hover:bg-sky-500 hover:text-white hover:border-sky-500 transition-colors"
                 >
                   {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                 </Button>

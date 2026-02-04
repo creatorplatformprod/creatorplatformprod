@@ -102,47 +102,54 @@ const PublicWebsitePreview = () => {
 
   return (
     <div className="min-h-screen feed-bg">
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3">
-            <Button variant="outline" onClick={() => navigate("/dashboard")}>
-              Back
-            </Button>
-            <div className="flex items-center gap-3">
-              <span className="text-3xl font-black bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">67</span>
-              <div>
-                <h1 className="text-xl font-bold text-foreground">
-                  Preview
-                </h1>
-                <p className="text-xs text-muted-foreground">
-                  Desktop and mobile views update live
-                </p>
+      {/* Top Navbar - Matching Dashboard Style */}
+      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-14">
+            {/* Left - Navigation */}
+            <div className="flex items-center gap-6">
+              <span className="text-xl font-bold text-foreground">Preview</span>
+              <div className="hidden sm:flex items-center gap-1">
+                <span className="text-muted-foreground">|</span>
+                <span className="text-sm text-muted-foreground ml-1">Desktop and mobile views update live</span>
               </div>
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            {hasChanges ? (
-              <Button onClick={handlePublish} className="px-6 bg-sky-500 hover:bg-sky-600 text-white">
-                Save Changes
+            
+            {/* Right - Actions */}
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigate("/dashboard")}
+                className="hover:bg-sky-500 hover:text-white transition-colors"
+              >
+                Back to Dashboard
               </Button>
-            ) : (
-              <span className="px-4 py-2 text-sm text-muted-foreground bg-secondary/50 border border-border rounded-lg">
-                {published ? "Changes published" : "No changes made"}
-              </span>
-            )}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={toggleTheme}
-              className="rounded-full w-9 h-9"
-              title="Toggle page theme (frames have their own toggle)"
-            >
-              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </Button>
-            <AccountMenu currentUser={currentUser} />
+              {hasChanges ? (
+                <Button onClick={handlePublish} className="px-6 bg-sky-500 hover:bg-sky-600 text-white">
+                  Save Changes
+                </Button>
+              ) : (
+                <span className="px-4 py-2 text-sm text-muted-foreground bg-secondary/50 border border-border rounded-lg">
+                  {published ? "Changes published" : "No changes made"}
+                </span>
+              )}
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={toggleTheme}
+                className="rounded-full w-9 h-9 hover:bg-sky-500 hover:text-white hover:border-sky-500 transition-colors"
+                title="Toggle page theme"
+              >
+                {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </Button>
+              <AccountMenu currentUser={currentUser} />
+            </div>
           </div>
         </div>
+      </nav>
 
+      <div className="max-w-7xl mx-auto px-4 py-6">
         {hasChanges && (
           <div className="mb-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
             <p className="text-sm text-amber-600 dark:text-amber-400">
