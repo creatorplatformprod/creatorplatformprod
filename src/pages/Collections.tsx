@@ -467,7 +467,7 @@ const Collections = () => {
                             handleCardPaymentClick();
                           }
                         }}
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-none"
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                         required
                         maxLength={254}
                       />

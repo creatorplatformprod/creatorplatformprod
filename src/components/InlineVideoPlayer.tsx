@@ -284,8 +284,8 @@ const InlineVideoPlayer = ({
           className="absolute inset-0 flex items-center justify-center bg-black/10 hover:bg-black/20 transition-all duration-300 cursor-pointer z-[5]"
           onClick={handlePlayPause}
         >
-          <div className="w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-2xl">
-            <Play className="w-5 h-5 text-gray-900 ml-0.5" fill="currentColor" />
+          <div className="w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-2xl">
+            <Play className="w-5 h-5 text-black/80 ml-0.5" fill="currentColor" />
           </div>
         </div>
       )}

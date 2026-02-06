@@ -225,7 +225,7 @@ const CheckoutPage = () => {
         </div>
       ),
       mastercard: (
-        <div className="w-8 h-5 bg-white border border-gray-200 rounded flex items-center justify-center">
+        <div className="w-8 h-5 bg-white/10 border border-white/20 rounded flex items-center justify-center">
           <svg className="w-7 h-7" viewBox="0 0 48 48" fill="none">
             <circle cx="15" cy="24" r="12" fill="#EB001B"/>
             <circle cx="33" cy="24" r="12" fill="#FF5F00"/>
@@ -239,8 +239,8 @@ const CheckoutPage = () => {
         </div>
       ),
       bank: (
-        <div className="w-5 h-5 bg-gray-100 border border-gray-200 rounded flex items-center justify-center">
-          <svg className="w-3 h-3 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+        <div className="w-5 h-5 bg-white/10 border border-white/20 rounded flex items-center justify-center">
+          <svg className="w-3 h-3 text-white/70" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 18c-3.86-1.03-7-5.23-7-9V8.3l7-3.89 7 3.89V11c0 3.77-3.14 7.97-7 9z"/>
           </svg>
         </div>
@@ -253,8 +253,8 @@ const CheckoutPage = () => {
         </div>
       ),
       googlepay: (
-        <div className="w-8 h-5 bg-white border border-gray-200 rounded flex items-center justify-center">
-          <span className="text-[8px] font-bold text-gray-700">GPay</span>
+        <div className="w-8 h-5 bg-white/10 border border-white/20 rounded flex items-center justify-center">
+          <span className="text-[8px] font-bold text-white/70">GPay</span>
         </div>
       ),
       robinhood: (

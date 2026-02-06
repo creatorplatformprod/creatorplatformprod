@@ -155,7 +155,7 @@ const TipCheckoutPage = () => {
         </div>
       ),
       mastercard: (
-        <div className="w-8 h-5 bg-white border border-gray-200 rounded flex items-center justify-center">
+        <div className="w-8 h-5 bg-white/10 border border-white/20 rounded flex items-center justify-center">
           <svg className="w-7 h-7" viewBox="0 0 48 48" fill="none">
             <circle cx="15" cy="24" r="12" fill="#EB001B"/>
             <circle cx="33" cy="24" r="12" fill="#F79E1B"/>
@@ -176,8 +176,8 @@ const TipCheckoutPage = () => {
         </div>
       ),
       googlepay: (
-        <div className="w-8 h-5 bg-white border border-gray-200 rounded flex items-center justify-center">
-          <span className="text-[8px] font-bold text-gray-700">GPay</span>
+        <div className="w-8 h-5 bg-white/10 border border-white/20 rounded flex items-center justify-center">
+          <span className="text-[8px] font-bold text-white/70">GPay</span>
         </div>
       ),
       robinhood: (

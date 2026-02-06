@@ -711,12 +711,7 @@ const CreatorProfile = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="md:col-span-2">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="relative">
-                      <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-                        <Heart className="w-6 h-6 text-primary-foreground fill-current" />
-                      </div>
-                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse"></div>
-                    </div>
+                    <div className="brand-wordmark text-lg"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
                     <div>
                       <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                         {creatorData.displayName || creatorData.username}
@@ -837,7 +832,10 @@ const CreatorProfile = () => {
                     className="flex items-center justify-center gap-2 cursor-pointer group mb-4 w-full bg-transparent border-none"
                     onClick={() => window.location.href = `/${username}/collections/all`}
                   >
-                    <Heart className="w-4 h-4 fill-current text-primary" />
+                    <svg className="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+                      <path d="M9 11V7C9 4.79086 10.7909 3 13 3C15.2091 3 17 4.79086 17 7V11" stroke="currentColor" strokeWidth="2" fill="none"/>
+                    </svg>
                     <span className="font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                       Unlock All Collections
                     </span>

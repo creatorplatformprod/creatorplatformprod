@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Heart, ArrowLeft, Moon, Sun } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
@@ -17,7 +17,6 @@ const Collections1849929295832448 = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPreloading, setIsPreloading] = useState(true);
   const [showPreloader, setShowPreloader] = useState(true);
-  const [theme, setTheme] = useState("dark");
   const [measuredDims, setMeasuredDims] = useState({});
 
   useEffect(() => {
@@ -27,19 +26,9 @@ const Collections1849929295832448 = () => {
       return;
     }
 
-    const savedTheme = window.localStorage?.getItem('theme') || 'dark';
-    setTheme(savedTheme);
-    document.documentElement.className = savedTheme;
+    // Force dark mode
+    document.documentElement.classList.add('dark');
   }, [secureId, navigate]);
-
-  const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-    document.documentElement.className = newTheme;
-    if (window.localStorage) {
-      window.localStorage.setItem('theme', newTheme);
-    }
-  };
 
   const imagesPerPage = 24;
 
@@ -358,19 +347,7 @@ const Collections1849929295832448 = () => {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Feed
               </Button>
-              <div className="flex items-center gap-2">
-                <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-full hover:bg-secondary/80 transition-all duration-200 hover:scale-105"
-                >
-                  {theme === "dark" ? (
-                    <Sun className="w-5 h-5 text-amber-500" />
-                  ) : (
-                    <Moon className="w-5 h-5 text-primary" />
-                  )}
-                </button>
-              </div>
+              <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
             </div>
           </header>
 

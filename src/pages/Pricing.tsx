@@ -45,7 +45,7 @@ const Pricing = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#080b14]">
+    <div className="min-h-screen feed-bg">
       <header className="nav-elevated sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
           <button 

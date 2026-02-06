@@ -143,6 +143,11 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
+  /* Force dark class on html to prevent light flash */
+  :root {
+    color-scheme: dark;
+  }
+
   * {
     border-color: hsl(var(--border));
   }
@@ -155,6 +160,27 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Dark glass inputs globally */
+  .dark input,
+  .dark textarea,
+  .dark select {
+    background-color: rgba(255,255,255,0.04) !important;
+    border-color: rgba(255,255,255,0.10) !important;
+    color: hsl(var(--foreground));
+  }
+
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    background-color: rgba(255,255,255,0.06) !important;
+    border-color: rgba(139,92,246,0.4) !important;
+  }
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: rgba(255,255,255,0.35);
   }
 }
 
