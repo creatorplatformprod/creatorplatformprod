@@ -135,7 +135,8 @@ const PublicWebsitePreview = () => {
           </div>
         )}
 
-        <div className="flex flex-col lg:flex-row gap-10 items-start">
+        <p className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wider mb-4">Preview your public website</p>
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
           <div className="flex-1 min-w-0 w-full">
             <p className="device-label text-center lg:text-left">Desktop</p>
             <div className="relative mx-auto max-w-[920px]">

@@ -640,7 +640,7 @@ const CreatorDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 py-5 sm:py-6">
 
         {/* Welcome Stats Bar */}
-        <div className="mb-8 animate-fade-up">
+        <div className="mb-8">
           <div className="flex items-center gap-3 mb-5">
             <h2 className="text-lg sm:text-xl font-bold text-foreground">
               Welcome back{profileData.displayName ? `, ${profileData.displayName}` : ''}
@@ -760,9 +760,7 @@ const CreatorDashboard = () => {
 
         {/* Profile Tab */}
         {activeTab === 'profile' && (
-          <div className="card-elevated p-5 sm:p-7 space-y-7">
-            <h2 className="section-title">Profile Settings</h2>
-
+          <div className="card-elevated p-5 sm:p-7 space-y-6">
             {/* Profile Picture Upload */}
             <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-secondary/30 rounded-xl">
               <div className="relative">

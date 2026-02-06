@@ -16,10 +16,10 @@ const FeedHeader = ({
   onSearch,
   onLogoClick,
   title = "Creator",
-  subtitle = "Exclusive Content",
 }: FeedHeaderProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -79,40 +79,41 @@ const FeedHeader = ({
     }
   };
 
+  const lockIcon = (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+      <path d="M9 11V7C9 4.79086 10.7909 3 13 3C15.2091 3 17 4.79086 17 7V11" stroke="currentColor" strokeWidth="2" fill="none"/>
+    </svg>
+  );
+
   return (
     <header className="sticky top-0 z-50 nav-elevated">
-      <div className="max-w-none mx-auto px-4 lg:px-6 py-4">
-        <div className="flex items-center justify-between gap-4 lg:gap-8">
+      <div className="max-w-none mx-auto px-3 sm:px-4 lg:px-6 py-2.5">
+        <div className="flex items-center justify-between gap-3 lg:gap-6">
+          {/* Left: Logo + Creator Name */}
           <div 
             onClick={handleLogoClick}
-            className={`flex items-center gap-3 flex-shrink-0 transition-opacity ${
+            className={`flex items-center gap-2.5 flex-shrink-0 transition-opacity ${
               isDesktop ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
             }`}
           >
-            {/* Brand Logo */}
-            <div className="flex items-center gap-3">
-              <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-              <div className="hidden sm:block w-px h-7 bg-white/[0.10]" />
-              <div className="hidden sm:block">
-                <h1 className="text-sm font-semibold text-foreground leading-tight tracking-tight">
-                  {title}
-                </h1>
-                <p className="text-[10px] text-muted-foreground/70">{subtitle}</p>
-              </div>
-            </div>
+            <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+            <div className="hidden sm:block w-px h-5 bg-white/[0.10]" />
+            <span className="hidden sm:block text-sm font-medium text-foreground/80 tracking-tight">{title}</span>
           </div>
 
-          <div className="hidden md:flex items-center flex-1 max-w-xl lg:max-w-2xl mx-4 lg:mx-12">
+          {/* Center: Search (desktop) */}
+          <div className="hidden md:flex items-center flex-1 max-w-lg lg:max-w-xl mx-3 lg:mx-8">
             <div className="relative w-full group">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300"></div>
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <Input 
-                placeholder="Find what you are looking for..."
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={handleSearchChange}
                 onFocus={() => setShowSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                className="relative pl-12 pr-4 py-3 bg-secondary/50 border-0 rounded-full focus:bg-secondary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+                className="relative pl-10 pr-4 py-2 h-9 bg-secondary/50 border-0 rounded-full text-sm focus:bg-secondary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
               />
               {showSuggestions && searchQuery && filteredSuggestions.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-post-bg border border-border rounded-xl shadow-lg z-50 max-h-64 overflow-y-auto">
@@ -120,7 +121,7 @@ const FeedHeader = ({
                     <button
                       key={index}
                       onClick={() => handleSuggestionClick(suggestion)}
-                      className="w-full text-left px-4 py-3 hover:bg-secondary transition-colors first:rounded-t-xl last:rounded-b-xl text-sm"
+                      className="w-full text-left px-4 py-2.5 hover:bg-secondary transition-colors first:rounded-t-xl last:rounded-b-xl text-sm"
                     >
                       {suggestion}
                     </button>
@@ -130,45 +131,41 @@ const FeedHeader = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 lg:gap-3 flex-shrink-0">
+          {/* Right: Actions */}
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            {/* Mobile search toggle */}
+            <button
+              onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+              className="md:hidden flex items-center justify-center w-9 h-9 rounded-full bg-secondary/50 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+
+            {/* Unlock button */}
             <Button
               onClick={() => window.location.href = '/collections'}
-              className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all duration-300 px-4 py-2 rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-105"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all duration-200 px-3 sm:px-4 py-1.5 h-9 rounded-full text-xs sm:text-sm font-semibold shadow-md"
             >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
-                <path d="M9 11V7C9 4.79086 10.7909 3 13 3C15.2091 3 17 4.79086 17 7V11" stroke="currentColor" strokeWidth="2" fill="none"/>
-              </svg>
-              <span className="hidden lg:inline">Unlock Everything</span>
-              <span className="lg:hidden">Unlock</span>
+              {lockIcon}
+              <span className="hidden sm:inline">Unlock</span>
             </Button>
 
-            {/* Tip Button */}
             <TipButton onTipClick={() => {}} />
-
           </div>
         </div>
 
-        <div className="md:hidden mt-4 space-y-3">
-          <Button
-            onClick={() => window.location.href = '/collections'}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all duration-300 py-3 rounded-full font-semibold shadow-lg"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
-              <path d="M9 11V7C9 4.79086 10.7909 3 13 3C15.2091 3 17 4.79086 17 7V11" stroke="currentColor" strokeWidth="2" fill="none"/>
-            </svg>
-            Unlock Everything
-          </Button>
-
-          <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        {/* Mobile search (collapsible) */}
+        {mobileSearchOpen && (
+          <div className="md:hidden mt-2.5 relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Find what you are looking for..."
+              placeholder="Search..."
               value={searchQuery}
               onChange={handleSearchChange}
               onFocus={() => setShowSuggestions(true)}
-              className="pl-12 bg-secondary/50 border-0 rounded-full focus:bg-secondary"
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              className="pl-10 h-9 bg-secondary/50 border-0 rounded-full text-sm focus:bg-secondary"
+              autoFocus
             />
             {showSuggestions && searchQuery && filteredSuggestions.length > 0 && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-post-bg border border-border rounded-xl shadow-lg z-50 max-h-64 overflow-y-auto">
@@ -176,7 +173,7 @@ const FeedHeader = ({
                   <button
                     key={index}
                     onClick={() => handleSuggestionClick(suggestion)}
-                    className="w-full text-left px-4 py-3 hover:bg-secondary transition-colors first:rounded-t-xl last:rounded-b-xl text-sm"
+                    className="w-full text-left px-4 py-2.5 hover:bg-secondary transition-colors first:rounded-t-xl last:rounded-b-xl text-sm"
                   >
                     {suggestion}
                   </button>
@@ -184,7 +181,7 @@ const FeedHeader = ({
               </div>
             )}
           </div>
-        </div>
+        )}
       </div>
     </header>
   );
