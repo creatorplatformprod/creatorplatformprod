@@ -508,7 +508,11 @@ const CheckoutPage = () => {
                   onClick={() => setShowOrderDetails(!showOrderDetails)}
                   className="w-full flex items-center gap-3"
                 >
-                  <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+                  <div className="flex items-center gap-3">
+                    <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+                    <div className="w-px h-5 bg-white/[0.10]"></div>
+                    <span className="text-xs font-medium text-muted-foreground">Checkout</span>
+                  </div>
                   <div className="flex-1 text-left">
                     <h2 className="text-base font-bold text-foreground">Order Summary</h2>
                     <p className="text-xs text-muted-foreground">Total: ${checkoutData.amount}</p>
@@ -524,7 +528,11 @@ const CheckoutPage = () => {
               </div>
 
               <div className="hidden lg:flex items-center gap-3 mb-6">
-                <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+                <div className="flex items-center gap-3">
+                  <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+                  <div className="w-px h-5 bg-white/[0.10]"></div>
+                  <span className="text-xs font-medium text-muted-foreground">Checkout</span>
+                </div>
                 <div>
                   <h2 className="text-lg font-bold text-foreground">Order Summary</h2>
                   <p className="text-xs text-muted-foreground">Review your purchase</p>

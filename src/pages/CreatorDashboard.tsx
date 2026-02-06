@@ -607,9 +607,10 @@ const CreatorDashboard = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex items-center justify-between h-14">
               {/* Left - Brand */}
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-3">
                 <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-                <span className="text-sm font-bold text-foreground tracking-tight">Dashboard</span>
+                <div className="w-px h-6 bg-white/[0.10]" />
+                <span className="text-sm font-semibold text-foreground tracking-tight">Dashboard</span>
               </div>
               
               {/* Right - Actions */}
@@ -639,46 +640,49 @@ const CreatorDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 py-5 sm:py-6">
 
         {/* Welcome Stats Bar */}
-        <div className="mb-6">
-          <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4">
-            Welcome back{profileData.displayName ? `, ${profileData.displayName}` : ''}
-          </h2>
+        <div className="mb-8 animate-fade-up">
+          <div className="flex items-center gap-3 mb-5">
+            <h2 className="text-lg sm:text-xl font-bold text-foreground">
+              Welcome back{profileData.displayName ? `, ${profileData.displayName}` : ''}
+            </h2>
+            <div className="dot-live" title="Live data" />
+          </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            <div className="stat-card-glow">
-              <div className="flex items-center gap-2.5 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                  <DollarSign className="w-4 h-4 text-emerald-400" />
+            <div className="bento-stat group">
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/15 transition-colors">
+                  <DollarSign className="w-4.5 h-4.5 text-emerald-400" />
                 </div>
-                <span className="text-xs font-medium text-muted-foreground">Revenue</span>
+                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Revenue</span>
               </div>
-              <p className="text-xl sm:text-2xl font-bold text-foreground">${analyticsTotals.revenue.toFixed(2)}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">${analyticsTotals.revenue.toFixed(2)}</p>
             </div>
-            <div className="stat-card-glow">
-              <div className="flex items-center gap-2.5 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center">
-                  <Layers className="w-4 h-4 text-violet-400" />
+            <div className="bento-stat group">
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-9 h-9 rounded-xl bg-violet-500/10 flex items-center justify-center group-hover:bg-violet-500/15 transition-colors">
+                  <Layers className="w-4.5 h-4.5 text-violet-400" />
                 </div>
-                <span className="text-xs font-medium text-muted-foreground">Collections</span>
+                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Collections</span>
               </div>
-              <p className="text-xl sm:text-2xl font-bold text-foreground">{collections.length}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{collections.length}</p>
             </div>
-            <div className="stat-card-glow">
-              <div className="flex items-center gap-2.5 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                  <FileText className="w-4 h-4 text-blue-400" />
+            <div className="bento-stat group">
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/15 transition-colors">
+                  <FileText className="w-4.5 h-4.5 text-blue-400" />
                 </div>
-                <span className="text-xs font-medium text-muted-foreground">Status Posts</span>
+                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status Posts</span>
               </div>
-              <p className="text-xl sm:text-2xl font-bold text-foreground">{statusCards.length}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{statusCards.length}</p>
             </div>
-            <div className="stat-card-glow">
-              <div className="flex items-center gap-2.5 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                  <TrendingUp className="w-4 h-4 text-cyan-400" />
+            <div className="bento-stat group">
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-9 h-9 rounded-xl bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/15 transition-colors">
+                  <TrendingUp className="w-4.5 h-4.5 text-cyan-400" />
                 </div>
-                <span className="text-xs font-medium text-muted-foreground">Orders</span>
+                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Orders</span>
               </div>
-              <p className="text-xl sm:text-2xl font-bold text-foreground">{analyticsTotals.orders}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{analyticsTotals.orders}</p>
             </div>
           </div>
         </div>

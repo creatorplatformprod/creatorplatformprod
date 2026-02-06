@@ -55,7 +55,11 @@ const Pricing = () => {
             <ArrowLeft className="w-3.5 h-3.5" />
             Back
           </button>
-          <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+          <div className="flex items-center gap-3">
+            <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+            <div className="w-px h-5 bg-white/[0.10]" />
+            <span className="text-xs font-medium text-muted-foreground">Pricing</span>
+          </div>
         </div>
       </header>
 

@@ -657,7 +657,7 @@ const Index = () => {
 
           <div className="flex">
             <aside
-              className={`hidden lg:block fixed left-0 z-20 transition-all duration-300 backdrop-blur-xl bg-[rgba(8,11,20,0.85)] border-r border-white/[0.06] ${
+              className={`hidden lg:block fixed left-0 z-20 transition-all duration-300 sidebar-glass ${
                 sidebarOpen ? 'translate-x-0 w-[380px]' : '-translate-x-full w-[380px]'
               }`}
               style={{ top: '65px', height: 'calc(100vh - 65px)' }}
@@ -719,15 +719,15 @@ const Index = () => {
                   </div>
                 </div>
 
-                <div className="px-3 py-2 border-t border-border">
+                <div className="px-3 py-3 sidebar-stats">
                   <div className="grid grid-cols-2 gap-2">
-                    <div className="text-center">
-                      <div className="text-sm font-bold text-foreground">{allCollections.length}</div>
-                      <div className="text-[10px] text-muted-foreground">Collections</div>
+                    <div className="text-center py-2 rounded-lg bg-white/[0.02]">
+                      <div className="text-base font-bold text-foreground">{allCollections.length}</div>
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Collections</div>
                     </div>
-                    <div className="text-center">
-                      <div className="text-sm font-bold text-foreground">450+</div>
-                      <div className="text-[10px] text-muted-foreground">Photos</div>
+                    <div className="text-center py-2 rounded-lg bg-white/[0.02]">
+                      <div className="text-base font-bold text-foreground">450+</div>
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Photos</div>
                     </div>
                   </div>
                 </div>

@@ -86,10 +86,11 @@ const PublicWebsitePreview = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-14">
             {/* Left */}
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-3">
               <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-              <span className="text-sm font-bold text-foreground tracking-tight">Preview</span>
-              <span className="hidden sm:inline text-xs text-muted-foreground ml-1">Live</span>
+              <div className="w-px h-6 bg-white/[0.10]" />
+              <span className="text-sm font-semibold text-foreground tracking-tight">Preview</span>
+              <div className="dot-live" title="Live" />
             </div>
             
             {/* Right */}
@@ -138,7 +139,7 @@ const PublicWebsitePreview = () => {
           <div className="flex-1 min-w-0 w-full">
             <p className="device-label text-center lg:text-left">Desktop</p>
             <div className="relative mx-auto max-w-[920px]">
-              <div className="bg-[#0c1119] rounded-[20px] p-3 border border-white/10 shadow-[0_30px_80px_rgba(2,6,23,0.6)]">
+              <div className="bg-[#0c1119] rounded-[20px] p-3 border border-white/10 frame-inner-shadow">
                 <div className="bg-black rounded-[14px] overflow-hidden border border-white/5">
                   <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.26] sm:[--scale:0.3] lg:[--scale:0.56] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                     <iframe

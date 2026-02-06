@@ -90,13 +90,14 @@ const FeedHeader = ({
             }`}
           >
             {/* Brand Logo */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+              <div className="hidden sm:block w-px h-7 bg-white/[0.10]" />
               <div className="hidden sm:block">
-                <h1 className="text-lg font-bold text-foreground leading-tight">
+                <h1 className="text-sm font-semibold text-foreground leading-tight tracking-tight">
                   {title}
                 </h1>
-                <p className="text-[10px] text-muted-foreground">{subtitle}</p>
+                <p className="text-[10px] text-muted-foreground/70">{subtitle}</p>
               </div>
             </div>
           </div>

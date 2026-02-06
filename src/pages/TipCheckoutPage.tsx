@@ -369,7 +369,7 @@ const TipCheckoutPage = () => {
   return (
     <div className="min-h-screen feed-bg">
       <header className="sticky top-0 z-10 nav-elevated">
-        <div className="max-w-lg mx-auto p-3 sm:p-4">
+        <div className="max-w-lg mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button
             onClick={handleBack}
             className="flex items-center gap-2 px-3 py-2 sm:px-4 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground transition-all duration-300"
@@ -377,6 +377,11 @@ const TipCheckoutPage = () => {
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm font-medium">Back</span>
           </button>
+          <div className="flex items-center gap-3">
+            <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+            <div className="w-px h-5 bg-white/[0.10]"></div>
+            <span className="text-xs font-medium text-muted-foreground">Tip</span>
+          </div>
         </div>
       </header>
 

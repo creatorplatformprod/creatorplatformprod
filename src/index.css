@@ -1077,4 +1077,163 @@
     margin-top: 0.5rem;
     border-bottom: 1px solid rgba(255,255,255,0.06);
   }
+
+  /* ========================================
+     MICRO-INTERACTIONS & PREMIUM POLISH
+     ======================================== */
+
+  /* Animated gradient border on hover for premium cards */
+  .glow-border {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glow-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(14,165,233,0.3), rgba(139,92,246,0.3));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .glow-border:hover::before {
+    opacity: 1;
+  }
+
+  /* Bento stat card — larger with icon accent area */
+  .bento-stat {
+    position: relative;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    overflow: hidden;
+    transition: border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  }
+
+  .bento-stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, #0ea5e9 0%, #6366f1 50%, #8b5cf6 100%);
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+  }
+
+  .bento-stat::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(circle at top right, rgba(99,102,241,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .bento-stat:hover {
+    border-color: rgba(255,255,255,0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px -8px rgba(99,102,241,0.15);
+  }
+
+  .bento-stat:hover::before {
+    opacity: 1;
+  }
+
+  /* Nav-elevated refinement: subtle bottom gradient line */
+  .nav-elevated {
+    position: relative;
+  }
+
+  .nav-elevated::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    right: 5%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99,102,241,0.2) 30%, rgba(14,165,233,0.2) 70%, transparent);
+  }
+
+  /* Sidebar glass — refined backdrop */
+  .sidebar-glass {
+    backdrop-filter: saturate(180%) blur(24px);
+    background: rgba(8,11,20,0.88);
+    border-right: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* Active dot indicator */
+  .dot-live {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 6px 1px rgba(34,197,94,0.5);
+    animation: dot-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes dot-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px 1px rgba(34,197,94,0.5); }
+    50% { opacity: 0.6; box-shadow: 0 0 3px 0px rgba(34,197,94,0.3); }
+  }
+
+  /* Smooth fade-up for animated elements */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-up {
+    animation: fade-up 0.5s ease-out forwards;
+  }
+
+  /* Preview device frame inner shadow */
+  .frame-inner-shadow {
+    box-shadow: inset 0 0 30px -10px rgba(0,0,0,0.3), 0 30px 80px rgba(2,6,23,0.6);
+  }
+
+  /* Profile hero with better gradient + noise texture feel */
+  .profile-hero {
+    background:
+      linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.06) 30%, rgba(14,165,233,0.04) 60%, transparent 80%);
+  }
+
+  /* Improved stat-card-glow with animated left border */
+  .stat-card-glow::before {
+    background: linear-gradient(180deg, #0ea5e9, #6366f1, #8b5cf6);
+    transition: height 0.3s ease;
+    height: 60%;
+    top: 20%;
+  }
+
+  .stat-card-glow:hover::before {
+    height: 80%;
+    top: 10%;
+  }
+
+  /* Sidebar stats section divider */
+  .sidebar-stats {
+    position: relative;
+  }
+
+  .sidebar-stats::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 12px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  }
 }

@@ -347,7 +347,10 @@ const Collections1849929295832448 = () => {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Feed
               </Button>
-              <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+              <div className="flex items-center gap-3">
+                <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+                <div className="w-px h-5 bg-white/[0.10]"></div>
+              </div>
             </div>
           </header>
 
