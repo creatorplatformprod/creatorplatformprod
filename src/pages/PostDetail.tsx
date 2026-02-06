@@ -2,7 +2,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Flame, Heart } from "lucide-react";
+import { ArrowLeft, Heart } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { getCollection } from "@/collections/collectionsData";
 import { getCollectionId, isValidSecureId } from "@/utils/secureIdMapper";
@@ -306,8 +306,8 @@ const PostDetail = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Feed
           </Button>
-          <div className="w-8 h-8 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <Flame className="w-4 h-4 text-primary-foreground fill-current" />
+          <div className="w-8 h-8 rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-violet-400 flex items-center justify-center">
+            <span className="text-white font-extrabold text-[10px] tracking-tight">67</span>
           </div>
         </div>
       </header>
@@ -429,8 +429,8 @@ const PostDetail = () => {
               <div className="md:col-span-2">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="relative">
-                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-                      <Flame className="w-6 h-6 text-primary-foreground fill-current" />
+                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-violet-400 flex items-center justify-center shadow-lg">
+                      <span className="text-white font-extrabold text-sm tracking-tight">67</span>
                     </div>
                     <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse"></div>
                   </div>

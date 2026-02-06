@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Loader2, CheckCircle2, Shield, Lock, Flame, ChevronDown, ChevronUp, Clock, AlertCircle, CreditCard } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle2, Shield, Lock, ChevronDown, ChevronUp, Clock, AlertCircle, CreditCard } from "lucide-react";
 
 // Environment configuration - no hardcoded URLs
 const CONFIG = {
@@ -508,8 +508,8 @@ const CheckoutPage = () => {
                   onClick={() => setShowOrderDetails(!showOrderDetails)}
                   className="w-full flex items-center gap-3"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                    <Flame className="w-5 h-5 text-primary-foreground fill-current" />
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-violet-500 to-violet-400 flex items-center justify-center">
+                    <span className="text-white font-extrabold text-xs tracking-tight">67</span>
                   </div>
                   <div className="flex-1 text-left">
                     <h2 className="text-base font-bold text-foreground">Order Summary</h2>
@@ -526,8 +526,8 @@ const CheckoutPage = () => {
               </div>
 
               <div className="hidden lg:flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
-                  <Flame className="w-5 h-5 text-primary-foreground fill-current" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-violet-500 to-violet-400 flex items-center justify-center shadow-md">
+                  <span className="text-white font-extrabold text-xs tracking-tight">67</span>
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-foreground">Order Summary</h2>

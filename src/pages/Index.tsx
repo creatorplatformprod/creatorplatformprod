@@ -798,8 +798,8 @@ const Index = () => {
                     <div className="md:col-span-2">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="relative">
-                          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-                            <Flame className="w-6 h-6 text-primary-foreground fill-current" />
+                          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-violet-400 flex items-center justify-center shadow-lg">
+                            <span className="text-white font-extrabold text-sm tracking-tight">67</span>
                           </div>
                           <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse"></div>
                         </div>

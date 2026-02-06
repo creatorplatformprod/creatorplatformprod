@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import AccountMenu from "@/components/AccountMenu";
 import { api } from "@/lib/api";
-import { Moon, Sun } from "lucide-react";
 
 const PublicWebsitePreview = () => {
   const { username } = useParams();
@@ -12,26 +11,6 @@ const PublicWebsitePreview = () => {
   const [hasChanges, setHasChanges] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   
-  // Theme state for full page (not the frames)
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark');
-    }
-    return true;
-  });
-
-  const toggleTheme = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-    if (newTheme) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
-
   const previewUrl = useMemo(() => {
     if (!username) return "#";
     return `/${username}?mode=preview`;
@@ -101,48 +80,37 @@ const PublicWebsitePreview = () => {
   };
 
   return (
-    <div className="min-h-screen feed-bg">
-      {/* Top Navbar - Matching Dashboard Style */}
-      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
-        <div className="max-w-7xl mx-auto px-4">
+    <div className="min-h-screen bg-[#080b14]">
+      {/* Top Navbar */}
+      <nav className="sticky top-0 z-50 nav-elevated">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-14">
-            {/* Left - Navigation */}
-            <div className="flex items-center gap-6">
-              <span className="text-xl font-bold text-foreground">Preview</span>
-              <div className="hidden sm:flex items-center gap-1">
-                <span className="text-muted-foreground">|</span>
-                <span className="text-sm text-muted-foreground ml-1">Desktop and mobile views update live</span>
-              </div>
+            {/* Left */}
+            <div className="flex items-center gap-2.5">
+              <div className="brand-67">67</div>
+              <span className="text-sm font-bold text-foreground tracking-tight">Preview</span>
+              <span className="hidden sm:inline text-xs text-muted-foreground ml-1">Live</span>
             </div>
             
-            {/* Right - Actions */}
+            {/* Right */}
             <div className="flex items-center gap-2">
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => navigate("/dashboard")}
-                className="hover:bg-sky-500 hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground text-xs h-8"
               >
                 Back to Dashboard
               </Button>
               {hasChanges ? (
-                <Button onClick={handlePublish} className="px-6 bg-sky-500 hover:bg-sky-600 text-white">
+                <Button onClick={handlePublish} className="btn-67 shadow-sm h-8 text-xs px-4">
                   Save Changes
                 </Button>
               ) : (
-                <span className="px-4 py-2 text-sm text-muted-foreground bg-secondary/50 border border-border rounded-lg">
-                  {published ? "Changes published" : "No changes made"}
+                <span className="px-3 py-1.5 text-xs text-muted-foreground bg-secondary/50 border border-border/60 rounded-lg">
+                  {published ? "Published" : "No changes"}
                 </span>
               )}
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={toggleTheme}
-                className="rounded-full w-9 h-9 hover:bg-sky-500 hover:text-white hover:border-sky-500 transition-colors"
-                title="Toggle page theme"
-              >
-                {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </Button>
               <AccountMenu currentUser={currentUser} />
             </div>
           </div>
@@ -151,14 +119,14 @@ const PublicWebsitePreview = () => {
 
       <div className="max-w-7xl mx-auto px-4 py-6">
         {hasChanges && (
-          <div className="mb-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+          <div className="mb-4 alert-warning">
             <p className="text-sm text-amber-600 dark:text-amber-400">
               You have unsaved changes. Click "Save Changes" to publish them.
             </p>
           </div>
         )}
         {!hasChanges && published && (
-          <div className="mb-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+          <div className="mb-4 alert-success">
             <p className="text-sm text-green-600 dark:text-green-400">
               All changes are published. Your public website is up to date.
             </p>

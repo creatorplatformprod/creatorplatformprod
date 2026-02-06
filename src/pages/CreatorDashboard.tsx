@@ -31,8 +31,6 @@ import {
   Instagram,
   Camera,
   Upload,
-  Moon,
-  Sun
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
@@ -42,25 +40,6 @@ const CreatorDashboard = () => {
   const [activeTab, setActiveTab] = useState<'profile' | 'status-cards' | 'collections' | 'analytics'>('profile');
   const [user, setUser] = useState<any>(null);
   
-  // Theme state
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark');
-    }
-    return true;
-  });
-
-  const toggleTheme = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-    if (newTheme) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
   const [statusCards, setStatusCards] = useState<any[]>([]);
   const [collections, setCollections] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -618,18 +597,15 @@ const CreatorDashboard = () => {
   }, [analyticsRange, analyticsGroupBy, analyticsMetric, analyticsStatus, analyticsCollectionId, analyticsCurrency, salesSearch]);
 
   return (
-    <div className="min-h-screen feed-bg">
+    <div className="min-h-screen bg-[#080b14]">
         {/* Top Navbar */}
-        <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
-          <div className="max-w-7xl mx-auto px-4">
+        <nav className="sticky top-0 z-50 nav-elevated">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex items-center justify-between h-14">
-              {/* Left - Navigation */}
-              <div className="flex items-center gap-6">
-                <span className="text-xl font-bold text-foreground">Creator Data</span>
-                <div className="hidden sm:flex items-center gap-1">
-                  <span className="text-muted-foreground">|</span>
-                  <span className="text-lg font-semibold text-primary ml-1">Dashboard</span>
-                </div>
+              {/* Left - Brand */}
+              <div className="flex items-center gap-2.5">
+                <div className="brand-67">67</div>
+                <span className="text-sm font-bold text-foreground tracking-tight">Dashboard</span>
               </div>
               
               {/* Right - Actions */}
@@ -638,25 +614,17 @@ const CreatorDashboard = () => {
                   onClick={handlePreviewPublic} 
                   variant="ghost" 
                   size="sm" 
-                  className="flex hover-foreground transition-colors"
+                  className="text-muted-foreground hover:text-foreground text-xs h-8 gap-1.5"
                 >
-                  <Eye className="w-4 h-4 sm:mr-2" />
+                  <Eye className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Preview</span>
                 </Button>
                 <Button 
                   onClick={handlePublicWebsite} 
                   size="sm"
-                  className="btn-67"
+                  className="btn-67 shadow-sm h-8 text-xs px-3.5"
                 >
                   Public Website
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={toggleTheme}
-                  className="rounded-full w-9 h-9 hover-foreground transition-colors"
-                >
-                  {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                 </Button>
                 <AccountMenu currentUser={user} />
               </div>
@@ -664,28 +632,28 @@ const CreatorDashboard = () => {
           </div>
         </nav>
 
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto px-4 py-5 sm:py-6">
 
         {/* Success/Error Messages */}
         {infoMessage && (
-          <div className="mb-4 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+          <div className="mb-4 alert-info">
             <p className="text-sm text-blue-600 dark:text-blue-400">{infoMessage}</p>
           </div>
         )}
         {success && (
-          <div className="mb-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+          <div className="mb-4 alert-success">
             <p className="text-sm text-green-600 dark:text-green-400">{success}</p>
           </div>
         )}
         {error && (
-          <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+          <div className="mb-4 alert-error">
             <p className="text-sm text-destructive">{error}</p>
           </div>
         )}
 
         {/* Tabs */}
-          <div className="mb-6 border-b border-border">
-            <div className="flex flex-wrap justify-center gap-2 pb-2 sm:justify-start sm:gap-2">
+          <div className="mb-6 border-b border-border/60">
+            <div className="flex flex-wrap gap-0 sm:gap-0 -mb-px">
               <button
                 onClick={() => {
                   setActiveTab('profile');
@@ -693,13 +661,9 @@ const CreatorDashboard = () => {
                   setSuccess('');
                   setInfoMessage('');
                 }}
-                className={`w-[calc(50%-0.25rem)] sm:w-auto px-4 py-2 font-medium transition-colors flex items-center justify-center ${
-                  activeTab === 'profile'
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
+                className={`tab-modern flex items-center justify-center gap-2 ${activeTab === 'profile' ? 'active' : ''}`}
               >
-                <Settings className="w-4 h-4 inline mr-2" />
+                <Settings className="w-4 h-4" />
                 Profile Settings
               </button>
               <button
@@ -709,13 +673,9 @@ const CreatorDashboard = () => {
                   setSuccess('');
                   setInfoMessage('');
                 }}
-                className={`w-[calc(50%-0.25rem)] sm:w-auto px-4 py-2 font-medium transition-colors flex items-center justify-center ${
-                  activeTab === 'status-cards'
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
+                className={`tab-modern flex items-center justify-center gap-2 ${activeTab === 'status-cards' ? 'active' : ''}`}
               >
-                <MessageSquare className="w-4 h-4 inline mr-2" />
+                <MessageSquare className="w-4 h-4" />
                 Status Cards
               </button>
               <button
@@ -725,13 +685,9 @@ const CreatorDashboard = () => {
                   setSuccess('');
                   setInfoMessage('');
                 }}
-                className={`w-[calc(50%-0.25rem)] sm:w-auto px-4 py-2 font-medium transition-colors flex items-center justify-center ${
-                  activeTab === 'collections'
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
+                className={`tab-modern flex items-center justify-center gap-2 ${activeTab === 'collections' ? 'active' : ''}`}
               >
-                <Image className="w-4 h-4 inline mr-2" />
+                <Image className="w-4 h-4" />
                 Collections
               </button>
               <button
@@ -741,13 +697,9 @@ const CreatorDashboard = () => {
                   setSuccess('');
                   setInfoMessage('');
                 }}
-                className={`w-[calc(50%-0.25rem)] sm:w-auto px-4 py-2 font-medium transition-colors flex items-center justify-center ${
-                  activeTab === 'analytics'
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
+                className={`tab-modern flex items-center justify-center gap-2 ${activeTab === 'analytics' ? 'active' : ''}`}
               >
-                <BarChart3 className="w-4 h-4 inline mr-2" />
+                <BarChart3 className="w-4 h-4" />
                 Analytics
               </button>
             </div>
@@ -755,8 +707,8 @@ const CreatorDashboard = () => {
 
         {/* Profile Tab */}
         {activeTab === 'profile' && (
-          <div className="post-card rounded-xl p-6 space-y-6">
-            <h2 className="text-2xl font-bold text-foreground">Profile Settings</h2>
+          <div className="card-elevated p-5 sm:p-7 space-y-7">
+            <h2 className="section-title">Profile Settings</h2>
 
             {/* Profile Picture Upload */}
             <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-secondary/30 rounded-xl">
@@ -964,8 +916,8 @@ const CreatorDashboard = () => {
         {activeTab === 'status-cards' && (
           <div className="space-y-6">
             {/* Add Status Card Form */}
-            <div className="post-card rounded-xl p-6">
-              <h2 className="text-2xl font-bold text-foreground mb-4">Add Status Card</h2>
+            <div className="card-elevated p-6 sm:p-8">
+              <h2 className="section-title mb-4">Add Status Card</h2>
               
               <div className="space-y-4">
                 <div>
@@ -1036,7 +988,7 @@ const CreatorDashboard = () => {
             </div>
 
             {/* Existing Status Cards */}
-            <div className="post-card rounded-xl p-6">
+            <div className="card-elevated p-6 sm:p-8">
               <h3 className="text-xl font-bold text-foreground mb-4">Your Status Cards</h3>
               <div className="space-y-4">
                 {statusCards.length === 0 ? (
@@ -1069,8 +1021,8 @@ const CreatorDashboard = () => {
         {activeTab === 'collections' && (
           <div className="space-y-6">
             {/* Unlock Everything Price */}
-            <div className="post-card rounded-xl p-6">
-              <h2 className="text-2xl font-bold text-foreground mb-2">Unlock Everything Price</h2>
+            <div className="card-elevated p-6 sm:p-8">
+              <h2 className="section-title mb-2">Unlock Everything Price</h2>
               <p className="text-sm text-muted-foreground mb-4">
                 Set the price for the “Unlock Everything” button. This gives clients access to all of your collections.
               </p>
@@ -1109,8 +1061,8 @@ const CreatorDashboard = () => {
             </div>
 
             {/* Add Collection Form */}
-            <div className="post-card rounded-xl p-6">
-              <h2 className="text-2xl font-bold text-foreground mb-4">Create Collection</h2>
+            <div className="card-elevated p-6 sm:p-8">
+              <h2 className="section-title mb-4">Create Collection</h2>
               
               <div className="space-y-4">
                 <div>
@@ -1185,7 +1137,7 @@ const CreatorDashboard = () => {
             </div>
 
             {/* Upload Media to Collection */}
-            <div className="post-card rounded-xl p-6">
+            <div className="card-elevated p-6 sm:p-8">
               <h3 className="text-xl font-bold text-foreground mb-4">Upload Media</h3>
               <div className="space-y-4">
                 <div>
@@ -1229,7 +1181,7 @@ const CreatorDashboard = () => {
             </div>
 
             {/* Existing Collections */}
-            <div className="post-card rounded-xl p-6">
+            <div className="card-elevated p-6 sm:p-8">
               <h3 className="text-xl font-bold text-foreground mb-4">Your Collections</h3>
               <div className="space-y-4">
                 {collections.length === 0 ? (
@@ -1259,9 +1211,9 @@ const CreatorDashboard = () => {
         {/* Analytics Tab */}
         {activeTab === 'analytics' && (
           <div className="space-y-6">
-            <div className="post-card rounded-xl p-6 space-y-4">
+            <div className="card-elevated p-6 sm:p-8 space-y-4">
               <div className="flex flex-col gap-2">
-                <h2 className="text-2xl font-bold text-foreground">Sales Analytics</h2>
+                <h2 className="section-title">Sales Analytics</h2>
                 <p className="text-sm text-muted-foreground">
                   Choose different filters to explore revenue, orders, and payout performance.
                 </p>
@@ -1361,23 +1313,23 @@ const CreatorDashboard = () => {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-4">
-              <div className="post-card rounded-xl p-4">
+              <div className="card-elevated p-4">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Gross Revenue</p>
                 <p className="text-2xl font-bold text-foreground mt-2">
                   {formatMoney(analyticsTotals.revenue, analyticsCurrency)}
                 </p>
               </div>
-              <div className="post-card rounded-xl p-4">
+              <div className="card-elevated p-4">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Orders</p>
                 <p className="text-2xl font-bold text-foreground mt-2">{analyticsTotals.orders}</p>
               </div>
-              <div className="post-card rounded-xl p-4">
+              <div className="card-elevated p-4">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Creator Net</p>
                 <p className="text-2xl font-bold text-foreground mt-2">
                   {formatMoney(analyticsTotals.net, analyticsCurrency)}
                 </p>
               </div>
-              <div className="post-card rounded-xl p-4">
+              <div className="card-elevated p-4">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Platform Fee</p>
                 <p className="text-2xl font-bold text-foreground mt-2">
                   {formatMoney(analyticsTotals.platformFee, analyticsCurrency)}
@@ -1385,7 +1337,7 @@ const CreatorDashboard = () => {
               </div>
             </div>
 
-            <div className="post-card rounded-xl p-6">
+            <div className="card-elevated p-6 sm:p-8">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-foreground">Sales Trend</h3>
                 {analyticsLoading && (
@@ -1426,7 +1378,7 @@ const CreatorDashboard = () => {
               </div>
             </div>
 
-            <div className="post-card rounded-xl p-6 space-y-4">
+            <div className="card-elevated p-6 sm:p-8 space-y-4">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <h3 className="text-xl font-bold text-foreground">Sales List</h3>
                 <div className="flex flex-col sm:flex-row gap-3">

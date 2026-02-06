@@ -1,4 +1,4 @@
-import { Moon, Sun, Search, Flame } from "lucide-react";
+import { Moon, Sun, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "next-themes";
@@ -123,11 +123,9 @@ const FeedHeader = ({
               isDesktop ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
             }`}
           >
-            {/* Flame Logo */}
+            {/* Brand Logo */}
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-                <Flame className="w-5 h-5 text-primary-foreground fill-current" />
-              </div>
+              <div className="brand-67">67</div>
               <div className="hidden sm:block">
                 <h1 className="text-lg font-bold text-foreground leading-tight">
                   {title}
