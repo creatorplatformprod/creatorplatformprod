@@ -437,9 +437,7 @@ const Collections = () => {
                   }}
                 >
                   <div className="text-center">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-indigo-500 via-violet-500 to-violet-400 rounded-2xl flex items-center justify-center mx-auto mb-2.5 sm:mb-4">
-                      <span className="text-white font-extrabold text-xs sm:text-sm tracking-tight">67</span>
-                    </div>
+                    <div className="brand-wordmark text-base sm:text-lg mx-auto mb-2.5 sm:mb-4"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
                     <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1.5 sm:mb-2">
                       Unlock Everything
                     </h2>
@@ -502,12 +500,7 @@ const Collections = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="md:col-span-2">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="relative">
-                      <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-violet-400 flex items-center justify-center shadow-lg">
-                        <span className="text-white font-extrabold text-sm tracking-tight">67</span>
-                      </div>
-                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse"></div>
-                    </div>
+                    <div className="brand-wordmark text-lg"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
                     <div>
                       <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                         SixSeven Creator

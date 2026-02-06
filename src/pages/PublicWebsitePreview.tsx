@@ -87,7 +87,7 @@ const PublicWebsitePreview = () => {
           <div className="flex items-center justify-between h-14">
             {/* Left */}
             <div className="flex items-center gap-2.5">
-              <div className="brand-67">67</div>
+              <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
               <span className="text-sm font-bold text-foreground tracking-tight">Preview</span>
               <span className="hidden sm:inline text-xs text-muted-foreground ml-1">Live</span>
             </div>

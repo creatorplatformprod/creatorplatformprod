@@ -368,7 +368,7 @@ const TipCheckoutPage = () => {
 
   return (
     <div className="min-h-screen feed-bg">
-      <header className="sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b border-border">
+      <header className="sticky top-0 z-10 nav-elevated">
         <div className="max-w-lg mx-auto p-3 sm:p-4">
           <button
             onClick={handleBack}

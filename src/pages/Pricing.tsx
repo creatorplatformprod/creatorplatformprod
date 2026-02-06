@@ -55,7 +55,7 @@ const Pricing = () => {
             <ArrowLeft className="w-3.5 h-3.5" />
             Back
           </button>
-          <div className="brand-67">67</div>
+          <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
         </div>
       </header>
 

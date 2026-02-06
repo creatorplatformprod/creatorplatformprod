@@ -114,7 +114,7 @@ const FeedHeader = ({
   };
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-xl bg-post-bg/80 border-b border-border/50">
+    <header className="sticky top-0 z-50 nav-elevated">
       <div className="max-w-none mx-auto px-4 lg:px-6 py-4">
         <div className="flex items-center justify-between gap-4 lg:gap-8">
           <div 
@@ -125,7 +125,7 @@ const FeedHeader = ({
           >
             {/* Brand Logo */}
             <div className="flex items-center gap-2">
-              <div className="brand-67">67</div>
+              <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
               <div className="hidden sm:block">
                 <h1 className="text-lg font-bold text-foreground leading-tight">
                   {title}

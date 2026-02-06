@@ -487,7 +487,7 @@ const CheckoutPage = () => {
 
   return (
     <div className="min-h-screen feed-bg">
-      <header className="sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b border-border">
+      <header className="sticky top-0 z-10 nav-elevated">
         <div className="max-w-6xl mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button 
             onClick={handleBack}
@@ -508,9 +508,7 @@ const CheckoutPage = () => {
                   onClick={() => setShowOrderDetails(!showOrderDetails)}
                   className="w-full flex items-center gap-3"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-violet-500 to-violet-400 flex items-center justify-center">
-                    <span className="text-white font-extrabold text-xs tracking-tight">67</span>
-                  </div>
+                  <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
                   <div className="flex-1 text-left">
                     <h2 className="text-base font-bold text-foreground">Order Summary</h2>
                     <p className="text-xs text-muted-foreground">Total: ${checkoutData.amount}</p>
@@ -526,9 +524,7 @@ const CheckoutPage = () => {
               </div>
 
               <div className="hidden lg:flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-violet-500 to-violet-400 flex items-center justify-center shadow-md">
-                  <span className="text-white font-extrabold text-xs tracking-tight">67</span>
-                </div>
+                <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
                 <div>
                   <h2 className="text-lg font-bold text-foreground">Order Summary</h2>
                   <p className="text-xs text-muted-foreground">Review your purchase</p>

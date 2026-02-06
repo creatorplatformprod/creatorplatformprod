@@ -444,7 +444,7 @@ const CreatorProfile = () => {
       <div className="flex">
         {/* Desktop Sidebar - Below navbar, hidden on mobile */}
         <aside
-          className={`hidden lg:block fixed left-0 bg-background border-r border-border z-20 transition-all duration-300 ${
+          className={`hidden lg:block fixed left-0 z-20 transition-all duration-300 backdrop-blur-xl bg-[rgba(8,11,20,0.85)] border-r border-white/[0.06] ${
             sidebarOpen ? 'translate-x-0 w-[380px]' : '-translate-x-full w-[380px]'
           }`}
           style={{ top: '65px', height: 'calc(100vh - 65px)' }}

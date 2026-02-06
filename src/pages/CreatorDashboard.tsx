@@ -604,7 +604,7 @@ const CreatorDashboard = () => {
             <div className="flex items-center justify-between h-14">
               {/* Left - Brand */}
               <div className="flex items-center gap-2.5">
-                <div className="brand-67">67</div>
+                <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
                 <span className="text-sm font-bold text-foreground tracking-tight">Dashboard</span>
               </div>
               

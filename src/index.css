@@ -83,63 +83,63 @@
   }
 
   .dark {
-    /* Dark Blue Night Theme */
-    --background: 215 35% 8%;
+    /* Dark Universe Theme — matches landing page #080b14 */
+    --background: 222 47% 5%;
     --foreground: 210 40% 98%;
 
-    --card: 215 30% 12%;
+    --card: 222 30% 9%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 215 30% 12%;
+    --popover: 222 30% 9%;
     --popover-foreground: 210 40% 98%;
 
     /* Bright Sky Blue Primary for dark mode */
     --primary: 200 100% 60%;
-    --primary-foreground: 215 35% 8%;
+    --primary-foreground: 222 47% 5%;
     --primary-light: 200 100% 75%;
     --primary-dark: 200 100% 45%;
 
     /* Dark Secondary */
-    --secondary: 215 25% 18%;
+    --secondary: 222 25% 12%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 215 25% 15%;
+    --muted: 222 20% 12%;
     --muted-foreground: 215 15% 65%;
 
     /* Bright Ocean Blue Accent */
     --accent: 220 90% 70%;
-    --accent-foreground: 215 35% 8%;
+    --accent-foreground: 222 47% 5%;
 
     --destructive: 0 75% 55%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 215 25% 20%;
-    --input: 215 25% 18%;
+    --border: 222 20% 14%;
+    --input: 222 25% 12%;
     --ring: 200 100% 60%;
 
-    /* Feed Dark Colors */
-    --feed-bg: 215 40% 6%;
-    --post-bg: 215 30% 12%;
-    --post-hover: 215 25% 15%;
+    /* Feed Dark Colors — universe base */
+    --feed-bg: 222 47% 5%;
+    --post-bg: 222 30% 9%;
+    --post-hover: 222 25% 12%;
     --blur-overlay: 200 50% 40%;
     --like-color: 340 82% 62%;
     
     /* Dark Gradients */
     --gradient-sky: linear-gradient(135deg, hsl(200 100% 25%), hsl(220 90% 35%));
-    --gradient-post: linear-gradient(145deg, hsl(215 30% 12%), hsl(215 25% 15%));
+    --gradient-post: linear-gradient(145deg, hsl(222 30% 9%), hsl(222 25% 12%));
     --gradient-blur: linear-gradient(45deg, hsla(200 100% 60% / 0.4), hsla(220 90% 70% / 0.4));
     
-    /* Dark Shadows */
-    --shadow-post: 0 2px 20px -5px hsl(0 0% 0% / 0.3);
-    --shadow-post-hover: 0 8px 40px -10px hsl(0 0% 0% / 0.4);
+    /* Dark Shadows — subtle, no harsh blacks */
+    --shadow-post: 0 2px 16px -4px hsl(0 0% 0% / 0.4);
+    --shadow-post-hover: 0 8px 32px -8px hsl(0 0% 0% / 0.5);
     --shadow-blur: 0 8px 32px -8px hsl(200 100% 60% / 0.3);
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-background: 222 35% 7%;
+    --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-accent: 222 20% 12%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 20% 14%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -168,10 +168,23 @@
     box-shadow: var(--shadow-post);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
+
+  .dark .post-card {
+    background: rgba(255,255,255,0.025);
+    backdrop-filter: blur(12px) saturate(130%);
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 2px 12px -4px rgba(0,0,0,0.3);
+  }
   
   .post-card:hover {
     box-shadow: var(--shadow-post-hover);
     transform: translateY(-2px);
+  }
+
+  .dark .post-card:hover {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.12);
+    box-shadow: 0 8px 24px -8px rgba(0,0,0,0.4);
   }
   
   .blur-overlay {
@@ -182,6 +195,21 @@
   
   .feed-bg {
     background-color: hsl(var(--feed-bg));
+    position: relative;
+  }
+
+  .dark .feed-bg::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(45deg, rgba(139,92,246,0.06) 1px, transparent 1px),
+      linear-gradient(-45deg, rgba(99,102,241,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, black 0%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, black 0%, transparent 75%);
   }
   
   .post-bg {

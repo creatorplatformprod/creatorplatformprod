@@ -347,7 +347,7 @@ const Collections1849929295832448 = () => {
       
       {!showPreloader && (
         <div className="min-h-screen feed-bg">
-          <header className="sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b border-border p-3 sm:p-4">
+          <header className="sticky top-0 z-10 nav-elevated p-3 sm:p-4">
             <div className="max-w-6xl mx-auto flex items-center justify-between">
               <Button 
                 onClick={() => navigate('/')} 
@@ -359,9 +359,7 @@ const Collections1849929295832448 = () => {
                 Back to Feed
               </Button>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-violet-400 flex items-center justify-center">
-                  <span className="text-white font-extrabold text-[10px] tracking-tight">67</span>
-                </div>
+                <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
                 <button
                   onClick={toggleTheme}
                   className="p-2 rounded-full hover:bg-secondary/80 transition-all duration-200 hover:scale-105"
@@ -480,12 +478,7 @@ const Collections1849929295832448 = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="md:col-span-2">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="relative">
-                      <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-violet-400 flex items-center justify-center shadow-lg">
-                        <span className="text-white font-extrabold text-sm tracking-tight">67</span>
-                      </div>
-                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse"></div>
-                    </div>
+                    <div className="brand-wordmark text-lg"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
                     <div>
                       <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                         SixSeven Creator
