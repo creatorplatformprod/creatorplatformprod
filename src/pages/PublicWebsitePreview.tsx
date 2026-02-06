@@ -107,7 +107,8 @@ const PublicWebsitePreview = () => {
                   Save Changes
                 </Button>
               ) : (
-                <span className="px-3 py-1.5 text-xs text-muted-foreground bg-secondary/50 border border-border/60 rounded-lg">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground bg-secondary/50 border border-border/60 rounded-lg">
+                  {published && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />}
                   {published ? "Published" : "No changes"}
                 </span>
               )}
@@ -135,6 +136,7 @@ const PublicWebsitePreview = () => {
 
         <div className="flex flex-col lg:flex-row gap-10 items-start">
           <div className="flex-1 min-w-0 w-full">
+            <p className="device-label text-center lg:text-left">Desktop</p>
             <div className="relative mx-auto max-w-[920px]">
               <div className="bg-[#0c1119] rounded-[20px] p-3 border border-white/10 shadow-[0_30px_80px_rgba(2,6,23,0.6)]">
                 <div className="bg-black rounded-[14px] overflow-hidden border border-white/5">
@@ -153,11 +155,14 @@ const PublicWebsitePreview = () => {
               <div className="mt-1 flex justify-center">
                 <div className="w-[78%] h-[12px] bg-gradient-to-b from-[#2f3746] to-[#171c27] rounded-[999px] [transform:perspective(1200px)_rotateX(10deg)] shadow-[0_12px_28px_rgba(2,6,23,0.5)]" />
               </div>
+              {/* Ambient glow */}
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-16 bg-indigo-500/[0.06] rounded-full blur-2xl pointer-events-none" />
             </div>
           </div>
 
-          <div className="w-full lg:w-[380px] flex justify-center">
-            <div className="bg-[#0b0f16] rounded-[40px] p-4 shadow-[0_25px_70px_rgba(2,6,23,0.55)] border border-white/10 w-[268px] sm:w-[310px] lg:w-[340px]">
+          <div className="w-full lg:w-[380px] flex flex-col items-center">
+            <p className="device-label text-center">Mobile</p>
+            <div className="relative bg-[#0b0f16] rounded-[40px] p-4 shadow-[0_25px_70px_rgba(2,6,23,0.55)] border border-white/10 w-[268px] sm:w-[310px] lg:w-[340px]">
               <div className="bg-black rounded-[32px] overflow-hidden border border-white/5 relative">
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#0f1219] rounded-full border border-white/5 z-10" />
                 <div className="relative mx-auto [--viewport-w:430px] [--viewport-h:932px] [--scale:0.54] sm:[--scale:0.58] lg:[--scale:0.7] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
@@ -171,6 +176,8 @@ const PublicWebsitePreview = () => {
               <div className="mt-3 flex justify-center">
                 <div className="w-20 h-1.5 bg-white/20 rounded-full" />
               </div>
+              {/* Ambient glow */}
+              <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-2/3 h-12 bg-violet-500/[0.06] rounded-full blur-2xl pointer-events-none" />
             </div>
           </div>
         </div>

@@ -440,6 +440,52 @@ const CreatorProfile = () => {
         subtitle="Exclusive Content"
       />
 
+      {/* Profile Hero Section */}
+      <div className="profile-hero">
+        <div className="relative h-32 sm:h-40 lg:h-44" />
+        <div className={`relative max-w-4xl mx-auto px-4 -mt-12 sm:-mt-14 pb-6 transition-all duration-300 ${sidebarOpen ? 'lg:ml-[380px]' : 'lg:ml-0'}`}>
+          <div className="flex flex-col sm:flex-row items-start gap-4">
+            <div className="profile-avatar-ring flex-shrink-0">
+              <img
+                src={creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400'}
+                alt={creatorData?.displayName || 'Creator'}
+                className="w-20 h-20 sm:w-24 sm:h-24 object-cover bg-background"
+              />
+            </div>
+            <div className="flex-1 min-w-0 pt-1 sm:pt-3">
+              <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">
+                {creatorData?.displayName || creatorData?.username || 'Creator'}
+              </h1>
+              {creatorData?.bio && (
+                <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{creatorData.bio}</p>
+              )}
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                <span className="stat-pill">{allCollections.length} Collections</span>
+                <span className="stat-pill">{formattedStatusData.length} Posts</span>
+              </div>
+              <div className="flex items-center gap-2 mt-3">
+                {renderSocialIcon(twitterUrl, "Twitter", <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.040 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>, "w-6 h-6", "", "rounded-md")}
+                {renderSocialIcon(instagramUrl, "Instagram", <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>, "w-6 h-6", "", "rounded-md")}
+                {renderSocialIcon(tiktokUrl, "TikTok", <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.8v13.1a2.48 2.48 0 0 1-2.47 2.48 2.48 2.48 0 0 1-2.48-2.48 2.48 2.48 0 0 1 2.48-2.48c.24 0 .47.03.69.08V8.72a6.06 6.06 0 0 0-.69-.04A6.42 6.42 0 0 0 3.13 15.1a6.42 6.42 0 0 0 6.42 6.42 6.42 6.42 0 0 0 6.42-6.42V9.78a8.7 8.7 0 0 0 3.62.78z"/></svg>, "w-6 h-6", "", "rounded-md")}
+                {renderSocialIcon(telegramUrl, "Telegram", <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.174 1.858-.924 6.667-1.304 8.842-.168.968-.5 1.29-1.02 1.323-.87.052-1.53-.574-2.373-1.125-1.055-.69-1.653-1.07-2.68-1.714-1.188-.78-.418-1.21.258-1.912.178-.18 3.247-2.977 3.307-3.23.008-.03.015-.14-.053-.198-.068-.057-.17-.037-.244-.022-.105.02-1.79 1.14-5.06 3.345-.48.336-.914.5-1.302.492-.428-.008-1.252-.242-1.865-.44-.752-.243-1.35-.375-1.297-.79.027-.21.405-.416 1.11-.64 4.28-1.86 7.13-3.09 8.55-3.69 4.01-1.68 4.83-1.98 5.37-2.01.114-.005.37-.027.536.16.13.147.168.345.185.48z"/></svg>, "w-6 h-6", "", "rounded-md")}
+              </div>
+            </div>
+            {allCollections.length > 0 && (
+              <button
+                onClick={() => window.location.href = `/${username}/collections/all`}
+                className="hidden sm:flex items-center gap-2 mt-4 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 transition-all shadow-lg shadow-indigo-500/20"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <path d="M9 11V7C9 4.79086 10.7909 3 13 3C15.2091 3 17 4.79086 17 7V11" stroke="currentColor" strokeWidth="2" fill="none"/>
+                </svg>
+                Unlock Everything
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Content Area with Sidebar */}
       <div className="flex">
         {/* Desktop Sidebar - Below navbar, hidden on mobile */}
@@ -498,7 +544,7 @@ const CreatorProfile = () => {
                     <button
                       key={collection.id}
                       onClick={() => handleCollectionClick(collection.id)}
-                      className="w-full text-left px-3 py-2.5 rounded-md flex items-center justify-between gap-3"
+                      className="w-full text-left collection-item flex items-center justify-between gap-3"
                     >
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <span className="text-muted-foreground flex-shrink-0">
@@ -508,6 +554,9 @@ const CreatorProfile = () => {
                           {collection.title}
                         </span>
                       </div>
+                      <span className="text-[10px] text-muted-foreground flex-shrink-0">
+                        {(collection as any).images?.length || 0}
+                      </span>
                     </button>
                   );
                 })}
@@ -707,149 +756,16 @@ const CreatorProfile = () => {
               )}
             </div>
 
-            <footer className="post-card rounded-xl p-6 mt-12">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div className="md:col-span-2">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="brand-wordmark text-lg"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-                    <div>
-                      <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                        {creatorData.displayName || creatorData.username}
-                      </h2>
-                      <p className="text-sm text-muted-foreground">{allCollections.length} Exclusive Collections</p>
-                    </div>
-                  </div>
-                  {creatorData.bio && (
-                    <p className="text-muted-foreground text-sm">
-                      {creatorData.bio}
-                    </p>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-8 md:contents">
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-4">Explore</h3>
-                    <ul className="space-y-2 text-sm">
-                      <li>
-                        <button 
-                          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-                          className="text-muted-foreground text-left bg-transparent border-none"
-                        >
-                          Gallery
-                        </button>
-                      </li>
-                      <li>
-                        <button 
-                          onClick={() => window.location.href = `/${username}/collections`} 
-                          className="text-muted-foreground text-left bg-transparent border-none"
-                        >
-                          Collections
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-4">Connect</h3>
-                    <div className="flex gap-3 mb-4">
-                      {renderSocialIcon(
-                        twitterUrl,
-                        "Twitter",
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.040 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
-                        </svg>,
-                        "w-8 h-8",
-                        "",
-                        "rounded-full"
-                      )}
-                      {renderSocialIcon(
-                        instagramUrl,
-                        "Instagram",
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.40s-.644-1.44-1.439-1.40z"/>
-                        </svg>,
-                        "w-8 h-8",
-                        "",
-                        "rounded-full"
-                      )}
-                      {renderSocialIcon(
-                        tiktokUrl,
-                        "TikTok",
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.8v13.1a2.48 2.48 0 0 1-2.47 2.48 2.48 2.48 0 0 1-2.48-2.48 2.48 2.48 0 0 1 2.48-2.48c.24 0 .47.03.69.08V8.72a6.06 6.06 0 0 0-.69-.04A6.42 6.42 0 0 0 3.13 15.1a6.42 6.42 0 0 0 6.42 6.42 6.42 6.42 0 0 0 6.42-6.42V9.78a8.7 8.7 0 0 0 3.62.78z"/>
-                        </svg>,
-                        "w-8 h-8",
-                        "",
-                        "rounded-full"
-                      )}
-                      {renderSocialIcon(
-                        twitchUrl,
-                        "Twitch",
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M4 3h16v10h-5l-3 3h-2v-3H4V3zm2 2v6h4v3.5L13 11h5V5H6zm11.5 9.5h2.5V21h-6v-3h4v-3.5z"/>
-                        </svg>,
-                        "w-8 h-8",
-                        "",
-                        "rounded-full"
-                      )}
-                      {renderSocialIcon(
-                        telegramUrl,
-                        "Telegram",
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.174 1.858-.924 6.667-1.304 8.842-.168.968-.5 1.29-1.02 1.323-.87.052-1.53-.574-2.373-1.125-1.055-.69-1.653-1.07-2.68-1.714-1.188-.78-.418-1.21.258-1.912.178-.18 3.247-2.977 3.307-3.23.008-.03.015-.14-.053-.198-.068-.057-.17-.037-.244-.022-.105.02-1.79 1.14-5.06 3.345-.48.336-.914.5-1.302.492-.428-.008-1.252-.242-1.865-.44-.752-.243-1.35-.375-1.297-.79.027-.21.405-.416 1.11-.64 4.28-1.86 7.13-3.09 8.55-3.69 4.01-1.68 4.83-1.98 5.37-2.01.114-.005.37-.027.536.16.13.147.168.345.185.48z"/>
-                        </svg>,
-                        "w-8 h-8",
-                        "",
-                        "rounded-full"
-                      )}
-                      {renderSocialIcon(
-                        emailUrl,
-                        "Email",
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/>
-                        </svg>,
-                        "w-8 h-8",
-                        "",
-                        "rounded-full"
-                      )}
-                    </div>
-                    {creatorData.domainEmail ? (
-                      <p className="text-sm text-muted-foreground">{creatorData.domainEmail}</p>
-                    ) : (
-                      showHelp && (
-                        <p className="text-xs text-muted-foreground">
-                          Add a business email in Profile Settings to show it here.
-                        </p>
-                      )
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {allCollections.length > 0 && (
-                <div className="border-t border-border mt-8 pt-6">
-                  <button 
-                    className="flex items-center justify-center gap-2 cursor-pointer group mb-4 w-full bg-transparent border-none"
-                    onClick={() => window.location.href = `/${username}/collections/all`}
-                  >
-                    <svg className="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
-                      <path d="M9 11V7C9 4.79086 10.7909 3 13 3C15.2091 3 17 4.79086 17 7V11" stroke="currentColor" strokeWidth="2" fill="none"/>
-                    </svg>
-                    <span className="font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                      Unlock All Collections
-                    </span>
-                  </button>
-                  <p className="text-center text-xs text-muted-foreground mb-6">
-                    Get unlimited access to all exclusive content, HD downloads, and early access to new collections
-                  </p>
-                </div>
-              )}
-
-              <div className="border-t border-border pt-6 text-center">
+            <footer className="mt-12 border-t border-white/[0.06] pt-6 pb-4">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
                 <p className="text-xs text-muted-foreground">
-                  © {new Date().getFullYear()} {creatorData.displayName || creatorData.username}. All rights reserved.
+                  &copy; {new Date().getFullYear()} {creatorData.displayName || creatorData.username}. All rights reserved.
                 </p>
+                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Gallery</button>
+                  <button onClick={() => window.location.href = `/${username}/collections`} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Collections</button>
+                </div>
               </div>
             </footer>
           </main>

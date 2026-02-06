@@ -31,6 +31,10 @@ import {
   Instagram,
   Camera,
   Upload,
+  DollarSign,
+  Layers,
+  FileText,
+  TrendingUp,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
@@ -634,6 +638,51 @@ const CreatorDashboard = () => {
 
         <div className="max-w-7xl mx-auto px-4 py-5 sm:py-6">
 
+        {/* Welcome Stats Bar */}
+        <div className="mb-6">
+          <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4">
+            Welcome back{profileData.displayName ? `, ${profileData.displayName}` : ''}
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="stat-card-glow">
+              <div className="flex items-center gap-2.5 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                  <DollarSign className="w-4 h-4 text-emerald-400" />
+                </div>
+                <span className="text-xs font-medium text-muted-foreground">Revenue</span>
+              </div>
+              <p className="text-xl sm:text-2xl font-bold text-foreground">${analyticsTotals.revenue.toFixed(2)}</p>
+            </div>
+            <div className="stat-card-glow">
+              <div className="flex items-center gap-2.5 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                  <Layers className="w-4 h-4 text-violet-400" />
+                </div>
+                <span className="text-xs font-medium text-muted-foreground">Collections</span>
+              </div>
+              <p className="text-xl sm:text-2xl font-bold text-foreground">{collections.length}</p>
+            </div>
+            <div className="stat-card-glow">
+              <div className="flex items-center gap-2.5 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-blue-400" />
+                </div>
+                <span className="text-xs font-medium text-muted-foreground">Status Posts</span>
+              </div>
+              <p className="text-xl sm:text-2xl font-bold text-foreground">{statusCards.length}</p>
+            </div>
+            <div className="stat-card-glow">
+              <div className="flex items-center gap-2.5 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-cyan-400" />
+                </div>
+                <span className="text-xs font-medium text-muted-foreground">Orders</span>
+              </div>
+              <p className="text-xl sm:text-2xl font-bold text-foreground">{analyticsTotals.orders}</p>
+            </div>
+          </div>
+        </div>
+
         {/* Success/Error Messages */}
         {infoMessage && (
           <div className="mb-4 alert-info">
@@ -751,6 +800,8 @@ const CreatorDashboard = () => {
               </div>
             </div>
 
+            {/* ── Section: Profile ── */}
+            <h3 className="form-section-header">Profile</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block">
@@ -774,7 +825,11 @@ const CreatorDashboard = () => {
                   rows={3}
                 />
               </div>
+            </div>
 
+            {/* ── Section: Social Links ── */}
+            <h3 className="form-section-header">Social Links</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
                   <MessageSquare className="w-4 h-4" />
@@ -846,6 +901,11 @@ const CreatorDashboard = () => {
                 />
               </div>
 
+            </div>
+
+            {/* ── Section: Advanced ── */}
+            <h3 className="form-section-header">Advanced</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
                   <Wallet className="w-4 h-4" />
@@ -1313,23 +1373,23 @@ const CreatorDashboard = () => {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-4">
-              <div className="card-elevated p-4">
+              <div className="stat-card-glow">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Gross Revenue</p>
                 <p className="text-2xl font-bold text-foreground mt-2">
                   {formatMoney(analyticsTotals.revenue, analyticsCurrency)}
                 </p>
               </div>
-              <div className="card-elevated p-4">
+              <div className="stat-card-glow">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Orders</p>
                 <p className="text-2xl font-bold text-foreground mt-2">{analyticsTotals.orders}</p>
               </div>
-              <div className="card-elevated p-4">
+              <div className="stat-card-glow">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Creator Net</p>
                 <p className="text-2xl font-bold text-foreground mt-2">
                   {formatMoney(analyticsTotals.net, analyticsCurrency)}
                 </p>
               </div>
-              <div className="card-elevated p-4">
+              <div className="stat-card-glow">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Platform Fee</p>
                 <p className="text-2xl font-bold text-foreground mt-2">
                   {formatMoney(analyticsTotals.platformFee, analyticsCurrency)}
