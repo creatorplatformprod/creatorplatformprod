@@ -468,32 +468,54 @@ const PostDetailBlurred = () => {
           }}
         >
           <div 
-            className="bg-transparent rounded-2xl p-4 sm:p-6 w-full max-w-[340px] sm:max-w-sm"
+            className="rounded-2xl p-5 sm:p-7 w-full max-w-[360px] sm:max-w-sm"
             style={{
               maxHeight: '85vh',
               overflowY: 'auto',
-              WebkitOverflowScrolling: 'touch'
+              WebkitOverflowScrolling: 'touch',
+              background: 'rgba(10, 10, 14, 0.85)',
+              backdropFilter: 'blur(40px)',
+              WebkitBackdropFilter: 'blur(40px)',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
             }}
           >
             <div className="text-center">
-              <div className="brand-wordmark text-base sm:text-lg mx-auto mb-2.5 sm:mb-4"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-              <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1.5 sm:mb-2">
-                Unlock "{collection.title}"
+              {/* Creator info if available */}
+              {collection.user && (
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <img
+                    src={collection.user.avatar}
+                    alt={collection.user.name}
+                    className="w-7 h-7 rounded-full object-cover ring-1 ring-white/10"
+                  />
+                  <span className="text-xs font-medium text-white/70">{collection.user.name}</span>
+                </div>
+              )}
+
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-1 tracking-tight">
+                {collection.title}
               </h2>
-              <p className="text-xs sm:text-base text-white mb-3.5 sm:mb-6">
-                Get instant access to {collection.images?.length || 0} exclusive items
+              <p className="text-xs text-white/40 mb-5">
+                {collection.images?.length || 0} items · Instant access
               </p>
               
               {paymentError && (
-                <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-red-500/20 border border-red-500/40 rounded-lg">
-                  <p className="text-xs sm:text-sm text-white">{paymentError}</p>
+                <div className="mb-4 p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl">
+                  <p className="text-xs text-red-300">{paymentError}</p>
                 </div>
               )}
               
-              <div className="mb-3 sm:mb-4">
+              {/* Price */}
+              <div className="mb-5 py-4 border-y border-white/[0.06]">
+                <span className="text-3xl font-bold text-white tracking-tight">{formattedPrice}</span>
+                <p className="text-[11px] text-white/30 mt-1">one-time · yours forever</p>
+              </div>
+
+              <div className="mb-4">
                 <input
                   type="email"
-                  placeholder="Enter your email address"
+                  placeholder="your@email.com"
                   value={customerEmail}
                   onChange={(e) => {
                     setCustomerEmail(e.target.value);
@@ -505,30 +527,30 @@ const PostDetailBlurred = () => {
                       handleCardPaymentClick();
                     }
                   }}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full px-4 py-3 text-sm bg-white/[0.04] border border-white/[0.08] rounded-xl text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
                   required
                   maxLength={254}
                 />
               </div>
               
-              <div className="space-y-2 sm:space-y-3 mb-3.5 sm:mb-6">
-                <div>
-                  <button
-                    onClick={handleCardPaymentClick}
-                    disabled={isCardPaymentLoading}
-                    className="bg-secondary/80 hover:bg-secondary text-foreground py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-xs sm:text-base font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-none"
-                  >
-                    {isCardPaymentLoading ? (
-                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-foreground" />
-                    ) : (
-                      <>
-                        <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
-                        {`Pay by Card - ${formattedPrice}`}
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
+              <button
+                onClick={handleCardPaymentClick}
+                disabled={isCardPaymentLoading}
+                className="checkout-pay-btn w-full"
+              >
+                {isCardPaymentLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    <CreditCard className="w-4 h-4" />
+                    <span>Unlock for {formattedPrice}</span>
+                  </>
+                )}
+              </button>
+
+              <p className="mt-3 text-[10px] text-white/25">
+                Secured with 256-bit encryption
+              </p>
             </div>
           </div>
         </div>

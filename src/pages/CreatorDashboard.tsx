@@ -1269,10 +1269,13 @@ const CreatorDashboard = () => {
               <h3 className="text-xl font-bold text-foreground mb-4">Your Status Cards</h3>
               <div className="space-y-4">
                 {statusCards.length === 0 ? (
-                  <div className="text-muted-foreground text-center py-8 space-y-2">
-                    <p className="font-medium text-foreground">No status cards yet</p>
-                    <p className="text-sm text-muted-foreground">
-                      Status cards appear on your homepage and highlight updates. Add your first one above.
+                  <div className="flex flex-col items-center justify-center text-center py-12 px-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500/15 to-pink-500/15 border border-white/[0.06] flex items-center justify-center mb-4">
+                      <svg className="w-5 h-5 text-violet-400/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <p className="text-sm font-medium text-foreground mb-1">No status posts yet</p>
+                    <p className="text-xs text-muted-foreground max-w-[240px] leading-relaxed">
+                      Status posts keep your audience engaged and appear on your homepage.
                     </p>
                   </div>
                 ) : (
@@ -1462,10 +1465,13 @@ const CreatorDashboard = () => {
               <h3 className="text-xl font-bold text-foreground mb-4">Your Collections</h3>
               <div className="space-y-4">
                 {collections.length === 0 ? (
-                  <div className="text-muted-foreground text-center py-8 space-y-2">
-                    <p className="font-medium text-foreground">No collections yet</p>
-                    <p className="text-sm text-muted-foreground">
-                      Collections show up in your sidebar and feed. Create one to start selling access.
+                  <div className="flex flex-col items-center justify-center text-center py-12 px-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500/15 to-cyan-500/15 border border-white/[0.06] flex items-center justify-center mb-4">
+                      <svg className="w-5 h-5 text-indigo-400/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                    </div>
+                    <p className="text-sm font-medium text-foreground mb-1">No collections yet</p>
+                    <p className="text-xs text-muted-foreground max-w-[240px] leading-relaxed">
+                      Create your first collection above to start selling exclusive content.
                     </p>
                   </div>
                 ) : (
@@ -1488,6 +1494,19 @@ const CreatorDashboard = () => {
         {/* Analytics Tab */}
         {activeTab === 'analytics' && (
           <div className="space-y-6">
+            {analyticsTotals.orders === 0 && analyticsSeries.length === 0 && (
+              <div className="card-elevated p-8">
+                <div className="flex flex-col items-center justify-center text-center py-8 px-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/15 to-teal-500/15 border border-white/[0.06] flex items-center justify-center mb-4">
+                    <svg className="w-5 h-5 text-emerald-400/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                  </div>
+                  <p className="text-sm font-medium text-foreground mb-1">No analytics yet</p>
+                  <p className="text-xs text-muted-foreground max-w-[260px] leading-relaxed">
+                    Revenue, orders, and performance trends will appear here after your first sale.
+                  </p>
+                </div>
+              </div>
+            )}
             <div className="card-elevated p-6 sm:p-8 space-y-4">
               <div className="flex flex-col gap-2">
                 <h2 className="section-title">Sales Analytics</h2>

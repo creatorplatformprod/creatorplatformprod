@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Loader2, CheckCircle2, Shield, Lock, ChevronDown, ChevronUp, Clock, AlertCircle, CreditCard } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle2, Lock, ChevronDown, ChevronUp, Clock, AlertCircle, CreditCard } from "lucide-react";
 
 // Environment configuration - no hardcoded URLs
 const CONFIG = {
@@ -19,10 +19,7 @@ const CheckoutPage = () => {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-  const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
-
-  const toggleHowItWorks = () => setShowHowItWorks(!showHowItWorks);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -488,191 +485,93 @@ const CheckoutPage = () => {
   return (
     <div className="min-h-screen feed-bg">
       <header className="sticky top-0 z-10 nav-elevated">
-        <div className="max-w-6xl mx-auto p-3 sm:p-4 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button 
             onClick={handleBack}
-            className="flex items-center gap-2 px-3 py-2 sm:px-4 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground transition-all duration-300"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm font-medium">Back</span>
+            <span className="text-sm">Back</span>
           </button>
+          <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-3 sm:px-4 py-5 sm:py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          <div>
-            <div className="post-card rounded-2xl shadow-lg p-5 sm:p-6 lg:p-6">
-              <div className="lg:hidden">
+      <main className="max-w-5xl mx-auto px-3 sm:px-4 py-6 sm:py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 sm:gap-10">
+          {/* Order Summary -- Left Column */}
+          <div className="lg:col-span-2 order-2 lg:order-1">
+            <div className="lg:sticky lg:top-24">
+              <div className="lg:hidden mb-4">
                 <button
                   onClick={() => setShowOrderDetails(!showOrderDetails)}
-                  className="w-full flex items-center gap-3"
+                  className="w-full flex items-center justify-between py-3 text-sm"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-                    <div className="w-px h-5 bg-white/[0.10]"></div>
-                    <span className="text-xs font-medium text-muted-foreground">Checkout</span>
-                  </div>
-                  <div className="flex-1 text-left">
-                    <h2 className="text-base font-bold text-foreground">Order Summary</h2>
-                    <p className="text-xs text-muted-foreground">Total: ${checkoutData.amount}</p>
-                  </div>
-                  <div className="p-2 rounded-lg bg-secondary">
-                    {showOrderDetails ? (
-                      <ChevronUp className="w-4 h-4 text-foreground" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-foreground" />
-                    )}
+                  <span className="font-medium text-foreground">Show order summary</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-foreground">${checkoutData.amount}</span>
+                    {showOrderDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </div>
                 </button>
               </div>
 
-              <div className="hidden lg:flex items-center gap-3 mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-                  <div className="w-px h-5 bg-white/[0.10]"></div>
-                  <span className="text-xs font-medium text-muted-foreground">Checkout</span>
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-foreground">Order Summary</h2>
-                  <p className="text-xs text-muted-foreground">Review your purchase</p>
-                </div>
-              </div>
-              
-              <div className={`space-y-4 ${showOrderDetails ? 'block mt-4' : 'hidden lg:block'}`}>
-                <div className="pb-4 border-b border-border">
-                  <h3 className="font-semibold text-foreground mb-1 truncate">
-                    {checkoutData.collectionTitle}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {checkoutData.itemCount > 0 
-                      ? `${checkoutData.itemCount} premium items`
-                      : 'Exclusive content'}
-                  </p>
+              <div className={`space-y-5 ${showOrderDetails ? 'block' : 'hidden lg:block'}`}>
+                {/* Product Card */}
+                <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
+                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500/20 via-violet-500/15 to-cyan-500/20 border border-white/[0.06] flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-white/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M3 9h18M9 21V9" /></svg>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-foreground text-sm truncate">{checkoutData.collectionTitle}</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {checkoutData.itemCount > 0 ? `${checkoutData.itemCount} items` : 'Digital content'} · Instant access
+                    </p>
+                  </div>
+                  <span className="text-sm font-semibold text-foreground flex-shrink-0">${checkoutData.amount}</span>
                 </div>
 
-                <div className="space-y-3 py-3">
-                  <div className="flex justify-between text-sm">
+                {/* Price Summary */}
+                <div className="space-y-2.5 text-sm">
+                  <div className="flex justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span className="font-medium text-foreground">${checkoutData.amount}</span>
+                    <span className="text-foreground">${checkoutData.amount}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Digital Delivery</span>
-                    <span className="font-medium text-green-500">Free</span>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Delivery</span>
+                    <span className="text-emerald-400">Free</span>
                   </div>
-                  <div className="flex justify-between text-sm pt-2 border-t border-border">
-                    <span className="text-muted-foreground">Tax</span>
-                    <span className="font-medium text-foreground">$0.00</span>
+                  <div className="h-px bg-white/[0.06] my-1" />
+                  <div className="flex justify-between items-baseline">
+                    <span className="text-foreground font-medium">Total</span>
+                    <span className="text-2xl font-bold text-foreground tracking-tight">${checkoutData.amount}</span>
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center pt-4 border-t border-border">
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Total due today</div>
-                    <div className="text-xs text-muted-foreground/70">USD</div>
+                {/* Perks */}
+                <div className="space-y-2 pt-2">
+                  <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
+                    <div className="w-1 h-1 rounded-full bg-emerald-400" />
+                    <span>One-time purchase · No subscription</span>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-bold text-foreground bg-clip-text">
-                    ${checkoutData.amount}
+                  <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
+                    <div className="w-1 h-1 rounded-full bg-emerald-400" />
+                    <span>Instant access after payment</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
+                    <div className="w-1 h-1 rounded-full bg-emerald-400" />
+                    <span>Lifetime ownership</span>
                   </div>
                 </div>
               </div>
-
-              <div className={`mt-6 pt-6 border-t border-border space-y-2 ${showOrderDetails ? 'block' : 'hidden lg:block'}`}>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span>One-time purchase • No subscriptions</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span>Instant access after payment</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span>Lifetime ownership</span>
-                </div>
-              </div>
-
-              {/* How It Works - Desktop: always expanded */}
-              <div className="hidden lg:block mt-6 pt-6 border-t border-border">
-                <h3 className="text-sm font-semibold text-foreground mb-4">How It Works</h3>
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-semibold text-primary">1</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">Click "Pay" to start checkout using our advanced card technology</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-semibold text-primary">2</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">Select your preferred payment method (USDC or other cryptocurrency)</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-semibold text-primary">3</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">Complete your payment securely</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
-                    </div>
-                    <p className="text-xs text-muted-foreground">Instant access to your exclusive content</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* How It Works - Mobile: collapsible dropdown */}
-            <div className="lg:hidden mt-4">
-              <button
-                onClick={toggleHowItWorks}
-                className="w-full flex items-center justify-between p-3 bg-secondary/30 rounded-xl"
-              >
-                <span className="text-sm font-medium text-foreground">How It Works</span>
-                {showHowItWorks ? (
-                  <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                )}
-              </button>
-              {showHowItWorks && (
-                <div className="mt-3 p-4 bg-secondary/20 rounded-xl space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-semibold text-primary">1</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">Click "Pay" to start checkout using our advanced card technology</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-semibold text-primary">2</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">Select your preferred payment method (USDC or other cryptocurrency)</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-semibold text-primary">3</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">Complete your payment securely</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
-                    </div>
-                    <p className="text-xs text-muted-foreground">Instant access to your exclusive content</p>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
-          <div>
-            <div className="post-card rounded-2xl p-5 sm:p-6 shadow-lg">
-              <h1 className="text-base sm:text-lg font-bold text-foreground mb-2">Payment Method</h1>
-              <p className="text-xs text-muted-foreground mb-5">
-                All transactions are secure and encrypted
+          {/* Payment Form -- Right Column (primary focus) */}
+          <div className="lg:col-span-3 order-1 lg:order-2">
+            <div className="card-elevated rounded-2xl p-5 sm:p-7">
+              <h1 className="text-lg sm:text-xl font-bold text-foreground mb-1 tracking-tight">Payment</h1>
+              <p className="text-xs text-muted-foreground mb-6">
+                Secure checkout · Encrypted end-to-end
               </p>
 
               {paymentError && (
@@ -786,7 +685,7 @@ const CheckoutPage = () => {
                       if (provider) handleProviderSelect(provider);
                     }}
                     disabled={isProcessing || !customerEmail || !selectedProvider}
-                    className="w-full py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2"
+                    className="checkout-pay-btn w-full"
                   >
                     {isProcessing ? (
                       <>
@@ -794,35 +693,26 @@ const CheckoutPage = () => {
                         <span>Processing...</span>
                       </>
                     ) : (
-                      <>
-                        <CreditCard className="w-5 h-5" />
-                        <span>Pay ${checkoutData?.amount}</span>
-                      </>
+                      <span>Pay ${checkoutData?.amount}</span>
                     )}
                   </button>
 
-                  <div className="mt-5 flex items-center justify-center gap-6 pt-5 border-t border-border">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Shield className="w-4 h-4 text-green-500" />
-                      <span>Secure Payment</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Lock className="w-4 h-4 text-green-500" />
-                      <span>SSL Encrypted</span>
-                    </div>
-                  </div>
+                  <p className="mt-3 text-center text-[11px] text-muted-foreground/60">
+                    <Lock className="w-3 h-3 inline-block mr-1 -mt-px" />
+                    Secured with 256-bit SSL encryption
+                  </p>
                 </>
               )}
             </div>
           </div>
         </div>
         
-        <div className="text-center mt-6">
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            By completing your purchase, you authorize us to charge you according to our{" "}
-            <a href="#" className="text-primary hover:text-primary/80 transition-colors">Terms of Service</a>
+        <div className="text-center mt-8 pb-4">
+          <p className="text-[11px] text-muted-foreground/50 leading-relaxed">
+            By completing your purchase, you agree to our{" "}
+            <a href="#" className="text-muted-foreground/70 underline underline-offset-2 hover:text-foreground transition-colors">Terms</a>
             {" "}and{" "}
-            <a href="#" className="text-primary hover:text-primary/80 transition-colors">Privacy Policy</a>.
+            <a href="#" className="text-muted-foreground/70 underline underline-offset-2 hover:text-foreground transition-colors">Privacy Policy</a>
           </p>
         </div>
       </main>

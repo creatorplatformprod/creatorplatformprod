@@ -295,27 +295,54 @@ const PostDetail = () => {
 
   return (
     <div className="min-h-screen feed-bg">
-      <header className="sticky top-0 z-10 nav-elevated p-3 sm:p-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Button 
-            onClick={() => navigate("/")} 
-            variant="ghost" 
-            size="sm"
-            className="hover:bg-secondary"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Feed
-          </Button>
-          <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+      <header className="sticky top-0 z-10 nav-elevated">
+        <div className="max-w-6xl mx-auto p-3 sm:p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button 
+              onClick={() => navigate("/")} 
+              variant="ghost" 
+              size="sm"
+              className="hover:bg-secondary"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+            <div className="hidden sm:block brand-wordmark text-sm"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] text-muted-foreground tabular-nums">
+              {Math.min(currentImagePage * imagesPerPage, collection.images.length)} of {collection.images.length}
+            </span>
+            <button
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({ title: collection.title, url: window.location.href });
+                } else {
+                  navigator.clipboard.writeText(window.location.href);
+                }
+              }}
+              className="p-2 rounded-lg bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] transition-all"
+              title="Share"
+            >
+              <svg className="w-3.5 h-3.5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            </button>
+          </div>
+        </div>
+        {/* Subtle access indicator */}
+        <div className="border-t border-emerald-500/10 bg-emerald-500/[0.03]">
+          <div className="max-w-6xl mx-auto px-4 py-1.5 flex items-center justify-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400/60" />
+            <span className="text-[10px] font-medium text-emerald-400/60 tracking-wide uppercase">Lifetime access</span>
+          </div>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
         <div className="space-y-6">
           <div className="post-card rounded-xl p-6 animate-fade-in">
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">{collection.title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 tracking-tight">{collection.title}</h1>
             <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed">{collection.description}</p>
-            <div className="text-muted-foreground text-sm mt-4">
+            <div className="text-muted-foreground text-xs mt-4">
               {collection.timestamp}
             </div>
           </div>

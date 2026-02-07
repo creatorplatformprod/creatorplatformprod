@@ -372,38 +372,24 @@ const TipCheckoutPage = () => {
         <div className="max-w-lg mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button
             onClick={handleBack}
-            className="flex items-center gap-2 px-3 py-2 sm:px-4 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground transition-all duration-300"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm font-medium">Back</span>
+            <span className="text-sm">Back</span>
           </button>
-          <div className="flex items-center gap-3">
-            <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-            <div className="w-px h-5 bg-white/[0.10]"></div>
-            <span className="text-xs font-medium text-muted-foreground">Tip</span>
-          </div>
+          <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-3 sm:px-4 py-6 sm:py-8">
-        <div className="post-card rounded-2xl p-5 sm:p-6 shadow-lg">
-          {/* Header with Icon */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-secondary/50 flex items-center justify-center">
-              <Gift className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: ROSE_COLOR }} />
+      <main className="max-w-lg mx-auto px-3 sm:px-4 py-8 sm:py-12">
+        <div className="card-elevated rounded-2xl p-5 sm:p-7">
+          {/* Centered Tip Amount -- Hero */}
+          <div className="text-center mb-6 pb-6 border-b border-white/[0.06]">
+            <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ background: `${ROSE_COLOR}12` }}>
+              <Gift className="w-5 h-5" style={{ color: ROSE_COLOR }} />
             </div>
-            <div>
-              <h2 className="text-base sm:text-lg font-bold text-foreground">Send a Tip</h2>
-              <p className="text-sm text-muted-foreground">Thank you for your support</p>
-            </div>
-          </div>
-
-          {/* Tip Amount Display */}
-          <div className="mb-6 p-4 bg-secondary/30 rounded-xl border border-border">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Tip Amount</span>
-              <span className="text-2xl sm:text-3xl font-bold" style={{ color: ROSE_COLOR }}>${tipAmount}</span>
-            </div>
+            <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Sending a tip</p>
+            <span className="text-3xl sm:text-4xl font-bold tracking-tight" style={{ color: ROSE_COLOR }}>${tipAmount}</span>
           </div>
 
           {paymentError && (
@@ -514,10 +500,10 @@ const TipCheckoutPage = () => {
               <button
                 onClick={handlePayment}
                 disabled={isProcessing || !customerEmail || !selectedProvider}
-                className="w-full py-3 sm:py-3.5 rounded-xl text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:shadow-lg hover:scale-[1.02]"
+                className="tip-pay-btn w-full"
                 style={{
-                  background: `linear-gradient(135deg, ${ROSE_COLOR}, ${ROSE_COLOR}dd)`,
-                }}
+                  '--tip-color': ROSE_COLOR,
+                } as React.CSSProperties}
               >
                 {isProcessing ? (
                   <>
@@ -525,26 +511,20 @@ const TipCheckoutPage = () => {
                     <span>Processing...</span>
                   </>
                 ) : (
-                  <>
-                    <Gift className="w-5 h-5" />
-                    <span>Send ${tipAmount} Tip</span>
-                  </>
+                  <span>Send ${tipAmount}</span>
                 )}
               </button>
 
-              <div className="mt-5 pt-5 border-t border-border">
-                <p className="text-[11px] text-muted-foreground text-center">
-                  Protected by 256-bit SSL encryption
-                </p>
-              </div>
+              <p className="mt-3 text-center text-[11px] text-muted-foreground/50">
+                Secured with 256-bit SSL encryption
+              </p>
             </>
           )}
         </div>
 
-        {/* Footer Text */}
         <div className="text-center mt-6">
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            Your tip is greatly appreciated and helps support future content creation.
+          <p className="text-[11px] text-muted-foreground/40">
+            Tips directly support creator content
           </p>
         </div>
       </main>
