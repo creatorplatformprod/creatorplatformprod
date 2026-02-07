@@ -5,6 +5,34 @@ import { ExternalLink, Monitor, Smartphone, Copy, Check, Link2 } from "lucide-re
 import AccountMenu from "@/components/AccountMenu";
 import { api } from "@/lib/api";
 
+const ONBOARDING_STEPS = [
+  {
+    title: "Welcome to your Preview",
+    description: "This is where you see how your public page looks to visitors. Let's walk through the key areas.",
+    icon: "👋"
+  },
+  {
+    title: "Publish Your Page",
+    description: "Click 'Publish' in the top-right to make your page live. You can publish even before adding content -- your page will show example content until you add your own.",
+    icon: "🚀"
+  },
+  {
+    title: "Switch Devices",
+    description: "Use the Desktop/Mobile toggle to see how your page looks on different screen sizes. Most of your audience will view on mobile.",
+    icon: "📱"
+  },
+  {
+    title: "Share Your Link",
+    description: "Copy your unique URL and share it on social media, in your bio, or anywhere you want to drive traffic.",
+    icon: "🔗"
+  },
+  {
+    title: "Customize in Dashboard",
+    description: "Head back to the Dashboard to add collections, status posts, update your profile photo, bio, social links, and pricing.",
+    icon: "✨"
+  }
+];
+
 const PublicWebsitePreview = () => {
   const { username } = useParams();
   const navigate = useNavigate();
@@ -13,6 +41,8 @@ const PublicWebsitePreview = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [activeDevice, setActiveDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [copied, setCopied] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState(-1);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   
   const previewUrl = useMemo(() => {
     if (!username) return "#";
@@ -82,6 +112,35 @@ const PublicWebsitePreview = () => {
     setHasChanges(false);
   };
 
+  // Onboarding -- show on first preview visit
+  useEffect(() => {
+    if (!username) return;
+    const seen = localStorage.getItem(`onboarding_complete:${username}`);
+    if (!seen) {
+      const timer = setTimeout(() => {
+        setShowOnboarding(true);
+        setOnboardingStep(0);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [username]);
+
+  const handleOnboardingNext = () => {
+    if (onboardingStep < ONBOARDING_STEPS.length - 1) {
+      setOnboardingStep(onboardingStep + 1);
+    } else {
+      handleOnboardingDismiss();
+    }
+  };
+
+  const handleOnboardingDismiss = () => {
+    setShowOnboarding(false);
+    setOnboardingStep(-1);
+    if (username) {
+      localStorage.setItem(`onboarding_complete:${username}`, 'true');
+    }
+  };
+
   const handleCopyUrl = () => {
     const url = `${window.location.origin}/${username}`;
     navigator.clipboard.writeText(url).then(() => {
@@ -127,10 +186,14 @@ const PublicWebsitePreview = () => {
                 <Button onClick={handlePublish} className="btn-67 shadow-sm h-8 text-xs px-4">
                   Save Changes
                 </Button>
+              ) : !published ? (
+                <Button onClick={handlePublish} className="btn-67 shadow-sm h-8 text-xs px-4">
+                  Publish
+                </Button>
               ) : (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground bg-secondary/50 border border-border/60 rounded-lg">
-                  {published && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />}
-                  {published ? "Published" : "No changes"}
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Published
                 </span>
               )}
               <AccountMenu currentUser={currentUser} />
@@ -268,6 +331,60 @@ const PublicWebsitePreview = () => {
           )}
         </div>
       </div>
+
+      {/* Onboarding Tutorial Overlay */}
+      {showOnboarding && onboardingStep >= 0 && (
+        <>
+          {/* Dimmed backdrop */}
+          <div 
+            className="fixed inset-0 z-[60] bg-black/40 transition-opacity duration-300"
+            onClick={handleOnboardingDismiss}
+          />
+          {/* Tutorial Card */}
+          <div className="fixed z-[70] bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md animate-fade-in">
+            <div className="unlock-modal-card" style={{ padding: '1.25rem 1.5rem' }}>
+              <div className="flex items-start gap-3">
+                <span className="text-2xl flex-shrink-0">{ONBOARDING_STEPS[onboardingStep].icon}</span>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-semibold text-foreground mb-1">
+                    {ONBOARDING_STEPS[onboardingStep].title}
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {ONBOARDING_STEPS[onboardingStep].description}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/[0.06]">
+                {/* Progress dots */}
+                <div className="flex items-center gap-1.5">
+                  {ONBOARDING_STEPS.map((_, i) => (
+                    <div 
+                      key={i}
+                      className={`w-1.5 h-1.5 rounded-full transition-all duration-200 ${
+                        i === onboardingStep ? 'bg-primary w-4' : i < onboardingStep ? 'bg-primary/40' : 'bg-white/10'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleOnboardingDismiss}
+                    className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Skip
+                  </button>
+                  <button
+                    onClick={handleOnboardingNext}
+                    className="px-4 py-1.5 text-xs font-medium rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors"
+                  >
+                    {onboardingStep < ONBOARDING_STEPS.length - 1 ? 'Next' : 'Get Started'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

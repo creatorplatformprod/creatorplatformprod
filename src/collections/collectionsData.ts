@@ -43,6 +43,15 @@ const mockVideoThumb = "https://images.pexels.com/videos/3571264/free-video-3571
 // Creator avatar - using a professional portrait from Pexels
 const creatorAvatar = pexelsThumb(1239291); // Professional woman portrait
 
+// Additional diverse profile avatars for richer mock data
+export const mockAvatars = [
+  pexelsThumb(1239291), // Professional woman portrait
+  pexelsThumb(1036623), // Woman close-up
+  pexelsThumb(774909),  // Woman fashion
+  pexelsThumb(1181519), // Woman smiling
+  pexelsThumb(1065084), // Woman portrait 2
+];
+
 // Curated Pexels photo IDs organized by theme/collection
 // These are real, publicly available Pexels photo IDs
 const pexelsPhotoSets = {

@@ -444,12 +444,8 @@ const CreatorDashboard = () => {
 
   const handlePublicWebsite = () => {
     if (!user?.username) return;
-    const isPublished = localStorage.getItem(`publicWebsitePublished:${user.username}`) === 'true';
-    if (isPublished) {
-      navigate(`/public/${user.username}`);
-    } else {
-      navigate(`/public-unavailable?username=${encodeURIComponent(user.username)}`);
-    }
+    // Always navigate to the public page -- it works even when empty (shows mock data)
+    navigate(`/public/${user.username}`);
   };
 
   const formatMoney = (value: number, currencyCode?: string) => {

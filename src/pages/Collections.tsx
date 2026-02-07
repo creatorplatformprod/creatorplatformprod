@@ -83,6 +83,14 @@ const Collections = () => {
     };
   }, []);
 
+  // Pre-fill email from fan registration
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('fan_email');
+    if (savedEmail && !customerEmail) {
+      setCustomerEmail(savedEmail);
+    }
+  }, []);
+
   const isVideoUrl = (url) => {
     const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
@@ -429,30 +437,51 @@ const Collections = () => {
                 }}
               >
                 <div 
-                  className="rounded-2xl p-5 sm:p-7 w-full max-w-[360px] sm:max-w-sm"
+                  className="unlock-modal-card w-full max-w-[380px] sm:max-w-md"
                   style={{
-                    maxHeight: '85vh',
+                    maxHeight: '90vh',
                     overflowY: 'auto',
                     WebkitOverflowScrolling: 'touch',
-                    background: 'rgba(10, 10, 14, 0.85)',
-                    backdropFilter: 'blur(40px)',
-                    WebkitBackdropFilter: 'blur(40px)',
-                    border: '1px solid rgba(255, 255, 255, 0.06)',
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
                   }}
                 >
+                  {/* Collection Preview Grid -- 4 thumbnails */}
+                  {collectionsData.length > 0 && (
+                    <div className="grid grid-cols-4 gap-1 mb-5 rounded-xl overflow-hidden h-16">
+                      {collectionsData.slice(0, 4).map((col: any, i: number) => {
+                        const firstImg = col.images?.[0];
+                        const src = firstImg ? (typeof firstImg === 'string' ? firstImg : firstImg.thumb || firstImg.full) : '';
+                        return (
+                          <div key={i} className="relative overflow-hidden">
+                            {src ? (
+                              <img src={src} alt="" className="w-full h-full object-cover blur-[4px] scale-110 opacity-50" />
+                            ) : (
+                              <div className="w-full h-full bg-white/[0.04]" />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   <div className="text-center">
-                    <h2 className="text-lg sm:text-xl font-bold text-white mb-1 tracking-tight">
+                    <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight mb-1">
                       Unlock Everything
                     </h2>
                     <p className="text-xs text-white/40 mb-5">
-                      {collectionCount} collections · {totalItems} items · Instant access
+                      {collectionCount} collections · {totalItems} items
                     </p>
                     
-                    {/* Price */}
-                    <div className="mb-5 py-4 border-y border-white/[0.06]">
-                      <span className="text-3xl font-bold text-white tracking-tight">${bundlePrice}</span>
-                      <p className="text-[11px] text-white/30 mt-1">one-time · lifetime access</p>
+                    {/* Price Block */}
+                    <div className="unlock-price-block mb-5">
+                      <span className="text-3xl sm:text-4xl font-bold text-white tracking-tight">${bundlePrice}</span>
+                      <div className="flex items-center justify-center gap-3 mt-1.5">
+                        <span className="text-[10px] text-white/30 flex items-center gap-1">
+                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                          Instant access
+                        </span>
+                        <span className="text-[10px] text-white/30">·</span>
+                        <span className="text-[10px] text-white/30">Lifetime</span>
+                      </div>
                     </div>
                     
                     {paymentError && (
@@ -461,7 +490,7 @@ const Collections = () => {
                       </div>
                     )}
                     
-                    <div className="mb-4">
+                    <div className="space-y-3">
                       <input
                         type="email"
                         placeholder="your@email.com"
@@ -480,25 +509,23 @@ const Collections = () => {
                         required
                         maxLength={254}
                       />
-                    </div>
-                    
-                    <button 
-                      onClick={handleCardPaymentClick}
-                      disabled={isCardPaymentLoading}
-                      className="checkout-pay-btn w-full"
-                    >
-                      {isCardPaymentLoading ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : (
-                        <>
-                          <CreditCard className="w-4 h-4" />
+                      
+                      <button 
+                        onClick={handleCardPaymentClick}
+                        disabled={isCardPaymentLoading}
+                        className="checkout-pay-btn w-full"
+                      >
+                        {isCardPaymentLoading ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
                           <span>Unlock All for ${bundlePrice}</span>
-                        </>
-                      )}
-                    </button>
+                        )}
+                      </button>
+                    </div>
 
-                    <p className="mt-3 text-[10px] text-white/25">
-                      Secured with 256-bit encryption
+                    <p className="mt-3 text-[10px] text-white/20">
+                      <svg className="w-3 h-3 inline-block mr-0.5 -mt-px" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                      256-bit encrypted
                     </p>
                   </div>
                 </div>

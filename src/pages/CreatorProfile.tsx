@@ -22,11 +22,36 @@ const CreatorProfile = () => {
   const [collections, setCollections] = useState<any[]>([]);
   const [statusCards, setStatusCards] = useState<any[]>([]);
   const [feedFilter, setFeedFilter] = useState<'all' | 'collections' | 'posts'>('all');
+  const [fanEmail, setFanEmail] = useState('');
+  const [showFanPrompt, setShowFanPrompt] = useState(false);
+  const [fanRegistered, setFanRegistered] = useState(false);
+  const [fanInputEmail, setFanInputEmail] = useState('');
   
   // Check if creator has any real content
   const hasRealContent = collections.length > 0 || statusCards.length > 0;
+
+  // Fan email persistence -- pre-fill for payments
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('fan_email');
+    if (savedEmail) {
+      setFanEmail(savedEmail);
+      setFanRegistered(true);
+    } else if (!isPreviewMode) {
+      // Show prompt after 3 seconds for non-preview visitors
+      const timer = setTimeout(() => setShowFanPrompt(true), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isPreviewMode]);
+
+  const handleFanRegister = () => {
+    if (!fanInputEmail || !fanInputEmail.includes('@')) return;
+    localStorage.setItem('fan_email', fanInputEmail.trim().toLowerCase());
+    setFanEmail(fanInputEmail.trim().toLowerCase());
+    setFanRegistered(true);
+    setShowFanPrompt(false);
+  };
   
-  // Mock status cards for empty preview
+  // Mock status cards for empty preview -- richer content
   const mockStatusCards = useMemo(() => [
     {
       id: "mock-status-1",
@@ -36,14 +61,14 @@ const CreatorProfile = () => {
         verified: true
       },
       title: "",
-      text: "This is an example status post! Share updates, thoughts, or behind-the-scenes moments with your audience. Add images to make your posts more engaging.",
+      text: "Just wrapped an incredible shoot! Can't wait to share the full set with you. New collection dropping this week -- stay tuned for something special.",
       timestamp: "2 hours ago",
       likes: 1234,
       comments: 89,
       media: {
         type: "image" as const,
         url: "https://images.pexels.com/photos/3622614/pexels-photo-3622614.jpeg?auto=compress&cs=tinysrgb&w=800",
-        alt: "Example status image"
+        alt: "Behind the scenes"
       },
       isMockData: true
     },
@@ -54,18 +79,37 @@ const CreatorProfile = () => {
         avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
         verified: true
       },
-      title: "Life Update",
-      text: "Text-only posts work great too! Share your thoughts, ask questions, or give sneak peeks of upcoming content.",
+      title: "Thank You 💜",
+      text: "We just hit 1,000 supporters! You all mean the world to me. As a thank you, I'm working on something extra special for my next drop.",
       timestamp: "5 hours ago",
-      likes: 567,
-      comments: 45,
+      likes: 2847,
+      comments: 156,
+      isMockData: true
+    },
+    {
+      id: "mock-status-3",
+      user: {
+        name: creatorData?.displayName || "Your Name",
+        avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
+        verified: true
+      },
+      title: "",
+      text: "Golden hour magic from yesterday's session. This light was unreal.",
+      timestamp: "1 day ago",
+      likes: 943,
+      comments: 67,
+      media: {
+        type: "image" as const,
+        url: "https://images.pexels.com/photos/2896840/pexels-photo-2896840.jpeg?auto=compress&cs=tinysrgb&w=800",
+        alt: "Golden hour shoot"
+      },
       isMockData: true
     }
   ], [creatorData]);
 
-  // Get mock collections for empty preview
+  // Get mock collections for empty preview -- more populated
   const mockCollections = useMemo(() => {
-    const samples = getRandomCollections(3);
+    const samples = getRandomCollections(5);
     return samples.map(col => ({
       ...col,
       user: {
@@ -521,6 +565,39 @@ const CreatorProfile = () => {
           </div>
         </div>
       </div>
+
+      {/* Fan Email Prompt -- slides in for new visitors */}
+      {showFanPrompt && !fanRegistered && !isPreviewMode && (
+        <div className="border-b border-white/[0.06] bg-gradient-to-r from-indigo-500/[0.06] via-transparent to-cyan-500/[0.06] animate-fade-in">
+          <div className="max-w-4xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center gap-3">
+            <p className="text-xs text-muted-foreground flex-1">
+              <span className="font-medium text-foreground">Save your email</span> for faster checkout on all purchases
+            </p>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <input
+                type="email"
+                placeholder="your@email.com"
+                value={fanInputEmail}
+                onChange={(e) => setFanInputEmail(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleFanRegister()}
+                className="flex-1 sm:w-52 px-3 py-1.5 text-xs bg-white/[0.04] border border-white/[0.08] rounded-lg text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/40"
+              />
+              <button
+                onClick={handleFanRegister}
+                className="px-3 py-1.5 text-xs font-medium rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setShowFanPrompt(false)}
+                className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Content Area with Sidebar */}
       <div className="flex">

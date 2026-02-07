@@ -1,5 +1,4 @@
 import { Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import TipButton from "@/components/TipButton";
@@ -79,13 +78,6 @@ const FeedHeader = ({
     }
   };
 
-  const lockIcon = (
-    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
-      <path d="M9 11V7C9 4.79086 10.7909 3 13 3C15.2091 3 17 4.79086 17 7V11" stroke="currentColor" strokeWidth="2" fill="none"/>
-    </svg>
-  );
-
   return (
     <header className="sticky top-0 z-50 nav-elevated">
       <div className="max-w-none mx-auto px-3 sm:px-4 lg:px-6 py-2.5">
@@ -140,15 +132,6 @@ const FeedHeader = ({
             >
               <Search className="w-4 h-4" />
             </button>
-
-            {/* Unlock button */}
-            <Button
-              onClick={() => window.location.href = '/collections'}
-              className="flex items-center gap-1.5 bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all duration-200 px-3 sm:px-4 py-1.5 h-9 rounded-full text-xs sm:text-sm font-semibold shadow-md"
-            >
-              {lockIcon}
-              <span className="hidden sm:inline">Unlock</span>
-            </Button>
 
             <TipButton onTipClick={() => {}} />
           </div>

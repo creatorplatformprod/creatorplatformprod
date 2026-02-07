@@ -30,7 +30,9 @@ const CheckoutPage = () => {
     const collectionTitle = params.get('collectionTitle');
     const itemCount = params.get('itemCount');
     
-    setCustomerEmail(email);
+    // Use URL param email, or fall back to saved fan email
+    const savedFanEmail = localStorage.getItem('fan_email') || '';
+    setCustomerEmail(email || savedFanEmail);
     
     // Validate checkout data early
     if (amount && collectionId) {
