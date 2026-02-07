@@ -5,21 +5,7 @@ import Preloader from "../components/Preloader";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
-import { collections as mockCollectionsRecord } from "@/collections/collectionsData";
-
-const isVideoUrlStatic = (url: string) => {
-  const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
-  return videoExtensions.some(ext => url.toLowerCase().includes(ext));
-};
-
-function mockToApiShape(mockCol: { id: string; title: string; images: Array<{ full: string; thumb: string } | string> }) {
-  const media = (mockCol.images || []).map((img: any) => {
-    const url = typeof img === 'string' ? img : img.full;
-    const thumb = typeof img === 'string' ? img : (img.thumb || img.full);
-    return { url, thumbnailUrl: thumb, mediaType: isVideoUrlStatic(url) ? 'video' : 'image' };
-  });
-  return { _id: mockCol.id, title: mockCol.title, media, isBundle: false };
-}
+import { getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 
 const Collections = () => {
   const [showUnlockModal, setShowUnlockModal] = useState(true);
@@ -111,6 +97,7 @@ const Collections = () => {
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   };
 
+  // Try loading real collections from API; fall back to local collectionsData
   useEffect(() => {
     const loadCollections = async () => {
       setIsLoading(true);
@@ -122,22 +109,14 @@ const Collections = () => {
             setCollectionsData(result.collections);
             if (result.bundle?.price) setBundlePrice(result.bundle.price);
             if (result.bundle?.currency) setBundleCurrency(result.bundle.currency);
-            setIsLoading(false);
-            return;
           }
         }
-        // Fallback: use mock collections so preview always shows content
-        const mockList = Object.values(mockCollectionsRecord).filter((c: any) => c && c.id && c.title);
-        setCollectionsData(mockList.map((c: any) => mockToApiShape(c)));
       } catch (error) {
         console.error('Error loading collections:', error);
-        const mockList = Object.values(mockCollectionsRecord).filter((c: any) => c && c.id && c.title);
-        setCollectionsData(mockList.map((c: any) => mockToApiShape(c)));
       } finally {
         setIsLoading(false);
       }
     };
-
     loadCollections();
   }, []);
 
@@ -152,44 +131,74 @@ const Collections = () => {
     return ratios[index % ratios.length];
   }
 
-  const visibleCollections = useMemo(() => {
-    return (collectionsData || []).filter((col) => col && col._id !== 'all' && !col.isBundle);
-  }, [collectionsData]);
+  // Build allImages: use API data if available, otherwise directly from collectionsData (same as Ofweb)
+  const collectionIds = getAllCollectionIds();
 
   const allImages = useMemo(() => {
-    const items = [];
-
-    visibleCollections.forEach((collection) => {
-      const mediaItems = collection.media || [];
-      mediaItems.forEach((mediaItem, index) => {
-        if (!mediaItem?.url) {
-          return;
-        }
-        const imageSrc = mediaItem.url;
-        let thumbSrc = mediaItem.thumbnailUrl || mediaItem.url;
-        const mediaType = mediaItem.mediaType || (isVideoUrl(imageSrc) ? 'video' : 'image');
-
-        if (mediaType === 'video') {
-          thumbSrc = thumbSrc.replace('/collection', '/thumbs/collection')
-                             .replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
-        }
-
-        items.push({
-          src: imageSrc,
-          thumb: thumbSrc,
-          collectionId: collection._id,
-          collectionTitle: collection.title,
-          imageIndex: index,
-          mediaType: mediaType,
-          ...getRandomDimensions(items.length)
+    // If we have real API data, use it
+    if (collectionsData && collectionsData.length > 0) {
+      const items: any[] = [];
+      const visible = collectionsData.filter((col: any) => col && col._id !== 'all' && !col.isBundle);
+      visible.forEach((collection: any) => {
+        const mediaItems = collection.media || [];
+        mediaItems.forEach((mediaItem: any, index: number) => {
+          if (!mediaItem?.url) return;
+          const imageSrc = mediaItem.url;
+          let thumbSrc = mediaItem.thumbnailUrl || mediaItem.url;
+          const mediaType = mediaItem.mediaType || (isVideoUrl(imageSrc) ? 'video' : 'image');
+          if (mediaType === 'video') {
+            thumbSrc = thumbSrc.replace('/collection', '/thumbs/collection').replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
+          }
+          items.push({
+            src: imageSrc,
+            thumb: thumbSrc,
+            collectionId: collection._id,
+            collectionTitle: collection.title,
+            imageIndex: index,
+            mediaType,
+            ...getRandomDimensions(items.length)
+          });
         });
       });
+      return items;
+    }
+
+    // Fallback: build directly from collectionsData (Ofweb pattern)
+    const items: any[] = [];
+    collectionIds.forEach(id => {
+      const collection = getCollection(id);
+      if (collection) {
+        collection.images.forEach((imageData: any, index: number) => {
+          const imageSrc = typeof imageData === 'string' ? imageData : imageData.full;
+          const mediaType = isVideoUrl(imageSrc) ? 'video' : 'image';
+          let thumbSrc;
+          if (mediaType === 'video') {
+            thumbSrc = typeof imageData === 'string'
+              ? imageSrc.replace('/collection', '/thumbs/collection').replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg')
+              : (imageData.thumb || imageSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg'));
+          } else {
+            thumbSrc = typeof imageData === 'string'
+              ? imageSrc.replace('/collection', '/thumbs/collection')
+              : imageData.thumb;
+          }
+          items.push({
+            src: imageSrc,
+            thumb: thumbSrc,
+            collectionId: id,
+            collectionTitle: collection.title,
+            imageIndex: index,
+            mediaType,
+            ...getRandomDimensions(items.length)
+          });
+        });
+      }
     });
-
     return items;
-  }, [visibleCollections]);
+  }, [collectionsData, collectionIds]);
 
-  const collectionCount = visibleCollections.length;
+  const collectionCount = collectionsData.length > 0
+    ? collectionsData.filter((col: any) => col && col._id !== 'all' && !col.isBundle).length
+    : collectionIds.length;
   const totalItems = allImages.length;
   const videoCount = allImages.filter((item) => item.mediaType === 'video').length;
   const imageCount = totalItems - videoCount;
