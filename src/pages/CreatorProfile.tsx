@@ -21,6 +21,7 @@ const CreatorProfile = () => {
   const [creatorData, setCreatorData] = useState<any>(null);
   const [collections, setCollections] = useState<any[]>([]);
   const [statusCards, setStatusCards] = useState<any[]>([]);
+  const [feedFilter, setFeedFilter] = useState<'all' | 'collections' | 'posts'>('all');
   
   // Check if creator has any real content
   const hasRealContent = collections.length > 0 || statusCards.length > 0;
@@ -202,25 +203,36 @@ const CreatorProfile = () => {
   }, [formattedStatusData, formattedCollections, isPreviewMode, mockStatusCards, mockCollections]);
 
   const filteredFeedData = useMemo(() => {
-    if (!searchQuery) return feedData;
+    let data = feedData;
     
-    return feedData.filter(post => {
-      const query = searchQuery.toLowerCase();
-      
-      if (post.feedType === 'collection') {
-        return (
-          (post.title && post.title.toLowerCase().includes(query)) ||
-          (post.description && post.description.toLowerCase().includes(query))
-        );
-      } else if (post.feedType === 'status') {
-        return (
-          (post.title && post.title.toLowerCase().includes(query)) ||
-          (post.text && post.text.toLowerCase().includes(query))
-        );
-      }
-      return false;
-    });
-  }, [feedData, searchQuery]);
+    // Apply feed type filter
+    if (feedFilter === 'collections') {
+      data = data.filter(post => post.feedType === 'collection');
+    } else if (feedFilter === 'posts') {
+      data = data.filter(post => post.feedType === 'status');
+    }
+    
+    // Apply search filter
+    if (searchQuery) {
+      data = data.filter(post => {
+        const query = searchQuery.toLowerCase();
+        if (post.feedType === 'collection') {
+          return (
+            (post.title && post.title.toLowerCase().includes(query)) ||
+            (post.description && post.description.toLowerCase().includes(query))
+          );
+        } else if (post.feedType === 'status') {
+          return (
+            (post.title && post.title.toLowerCase().includes(query)) ||
+            (post.text && post.text.toLowerCase().includes(query))
+          );
+        }
+        return false;
+      });
+    }
+    
+    return data;
+  }, [feedData, searchQuery, feedFilter]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -452,9 +464,15 @@ const CreatorProfile = () => {
               />
             </div>
             <div className="flex-1 min-w-0 pt-1 sm:pt-3">
-              <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">
-                {creatorData?.displayName || creatorData?.username || 'Creator'}
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">
+                  {creatorData?.displayName || creatorData?.username || 'Creator'}
+                </h1>
+                <svg className="w-5 h-5 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
               {creatorData?.bio && (
                 <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{creatorData.bio}</p>
               )}
@@ -677,6 +695,23 @@ const CreatorProfile = () => {
               )}
 
               <TopLoader />
+
+              {/* Content Filter Tabs */}
+              <div className="flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] w-fit">
+                {(['all', 'collections', 'posts'] as const).map(filter => (
+                  <button
+                    key={filter}
+                    onClick={() => setFeedFilter(filter)}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 capitalize ${
+                      feedFilter === filter
+                        ? 'bg-white/[0.10] text-foreground shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
+                    }`}
+                  >
+                    {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
+                  </button>
+                ))}
+              </div>
               
               {/* Mock Data Explanation Banner - Only in preview mode with mock data */}
               {isPreviewMode && !hasRealContent && filteredFeedData.length > 0 && (

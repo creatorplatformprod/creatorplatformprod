@@ -637,57 +637,184 @@ const CreatorDashboard = () => {
           </div>
         </nav>
 
-        <div className="max-w-7xl mx-auto px-4 py-5 sm:py-6">
+        <div className="flex min-h-[calc(100vh-52px)]">
+        {/* ── Left Sidebar Nav ── */}
+        <aside className="hidden lg:flex flex-col w-[220px] flex-shrink-0 border-r border-white/[0.06] bg-[rgba(8,11,20,0.4)]">
+          {/* Creator avatar + name */}
+          <div className="px-4 pt-5 pb-4 border-b border-white/[0.06]">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full overflow-hidden bg-secondary border border-border flex-shrink-0">
+                {profileData.avatar ? (
+                  <img src={profileData.avatar} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-xs font-bold text-foreground bg-gradient-to-br from-indigo-500 to-cyan-500">
+                    {(profileData.displayName || user?.username || '?')[0]?.toUpperCase()}
+                  </div>
+                )}
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-foreground truncate">{profileData.displayName || user?.username || 'Creator'}</p>
+                <p className="text-[10px] text-muted-foreground truncate">@{user?.username || 'username'}</p>
+              </div>
+            </div>
+          </div>
 
-        {/* Welcome Stats Bar */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-5">
+          {/* Nav items */}
+          <nav className="flex-1 px-2 py-3 space-y-0.5">
+            {[
+              { key: 'profile' as const, icon: Settings, label: 'Profile Settings' },
+              { key: 'status-cards' as const, icon: MessageSquare, label: 'Status Cards' },
+              { key: 'collections' as const, icon: Image, label: 'Collections' },
+              { key: 'analytics' as const, icon: BarChart3, label: 'Analytics' },
+            ].map(item => (
+              <button
+                key={item.key}
+                onClick={() => { setActiveTab(item.key); setError(''); setSuccess(''); setInfoMessage(''); }}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ${
+                  activeTab === item.key
+                    ? 'bg-white/[0.08] text-foreground font-medium shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
+                }`}
+              >
+                <item.icon className={`w-4 h-4 flex-shrink-0 ${activeTab === item.key ? 'text-primary' : ''}`} />
+                {item.label}
+              </button>
+            ))}
+          </nav>
+
+          {/* Sidebar stats */}
+          <div className="px-3 py-3 border-t border-white/[0.06]">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="text-center py-2 rounded-lg bg-white/[0.02]">
+                <div className="text-sm font-bold text-foreground">{collections.length}</div>
+                <div className="text-[9px] text-muted-foreground uppercase tracking-wider">Collections</div>
+              </div>
+              <div className="text-center py-2 rounded-lg bg-white/[0.02]">
+                <div className="text-sm font-bold text-foreground">{statusCards.length}</div>
+                <div className="text-[9px] text-muted-foreground uppercase tracking-wider">Posts</div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* ── Main Content Area ── */}
+        <div className="flex-1 min-w-0">
+          {/* Mobile tab bar (horizontal, shown only on < lg) */}
+          <div className="lg:hidden sticky top-[52px] z-40 bg-[rgba(8,11,20,0.92)] backdrop-blur-xl border-b border-white/[0.06]">
+            <div className="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              {[
+                { key: 'profile' as const, icon: Settings, label: 'Profile' },
+                { key: 'status-cards' as const, icon: MessageSquare, label: 'Posts' },
+                { key: 'collections' as const, icon: Image, label: 'Collections' },
+                { key: 'analytics' as const, icon: BarChart3, label: 'Analytics' },
+              ].map(item => (
+                <button
+                  key={item.key}
+                  onClick={() => { setActiveTab(item.key); setError(''); setSuccess(''); setInfoMessage(''); }}
+                  className={`flex items-center gap-1.5 px-4 py-3 text-xs font-medium whitespace-nowrap border-b-2 transition-colors ${
+                    activeTab === item.key
+                      ? 'border-primary text-primary'
+                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <item.icon className="w-3.5 h-3.5" />
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-6 max-w-5xl">
+
+        {/* Welcome + Stats */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-4">
             <h2 className="text-lg sm:text-xl font-bold text-foreground">
               Welcome back{profileData.displayName ? `, ${profileData.displayName}` : ''}
             </h2>
             <div className="dot-live" title="Live data" />
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="bento-stat group">
-              <div className="flex items-center gap-2.5 mb-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/15 transition-colors">
-                  <DollarSign className="w-4.5 h-4.5 text-emerald-400" />
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/15 transition-colors">
+                  <DollarSign className="w-4 h-4 text-emerald-400" />
                 </div>
-                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Revenue</span>
+                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Revenue</span>
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">${analyticsTotals.revenue.toFixed(2)}</p>
+              <p className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">${analyticsTotals.revenue.toFixed(2)}</p>
             </div>
             <div className="bento-stat group">
-              <div className="flex items-center gap-2.5 mb-3">
-                <div className="w-9 h-9 rounded-xl bg-violet-500/10 flex items-center justify-center group-hover:bg-violet-500/15 transition-colors">
-                  <Layers className="w-4.5 h-4.5 text-violet-400" />
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center group-hover:bg-violet-500/15 transition-colors">
+                  <Layers className="w-4 h-4 text-violet-400" />
                 </div>
-                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Collections</span>
+                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Collections</span>
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{collections.length}</p>
+              <p className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">{collections.length}</p>
             </div>
             <div className="bento-stat group">
-              <div className="flex items-center gap-2.5 mb-3">
-                <div className="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/15 transition-colors">
-                  <FileText className="w-4.5 h-4.5 text-blue-400" />
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/15 transition-colors">
+                  <FileText className="w-4 h-4 text-blue-400" />
                 </div>
-                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status Posts</span>
+                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Status Posts</span>
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{statusCards.length}</p>
+              <p className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">{statusCards.length}</p>
             </div>
             <div className="bento-stat group">
-              <div className="flex items-center gap-2.5 mb-3">
-                <div className="w-9 h-9 rounded-xl bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/15 transition-colors">
-                  <TrendingUp className="w-4.5 h-4.5 text-cyan-400" />
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/15 transition-colors">
+                  <TrendingUp className="w-4 h-4 text-cyan-400" />
                 </div>
-                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Orders</span>
+                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Orders</span>
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{analyticsTotals.orders}</p>
+              <p className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">{analyticsTotals.orders}</p>
             </div>
           </div>
         </div>
 
-        {/* Success/Error Messages */}
+        {/* Quick Actions */}
+        <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <button
+            onClick={() => { setActiveTab('collections'); setError(''); setSuccess(''); setInfoMessage(''); }}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-500/[0.08] to-cyan-500/[0.08] border border-indigo-500/[0.12] hover:border-indigo-500/[0.25] transition-all group cursor-pointer"
+          >
+            <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center group-hover:bg-indigo-500/25 transition-colors">
+              <Plus className="w-4 h-4 text-indigo-400" />
+            </div>
+            <div className="text-left">
+              <p className="text-xs font-semibold text-foreground">New Collection</p>
+              <p className="text-[10px] text-muted-foreground">Upload premium content</p>
+            </div>
+          </button>
+          <button
+            onClick={() => { setActiveTab('status-cards'); setError(''); setSuccess(''); setInfoMessage(''); }}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-violet-500/[0.08] to-pink-500/[0.08] border border-violet-500/[0.12] hover:border-violet-500/[0.25] transition-all group cursor-pointer"
+          >
+            <div className="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center group-hover:bg-violet-500/25 transition-colors">
+              <Edit className="w-4 h-4 text-violet-400" />
+            </div>
+            <div className="text-left">
+              <p className="text-xs font-semibold text-foreground">New Post</p>
+              <p className="text-[10px] text-muted-foreground">Share an update</p>
+            </div>
+          </button>
+          <button
+            onClick={handlePreviewPublic}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-cyan-500/[0.08] to-emerald-500/[0.08] border border-cyan-500/[0.12] hover:border-cyan-500/[0.25] transition-all group cursor-pointer"
+          >
+            <div className="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center group-hover:bg-cyan-500/25 transition-colors">
+              <Eye className="w-4 h-4 text-cyan-400" />
+            </div>
+            <div className="text-left">
+              <p className="text-xs font-semibold text-foreground">Preview Site</p>
+              <p className="text-[10px] text-muted-foreground">See your public page</p>
+            </div>
+          </button>
+        </div>
+
+        {/* Messages */}
         {infoMessage && (
           <div className="mb-4 alert-info">
             <p className="text-sm text-blue-600 dark:text-blue-400">{infoMessage}</p>
@@ -703,60 +830,6 @@ const CreatorDashboard = () => {
             <p className="text-sm text-destructive">{error}</p>
           </div>
         )}
-
-        {/* Tabs */}
-          <div className="mb-6 border-b border-border/60">
-            <div className="flex flex-wrap gap-0 sm:gap-0 -mb-px">
-              <button
-                onClick={() => {
-                  setActiveTab('profile');
-                  setError('');
-                  setSuccess('');
-                  setInfoMessage('');
-                }}
-                className={`tab-modern flex items-center justify-center gap-2 ${activeTab === 'profile' ? 'active' : ''}`}
-              >
-                <Settings className="w-4 h-4" />
-                Profile Settings
-              </button>
-              <button
-                onClick={() => {
-                  setActiveTab('status-cards');
-                  setError('');
-                  setSuccess('');
-                  setInfoMessage('');
-                }}
-                className={`tab-modern flex items-center justify-center gap-2 ${activeTab === 'status-cards' ? 'active' : ''}`}
-              >
-                <MessageSquare className="w-4 h-4" />
-                Status Cards
-              </button>
-              <button
-                onClick={() => {
-                  setActiveTab('collections');
-                  setError('');
-                  setSuccess('');
-                  setInfoMessage('');
-                }}
-                className={`tab-modern flex items-center justify-center gap-2 ${activeTab === 'collections' ? 'active' : ''}`}
-              >
-                <Image className="w-4 h-4" />
-                Collections
-              </button>
-              <button
-                onClick={() => {
-                  setActiveTab('analytics');
-                  setError('');
-                  setSuccess('');
-                  setInfoMessage('');
-                }}
-                className={`tab-modern flex items-center justify-center gap-2 ${activeTab === 'analytics' ? 'active' : ''}`}
-              >
-                <BarChart3 className="w-4 h-4" />
-                Analytics
-              </button>
-            </div>
-          </div>
 
         {/* Profile Tab */}
         {activeTab === 'profile' && (
@@ -1596,6 +1669,8 @@ const CreatorDashboard = () => {
             </div>
           </div>
         )}
+      </div>
+      </div>
       </div>
     </div>
   );

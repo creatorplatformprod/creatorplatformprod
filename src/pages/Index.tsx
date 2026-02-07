@@ -177,6 +177,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showPreloader, setShowPreloader] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [feedFilter, setFeedFilter] = useState<'all' | 'collections' | 'posts'>('all');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -455,30 +456,41 @@ const Index = () => {
   }, [collectionIds]);
 
   const filteredFeedData = useMemo(() => {
-    if (!searchQuery) return feedData;
+    let data = feedData;
     
-    return feedData.filter(post => {
-      const query = searchQuery.toLowerCase();
-      
-      if (post.feedType === 'text-only') {
-        return (
-          (post.title && post.title.toLowerCase().includes(query)) ||
-          (post.description && post.description.toLowerCase().includes(query))
-        );
-      } else if (post.feedType === 'collection') {
-        return (
-          (post.title && post.title.toLowerCase().includes(query)) ||
-          (post.description && post.description.toLowerCase().includes(query))
-        );
-      } else if (post.feedType === 'status') {
-        return (
-          (post.title && post.title.toLowerCase().includes(query)) ||
-          (post.text && post.text.toLowerCase().includes(query))
-        );
-      }
-      return false;
-    });
-  }, [feedData, searchQuery]);
+    // Apply feed type filter
+    if (feedFilter === 'collections') {
+      data = data.filter(post => post.feedType === 'collection');
+    } else if (feedFilter === 'posts') {
+      data = data.filter(post => post.feedType === 'status' || post.feedType === 'text-only');
+    }
+    
+    // Apply search filter
+    if (searchQuery) {
+      data = data.filter(post => {
+        const query = searchQuery.toLowerCase();
+        if (post.feedType === 'text-only') {
+          return (
+            (post.title && post.title.toLowerCase().includes(query)) ||
+            (post.description && post.description.toLowerCase().includes(query))
+          );
+        } else if (post.feedType === 'collection') {
+          return (
+            (post.title && post.title.toLowerCase().includes(query)) ||
+            (post.description && post.description.toLowerCase().includes(query))
+          );
+        } else if (post.feedType === 'status') {
+          return (
+            (post.title && post.title.toLowerCase().includes(query)) ||
+            (post.text && post.text.toLowerCase().includes(query))
+          );
+        }
+        return false;
+      });
+    }
+    
+    return data;
+  }, [feedData, searchQuery, feedFilter]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -626,7 +638,13 @@ const Index = () => {
                   />
                 </div>
                 <div className="flex-1 min-w-0 pt-1 sm:pt-3">
-                  <h1 className="text-xl sm:text-2xl font-bold text-foreground">SixSeven Creator</h1>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-xl sm:text-2xl font-bold text-foreground">SixSeven Creator</h1>
+                    <svg className="w-5 h-5 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
                   <p className="text-sm text-muted-foreground mt-1">Exclusive content & premium collections</p>
                   <div className="flex flex-wrap items-center gap-2 mt-3">
                     <span className="stat-pill">{allCollections.length} Collections</span>
@@ -770,6 +788,24 @@ const Index = () => {
                   )}
 
                   <TopLoader />
+
+                  {/* Content Filter Tabs */}
+                  <div className="flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] w-fit mb-5">
+                    {(['all', 'collections', 'posts'] as const).map(filter => (
+                      <button
+                        key={filter}
+                        onClick={() => setFeedFilter(filter)}
+                        className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 capitalize ${
+                          feedFilter === filter
+                            ? 'bg-white/[0.10] text-foreground shadow-sm'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
+                        }`}
+                      >
+                        {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
+                      </button>
+                    ))}
+                  </div>
+
                   <div className="space-y-4 sm:space-y-6">
                     {!searchQuery && filteredFeedData.length === 0 && (
                       <div className="post-card rounded-xl p-6 sm:p-8 text-center animate-fade-in">

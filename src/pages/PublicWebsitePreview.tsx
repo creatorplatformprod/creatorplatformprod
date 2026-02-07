@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ExternalLink } from "lucide-react";
 import AccountMenu from "@/components/AccountMenu";
 import { api } from "@/lib/api";
 
@@ -103,6 +104,15 @@ const PublicWebsitePreview = () => {
               >
                 Back to Dashboard
               </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.open(`/${username}`, '_blank')}
+                className="text-muted-foreground hover:text-foreground text-xs h-8 gap-1.5"
+              >
+                <ExternalLink className="w-3 h-3" />
+                <span className="hidden sm:inline">Open</span>
+              </Button>
               {hasChanges ? (
                 <Button onClick={handlePublish} className="btn-67 shadow-sm h-8 text-xs px-4">
                   Save Changes
@@ -142,6 +152,20 @@ const PublicWebsitePreview = () => {
             <div className="relative mx-auto max-w-[920px]">
               <div className="bg-[#0c1119] rounded-[20px] p-3 border border-white/10 frame-inner-shadow">
                 <div className="bg-black rounded-[14px] overflow-hidden border border-white/5">
+                  {/* Browser Chrome */}
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-[#12161f] border-b border-white/[0.06]">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+                    </div>
+                    <div className="flex-1 flex justify-center">
+                      <div className="flex items-center gap-2 px-4 py-1 bg-white/[0.05] rounded-md border border-white/[0.08] max-w-xs w-full">
+                        <svg className="w-3 h-3 text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        <span className="text-[10px] text-muted-foreground truncate">sixsevencreator.com/{username}</span>
+                      </div>
+                    </div>
+                  </div>
                   <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.26] sm:[--scale:0.3] lg:[--scale:0.56] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                     <iframe
                       title="Desktop preview"
