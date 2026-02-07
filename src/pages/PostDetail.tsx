@@ -2,7 +2,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Share2, ShieldCheck } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { getCollection } from "@/collections/collectionsData";
 import { getCollectionId, isValidSecureId } from "@/utils/secureIdMapper";
@@ -297,48 +297,18 @@ const PostDetail = () => {
     <div className="min-h-screen feed-bg">
       <header className="sticky top-0 z-10 nav-elevated p-3 sm:p-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button 
-              onClick={() => navigate("/")} 
-              variant="ghost" 
-              size="sm"
-              className="hover:bg-secondary"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-            <div className="hidden sm:flex items-center gap-2">
-              <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] text-muted-foreground">
-              {Math.min(currentImagePage * imagesPerPage, collection.images.length)} of {collection.images.length} items
-            </span>
-            <button
-              onClick={() => {
-                if (navigator.share) {
-                  navigator.share({ title: collection.title, url: window.location.href });
-                } else {
-                  navigator.clipboard.writeText(window.location.href);
-                }
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-all text-xs text-muted-foreground hover:text-foreground"
-            >
-              <Share2 className="w-3 h-3" />
-              <span className="hidden sm:inline">Share</span>
-            </button>
-          </div>
+          <Button 
+            onClick={() => navigate("/")} 
+            variant="ghost" 
+            size="sm"
+            className="hover:bg-secondary"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Feed
+          </Button>
+          <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
         </div>
       </header>
-
-      {/* Welcome Bar -- Lifetime Access Reassurance */}
-      <div className="welcome-bar">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-2 flex items-center justify-center gap-2">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-xs font-medium text-emerald-300/90">You have lifetime access to this collection</span>
-        </div>
-      </div>
 
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
         <div className="space-y-6">
