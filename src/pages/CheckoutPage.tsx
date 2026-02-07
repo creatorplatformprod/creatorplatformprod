@@ -29,6 +29,8 @@ const CheckoutPage = () => {
     const collectionId = params.get('collectionId');
     const collectionTitle = params.get('collectionTitle');
     const itemCount = params.get('itemCount');
+    const urlCreatorId = params.get('creatorId') || '';
+    const urlCreator = params.get('creator') || '';
     
     // Use URL param email, or fall back to saved fan email
     const savedFanEmail = localStorage.getItem('fan_email') || '';
@@ -56,7 +58,9 @@ const CheckoutPage = () => {
         amount: parsedAmount,
         collectionId,
         collectionTitle: sanitizeString(collectionTitle) || 'Exclusive Collection',
-        itemCount: parsedItemCount
+        itemCount: parsedItemCount,
+        creatorId: urlCreatorId,
+        creator: urlCreator
       });
     }
     
@@ -308,7 +312,8 @@ const CheckoutPage = () => {
             collectionId: checkoutData.collectionId,
             currency: 'USD',
             provider: provider.id,
-            email: customerEmail.toLowerCase().trim()
+            email: customerEmail.toLowerCase().trim(),
+            ...(checkoutData.creatorId ? { creatorId: checkoutData.creatorId } : {})
           })
         }
       );

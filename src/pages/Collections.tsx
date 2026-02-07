@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { ArrowLeft, CreditCard, Loader2, Users } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Preloader from "../components/Preloader";
@@ -8,6 +9,8 @@ import { api } from "@/lib/api";
 import { getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 
 const Collections = () => {
+  const [searchParams] = useSearchParams();
+  const creatorUsername = searchParams.get('creator') || '';
   const [showUnlockModal, setShowUnlockModal] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [loadedImages, setLoadedImages] = useState(new Set());
@@ -18,9 +21,10 @@ const Collections = () => {
   const [customerEmail, setCustomerEmail] = useState("");
   const [paymentError, setPaymentError] = useState("");
   const [isCardPaymentLoading, setIsCardPaymentLoading] = useState(false);
-    const [collectionsData, setCollectionsData] = useState([]);
-    const [bundlePrice, setBundlePrice] = useState(199.99);
-    const [bundleCurrency, setBundleCurrency] = useState('USD');
+  const [collectionsData, setCollectionsData] = useState([]);
+  const [bundlePrice, setBundlePrice] = useState(199.99);
+  const [bundleCurrency, setBundleCurrency] = useState('USD');
+  const [creatorId, setCreatorId] = useState('');
 
   const imagesPerPage = 24;
 
@@ -97,18 +101,34 @@ const Collections = () => {
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   };
 
-  // Try loading real collections from API; fall back to local collectionsData
+  // Load collections: use creator username if provided (public), otherwise authenticated (dashboard)
   useEffect(() => {
     const loadCollections = async () => {
       setIsLoading(true);
       try {
-        const token = localStorage.getItem('token');
-        if (token) {
-          const result = await api.getMyCollections();
+        // If we have a creator username, load their public collections
+        if (creatorUsername) {
+          const result = await api.getCollections(creatorUsername);
           if (result?.success && result.collections?.length > 0) {
             setCollectionsData(result.collections);
+            // Store creatorId from the first collection for checkout
+            const firstCreatorId = result.collections[0]?.creatorId;
+            if (firstCreatorId) setCreatorId(firstCreatorId);
             if (result.bundle?.price) setBundlePrice(result.bundle.price);
             if (result.bundle?.currency) setBundleCurrency(result.bundle.currency);
+            // If creator has unlockAllPrice on their profile, use that
+            if (result.unlockAllPrice) setBundlePrice(result.unlockAllPrice);
+          }
+        } else {
+          // Fallback: authenticated creator viewing own collections
+          const token = localStorage.getItem('token');
+          if (token) {
+            const result = await api.getMyCollections();
+            if (result?.success && result.collections?.length > 0) {
+              setCollectionsData(result.collections);
+              if (result.bundle?.price) setBundlePrice(result.bundle.price);
+              if (result.bundle?.currency) setBundleCurrency(result.bundle.currency);
+            }
           }
         }
       } catch (error) {
@@ -118,7 +138,7 @@ const Collections = () => {
       }
     };
     loadCollections();
-  }, []);
+  }, [creatorUsername]);
 
   function getRandomDimensions(index) {
     const ratios = [
@@ -365,7 +385,9 @@ const Collections = () => {
         `&collectionTitle=${encodeURIComponent('All Exclusive Collections')}` +
         `&itemCount=${totalItems}` +
         `&currency=${encodeURIComponent(bundleCurrency)}` +
-        `&email=${encodeURIComponent(sanitizedEmail)}`;
+        `&email=${encodeURIComponent(sanitizedEmail)}` +
+        (creatorId ? `&creatorId=${encodeURIComponent(creatorId)}` : '') +
+        (creatorUsername ? `&creator=${encodeURIComponent(creatorUsername)}` : '');
 
     window.location.href = checkoutUrl;
   };

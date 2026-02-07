@@ -404,8 +404,8 @@ const CreatorProfile = () => {
   };
 
   const allCollections = useMemo(() => {
-    // Use mock collections when no real content (both preview and public)
-    if (formattedCollections.length === 0) {
+    // Use mock collections only in preview mode when no real content
+    if (formattedCollections.length === 0 && isPreviewMode) {
       return mockCollections;
     }
     return formattedCollections;
@@ -536,7 +536,7 @@ const CreatorProfile = () => {
             </div>
             {allCollections.length > 0 && (
               <button
-                onClick={() => navigate('/collections')}
+                onClick={() => navigate(`/collections?creator=${username}`)}
                 className="flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 transition-all shadow-lg shadow-indigo-500/20"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

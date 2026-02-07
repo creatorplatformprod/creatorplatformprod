@@ -1,34 +1,77 @@
-import { useState, useEffect } from "react";
-import { ArrowLeft } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Preloader from "../components/Preloader";
 import { getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
-import { isValidSecureId, isCollectionsSecureId } from "@/utils/secureIdMapper";
+import { isCollectionsSecureId } from "@/utils/secureIdMapper";
+import { api } from "@/lib/api";
 
 const Collections1849929295832448 = () => {
   const navigate = useNavigate();
   const { secureId } = useParams();
+  const [searchParams] = useSearchParams();
+  const accessToken = searchParams.get('access') || '';
+  const creatorParam = searchParams.get('creator') || '';
   const [currentPage, setCurrentPage] = useState(1);
   const [loadedImages, setLoadedImages] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [isPreloading, setIsPreloading] = useState(true);
   const [showPreloader, setShowPreloader] = useState(true);
   const [measuredDims, setMeasuredDims] = useState({});
+  const [accessVerified, setAccessVerified] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
+  const [remoteCollections, setRemoteCollections] = useState<any[]>([]);
+  const [verifying, setVerifying] = useState(true);
 
   useEffect(() => {
-    // Validate secureId - only allow access if it's the special collections ID
-    if (!secureId || !isCollectionsSecureId(secureId)) {
-      navigate('/');
-      return;
-    }
+    const verifyAndLoad = async () => {
+      setVerifying(true);
 
-    // Force dark mode
+      // If it's the legacy hardcoded secure ID, allow (backward compat)
+      if (secureId && isCollectionsSecureId(secureId) && !accessToken) {
+        setAccessVerified(true);
+        setVerifying(false);
+        return;
+      }
+
+      // For dynamic access: verify the access token
+      if (!accessToken) {
+        setAccessDenied(true);
+        setVerifying(false);
+        return;
+      }
+
+      try {
+        const verify = await api.verifyAccessToken(accessToken);
+        if (verify?.valid) {
+          setAccessVerified(true);
+
+          // Load creator's collections from API
+          const creatorUsername = creatorParam || verify.creator || '';
+          if (creatorUsername) {
+            const result = await api.getCollections(creatorUsername);
+            if (result?.success && result.collections?.length > 0) {
+              setRemoteCollections(result.collections);
+            }
+          }
+        } else {
+          setAccessDenied(true);
+        }
+      } catch (error) {
+        console.error('Access verification failed:', error);
+        setAccessDenied(true);
+      } finally {
+        setVerifying(false);
+      }
+    };
+
+    verifyAndLoad();
     document.documentElement.classList.add('dark');
-  }, [secureId, navigate]);
+  }, [secureId, accessToken, creatorParam]);
 
   const imagesPerPage = 24;
 
@@ -73,32 +116,61 @@ const Collections1849929295832448 = () => {
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   };
 
-  const collectionIds = getAllCollectionIds();
-  const allImages = [];
-  
-  collectionIds.forEach(id => {
-    const collection = getCollection(id);
-    if (collection) {
-      collection.images.forEach((imageData, index) => {
-        const imageSrc = typeof imageData === 'string' ? imageData : imageData.full;
-        const thumbSrc = typeof imageData === 'string' 
-          ? imageSrc.replace('/collection', '/thumbs/collection')
-          : imageData.thumb;
-        
-        const mediaType = isVideoUrl(imageSrc) ? 'video' : 'image';
-        
-        allImages.push({
-          src: imageSrc,
-          thumb: thumbSrc,
-          collectionId: id,
-          collectionTitle: collection.title,
-          imageIndex: index,
-          mediaType: mediaType,
-          ...getRandomDimensions(allImages.length)
+  const collectionIds = useMemo(() => getAllCollectionIds(), []);
+
+  const allImages = useMemo(() => {
+    const items: any[] = [];
+
+    // If we have remote API collections (per-creator), use those
+    if (remoteCollections.length > 0) {
+      remoteCollections.forEach((collection: any) => {
+        const mediaItems = collection.media || [];
+        mediaItems.forEach((mediaItem: any, index: number) => {
+          if (!mediaItem?.url) return;
+          const imageSrc = mediaItem.url;
+          let thumbSrc = mediaItem.thumbnailUrl || mediaItem.url;
+          const mediaType = mediaItem.mediaType || (isVideoUrl(imageSrc) ? 'video' : 'image');
+          if (mediaType === 'video') {
+            thumbSrc = thumbSrc.replace('/collection', '/thumbs/collection').replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
+          }
+          items.push({
+            src: imageSrc,
+            thumb: thumbSrc,
+            collectionId: collection._id,
+            collectionTitle: collection.title,
+            imageIndex: index,
+            mediaType,
+            ...getRandomDimensions(items.length)
+          });
         });
       });
+      return items;
     }
-  });
+
+    // Fallback: use local collectionsData (for demo/legacy)
+    collectionIds.forEach(id => {
+      const collection = getCollection(id);
+      if (collection) {
+        collection.images.forEach((imageData: any, index: number) => {
+          const imageSrc = typeof imageData === 'string' ? imageData : imageData.full;
+          const thumbSrc = typeof imageData === 'string' 
+            ? imageSrc.replace('/collection', '/thumbs/collection')
+            : imageData.thumb;
+          const mediaType = isVideoUrl(imageSrc) ? 'video' : 'image';
+          items.push({
+            src: imageSrc,
+            thumb: thumbSrc,
+            collectionId: id,
+            collectionTitle: collection.title,
+            imageIndex: index,
+            mediaType,
+            ...getRandomDimensions(items.length)
+          });
+        });
+      }
+    });
+    return items;
+  }, [remoteCollections, collectionIds]);
 
   function getRandomDimensions(index) {
     const ratios = [
@@ -330,6 +402,35 @@ const Collections1849929295832448 = () => {
     setShowPreloader(false);
   };
 
+  // Show verifying state
+  if (verifying) {
+    return (
+      <div className="min-h-screen feed-bg flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground">Verifying access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show access denied state
+  if (accessDenied) {
+    return (
+      <div className="min-h-screen feed-bg flex items-center justify-center p-4">
+        <div className="text-center max-w-sm">
+          <h2 className="text-xl font-bold text-foreground mb-2">Access Required</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            You need a valid access token to view this content. Please complete the purchase to get access.
+          </p>
+          <Button onClick={() => navigate('/')} className="btn-67">
+            Go Home
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {showPreloader && <Preloader isVisible={isPreloading} onComplete={handlePreloaderComplete} />}
@@ -449,7 +550,7 @@ const Collections1849929295832448 = () => {
             <div className="flex justify-center mt-4">
               <div className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-full backdrop-blur-sm">
                 <span className="text-xs sm:text-sm text-muted-foreground">
-                  Showing {Math.min(endIndex, allImages.length)} of {allImages.length} exclusive items from {collectionIds.length} collections
+                  Showing {Math.min(endIndex, allImages.length)} of {allImages.length} exclusive items from {remoteCollections.length || collectionIds.length} collections
                 </span>
               </div>
             </div>

@@ -129,7 +129,8 @@ const PostDetailBlurred = () => {
           timestamp: collectionResult.collection.createdAt
             ? new Date(collectionResult.collection.createdAt).toLocaleDateString()
             : 'Recently',
-          price: collectionResult.collection.price || 4.99
+          price: collectionResult.collection.price || 4.99,
+          creatorId: creatorId || ''
         };
 
         setRemoteCollection(mapped);
@@ -274,7 +275,8 @@ const PostDetailBlurred = () => {
       `&collectionId=${collection.id}` +
       `&collectionTitle=${encodeURIComponent(collection.title)}` +
       `&itemCount=${collection.images?.length || 0}` +
-      `&email=${encodeURIComponent(sanitizedEmail)}`;
+      `&email=${encodeURIComponent(sanitizedEmail)}` +
+      (collection.creatorId ? `&creatorId=${encodeURIComponent(collection.creatorId)}` : '');
 
     window.location.href = checkoutUrl;
   };
