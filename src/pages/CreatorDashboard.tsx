@@ -35,13 +35,18 @@ import {
   Layers,
   FileText,
   TrendingUp,
+  Home,
+  Copy,
+  CheckCircle2,
+  ArrowUpRight,
+  Clock,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
 
 const CreatorDashboard = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'profile' | 'status-cards' | 'collections' | 'analytics'>('profile');
+  const [activeTab, setActiveTab] = useState<'overview' | 'profile' | 'status-cards' | 'collections' | 'analytics'>('overview');
   const [user, setUser] = useState<any>(null);
   
   const [statusCards, setStatusCards] = useState<any[]>([]);
@@ -662,10 +667,11 @@ const CreatorDashboard = () => {
           {/* Nav items */}
           <nav className="flex-1 px-2 py-3 space-y-0.5">
             {[
-              { key: 'profile' as const, icon: Settings, label: 'Profile Settings' },
-              { key: 'status-cards' as const, icon: MessageSquare, label: 'Status Cards' },
+              { key: 'overview' as const, icon: Home, label: 'Overview' },
               { key: 'collections' as const, icon: Image, label: 'Collections' },
+              { key: 'status-cards' as const, icon: MessageSquare, label: 'Status Cards' },
               { key: 'analytics' as const, icon: BarChart3, label: 'Analytics' },
+              { key: 'profile' as const, icon: Settings, label: 'Settings' },
             ].map(item => (
               <button
                 key={item.key}
@@ -703,10 +709,11 @@ const CreatorDashboard = () => {
           <div className="lg:hidden sticky top-[52px] z-40 bg-[rgba(8,11,20,0.92)] backdrop-blur-xl border-b border-white/[0.06]">
             <div className="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {[
-                { key: 'profile' as const, icon: Settings, label: 'Profile' },
-                { key: 'status-cards' as const, icon: MessageSquare, label: 'Posts' },
+                { key: 'overview' as const, icon: Home, label: 'Overview' },
                 { key: 'collections' as const, icon: Image, label: 'Collections' },
+                { key: 'status-cards' as const, icon: MessageSquare, label: 'Posts' },
                 { key: 'analytics' as const, icon: BarChart3, label: 'Analytics' },
+                { key: 'profile' as const, icon: Settings, label: 'Settings' },
               ].map(item => (
                 <button
                   key={item.key}
@@ -726,94 +733,6 @@ const CreatorDashboard = () => {
 
           <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-6 max-w-5xl">
 
-        {/* Welcome + Stats */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-lg sm:text-xl font-bold text-foreground">
-              Welcome back{profileData.displayName ? `, ${profileData.displayName}` : ''}
-            </h2>
-            <div className="dot-live" title="Live data" />
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <div className="bento-stat group">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/15 transition-colors">
-                  <DollarSign className="w-4 h-4 text-emerald-400" />
-                </div>
-                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Revenue</span>
-              </div>
-              <p className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">${analyticsTotals.revenue.toFixed(2)}</p>
-            </div>
-            <div className="bento-stat group">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center group-hover:bg-violet-500/15 transition-colors">
-                  <Layers className="w-4 h-4 text-violet-400" />
-                </div>
-                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Collections</span>
-              </div>
-              <p className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">{collections.length}</p>
-            </div>
-            <div className="bento-stat group">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/15 transition-colors">
-                  <FileText className="w-4 h-4 text-blue-400" />
-                </div>
-                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Status Posts</span>
-              </div>
-              <p className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">{statusCards.length}</p>
-            </div>
-            <div className="bento-stat group">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/15 transition-colors">
-                  <TrendingUp className="w-4 h-4 text-cyan-400" />
-                </div>
-                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Orders</span>
-              </div>
-              <p className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">{analyticsTotals.orders}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <button
-            onClick={() => { setActiveTab('collections'); setError(''); setSuccess(''); setInfoMessage(''); }}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-500/[0.08] to-cyan-500/[0.08] border border-indigo-500/[0.12] hover:border-indigo-500/[0.25] transition-all group cursor-pointer"
-          >
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center group-hover:bg-indigo-500/25 transition-colors">
-              <Plus className="w-4 h-4 text-indigo-400" />
-            </div>
-            <div className="text-left">
-              <p className="text-xs font-semibold text-foreground">New Collection</p>
-              <p className="text-[10px] text-muted-foreground">Upload premium content</p>
-            </div>
-          </button>
-          <button
-            onClick={() => { setActiveTab('status-cards'); setError(''); setSuccess(''); setInfoMessage(''); }}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-violet-500/[0.08] to-pink-500/[0.08] border border-violet-500/[0.12] hover:border-violet-500/[0.25] transition-all group cursor-pointer"
-          >
-            <div className="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center group-hover:bg-violet-500/25 transition-colors">
-              <Edit className="w-4 h-4 text-violet-400" />
-            </div>
-            <div className="text-left">
-              <p className="text-xs font-semibold text-foreground">New Post</p>
-              <p className="text-[10px] text-muted-foreground">Share an update</p>
-            </div>
-          </button>
-          <button
-            onClick={handlePreviewPublic}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-cyan-500/[0.08] to-emerald-500/[0.08] border border-cyan-500/[0.12] hover:border-cyan-500/[0.25] transition-all group cursor-pointer"
-          >
-            <div className="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center group-hover:bg-cyan-500/25 transition-colors">
-              <Eye className="w-4 h-4 text-cyan-400" />
-            </div>
-            <div className="text-left">
-              <p className="text-xs font-semibold text-foreground">Preview Site</p>
-              <p className="text-[10px] text-muted-foreground">See your public page</p>
-            </div>
-          </button>
-        </div>
-
         {/* Messages */}
         {infoMessage && (
           <div className="mb-4 alert-info">
@@ -828,6 +747,229 @@ const CreatorDashboard = () => {
         {error && (
           <div className="mb-4 alert-error">
             <p className="text-sm text-destructive">{error}</p>
+          </div>
+        )}
+
+        {/* ══════════ Overview Tab ══════════ */}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            {/* Welcome header */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
+                  Welcome back{profileData.displayName ? `, ${profileData.displayName}` : ''}
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1">Here's how your platform is performing</p>
+              </div>
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                <div className="dot-live" />
+                <span className="text-[10px] font-medium text-emerald-400">Live</span>
+              </div>
+            </div>
+
+            {/* North Star Metric + Stats */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              {/* Revenue - North Star (larger card) */}
+              <div className="lg:col-span-1 card-elevated p-5 relative overflow-hidden">
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Revenue</span>
+                    <div className="flex items-center gap-1 text-emerald-400">
+                      <TrendingUp className="w-3 h-3" />
+                      <span className="text-[10px] font-semibold">+12.5%</span>
+                    </div>
+                  </div>
+                  <p className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">${analyticsTotals.revenue.toFixed(2)}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Last 30 days</p>
+                </div>
+                {/* Subtle gradient overlay */}
+                <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-emerald-500/[0.05] to-transparent rounded-tl-full pointer-events-none" />
+              </div>
+
+              {/* Other stats */}
+              <div className="lg:col-span-2 grid grid-cols-3 gap-3">
+                <div className="card-elevated p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-7 h-7 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                      <Layers className="w-3.5 h-3.5 text-violet-400" />
+                    </div>
+                  </div>
+                  <p className="text-xl font-bold text-foreground">{collections.length}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Collections</p>
+                </div>
+                <div className="card-elevated p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                      <FileText className="w-3.5 h-3.5 text-blue-400" />
+                    </div>
+                  </div>
+                  <p className="text-xl font-bold text-foreground">{statusCards.length}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Posts</p>
+                </div>
+                <div className="card-elevated p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-7 h-7 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                      <TrendingUp className="w-3.5 h-3.5 text-cyan-400" />
+                    </div>
+                  </div>
+                  <p className="text-xl font-bold text-foreground">{analyticsTotals.orders}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Orders</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Revenue Chart */}
+            <div className="card-elevated p-5">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">Revenue Overview</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">Your earnings over the last 30 days</p>
+                </div>
+              </div>
+              <div className="h-[200px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={analyticsSeries}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                    <XAxis dataKey="label" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} axisLine={false} tickLine={false} width={50} />
+                    <Tooltip
+                      contentStyle={{ background: 'rgba(12,17,25,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', fontSize: '12px' }}
+                      labelStyle={{ color: 'white', marginBottom: '4px' }}
+                    />
+                    <Line type="monotone" dataKey="revenue" stroke="#0ea5e9" strokeWidth={2} dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Quick Actions + Recent Activity */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Quick Actions */}
+              <div className="card-elevated p-5">
+                <h3 className="text-sm font-semibold text-foreground mb-4">Quick Actions</h3>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => { setActiveTab('collections'); setError(''); setSuccess(''); setInfoMessage(''); }}
+                    className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center">
+                        <Plus className="w-4 h-4 text-indigo-400" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-xs font-semibold text-foreground">Create Collection</p>
+                        <p className="text-[10px] text-muted-foreground">Upload premium content</p>
+                      </div>
+                    </div>
+                    <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                  </button>
+                  <button
+                    onClick={() => { setActiveTab('status-cards'); setError(''); setSuccess(''); setInfoMessage(''); }}
+                    className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center">
+                        <Edit className="w-4 h-4 text-violet-400" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-xs font-semibold text-foreground">New Status Post</p>
+                        <p className="text-[10px] text-muted-foreground">Share an update with fans</p>
+                      </div>
+                    </div>
+                    <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                  </button>
+                  <button
+                    onClick={handlePreviewPublic}
+                    className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center">
+                        <Eye className="w-4 h-4 text-cyan-400" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-xs font-semibold text-foreground">Preview Public Site</p>
+                        <p className="text-[10px] text-muted-foreground">See how fans see your page</p>
+                      </div>
+                    </div>
+                    <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Recent Sales */}
+              <div className="card-elevated p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-semibold text-foreground">Recent Sales</h3>
+                  <button
+                    onClick={() => { setActiveTab('analytics'); setError(''); setSuccess(''); setInfoMessage(''); }}
+                    className="text-[10px] text-primary hover:text-primary/80 font-medium cursor-pointer bg-transparent border-none"
+                  >
+                    View all
+                  </button>
+                </div>
+                {salesList.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <div className="w-10 h-10 rounded-full bg-white/[0.04] flex items-center justify-center mb-3">
+                      <Clock className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                    <p className="text-xs text-muted-foreground">No sales yet</p>
+                    <p className="text-[10px] text-muted-foreground/60 mt-1">Sales will appear here as they come in</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {salesList.slice(0, 5).map((sale: any, i: number) => (
+                      <div key={i} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
+                            {(sale.buyerEmail || sale.buyer || '?')[0]?.toUpperCase()}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-medium text-foreground truncate">{sale.collectionTitle || 'Collection'}</p>
+                            <p className="text-[10px] text-muted-foreground truncate">{sale.buyerEmail || sale.buyer || 'Anonymous'}</p>
+                          </div>
+                        </div>
+                        <span className="text-xs font-semibold text-emerald-400 flex-shrink-0">+${(sale.amount || 0).toFixed(2)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Getting Started Checklist */}
+            <div className="card-elevated p-5">
+              <h3 className="text-sm font-semibold text-foreground mb-1">Getting Started</h3>
+              <p className="text-xs text-muted-foreground mb-4">Complete these steps to launch your creator page</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {[
+                  { label: 'Set up profile', done: !!(profileData.displayName && profileData.bio), action: () => setActiveTab('profile') },
+                  { label: 'Upload avatar', done: !!profileData.avatar, action: () => setActiveTab('profile') },
+                  { label: 'Create a collection', done: collections.length > 0, action: () => setActiveTab('collections') },
+                  { label: 'Publish your site', done: isPublicPublished, action: handlePublicWebsite },
+                ].map((step, i) => (
+                  <button
+                    key={i}
+                    onClick={step.action}
+                    className={`flex items-center gap-3 px-3 py-3 rounded-xl border transition-all cursor-pointer ${
+                      step.done
+                        ? 'bg-emerald-500/[0.06] border-emerald-500/20'
+                        : 'bg-white/[0.02] border-white/[0.06] hover:border-white/[0.12]'
+                    }`}
+                  >
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      step.done ? 'bg-emerald-500/20' : 'bg-white/[0.06]'
+                    }`}>
+                      {step.done ? (
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      ) : (
+                        <span className="text-[10px] font-bold text-muted-foreground">{i + 1}</span>
+                      )}
+                    </div>
+                    <span className={`text-xs font-medium ${step.done ? 'text-emerald-400' : 'text-foreground'}`}>{step.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 

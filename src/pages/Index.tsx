@@ -626,18 +626,24 @@ const Index = () => {
           <FeedHeader onSearch={handleSearch} onLogoClick={() => setSidebarOpen(!sidebarOpen)} sidebarOpen={sidebarOpen} />
 
           {/* Profile Hero Section */}
-          <div className="profile-hero">
-            <div className="relative h-40 sm:h-48 lg:h-56" />
-            <div className={`relative max-w-4xl mx-auto px-4 -mt-12 sm:-mt-14 pb-6 transition-all duration-300 ${sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0'}`}>
+          <div className="profile-hero relative">
+            {/* Cover Photo Area */}
+            <div className="relative h-36 sm:h-44 lg:h-52 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-cyan-600/15" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
+              <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+            </div>
+
+            <div className={`relative max-w-4xl mx-auto px-4 -mt-14 sm:-mt-16 pb-4 transition-all duration-300 ${sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0'}`}>
               <div className="flex flex-col sm:flex-row items-start gap-4">
                 <div className="profile-avatar-ring flex-shrink-0">
                   <img
                     src={portrait1}
                     alt="SixSeven Creator"
-                    className="w-20 h-20 sm:w-24 sm:h-24 object-cover bg-background"
+                    className="w-22 h-22 sm:w-26 sm:h-26 object-cover bg-background"
                   />
                 </div>
-                <div className="flex-1 min-w-0 pt-1 sm:pt-3">
+                <div className="flex-1 min-w-0 pt-1 sm:pt-4">
                   <div className="flex items-center gap-2">
                     <h1 className="text-xl sm:text-2xl font-bold text-foreground">SixSeven Creator</h1>
                     <svg className="w-5 h-5 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
@@ -646,14 +652,14 @@ const Index = () => {
                     </svg>
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">Exclusive content & premium collections</p>
-                  <div className="flex flex-wrap items-center gap-2 mt-3">
+                  <div className="flex flex-wrap items-center gap-3 mt-3">
                     <span className="stat-pill">{allCollections.length} Collections</span>
                     <span className="stat-pill">450+ Photos</span>
                   </div>
                 </div>
                 <button
                   onClick={() => window.location.href = '/collections'}
-                  className="hidden sm:flex items-center gap-2 mt-4 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 transition-all shadow-lg shadow-indigo-500/20"
+                  className="hidden sm:flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 transition-all shadow-lg shadow-indigo-500/20"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
@@ -661,6 +667,23 @@ const Index = () => {
                   </svg>
                   Unlock Everything
                 </button>
+              </div>
+
+              {/* Content Filter Tabs - Integrated into hero */}
+              <div className="mt-4 flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] w-fit">
+                {(['all', 'collections', 'posts'] as const).map(filter => (
+                  <button
+                    key={filter}
+                    onClick={() => setFeedFilter(filter)}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+                      feedFilter === filter
+                        ? 'bg-white/[0.10] text-foreground shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
+                    }`}
+                  >
+                    {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
@@ -788,23 +811,6 @@ const Index = () => {
                   )}
 
                   <TopLoader />
-
-                  {/* Content Filter Tabs */}
-                  <div className="flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] w-fit mb-5">
-                    {(['all', 'collections', 'posts'] as const).map(filter => (
-                      <button
-                        key={filter}
-                        onClick={() => setFeedFilter(filter)}
-                        className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 capitalize ${
-                          feedFilter === filter
-                            ? 'bg-white/[0.10] text-foreground shadow-sm'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
-                        }`}
-                      >
-                        {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
-                      </button>
-                    ))}
-                  </div>
 
                   <div className="space-y-4 sm:space-y-6">
                     {!searchQuery && filteredFeedData.length === 0 && (

@@ -1208,10 +1208,9 @@
     box-shadow: inset 0 0 30px -10px rgba(0,0,0,0.3), 0 30px 80px rgba(2,6,23,0.6);
   }
 
-  /* Profile hero with better gradient + noise texture feel */
+  /* Profile hero - transparent to let cover photo show */
   .profile-hero {
-    background:
-      linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.06) 30%, rgba(14,165,233,0.04) 60%, transparent 80%);
+    background: transparent;
   }
 
   /* Improved stat-card-glow with animated left border */
