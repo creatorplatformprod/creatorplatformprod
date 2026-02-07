@@ -132,7 +132,7 @@ const Collections = () => {
   }
 
   // Build allImages: use API data if available, otherwise directly from collectionsData (same as Ofweb)
-  const collectionIds = getAllCollectionIds();
+  const collectionIds = useMemo(() => getAllCollectionIds(), []);
 
   const allImages = useMemo(() => {
     // If we have real API data, use it
@@ -205,7 +205,7 @@ const Collections = () => {
 
   const startIndex = (currentPage - 1) * imagesPerPage;
   const endIndex = startIndex + imagesPerPage;
-  const currentImages = allImages.slice(startIndex, endIndex);
+  const currentImages = useMemo(() => allImages.slice(startIndex, endIndex), [allImages, startIndex, endIndex]);
   const totalPages = Math.ceil(totalItems / imagesPerPage);
 
   const preloadFirstPageImages = () => {
@@ -276,13 +276,28 @@ const Collections = () => {
     setIsPreloading(true);
   }, [totalItems]);
 
+  // Preload current page images once they're ready
+  const [preloadStarted, setPreloadStarted] = useState(false);
   useEffect(() => {
     if (currentImages.length === 0) {
       setIsPreloading(false);
       return;
     }
-    preloadFirstPageImages();
-  }, [currentImages]);
+    if (!preloadStarted) {
+      setPreloadStarted(true);
+      preloadFirstPageImages();
+    }
+  }, [currentImages, preloadStarted]);
+
+  // Safety timeout: never hang on preloader for more than 5 seconds
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (isPreloading) {
+        setIsPreloading(false);
+      }
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [isPreloading]);
 
   useEffect(() => {
     if (collectionCount === 0) {
