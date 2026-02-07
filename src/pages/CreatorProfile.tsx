@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { Heart, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Flame, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather, Info } from "lucide-react";
 import FeedHeader from "@/components/FeedHeader";
 import PostCard from "@/components/PostCard";
@@ -12,6 +12,7 @@ import { collections as mockCollectionsData, getRandomCollections } from "@/coll
 
 const CreatorProfile = () => {
   const { username } = useParams();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isPreviewMode = searchParams.get('mode') === 'preview';
   const [searchQuery, setSearchQuery] = useState("");
@@ -403,8 +404,8 @@ const CreatorProfile = () => {
   };
 
   const allCollections = useMemo(() => {
-    // Use mock collections in preview mode when no real content
-    if (formattedCollections.length === 0 && isPreviewMode) {
+    // Use mock collections when no real content (both preview and public)
+    if (formattedCollections.length === 0) {
       return mockCollections;
     }
     return formattedCollections;
@@ -535,8 +536,8 @@ const CreatorProfile = () => {
             </div>
             {allCollections.length > 0 && (
               <button
-                onClick={() => window.location.href = `/${username}/collections/all`}
-                className="hidden sm:flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 transition-all shadow-lg shadow-indigo-500/20"
+                onClick={() => navigate('/collections')}
+                className="flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 transition-all shadow-lg shadow-indigo-500/20"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>

@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CreditCard, Loader2 } from "lucide-react";
+import { ArrowLeft, CreditCard, Loader2, Users } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { getCollection } from "@/collections/collectionsData";
 import ProgressiveImage from "@/components/ProgressiveImage";
@@ -465,7 +465,7 @@ const PostDetailBlurred = () => {
           </footer>
         </div>
 
-        {/* Payment Modal - Mobile Optimized */}
+        {/* Payment Modal */}
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
           style={{
@@ -476,106 +476,61 @@ const PostDetailBlurred = () => {
           }}
         >
           <div 
-            className="unlock-modal-card w-full max-w-[380px] sm:max-w-md"
-            style={{
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              WebkitOverflowScrolling: 'touch',
-            }}
+            className="bg-transparent rounded-2xl p-4 sm:p-6 w-full max-w-[340px] sm:max-w-sm"
+            style={{ maxHeight: '85vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
           >
-            {/* Content Preview Strip -- 3 blurred thumbnails */}
-            {collection.images && collection.images.length > 0 && (
-              <div className="flex gap-1 mb-5 -mx-1 overflow-hidden rounded-xl h-20">
-                {collection.images.slice(0, 3).map((img: any, i: number) => {
-                  const src = typeof img === 'string' ? img : img.thumb || img.full;
-                  return (
-                    <div key={i} className="flex-1 relative overflow-hidden rounded-lg">
-                      <img src={src} alt="" className="w-full h-full object-cover blur-[6px] scale-110 opacity-60" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                    </div>
-                  );
-                })}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{position: 'relative', flex: 0, width: 0}}>
-                </div>
-              </div>
-            )}
+            <div className="text-center">
+              <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-1.5">
+                Unlock "{collection.title}"
+              </h2>
 
-            {/* Creator + Title */}
-            <div className="text-center mb-5">
-              {collection.user && (
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <img
-                    src={collection.user.avatar}
-                    alt={collection.user.name}
-                    className="w-8 h-8 rounded-full object-cover ring-2 ring-white/10"
-                  />
-                  <div className="text-left">
-                    <span className="text-xs font-semibold text-white block">{collection.user.name}</span>
-                    <span className="text-[10px] text-white/40">{collection.images?.length || 0} items</span>
-                  </div>
+              <div className="flex items-center justify-center gap-1.5 mb-3 sm:mb-4">
+                <Users className="w-3 h-3 text-white/50" />
+                <span className="text-[11px] text-white/50">Join 1,000+ fans who unlocked this content</span>
+              </div>
+              
+              {paymentError && (
+                <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-red-500/20 border border-red-500/40 rounded-lg">
+                  <p className="text-xs sm:text-sm text-white">{paymentError}</p>
                 </div>
               )}
-              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-tight">
-                {collection.title}
-              </h2>
-            </div>
-
-            {/* Price Block */}
-            <div className="unlock-price-block mb-5">
-              <span className="text-3xl sm:text-4xl font-bold text-white tracking-tight">{formattedPrice}</span>
-              <div className="flex items-center justify-center gap-3 mt-1.5">
-                <span className="text-[10px] text-white/30 flex items-center gap-1">
-                  <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                  Instant access
-                </span>
-                <span className="text-[10px] text-white/30">·</span>
-                <span className="text-[10px] text-white/30">Yours forever</span>
-              </div>
-            </div>
               
-            {paymentError && (
-              <div className="mb-4 p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl">
-                <p className="text-xs text-red-300">{paymentError}</p>
+              <div className="mb-3 sm:mb-4">
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  value={customerEmail}
+                  onChange={(e) => {
+                    setCustomerEmail(e.target.value);
+                    setPaymentError("");
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === 'Go') {
+                      e.preventDefault();
+                      handleCardPaymentClick();
+                    }
+                  }}
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  required
+                  maxLength={254}
+                />
               </div>
-            )}
-
-            <div className="space-y-3">
-              <input
-                type="email"
-                placeholder="your@email.com"
-                value={customerEmail}
-                onChange={(e) => {
-                  setCustomerEmail(e.target.value);
-                  setPaymentError("");
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === 'Go') {
-                    e.preventDefault();
-                    handleCardPaymentClick();
-                  }
-                }}
-                className="w-full px-4 py-3 text-sm bg-white/[0.04] border border-white/[0.08] rounded-xl text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
-                required
-                maxLength={254}
-              />
               
               <button
                 onClick={handleCardPaymentClick}
                 disabled={isCardPaymentLoading}
-                className="checkout-pay-btn w-full"
+                className="w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
               >
                 {isCardPaymentLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                 ) : (
-                  <span>Unlock for {formattedPrice}</span>
+                  <>
+                    <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
+                    {`Unlock Now -- ${formattedPrice}`}
+                  </>
                 )}
               </button>
             </div>
-
-            <p className="mt-3 text-center text-[10px] text-white/20">
-              <svg className="w-3 h-3 inline-block mr-0.5 -mt-px" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-              256-bit encrypted
-            </p>
           </div>
         </div>
       </main>
