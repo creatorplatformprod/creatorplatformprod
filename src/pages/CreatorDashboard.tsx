@@ -1269,11 +1269,20 @@ const CreatorDashboard = () => {
               <h3 className="text-xl font-bold text-foreground mb-4">Your Status Cards</h3>
               <div className="space-y-4">
                 {statusCards.length === 0 ? (
-                  <div className="text-muted-foreground text-center py-8 space-y-2">
-                    <p className="font-medium text-foreground">No status cards yet</p>
-                    <p className="text-sm text-muted-foreground">
-                      Status cards appear on your homepage and highlight updates. Add your first one above.
+                  <div className="empty-state">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500/20 to-pink-500/20 flex items-center justify-center mb-3">
+                      <MessageSquare className="w-6 h-6 text-violet-400" />
+                    </div>
+                    <p className="text-sm font-semibold text-foreground">Share your first update</p>
+                    <p className="text-xs text-muted-foreground max-w-[240px]">
+                      Status posts appear on your homepage and keep your audience engaged.
                     </p>
+                    <button
+                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                      className="mt-3 px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-medium hover:bg-primary/20 transition-colors"
+                    >
+                      Create Status Post
+                    </button>
                   </div>
                 ) : (
                   statusCards.map((card, index) => (
@@ -1462,11 +1471,20 @@ const CreatorDashboard = () => {
               <h3 className="text-xl font-bold text-foreground mb-4">Your Collections</h3>
               <div className="space-y-4">
                 {collections.length === 0 ? (
-                  <div className="text-muted-foreground text-center py-8 space-y-2">
-                    <p className="font-medium text-foreground">No collections yet</p>
-                    <p className="text-sm text-muted-foreground">
-                      Collections show up in your sidebar and feed. Create one to start selling access.
+                  <div className="empty-state">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 flex items-center justify-center mb-3">
+                      <Image className="w-6 h-6 text-indigo-400" />
+                    </div>
+                    <p className="text-sm font-semibold text-foreground">Upload your first collection</p>
+                    <p className="text-xs text-muted-foreground max-w-[240px]">
+                      Collections are how you sell exclusive content. Create one above to start earning.
                     </p>
+                    <button
+                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                      className="mt-3 px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-medium hover:bg-primary/20 transition-colors"
+                    >
+                      Create Collection
+                    </button>
                   </div>
                 ) : (
                   collections.map((collection, index) => (
@@ -1488,6 +1506,27 @@ const CreatorDashboard = () => {
         {/* Analytics Tab */}
         {activeTab === 'analytics' && (
           <div className="space-y-6">
+            {/* Empty state when no sales exist */}
+            {analyticsTotals.orders === 0 && analyticsSeries.length === 0 && (
+              <div className="card-elevated p-8">
+                <div className="empty-state">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center mb-3">
+                    <BarChart3 className="w-6 h-6 text-emerald-400" />
+                  </div>
+                  <p className="text-sm font-semibold text-foreground">Analytics will appear here</p>
+                  <p className="text-xs text-muted-foreground max-w-[280px]">
+                    Once you make your first sale, you'll see revenue, orders, and performance trends here.
+                  </p>
+                  <button
+                    onClick={() => { setActiveTab('collections'); setError(''); setSuccess(''); setInfoMessage(''); }}
+                    className="mt-3 px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-medium hover:bg-primary/20 transition-colors"
+                  >
+                    Create Your First Collection
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="card-elevated p-6 sm:p-8 space-y-4">
               <div className="flex flex-col gap-2">
                 <h2 className="section-title">Sales Analytics</h2>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { ArrowLeft, CreditCard, Loader2 } from "lucide-react";
+import { ArrowLeft, CreditCard, Loader2, Lock, Shield, Zap, Users, CheckCircle2 } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Preloader from "../components/Preloader";
 import ProgressiveImage from "@/components/ProgressiveImage";
@@ -437,14 +437,39 @@ const Collections = () => {
                   }}
                 >
                   <div className="text-center">
-                    <div className="brand-wordmark text-base sm:text-lg mx-auto mb-2.5 sm:mb-4"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-                    <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1.5 sm:mb-2">
+                    <div className="brand-wordmark text-base sm:text-lg mx-auto mb-2.5 sm:mb-3"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+                    <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-1.5">
                       Unlock Everything
                     </h2>
-                    <p className="text-xs sm:text-base text-white mb-3.5 sm:mb-6">
-                      Get instant access to all {collectionCount} exclusive collections with {totalItems} premium items
-                      {videoCount > 0 ? `, including ${videoCount} videos` : ''}
-                    </p>
+
+                    {/* Value Breakdown */}
+                    <div className="text-left mb-3 sm:mb-4 p-3 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+                      <p className="text-[10px] uppercase tracking-wider text-white/40 mb-2">What you'll get</p>
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 text-xs text-white/70">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                          <span>{collectionCount} exclusive collections</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-white/70">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                          <span>{totalItems} premium items{videoCount > 0 ? ` (${imageCount} photos + ${videoCount} videos)` : ''}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-white/70">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                          <span>Lifetime access -- yours forever</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-white/70">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                          <span>Instant delivery after payment</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Social Proof */}
+                    <div className="flex items-center justify-center gap-1.5 mb-3">
+                      <Users className="w-3 h-3 text-white/50" />
+                      <span className="text-[11px] text-white/50">Join 1,000+ fans who unlocked this content</span>
+                    </div>
                     
                     {paymentError && (
                       <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-red-500/20 border border-red-500/40 rounded-lg">
@@ -473,22 +498,38 @@ const Collections = () => {
                       />
                     </div>
                     
-                    <div className="space-y-2 sm:space-y-3 mb-3.5 sm:mb-6">
+                    <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
                       <div>
                         <button 
                           onClick={handleCardPaymentClick}
                           disabled={isCardPaymentLoading}
-                          className="bg-secondary/80 hover:bg-secondary text-foreground py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-xs sm:text-base font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-none"
+                          className="w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
                         >
                           {isCardPaymentLoading ? (
-                            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-foreground" />
+                            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                           ) : (
                             <>
                               <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
-                              Pay by Card - $199.99
+                              Unlock All -- ${bundlePrice}
                             </>
                           )}
                         </button>
+                      </div>
+                    </div>
+
+                    {/* Trust Badges */}
+                    <div className="flex items-center justify-center gap-4 text-[10px] text-white/40">
+                      <div className="flex items-center gap-1">
+                        <Lock className="w-3 h-3" />
+                        <span>256-bit SSL</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Shield className="w-3 h-3" />
+                        <span>Secure</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Zap className="w-3 h-3" />
+                        <span>Instant</span>
                       </div>
                     </div>
                   </div>

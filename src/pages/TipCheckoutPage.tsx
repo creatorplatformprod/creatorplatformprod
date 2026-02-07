@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Loader2, CheckCircle2, Gift, AlertCircle, Clock, ChevronDown, CreditCard } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle2, Gift, AlertCircle, Clock, ChevronDown, CreditCard, Heart, Shield } from "lucide-react";
 
 const RAW_API_URL =
   import.meta.env.VITE_API_URL ||
@@ -26,13 +26,19 @@ const TipCheckoutPage = () => {
   const [sessionExpired, setSessionExpired] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [creatorName, setCreatorName] = useState('');
+  const [creatorAvatar, setCreatorAvatar] = useState('');
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const email = params.get('email') || '';
     const amount = params.get('amount');
     const accessToken = params.get('access');
+    const name = params.get('creatorName') || params.get('creator') || '';
+    const avatar = params.get('creatorAvatar') || '';
     
+    setCreatorName(name);
+    setCreatorAvatar(avatar);
     setCustomerEmail(email);
     
     // Validate tip amount
@@ -387,22 +393,53 @@ const TipCheckoutPage = () => {
 
       <main className="max-w-lg mx-auto px-3 sm:px-4 py-6 sm:py-8">
         <div className="post-card rounded-2xl p-5 sm:p-6 shadow-lg">
-          {/* Header with Icon */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-secondary/50 flex items-center justify-center">
-              <Gift className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: ROSE_COLOR }} />
+          {/* Creator Info */}
+          {creatorName && (
+            <div className="flex flex-col items-center mb-5">
+              {creatorAvatar ? (
+                <img src={decodeURIComponent(creatorAvatar)} alt={creatorName} className="w-14 h-14 rounded-full object-cover border-2 border-rose-500/30 mb-2" />
+              ) : (
+                <div className="w-14 h-14 rounded-full flex items-center justify-center mb-2" style={{ backgroundColor: `${ROSE_COLOR}15` }}>
+                  <Heart className="w-6 h-6" style={{ color: ROSE_COLOR }} />
+                </div>
+              )}
+              <p className="text-sm font-medium text-foreground">{decodeURIComponent(creatorName)}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Your support means the world to {decodeURIComponent(creatorName)}</p>
             </div>
-            <div>
-              <h2 className="text-base sm:text-lg font-bold text-foreground">Send a Tip</h2>
-              <p className="text-sm text-muted-foreground">Thank you for your support</p>
+          )}
+
+          {/* Header with Icon */}
+          {!creatorName && (
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${ROSE_COLOR}15` }}>
+                <Heart className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: ROSE_COLOR }} />
+              </div>
+              <div>
+                <h2 className="text-base sm:text-lg font-bold text-foreground">Send a Tip</h2>
+                <p className="text-sm text-muted-foreground">Your support means the world</p>
+              </div>
+            </div>
+          )}
+
+          {/* Tip Amount -- Emphasized */}
+          <div className="mb-5 p-5 rounded-xl text-center" style={{ background: `linear-gradient(135deg, ${ROSE_COLOR}08, ${ROSE_COLOR}15)`, border: `1px solid ${ROSE_COLOR}20` }}>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Tip Amount</p>
+            <div className="flex items-center justify-center gap-1.5">
+              <Gift className="w-5 h-5" style={{ color: ROSE_COLOR }} />
+              <span className="text-3xl sm:text-4xl font-bold" style={{ color: ROSE_COLOR }}>${tipAmount}</span>
             </div>
           </div>
 
-          {/* Tip Amount Display */}
-          <div className="mb-6 p-4 bg-secondary/30 rounded-xl border border-border">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Tip Amount</span>
-              <span className="text-2xl sm:text-3xl font-bold" style={{ color: ROSE_COLOR }}>${tipAmount}</span>
+          {/* Thank You Preview */}
+          <div className="mb-5 p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">What the creator will see</p>
+            <div className="flex items-start gap-2">
+              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${ROSE_COLOR}15` }}>
+                <Heart className="w-3 h-3" style={{ color: ROSE_COLOR }} />
+              </div>
+              <p className="text-xs text-foreground/80">
+                Someone sent you a <span className="font-semibold" style={{ color: ROSE_COLOR }}>${tipAmount}</span> tip! Your content is truly appreciated.
+              </p>
             </div>
           </div>
 
@@ -532,10 +569,15 @@ const TipCheckoutPage = () => {
                 )}
               </button>
 
-              <div className="mt-5 pt-5 border-t border-border">
-                <p className="text-[11px] text-muted-foreground text-center">
-                  Protected by 256-bit SSL encryption
-                </p>
+              <div className="mt-5 pt-5 border-t border-border flex items-center justify-center gap-4">
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <Shield className="w-3 h-3 text-emerald-400" />
+                  <span>Secure Payment</span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                  <span>256-bit SSL</span>
+                </div>
               </div>
             </>
           )}

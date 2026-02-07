@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Loader2, CheckCircle2, Shield, Lock, ChevronDown, ChevronUp, Clock, AlertCircle, CreditCard } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle2, Shield, Lock, ChevronDown, ChevronUp, Clock, AlertCircle, CreditCard, Zap, Eye, Download, ShieldCheck } from "lucide-react";
 
 // Environment configuration - no hardcoded URLs
 const CONFIG = {
@@ -496,13 +496,36 @@ const CheckoutPage = () => {
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm font-medium">Back</span>
           </button>
+          {/* Step Progress Indicator */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
+              <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                <span className="text-[10px] font-bold text-primary">1</span>
+              </div>
+              <span className="text-[10px] font-medium text-foreground hidden sm:inline">Details</span>
+            </div>
+            <div className="w-6 h-px bg-white/20" />
+            <div className="flex items-center gap-1.5">
+              <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center">
+                <span className="text-[10px] font-bold text-muted-foreground">2</span>
+              </div>
+              <span className="text-[10px] font-medium text-muted-foreground hidden sm:inline">Payment</span>
+            </div>
+            <div className="w-6 h-px bg-white/20" />
+            <div className="flex items-center gap-1.5">
+              <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center">
+                <span className="text-[10px] font-bold text-muted-foreground">3</span>
+              </div>
+              <span className="text-[10px] font-medium text-muted-foreground hidden sm:inline">Access</span>
+            </div>
+          </div>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-5 sm:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <div>
-            <div className="post-card rounded-2xl shadow-lg p-5 sm:p-6 lg:p-6">
+            <div className="card-elevated rounded-2xl shadow-lg p-5 sm:p-6 lg:p-6">
               <div className="lg:hidden">
                 <button
                   onClick={() => setShowOrderDetails(!showOrderDetails)}
@@ -540,18 +563,42 @@ const CheckoutPage = () => {
               </div>
               
               <div className={`space-y-4 ${showOrderDetails ? 'block mt-4' : 'hidden lg:block'}`}>
-                <div className="pb-4 border-b border-border">
-                  <h3 className="font-semibold text-foreground mb-1 truncate">
-                    {checkoutData.collectionTitle}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {checkoutData.itemCount > 0 
-                      ? `${checkoutData.itemCount} premium items`
-                      : 'Exclusive content'}
-                  </p>
+                {/* Collection Info with Gradient Thumbnail */}
+                <div className="flex items-start gap-3 pb-4 border-b border-border">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500/30 to-cyan-500/30 border border-white/[0.08] flex items-center justify-center flex-shrink-0">
+                    <Eye className="w-5 h-5 text-white/50" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-foreground mb-0.5 truncate">
+                      {checkoutData.collectionTitle}
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      {checkoutData.itemCount > 0 
+                        ? `${checkoutData.itemCount} premium items`
+                        : 'Exclusive content'}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="space-y-3 py-3">
+                {/* What You'll Get */}
+                <div className="py-3 space-y-2.5">
+                  <p className="text-xs font-semibold text-foreground uppercase tracking-wider">What you'll get</p>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Zap className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                    <span>Instant access after payment</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Download className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
+                    <span>{checkoutData.itemCount > 0 ? `${checkoutData.itemCount} exclusive photos & videos` : 'Exclusive digital content'}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                    <span>Lifetime ownership -- yours forever</span>
+                  </div>
+                </div>
+
+                {/* Price Breakdown */}
+                <div className="space-y-2 py-3 border-t border-border">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span className="font-medium text-foreground">${checkoutData.amount}</span>
@@ -560,35 +607,27 @@ const CheckoutPage = () => {
                     <span className="text-muted-foreground">Digital Delivery</span>
                     <span className="font-medium text-green-500">Free</span>
                   </div>
-                  <div className="flex justify-between text-sm pt-2 border-t border-border">
+                  <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Tax</span>
                     <span className="font-medium text-foreground">$0.00</span>
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center pt-4 border-t border-border">
+                <div className="flex justify-between items-center pt-3 border-t border-border">
                   <div>
-                    <div className="text-sm text-muted-foreground mb-1">Total due today</div>
-                    <div className="text-xs text-muted-foreground/70">USD</div>
+                    <div className="text-sm text-muted-foreground mb-0.5">Total due today</div>
+                    <div className="text-[10px] text-muted-foreground/60">One-time payment, USD</div>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-bold text-foreground bg-clip-text">
+                  <div className="text-2xl sm:text-3xl font-bold text-foreground">
                     ${checkoutData.amount}
                   </div>
                 </div>
-              </div>
 
-              <div className={`mt-6 pt-6 border-t border-border space-y-2 ${showOrderDetails ? 'block' : 'hidden lg:block'}`}>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span>One-time purchase • No subscriptions</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span>Instant access after payment</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span>Lifetime ownership</span>
+                {/* Satisfaction Guarantee */}
+                <div className="mt-2 p-3 rounded-xl bg-emerald-500/[0.06] border border-emerald-500/[0.12]">
+                  <p className="text-[11px] text-emerald-400/90 text-center">
+                    Not satisfied? Contact the creator within 24 hours for support.
+                  </p>
                 </div>
               </div>
 
@@ -801,14 +840,19 @@ const CheckoutPage = () => {
                     )}
                   </button>
 
-                  <div className="mt-5 flex items-center justify-center gap-6 pt-5 border-t border-border">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Shield className="w-4 h-4 text-green-500" />
+                  {/* Trust Badges -- prominent, directly below pay button */}
+                  <div className="mt-4 grid grid-cols-3 gap-2">
+                    <div className="checkout-trust-badge">
+                      <Shield className="w-3.5 h-3.5 text-emerald-400" />
                       <span>Secure Payment</span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Lock className="w-4 h-4 text-green-500" />
-                      <span>SSL Encrypted</span>
+                    <div className="checkout-trust-badge">
+                      <Lock className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>256-bit SSL</span>
+                    </div>
+                    <div className="checkout-trust-badge">
+                      <Zap className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Instant Access</span>
                     </div>
                   </div>
                 </>
