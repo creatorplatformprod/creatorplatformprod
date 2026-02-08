@@ -1553,7 +1553,7 @@ const CreatorDashboard = () => {
                     <Button
                       type="button"
                       onClick={handleSaveCollectionDetails}
-                      className="btn-collection-solid rounded-full h-9 text-xs px-4"
+                      className="btn-collection-outline rounded-full h-9 text-xs px-4"
                     >
                       <Save className="h-3.5 w-3.5 mr-1.5" />
                       Save Changes
@@ -1615,7 +1615,7 @@ const CreatorDashboard = () => {
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="btn-collection-solid rounded-full border-transparent text-[11px] h-7 px-3"
+                          className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
                           onClick={() => collectionUploadInputRef.current?.click()}
                         >
                           Add more content
@@ -1624,7 +1624,7 @@ const CreatorDashboard = () => {
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="btn-collection-solid rounded-full border-transparent text-[11px] h-7 px-3"
+                          className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
                           onClick={() => {
                             setCollectionFiles([]);
                             setCollectionPreviews([]);
@@ -1643,7 +1643,7 @@ const CreatorDashboard = () => {
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="btn-collection-solid rounded-full border-transparent text-[11px] h-7 px-3"
+                            className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
                             onClick={handleDeleteCollection}
                           >
                             Delete collection
@@ -1656,7 +1656,7 @@ const CreatorDashboard = () => {
                         type="button"
                         onClick={handleUploadCollectionMedia}
                         disabled={uploadingCollectionMedia}
-                      className="w-full btn-collection-solid rounded-full h-9 text-xs"
+                      className="w-full btn-collection-outline rounded-full h-9 text-xs"
                       >
                         {uploadingCollectionMedia ? 'Uploading...' : 'Upload Collection'}
                       </Button>
@@ -1712,8 +1712,10 @@ const CreatorDashboard = () => {
                         <div className="text-xs font-medium text-muted-foreground">Existing Content</div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {selectedCollection.media.map((media: any, index: number) => {
-                            const thumbSrc = resolveMediaUrl(media.thumbnailUrl || media.url);
-                            const fullSrc = resolveMediaUrl(media.url);
+                            const originalThumb = media.thumbnailUrl || media.url;
+                            const originalFull = media.url;
+                            const thumbSrc = resolveMediaUrl(originalThumb);
+                            const fullSrc = resolveMediaUrl(originalFull);
                             const displaySrc = thumbSrc || fullSrc;
                             return (
                             <div key={`${media.url}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
@@ -1725,10 +1727,6 @@ const CreatorDashboard = () => {
                               >
                                 <X className="h-3 w-3" />
                               </button>
-                              <div className="absolute inset-0 flex items-center justify-center text-[11px] text-muted-foreground bg-muted/30 z-0">
-                                <Image className="h-4 w-4 mr-1.5" />
-                                Preview unavailable
-                              </div>
                               {media.mediaType === 'video' ? (
                                 displaySrc ? (
                                   <video
@@ -1738,7 +1736,12 @@ const CreatorDashboard = () => {
                                     muted
                                     preload="metadata"
                                     onError={(e) => {
-                                      (e.currentTarget as HTMLVideoElement).style.display = 'none';
+                                      const target = e.currentTarget as HTMLVideoElement;
+                                      if (target.src !== originalFull) {
+                                        target.src = originalFull || target.src;
+                                      } else {
+                                        target.style.display = 'none';
+                                      }
                                     }}
                                   />
                                 ) : null
@@ -1751,7 +1754,13 @@ const CreatorDashboard = () => {
                                     loading="lazy"
                                     decoding="async"
                                     onError={(e) => {
-                                      (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                      const target = e.currentTarget as HTMLImageElement;
+                                      const fallback = originalThumb || originalFull;
+                                      if (fallback && target.src !== fallback) {
+                                        target.src = fallback;
+                                      } else {
+                                        target.style.display = 'none';
+                                      }
                                     }}
                                   />
                                 ) : null
@@ -1795,7 +1804,7 @@ const CreatorDashboard = () => {
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="btn-collection-solid rounded-full border-transparent text-[11px] h-7 px-3"
+                            className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
                             onClick={() => handleEditCollection(collection)}
                           >
                             <Edit className="h-3 w-3 mr-1" />
