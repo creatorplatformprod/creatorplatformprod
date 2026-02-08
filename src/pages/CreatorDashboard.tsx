@@ -1520,7 +1520,7 @@ const CreatorDashboard = () => {
                     <Button
                       type="button"
                       onClick={handleSaveCollectionDetails}
-                      className="btn-collection-gradient rounded-full h-9 text-xs px-4"
+                      className="btn-collection-outline rounded-full h-9 text-xs px-4"
                     >
                       <Save className="h-3.5 w-3.5 mr-1.5" />
                       Save Changes
@@ -1582,7 +1582,7 @@ const CreatorDashboard = () => {
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="btn-collection-gradient rounded-full border-transparent text-[11px] h-7 px-3"
+                          className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
                           onClick={() => collectionUploadInputRef.current?.click()}
                         >
                           Add more content
@@ -1604,14 +1604,14 @@ const CreatorDashboard = () => {
                       </div>
                     </div>
 
-                    <Button
-                      type="button"
-                      onClick={handleUploadCollectionMedia}
-                      disabled={uploadingCollectionMedia}
-                      className="w-full btn-collection-gradient rounded-full h-9 text-xs"
-                    >
-                      {uploadingCollectionMedia ? 'Uploading...' : 'Upload Collection'}
-                    </Button>
+                      <Button
+                        type="button"
+                        onClick={handleUploadCollectionMedia}
+                        disabled={uploadingCollectionMedia}
+                      className="w-full btn-collection-solid rounded-full h-9 text-xs"
+                      >
+                        {uploadingCollectionMedia ? 'Uploading...' : 'Upload Collection'}
+                      </Button>
                   </div>
 
                   <div className="space-y-3">
@@ -1726,7 +1726,7 @@ const CreatorDashboard = () => {
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="btn-collection-gradient rounded-full border-transparent text-[11px] h-7 px-3"
+                            className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
                             onClick={() => handleEditCollection(collection)}
                           >
                             <Edit className="h-3 w-3 mr-1" />
