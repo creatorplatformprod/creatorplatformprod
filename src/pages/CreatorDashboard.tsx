@@ -325,37 +325,6 @@ const CreatorDashboard = () => {
     }
   };
 
-  const handleAddCollection = async () => {
-    try {
-      setLoading(true);
-      setError('');
-      setSuccess('');
-      const tags = collectionForm.tags.split(',').map(t => t.trim()).filter(t => t);
-      const result = await api.createCollection({
-        title: collectionForm.title,
-        description: collectionForm.description || undefined,
-        price: collectionForm.price,
-        currency: collectionForm.currency,
-        tags: tags.length > 0 ? tags : undefined,
-        media: [] // Media will be added separately via upload
-      });
-      if (result.success) {
-        setSuccess('Collection created!');
-        markPublicWebsiteDirty();
-        setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
-        setSelectedCollectionId('');
-        setCollectionFiles([]);
-        await loadUserData();
-      } else {
-        setError(result.error || 'Failed to create collection');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Failed to create collection');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSaveUnlockAllPrice = async () => {
     try {
       setLoading(true);
@@ -407,10 +376,6 @@ const CreatorDashboard = () => {
   };
 
   const handleUploadCollectionMedia = async () => {
-    if (!selectedCollectionId) {
-      setError('Please select a collection');
-      return;
-    }
     if (collectionFiles.length === 0) {
       setError('Please choose one or more files to upload');
       return;
@@ -419,6 +384,37 @@ const CreatorDashboard = () => {
     try {
       setUploadingCollectionMedia(true);
       setError('');
+      let targetCollectionId = selectedCollectionId;
+
+      if (!targetCollectionId) {
+        if (!collectionForm.title.trim()) {
+          setError('Enter a collection title or select an existing collection');
+          return;
+        }
+        const tags = collectionForm.tags.split(',').map(t => t.trim()).filter(t => t);
+        const createResult = await api.createCollection({
+          title: collectionForm.title,
+          description: collectionForm.description || undefined,
+          price: collectionForm.price,
+          currency: collectionForm.currency,
+          tags: tags.length > 0 ? tags : undefined,
+          media: []
+        });
+        if (!createResult?.success) {
+          throw new Error(createResult?.error || 'Failed to create collection');
+        }
+
+        targetCollectionId =
+          createResult.collection?._id ||
+          createResult.collection?.id ||
+          createResult.collectionId ||
+          createResult.id;
+
+        if (!targetCollectionId) {
+          throw new Error('Collection created, but no ID was returned');
+        }
+      }
+
       let uploadedCount = 0;
       for (const file of collectionFiles) {
         const uploadResult = await api.uploadFile(file);
@@ -426,7 +422,7 @@ const CreatorDashboard = () => {
           throw new Error(`Upload failed for ${file.name}`);
         }
 
-        const attachResult = await api.addCollectionMedia(selectedCollectionId, {
+        const attachResult = await api.addCollectionMedia(targetCollectionId, {
           url: uploadResult.url,
           thumbnailUrl: uploadResult.thumbnailUrl || uploadResult.url,
           mediaType: uploadResult.mediaType,
@@ -439,8 +435,10 @@ const CreatorDashboard = () => {
         uploadedCount += 1;
       }
 
-      setSuccess(`Added ${uploadedCount} file${uploadedCount === 1 ? '' : 's'} to collection!`);
+      setSuccess(`Uploaded ${uploadedCount} file${uploadedCount === 1 ? '' : 's'} to collection!`);
       markPublicWebsiteDirty();
+      setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
+      setSelectedCollectionId('');
       setCollectionFiles([]);
       await loadUserData();
     } catch (err: any) {
@@ -1326,10 +1324,12 @@ const CreatorDashboard = () => {
           <div className="card-elevated p-5 sm:p-6">
             <div className="space-y-5">
               {/* Unlock Everything Price */}
-              <section className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-base font-semibold text-foreground">Unlock Everything</h2>
-                  <span className="text-xs text-muted-foreground">One price for all collections</span>
+              <section className="space-y-3 rounded-xl border border-border/60 bg-muted/20 p-4 sm:p-5">
+                <div className="flex flex-col gap-1">
+                  <h2 className="text-base font-semibold text-foreground">Unlock Everything Price</h2>
+                  <span className="text-xs text-muted-foreground">
+                    Set the price for the Unlock Everything button. This gives clients access to all of your collections.
+                  </span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
@@ -1361,14 +1361,14 @@ const CreatorDashboard = () => {
                 </div>
                 <Button onClick={handleSaveUnlockAllPrice} className="w-full btn-67">
                   <Save className="w-4 h-4 mr-2" />
-                  Save Unlock Price
+                  Save Price
                 </Button>
               </section>
 
-              <div className="border-t border-border/70 pt-5 space-y-4">
+              <div className="border-t border-border/70 pt-5 space-y-4 rounded-xl border border-border/60 bg-muted/20 p-4 sm:p-5">
                 <div className="flex items-center justify-between">
                   <h2 className="text-base font-semibold text-foreground">Create Collection</h2>
-                  <span className="text-xs text-muted-foreground">Minimal setup</span>
+                  <span className="text-xs text-muted-foreground">Fill details below</span>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -1430,7 +1430,7 @@ const CreatorDashboard = () => {
 
                     <div>
                       <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                        Tags
+                        Tags (comma separated)
                       </label>
                       <Input
                         value={collectionForm.tags}
@@ -1438,18 +1438,13 @@ const CreatorDashboard = () => {
                         placeholder="art, photography, exclusive"
                       />
                     </div>
-
-                    <Button onClick={handleAddCollection} className="w-full btn-67">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Create Collection
-                    </Button>
                   </div>
                 </div>
               </div>
 
-              <div className="border-t border-border/70 pt-5 space-y-4">
+              <div className="border-t border-border/70 pt-5 space-y-4 rounded-xl border border-border/60 bg-muted/20 p-4 sm:p-5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-base font-semibold text-foreground">Upload Media</h3>
+                  <h3 className="text-base font-semibold text-foreground">Upload Collection</h3>
                   <span className="text-xs text-muted-foreground">Multi-file, preview first</span>
                 </div>
 
@@ -1471,6 +1466,9 @@ const CreatorDashboard = () => {
                           </option>
                         ))}
                       </select>
+                      <p className="text-[11px] text-muted-foreground mt-1">
+                        Leave empty to create a new collection from the form above.
+                      </p>
                     </div>
 
                     <div>
@@ -1491,7 +1489,7 @@ const CreatorDashboard = () => {
                       disabled={uploadingCollectionMedia}
                       className="w-full btn-67"
                     >
-                      {uploadingCollectionMedia ? 'Uploading...' : 'Upload Media'}
+                      {uploadingCollectionMedia ? 'Uploading...' : 'Upload Collection'}
                     </Button>
                   </div>
 
