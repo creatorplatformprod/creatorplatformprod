@@ -625,7 +625,7 @@ const CreatorDashboard = () => {
     try {
       const parsed = new URL(url);
       const placeholderHosts = new Set(['cdn.example.com', 'example.com']);
-      const base = import.meta.env.VITE_MEDIA_BASE_URL || window.location.origin;
+      const base = import.meta.env.VITE_MEDIA_BASE_URL || 'https://creatorplatformprod.pages.dev';
       if (placeholderHosts.has(parsed.hostname) && base) {
         return `${String(base).replace(/\/+$/, '')}${parsed.pathname}`;
       }
@@ -1717,8 +1717,6 @@ const CreatorDashboard = () => {
                             const originalFull = media.url;
                             const thumbSrc = resolveMediaUrl(originalThumb);
                             const fullSrc = resolveMediaUrl(originalFull);
-                            const imageSources = [thumbSrc, fullSrc, originalThumb, originalFull]
-                              .filter((src) => typeof src === 'string' && src.length > 0);
                             return (
                             <div key={`${media.url}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
                               <button
@@ -1751,13 +1749,21 @@ const CreatorDashboard = () => {
                                   />
                                 ) : null
                               ) : (
-                                imageSources.length > 0 ? (
-                                  <div
+                                (thumbSrc || fullSrc || originalThumb || originalFull) ? (
+                                  <img
+                                    src={thumbSrc || fullSrc || originalThumb || originalFull}
+                                    alt=""
                                     className="h-20 w-full object-cover relative z-10"
-                                    style={{
-                                      backgroundImage: imageSources.map((src) => `url("${src}")`).join(', '),
-                                      backgroundSize: 'cover',
-                                      backgroundPosition: 'center'
+                                    loading="lazy"
+                                    decoding="async"
+                                    onError={(e) => {
+                                      const target = e.currentTarget as HTMLImageElement;
+                                      const fallback = originalThumb || originalFull;
+                                      if (fallback && target.src !== fallback) {
+                                        target.src = fallback;
+                                      } else {
+                                        target.style.display = 'none';
+                                      }
                                     }}
                                   />
                                 ) : null
