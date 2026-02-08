@@ -380,7 +380,7 @@ const CreatorDashboard = () => {
 
   const handleUploadCollectionMedia = async () => {
     if (collectionFiles.length === 0) {
-      setError('Please choose one or more files to upload');
+      setError('Please choose one or more content files to upload');
       return;
     }
 
@@ -438,14 +438,14 @@ const CreatorDashboard = () => {
         uploadedCount += 1;
       }
 
-      setSuccess(`Uploaded ${uploadedCount} file${uploadedCount === 1 ? '' : 's'} to collection!`);
+      setSuccess(`Uploaded ${uploadedCount} item${uploadedCount === 1 ? '' : 's'} to collection!`);
       markPublicWebsiteDirty();
       setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
       setSelectedCollectionId('');
       setCollectionFiles([]);
       await loadUserData();
     } catch (err: any) {
-      setError(err.message || 'Failed to upload media');
+      setError(err.message || 'Failed to upload content');
     } finally {
       setUploadingCollectionMedia(false);
     }
@@ -462,10 +462,10 @@ const CreatorDashboard = () => {
 
   const handleClearCollectionMedia = async () => {
     if (!selectedCollectionId) {
-      setError('Select a collection to clear its files');
+      setError('Select a collection to clear its content');
       return;
     }
-    const confirmClear = window.confirm('Remove all files from this collection? This cannot be undone.');
+    const confirmClear = window.confirm('Remove all content from this collection? This cannot be undone.');
     if (!confirmClear) return;
 
     try {
@@ -473,14 +473,14 @@ const CreatorDashboard = () => {
       setError('');
       const result = await api.updateCollection(selectedCollectionId, { media: [] });
       if (result.success) {
-        setSuccess('All files removed from this collection.');
+        setSuccess('All content removed from this collection.');
         markPublicWebsiteDirty();
         await loadUserData();
       } else {
-        setError(result.error || 'Failed to clear collection files');
+        setError(result.error || 'Failed to clear collection content');
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to clear collection files');
+      setError(err.message || 'Failed to clear collection content');
     } finally {
       setLoading(false);
     }
@@ -1457,7 +1457,7 @@ const CreatorDashboard = () => {
               <div className="border-t border-border/70 pt-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-semibold text-foreground">Upload Collection</h3>
-                  <span className="text-xs text-muted-foreground">Multi-file, preview first</span>
+                  <span className="text-xs text-muted-foreground">Multi-content, preview first</span>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -1485,7 +1485,7 @@ const CreatorDashboard = () => {
 
                     <div>
                       <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                        Files (image/video, max 25MB each)
+                        Content (image/video, max 25MB each)
                       </label>
                       <Input
                         ref={collectionUploadInputRef}
@@ -1504,10 +1504,10 @@ const CreatorDashboard = () => {
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="rounded-full border-white/10 bg-white/5 hover:bg-white/10 text-xs"
+                          className="rounded-full border-white/10 bg-white/5 hover:bg-white/10 text-[11px] h-7 px-3"
                           onClick={() => collectionUploadInputRef.current?.click()}
                         >
-                          Add more files
+                          Add more content
                         </Button>
                         {collectionFiles.length > 0 && (
                           <span className="text-[11px] text-muted-foreground">
@@ -1518,30 +1518,29 @@ const CreatorDashboard = () => {
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="rounded-full border-rose-500/40 text-rose-200 hover:bg-rose-500/10 text-xs"
+                          className="rounded-full border-rose-500/40 text-rose-200 hover:bg-rose-500/10 text-[11px] h-7 px-3"
                           onClick={handleClearCollectionMedia}
-                          disabled={!selectedCollectionId}
                         >
-                          Delete all files
+                          Delete all content
                         </Button>
                       </div>
                     </div>
 
-                    <Button
-                      type="button"
-                      onClick={handleUploadCollectionMedia}
-                      disabled={uploadingCollectionMedia}
-                      className="w-full btn-67 rounded-full"
-                    >
-                      {uploadingCollectionMedia ? 'Uploading...' : 'Upload Collection'}
-                    </Button>
+                      <Button
+                        type="button"
+                        onClick={handleUploadCollectionMedia}
+                        disabled={uploadingCollectionMedia}
+                      className="w-full btn-67 rounded-full h-9 text-xs"
+                      >
+                        {uploadingCollectionMedia ? 'Uploading...' : 'Upload Collection'}
+                      </Button>
                   </div>
 
                   <div className="space-y-3">
                     <div className="text-xs font-medium text-muted-foreground">Preview</div>
                     {collectionPreviews.length === 0 ? (
                       <div className="border border-dashed border-border rounded-lg p-4 text-xs text-muted-foreground text-center">
-                        Select one or more files to preview them here.
+                        Select one or more content files to preview them here.
                       </div>
                     ) : (
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -1616,7 +1615,7 @@ const CreatorDashboard = () => {
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="rounded-full border-white/10 bg-white/5 hover:bg-white/10 text-xs"
+                            className="rounded-full border-white/10 bg-white/5 hover:bg-white/10 text-[11px] h-7 px-3"
                             onClick={() => handleEditCollection(collection)}
                           >
                             <Edit className="h-3 w-3 mr-1" />
