@@ -398,6 +398,7 @@ const CreatorDashboard = () => {
       setUploadingCollectionMedia(true);
       setError('');
       let targetCollectionId = selectedCollectionId;
+      const createdNewCollection = !selectedCollectionId;
 
       if (!targetCollectionId) {
         if (!collectionForm.title.trim()) {
@@ -450,8 +451,13 @@ const CreatorDashboard = () => {
 
       setSuccess(`Uploaded ${uploadedCount} item${uploadedCount === 1 ? '' : 's'} to collection!`);
       markPublicWebsiteDirty();
-      setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
-      setSelectedCollectionId(targetCollectionId);
+      if (createdNewCollection) {
+        setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
+        setSelectedCollectionId('');
+        setSelectedCollection(null);
+      } else {
+        setSelectedCollectionId(targetCollectionId);
+      }
       setCollectionFiles([]);
       await loadUserData();
     } catch (err: any) {
@@ -481,9 +487,11 @@ const CreatorDashboard = () => {
     const confirmClear = window.confirm('Remove all content from this collection? This cannot be undone.');
     if (!confirmClear) return;
 
+    const previousMedia = selectedCollection?.media || [];
     try {
       setLoading(true);
       setError('');
+      setSelectedCollection((prev: any) => (prev ? { ...prev, media: [] } : prev));
       const result = await api.updateCollection(selectedCollectionId, { media: [] });
       if (result.success) {
         setSuccess('All content removed from this collection.');
@@ -491,9 +499,11 @@ const CreatorDashboard = () => {
         setCollectionFiles([]);
         await loadUserData();
       } else {
+        setSelectedCollection((prev: any) => (prev ? { ...prev, media: previousMedia } : prev));
         setError(result.error || 'Failed to clear collection content');
       }
     } catch (err: any) {
+      setSelectedCollection((prev: any) => (prev ? { ...prev, media: previousMedia } : prev));
       setError(err.message || 'Failed to clear collection content');
     } finally {
       setLoading(false);
@@ -502,19 +512,23 @@ const CreatorDashboard = () => {
 
   const handleRemoveExistingMedia = async (mediaIndex: number) => {
     if (!selectedCollectionId || !selectedCollection?.media) return;
-    const nextMedia = selectedCollection.media.filter((_: any, idx: number) => idx !== mediaIndex);
+    const previousMedia = selectedCollection.media;
+    const nextMedia = previousMedia.filter((_: any, idx: number) => idx !== mediaIndex);
     try {
       setLoading(true);
       setError('');
+      setSelectedCollection((prev: any) => (prev ? { ...prev, media: nextMedia } : prev));
       const result = await api.updateCollection(selectedCollectionId, { media: nextMedia });
       if (result.success) {
         setSuccess('Content removed from collection.');
         markPublicWebsiteDirty();
         await loadUserData();
       } else {
+        setSelectedCollection((prev: any) => (prev ? { ...prev, media: previousMedia } : prev));
         setError(result.error || 'Failed to remove content');
       }
     } catch (err: any) {
+      setSelectedCollection((prev: any) => (prev ? { ...prev, media: previousMedia } : prev));
       setError(err.message || 'Failed to remove content');
     } finally {
       setLoading(false);
@@ -555,6 +569,9 @@ const CreatorDashboard = () => {
       if (result.success) {
         setSuccess('Collection updated.');
         markPublicWebsiteDirty();
+        setSelectedCollectionId('');
+        setSelectedCollection(null);
+        setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
         await loadUserData();
       } else {
         setError(result.error || 'Failed to update collection');
@@ -1626,7 +1643,7 @@ const CreatorDashboard = () => {
                         type="button"
                         onClick={handleUploadCollectionMedia}
                         disabled={uploadingCollectionMedia}
-                      className="w-full btn-collection-solid rounded-full h-9 text-xs"
+                      className="w-full btn-collection-outline rounded-full h-9 text-xs"
                       >
                         {uploadingCollectionMedia ? 'Uploading...' : 'Upload Collection'}
                       </Button>
@@ -1681,7 +1698,9 @@ const CreatorDashboard = () => {
                       <div className="pt-3 space-y-2">
                         <div className="text-xs font-medium text-muted-foreground">Existing Content</div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                          {selectedCollection.media.map((media: any, index: number) => (
+                          {selectedCollection.media.map((media: any, index: number) => {
+                            const mediaSrc = media.thumbnailUrl || media.url;
+                            return (
                             <div key={`${media.url}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
                               <button
                                 type="button"
@@ -1693,20 +1712,21 @@ const CreatorDashboard = () => {
                               </button>
                               {media.mediaType === 'video' ? (
                                 <video
-                                  src={media.thumbnailUrl || media.url}
+                                  src={media.url}
+                                  poster={media.thumbnailUrl}
                                   className="h-20 w-full object-cover"
                                   muted
                                   preload="metadata"
                                 />
                               ) : (
                                 <img
-                                  src={media.thumbnailUrl || media.url}
-                                  alt="Existing content"
+                                  src={mediaSrc}
+                                  alt={media.fileName || 'Content'}
                                   className="h-20 w-full object-cover"
                                 />
                               )}
                             </div>
-                          ))}
+                          )})}
                         </div>
                       </div>
                     )}
