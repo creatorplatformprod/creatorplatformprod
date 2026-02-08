@@ -471,6 +471,9 @@ const CreatorDashboard = () => {
   };
 
   const handleClearCollectionMedia = async () => {
+    // Always clear local previews immediately
+    setCollectionFiles([]);
+    setCollectionPreviews([]);
     if (!selectedCollectionId) {
       setError('Select a collection to clear its content');
       return;
@@ -1587,20 +1590,35 @@ const CreatorDashboard = () => {
                         >
                           Add more content
                         </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
+                          onClick={() => {
+                            setCollectionFiles([]);
+                            setCollectionPreviews([]);
+                          }}
+                          disabled={collectionFiles.length === 0}
+                        >
+                          Clear selected content
+                        </Button>
                         {collectionFiles.length > 0 && (
                           <span className="text-[11px] text-muted-foreground">
                             {collectionFiles.length} selected
                           </span>
                         )}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="btn-collection-danger rounded-full border-transparent text-[11px] h-7 px-3"
-                          onClick={handleClearCollectionMedia}
-                        >
-                          Delete all content
-                        </Button>
+                        {selectedCollectionId && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="btn-collection-danger rounded-full border-transparent text-[11px] h-7 px-3"
+                            onClick={handleClearCollectionMedia}
+                          >
+                            Delete all content
+                          </Button>
+                        )}
                       </div>
                     </div>
 
