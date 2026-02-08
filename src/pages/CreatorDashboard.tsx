@@ -622,16 +622,17 @@ const CreatorDashboard = () => {
 
   const resolveMediaUrl = (url?: string) => {
     if (!url) return '';
-    const base = import.meta.env.VITE_MEDIA_BASE_URL || 'https://creatorplatformprod.pages.dev';
-    if (base) {
-      try {
-        const parsed = new URL(url);
+    try {
+      const parsed = new URL(url);
+      const placeholderHosts = new Set(['cdn.example.com', 'example.com']);
+      const base = import.meta.env.VITE_MEDIA_BASE_URL || window.location.origin;
+      if (placeholderHosts.has(parsed.hostname) && base) {
         return `${String(base).replace(/\/+$/, '')}${parsed.pathname}`;
-      } catch {
-        return url;
       }
+      return url;
+    } catch {
+      return url;
     }
-    return url;
   };
 
   const buildChartSeries = (summary: any) => {
@@ -1716,7 +1717,8 @@ const CreatorDashboard = () => {
                             const originalFull = media.url;
                             const thumbSrc = resolveMediaUrl(originalThumb);
                             const fullSrc = resolveMediaUrl(originalFull);
-                            const displaySrc = thumbSrc || fullSrc;
+                            const imageSources = [thumbSrc, fullSrc, originalThumb, originalFull]
+                              .filter((src) => typeof src === 'string' && src.length > 0);
                             return (
                             <div key={`${media.url}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
                               <button
@@ -1728,10 +1730,10 @@ const CreatorDashboard = () => {
                                 <X className="h-3 w-3" />
                               </button>
                               {media.mediaType === 'video' ? (
-                                displaySrc ? (
+                                (fullSrc || originalFull) ? (
                                   <video
-                                    src={fullSrc}
-                                    poster={thumbSrc || undefined}
+                                    src={fullSrc || originalFull}
+                                    poster={thumbSrc || originalThumb || undefined}
                                     className="h-20 w-full object-cover relative z-10"
                                     muted
                                     preload="metadata"
@@ -1739,6 +1741,9 @@ const CreatorDashboard = () => {
                                       const target = e.currentTarget as HTMLVideoElement;
                                       if (target.src !== originalFull) {
                                         target.src = originalFull || target.src;
+                                        if (originalThumb && target.poster !== originalThumb) {
+                                          target.poster = originalThumb;
+                                        }
                                       } else {
                                         target.style.display = 'none';
                                       }
@@ -1746,21 +1751,13 @@ const CreatorDashboard = () => {
                                   />
                                 ) : null
                               ) : (
-                                displaySrc ? (
-                                  <img
-                                    src={displaySrc}
-                                    alt=""
+                                imageSources.length > 0 ? (
+                                  <div
                                     className="h-20 w-full object-cover relative z-10"
-                                    loading="lazy"
-                                    decoding="async"
-                                    onError={(e) => {
-                                      const target = e.currentTarget as HTMLImageElement;
-                                      const fallback = originalThumb || originalFull;
-                                      if (fallback && target.src !== fallback) {
-                                        target.src = fallback;
-                                      } else {
-                                        target.style.display = 'none';
-                                      }
+                                    style={{
+                                      backgroundImage: imageSources.map((src) => `url("${src}")`).join(', '),
+                                      backgroundSize: 'cover',
+                                      backgroundPosition: 'center'
                                     }}
                                   />
                                 ) : null
