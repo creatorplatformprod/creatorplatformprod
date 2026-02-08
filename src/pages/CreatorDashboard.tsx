@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,6 +40,7 @@ import {
   CheckCircle2,
   ArrowUpRight,
   Clock,
+  X,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
@@ -60,6 +61,8 @@ const CreatorDashboard = () => {
   const [selectedCollectionId, setSelectedCollectionId] = useState('');
   const [collectionFiles, setCollectionFiles] = useState<File[]>([]);
   const [collectionPreviews, setCollectionPreviews] = useState<{ file: File; url: string }[]>([]);
+  const collectionUploadInputRef = useRef<HTMLInputElement | null>(null);
+  const collectionFormRef = useRef<HTMLDivElement | null>(null);
   const [uploadingCollectionMedia, setUploadingCollectionMedia] = useState(false);
   const [statusCardFile, setStatusCardFile] = useState<File | null>(null);
   const [uploadingStatusCardMedia, setUploadingStatusCardMedia] = useState(false);
@@ -446,6 +449,55 @@ const CreatorDashboard = () => {
     } finally {
       setUploadingCollectionMedia(false);
     }
+  };
+
+  const handleAddMoreCollectionFiles = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setCollectionFiles((prev) => [...prev, ...Array.from(files)]);
+  };
+
+  const handleRemoveSelectedFile = (index: number) => {
+    setCollectionFiles((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
+  const handleClearCollectionMedia = async () => {
+    if (!selectedCollectionId) {
+      setError('Select a collection to clear its files');
+      return;
+    }
+    const confirmClear = window.confirm('Remove all files from this collection? This cannot be undone.');
+    if (!confirmClear) return;
+
+    try {
+      setLoading(true);
+      setError('');
+      const result = await api.updateCollection(selectedCollectionId, { media: [] });
+      if (result.success) {
+        setSuccess('All files removed from this collection.');
+        markPublicWebsiteDirty();
+        await loadUserData();
+      } else {
+        setError(result.error || 'Failed to clear collection files');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to clear collection files');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditCollection = (collection: any) => {
+    setCollectionForm({
+      title: collection.title || '',
+      description: collection.description || '',
+      price: Number(collection.price) || 0,
+      currency: collection.currency || 'USD',
+      tags: Array.isArray(collection.tags) ? collection.tags.join(', ') : ''
+    });
+    setSelectedCollectionId(collection._id || '');
+    setTimeout(() => {
+      collectionFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
   };
 
   const handleViewProfile = () => {
@@ -1220,7 +1272,7 @@ const CreatorDashboard = () => {
             <div className="card-elevated p-6 sm:p-8">
               <h2 className="section-title mb-4">Add Status Card</h2>
               
-              <div className="space-y-4">
+              <div className="space-y-4" ref={collectionFormRef}>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-2 block">
                     Text Content
@@ -1436,18 +1488,50 @@ const CreatorDashboard = () => {
                         Files (image/video, max 25MB each)
                       </label>
                       <Input
+                        ref={collectionUploadInputRef}
                         type="file"
                         accept="image/*,video/*"
                         multiple
-                        onChange={(e) => setCollectionFiles(Array.from(e.target.files || []))}
+                        onChange={(e) => {
+                          handleAddMoreCollectionFiles(e.target.files);
+                          if (e.target.value) {
+                            e.target.value = '';
+                          }
+                        }}
                       />
+                      <div className="flex flex-wrap items-center gap-2 mt-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="rounded-full border-white/10 bg-white/5 hover:bg-white/10 text-xs"
+                          onClick={() => collectionUploadInputRef.current?.click()}
+                        >
+                          Add more files
+                        </Button>
+                        {collectionFiles.length > 0 && (
+                          <span className="text-[11px] text-muted-foreground">
+                            {collectionFiles.length} selected
+                          </span>
+                        )}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="rounded-full border-rose-500/40 text-rose-200 hover:bg-rose-500/10 text-xs"
+                          onClick={handleClearCollectionMedia}
+                          disabled={!selectedCollectionId}
+                        >
+                          Delete all files
+                        </Button>
+                      </div>
                     </div>
 
                     <Button
                       type="button"
                       onClick={handleUploadCollectionMedia}
                       disabled={uploadingCollectionMedia}
-                      className="w-full btn-67"
+                      className="w-full btn-67 rounded-full"
                     >
                       {uploadingCollectionMedia ? 'Uploading...' : 'Upload Collection'}
                     </Button>
@@ -1461,8 +1545,16 @@ const CreatorDashboard = () => {
                       </div>
                     ) : (
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                        {collectionPreviews.map((preview) => (
-                          <div key={preview.url} className="border border-border rounded-md overflow-hidden bg-muted/20">
+                        {collectionPreviews.map((preview, index) => (
+                          <div key={`${preview.file.name}-${preview.file.lastModified}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveSelectedFile(index)}
+                              className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                              aria-label={`Remove ${preview.file.name}`}
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
                             {preview.file.type.startsWith('image/') ? (
                               <img
                                 src={preview.url}
@@ -1513,11 +1605,23 @@ const CreatorDashboard = () => {
                   ) : (
                     collections.map((collection, index) => (
                       <div key={index} className="border border-border rounded-lg p-3">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-sm font-semibold text-foreground">{collection.title}</h4>
-                          <span className="text-xs text-muted-foreground">
-                            {collection.media?.length || 0} items
-                          </span>
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="min-w-0">
+                            <h4 className="text-sm font-semibold text-foreground truncate">{collection.title}</h4>
+                            <span className="text-xs text-muted-foreground">
+                              {collection.media?.length || 0} items
+                            </span>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="rounded-full border-white/10 bg-white/5 hover:bg-white/10 text-xs"
+                            onClick={() => handleEditCollection(collection)}
+                          >
+                            <Edit className="h-3 w-3 mr-1" />
+                            Edit
+                          </Button>
                         </div>
                         {collection.description && (
                           <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
