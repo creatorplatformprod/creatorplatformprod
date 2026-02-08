@@ -622,7 +622,7 @@ const CreatorDashboard = () => {
 
   const resolveMediaUrl = (url?: string) => {
     if (!url) return '';
-    const base = import.meta.env.VITE_MEDIA_BASE_URL;
+    const base = import.meta.env.VITE_MEDIA_BASE_URL || 'https://creatorplatformprod.pages.dev';
     if (base) {
       try {
         const parsed = new URL(url);
@@ -1553,7 +1553,7 @@ const CreatorDashboard = () => {
                     <Button
                       type="button"
                       onClick={handleSaveCollectionDetails}
-                      className="btn-collection-outline rounded-full h-9 text-xs px-4"
+                      className="btn-collection-solid rounded-full h-9 text-xs px-4"
                     >
                       <Save className="h-3.5 w-3.5 mr-1.5" />
                       Save Changes
@@ -1615,7 +1615,7 @@ const CreatorDashboard = () => {
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
+                          className="btn-collection-solid rounded-full border-transparent text-[11px] h-7 px-3"
                           onClick={() => collectionUploadInputRef.current?.click()}
                         >
                           Add more content
@@ -1624,7 +1624,7 @@ const CreatorDashboard = () => {
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
+                          className="btn-collection-solid rounded-full border-transparent text-[11px] h-7 px-3"
                           onClick={() => {
                             setCollectionFiles([]);
                             setCollectionPreviews([]);
@@ -1643,7 +1643,7 @@ const CreatorDashboard = () => {
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="btn-collection-danger rounded-full border-transparent text-[11px] h-7 px-3"
+                            className="btn-collection-solid rounded-full border-transparent text-[11px] h-7 px-3"
                             onClick={handleDeleteCollection}
                           >
                             Delete collection
@@ -1656,7 +1656,7 @@ const CreatorDashboard = () => {
                         type="button"
                         onClick={handleUploadCollectionMedia}
                         disabled={uploadingCollectionMedia}
-                      className="w-full btn-collection-outline rounded-full h-9 text-xs"
+                      className="w-full btn-collection-solid rounded-full h-9 text-xs"
                       >
                         {uploadingCollectionMedia ? 'Uploading...' : 'Upload Collection'}
                       </Button>
@@ -1725,7 +1725,7 @@ const CreatorDashboard = () => {
                               >
                                 <X className="h-3 w-3" />
                               </button>
-                              <div className="absolute inset-0 flex items-center justify-center text-[11px] text-muted-foreground bg-muted/30">
+                              <div className="absolute inset-0 flex items-center justify-center text-[11px] text-muted-foreground bg-muted/30 z-0">
                                 <Image className="h-4 w-4 mr-1.5" />
                                 Preview unavailable
                               </div>
@@ -1734,7 +1734,7 @@ const CreatorDashboard = () => {
                                   <video
                                     src={fullSrc}
                                     poster={thumbSrc || undefined}
-                                    className="h-20 w-full object-cover relative"
+                                    className="h-20 w-full object-cover relative z-10"
                                     muted
                                     preload="metadata"
                                     onError={(e) => {
@@ -1747,7 +1747,7 @@ const CreatorDashboard = () => {
                                   <img
                                     src={displaySrc}
                                     alt=""
-                                    className="h-20 w-full object-cover relative"
+                                    className="h-20 w-full object-cover relative z-10"
                                     loading="lazy"
                                     decoding="async"
                                     onError={(e) => {
@@ -1795,7 +1795,7 @@ const CreatorDashboard = () => {
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
+                            className="btn-collection-solid rounded-full border-transparent text-[11px] h-7 px-3"
                             onClick={() => handleEditCollection(collection)}
                           >
                             <Edit className="h-3 w-3 mr-1" />
