@@ -58,7 +58,8 @@ const CreatorDashboard = () => {
   const [hasPublicChanges, setHasPublicChanges] = useState(false);
   const [isPublicPublished, setIsPublicPublished] = useState(false);
   const [selectedCollectionId, setSelectedCollectionId] = useState('');
-  const [collectionFile, setCollectionFile] = useState<File | null>(null);
+  const [collectionFiles, setCollectionFiles] = useState<File[]>([]);
+  const [collectionPreviews, setCollectionPreviews] = useState<{ file: File; url: string }[]>([]);
   const [uploadingCollectionMedia, setUploadingCollectionMedia] = useState(false);
   const [statusCardFile, setStatusCardFile] = useState<File | null>(null);
   const [uploadingStatusCardMedia, setUploadingStatusCardMedia] = useState(false);
@@ -235,6 +236,21 @@ const CreatorDashboard = () => {
     };
   }, [user?.username]);
 
+  useEffect(() => {
+    if (collectionFiles.length === 0) {
+      setCollectionPreviews([]);
+      return;
+    }
+    const next = collectionFiles.map((file) => ({
+      file,
+      url: URL.createObjectURL(file)
+    }));
+    setCollectionPreviews(next);
+    return () => {
+      next.forEach((preview) => URL.revokeObjectURL(preview.url));
+    };
+  }, [collectionFiles]);
+
   const handleUpdateWebsite = () => {
     if (!user?.username) return;
     localStorage.setItem(`publicWebsitePublished:${user.username}`, 'true');
@@ -328,7 +344,7 @@ const CreatorDashboard = () => {
         markPublicWebsiteDirty();
         setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
         setSelectedCollectionId('');
-        setCollectionFile(null);
+        setCollectionFiles([]);
         await loadUserData();
       } else {
         setError(result.error || 'Failed to create collection');
@@ -395,34 +411,38 @@ const CreatorDashboard = () => {
       setError('Please select a collection');
       return;
     }
-    if (!collectionFile) {
-      setError('Please choose a file to upload');
+    if (collectionFiles.length === 0) {
+      setError('Please choose one or more files to upload');
       return;
     }
 
     try {
       setUploadingCollectionMedia(true);
       setError('');
-      const uploadResult = await api.uploadFile(collectionFile);
-      if (!uploadResult?.url) {
-        throw new Error('Upload failed');
+      let uploadedCount = 0;
+      for (const file of collectionFiles) {
+        const uploadResult = await api.uploadFile(file);
+        if (!uploadResult?.url) {
+          throw new Error(`Upload failed for ${file.name}`);
+        }
+
+        const attachResult = await api.addCollectionMedia(selectedCollectionId, {
+          url: uploadResult.url,
+          thumbnailUrl: uploadResult.thumbnailUrl || uploadResult.url,
+          mediaType: uploadResult.mediaType,
+          size: uploadResult.size
+        });
+
+        if (!attachResult.success) {
+          throw new Error(attachResult.error || `Failed to attach ${file.name}`);
+        }
+        uploadedCount += 1;
       }
 
-      const attachResult = await api.addCollectionMedia(selectedCollectionId, {
-        url: uploadResult.url,
-        thumbnailUrl: uploadResult.thumbnailUrl || uploadResult.url,
-        mediaType: uploadResult.mediaType,
-        size: uploadResult.size
-      });
-
-        if (attachResult.success) {
-          setSuccess('Media added to collection!');
-          markPublicWebsiteDirty();
-          setCollectionFile(null);
-          await loadUserData();
-        } else {
-          setError(attachResult.error || 'Failed to attach media');
-      }
+      setSuccess(`Added ${uploadedCount} file${uploadedCount === 1 ? '' : 's'} to collection!`);
+      markPublicWebsiteDirty();
+      setCollectionFiles([]);
+      await loadUserData();
     } catch (err: any) {
       setError(err.message || 'Failed to upload media');
     } finally {
@@ -458,6 +478,14 @@ const CreatorDashboard = () => {
     } catch {
       return `$${(value || 0).toFixed(2)}`;
     }
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (!Number.isFinite(bytes) || bytes <= 0) return '0 B';
+    const units = ['B', 'KB', 'MB', 'GB'];
+    const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+    const size = bytes / Math.pow(1024, index);
+    return `${size.toFixed(size >= 10 || index === 0 ? 0 : 1)} ${units[index]}`;
   };
 
   const buildChartSeries = (summary: any) => {
@@ -1295,96 +1323,34 @@ const CreatorDashboard = () => {
 
         {/* Collections Tab */}
         {activeTab === 'collections' && (
-          <div className="space-y-6">
-            {/* Unlock Everything Price */}
-            <div className="card-elevated p-6 sm:p-8">
-              <h2 className="section-title mb-2">Unlock Everything Price</h2>
-              <p className="text-sm text-muted-foreground mb-4">
-                Set the price for the “Unlock Everything” button. This gives clients access to all of your collections.
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Price
-                  </label>
-                  <Input
-                    type="number"
-                    value={profileData.unlockAllPrice}
-                    onChange={(e) => setProfileData({ ...profileData, unlockAllPrice: parseFloat(e.target.value) })}
-                    placeholder="199.99"
-                    step="0.01"
-                  />
+          <div className="card-elevated p-5 sm:p-6">
+            <div className="space-y-5">
+              {/* Unlock Everything Price */}
+              <section className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-base font-semibold text-foreground">Unlock Everything</h2>
+                  <span className="text-xs text-muted-foreground">One price for all collections</span>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Currency
-                  </label>
-                  <select
-                    value={profileData.unlockAllCurrency}
-                    onChange={(e) => setProfileData({ ...profileData, unlockAllCurrency: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
-                  >
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="GBP">GBP</option>
-                  </select>
-                </div>
-              </div>
-              <Button onClick={handleSaveUnlockAllPrice} className="w-full mt-4 btn-67">
-                <Save className="w-4 h-4 mr-2" />
-                Save Unlock Price
-              </Button>
-            </div>
-
-            {/* Add Collection Form */}
-            <div className="card-elevated p-6 sm:p-8">
-              <h2 className="section-title mb-4">Create Collection</h2>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Collection Title
-                  </label>
-                  <Input
-                    value={collectionForm.title}
-                    onChange={(e) => setCollectionForm({ ...collectionForm, title: e.target.value })}
-                    placeholder="My Exclusive Collection"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Description
-                  </label>
-                  <Textarea
-                    value={collectionForm.description}
-                    onChange={(e) => setCollectionForm({ ...collectionForm, description: e.target.value })}
-                    placeholder="Describe your collection..."
-                    rows={3}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
+                    <label className="text-xs font-medium text-muted-foreground mb-1 block">
                       Price
                     </label>
                     <Input
                       type="number"
-                      value={collectionForm.price}
-                      onChange={(e) => setCollectionForm({ ...collectionForm, price: parseFloat(e.target.value) })}
-                      placeholder="4.99"
+                      value={profileData.unlockAllPrice}
+                      onChange={(e) => setProfileData({ ...profileData, unlockAllPrice: parseFloat(e.target.value) })}
+                      placeholder="199.99"
                       step="0.01"
                     />
                   </div>
-
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
+                    <label className="text-xs font-medium text-muted-foreground mb-1 block">
                       Currency
                     </label>
                     <select
-                      value={collectionForm.currency}
-                      onChange={(e) => setCollectionForm({ ...collectionForm, currency: e.target.value })}
+                      value={profileData.unlockAllCurrency}
+                      onChange={(e) => setProfileData({ ...profileData, unlockAllCurrency: e.target.value })}
                       className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
                     >
                       <option value="USD">USD</option>
@@ -1393,95 +1359,220 @@ const CreatorDashboard = () => {
                     </select>
                   </div>
                 </div>
-
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Tags (comma separated)
-                  </label>
-                  <Input
-                    value={collectionForm.tags}
-                    onChange={(e) => setCollectionForm({ ...collectionForm, tags: e.target.value })}
-                    placeholder="art, photography, exclusive"
-                  />
-                </div>
-
-                <Button onClick={handleAddCollection} className="w-full btn-67">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Collection
+                <Button onClick={handleSaveUnlockAllPrice} className="w-full btn-67">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Unlock Price
                 </Button>
-              </div>
-            </div>
+              </section>
 
-            {/* Upload Media to Collection */}
-            <div className="card-elevated p-6 sm:p-8">
-              <h3 className="text-xl font-bold text-foreground mb-4">Upload Media</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Select Collection
-                  </label>
-                  <select
-                    value={selectedCollectionId}
-                    onChange={(e) => setSelectedCollectionId(e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
-                  >
-                    <option value="">Choose a collection</option>
-                    {collections.map((collection) => (
-                      <option key={collection._id} value={collection._id}>
-                        {collection.title}
-                      </option>
-                    ))}
-                  </select>
+              <div className="border-t border-border/70 pt-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-base font-semibold text-foreground">Create Collection</h2>
+                  <span className="text-xs text-muted-foreground">Minimal setup</span>
                 </div>
 
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    File (image/video, max 25MB)
-                  </label>
-                  <Input
-                    type="file"
-                    accept="image/*,video/*"
-                    onChange={(e) => setCollectionFile(e.target.files?.[0] || null)}
-                  />
-                </div>
-
-                <Button
-                  type="button"
-                  onClick={handleUploadCollectionMedia}
-                  disabled={uploadingCollectionMedia}
-                  className="w-full btn-67"
-                >
-                  {uploadingCollectionMedia ? 'Uploading...' : 'Upload Media'}
-                </Button>
-              </div>
-            </div>
-
-            {/* Existing Collections */}
-            <div className="card-elevated p-6 sm:p-8">
-              <h3 className="text-xl font-bold text-foreground mb-4">Your Collections</h3>
-              <div className="space-y-4">
-                {collections.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center text-center py-12 px-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500/15 to-cyan-500/15 border border-white/[0.06] flex items-center justify-center mb-4">
-                      <svg className="w-5 h-5 text-indigo-400/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                        Title
+                      </label>
+                      <Input
+                        value={collectionForm.title}
+                        onChange={(e) => setCollectionForm({ ...collectionForm, title: e.target.value })}
+                        placeholder="My Exclusive Collection"
+                      />
                     </div>
-                    <p className="text-sm font-medium text-foreground mb-1">No collections yet</p>
-                    <p className="text-xs text-muted-foreground max-w-[240px] leading-relaxed">
-                      Create your first collection above to start selling exclusive content.
-                    </p>
+
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                        Description
+                      </label>
+                      <Textarea
+                        value={collectionForm.description}
+                        onChange={(e) => setCollectionForm({ ...collectionForm, description: e.target.value })}
+                        placeholder="Describe your collection..."
+                        rows={3}
+                      />
+                    </div>
                   </div>
-                ) : (
-                  collections.map((collection, index) => (
-                    <div key={index} className="border border-border rounded-lg p-4">
-                      <h4 className="font-bold text-foreground">{collection.title}</h4>
-                      <p className="text-sm text-muted-foreground mt-1">{collection.description}</p>
-                      <div className="mt-2 flex items-center gap-4 text-sm">
-                        <span className="text-foreground">${collection.price} {collection.currency}</span>
-                        <span className="text-muted-foreground">{collection.media?.length || 0} items</span>
+
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                          Price
+                        </label>
+                        <Input
+                          type="number"
+                          value={collectionForm.price}
+                          onChange={(e) => setCollectionForm({ ...collectionForm, price: parseFloat(e.target.value) })}
+                          placeholder="4.99"
+                          step="0.01"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                          Currency
+                        </label>
+                        <select
+                          value={collectionForm.currency}
+                          onChange={(e) => setCollectionForm({ ...collectionForm, currency: e.target.value })}
+                          className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                        >
+                          <option value="USD">USD</option>
+                          <option value="EUR">EUR</option>
+                          <option value="GBP">GBP</option>
+                        </select>
                       </div>
                     </div>
-                  ))
-                )}
+
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                        Tags
+                      </label>
+                      <Input
+                        value={collectionForm.tags}
+                        onChange={(e) => setCollectionForm({ ...collectionForm, tags: e.target.value })}
+                        placeholder="art, photography, exclusive"
+                      />
+                    </div>
+
+                    <Button onClick={handleAddCollection} className="w-full btn-67">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Collection
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-border/70 pt-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold text-foreground">Upload Media</h3>
+                  <span className="text-xs text-muted-foreground">Multi-file, preview first</span>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                        Select Collection
+                      </label>
+                      <select
+                        value={selectedCollectionId}
+                        onChange={(e) => setSelectedCollectionId(e.target.value)}
+                        className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                      >
+                        <option value="">Choose a collection</option>
+                        {collections.map((collection) => (
+                          <option key={collection._id} value={collection._id}>
+                            {collection.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                        Files (image/video, max 25MB each)
+                      </label>
+                      <Input
+                        type="file"
+                        accept="image/*,video/*"
+                        multiple
+                        onChange={(e) => setCollectionFiles(Array.from(e.target.files || []))}
+                      />
+                    </div>
+
+                    <Button
+                      type="button"
+                      onClick={handleUploadCollectionMedia}
+                      disabled={uploadingCollectionMedia}
+                      className="w-full btn-67"
+                    >
+                      {uploadingCollectionMedia ? 'Uploading...' : 'Upload Media'}
+                    </Button>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="text-xs font-medium text-muted-foreground">Preview</div>
+                    {collectionPreviews.length === 0 ? (
+                      <div className="border border-dashed border-border rounded-lg p-4 text-xs text-muted-foreground text-center">
+                        Select one or more files to preview them here.
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {collectionPreviews.map((preview) => (
+                          <div key={preview.url} className="border border-border rounded-md overflow-hidden bg-muted/20">
+                            {preview.file.type.startsWith('image/') ? (
+                              <img
+                                src={preview.url}
+                                alt={preview.file.name}
+                                className="h-20 w-full object-cover"
+                              />
+                            ) : (
+                              <video
+                                src={preview.url}
+                                className="h-20 w-full object-cover"
+                                muted
+                                controls
+                                preload="metadata"
+                              />
+                            )}
+                            <div className="px-2 py-1">
+                              <div className="text-[11px] text-foreground truncate" title={preview.file.name}>
+                                {preview.file.name}
+                              </div>
+                              <div className="text-[10px] text-muted-foreground">
+                                {formatFileSize(preview.file.size)}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-border/70 pt-5">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-base font-semibold text-foreground">Your Collections</h3>
+                  <span className="text-xs text-muted-foreground">{collections.length} total</span>
+                </div>
+                <div className="space-y-3">
+                  {collections.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center text-center py-10 px-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500/15 to-cyan-500/15 border border-white/[0.06] flex items-center justify-center mb-3">
+                        <svg className="w-5 h-5 text-indigo-400/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                      </div>
+                      <p className="text-sm font-medium text-foreground mb-1">No collections yet</p>
+                      <p className="text-xs text-muted-foreground max-w-[240px] leading-relaxed">
+                        Create your first collection above to start selling exclusive content.
+                      </p>
+                    </div>
+                  ) : (
+                    collections.map((collection, index) => (
+                      <div key={index} className="border border-border rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm font-semibold text-foreground">{collection.title}</h4>
+                          <span className="text-xs text-muted-foreground">
+                            {collection.media?.length || 0} items
+                          </span>
+                        </div>
+                        {collection.description && (
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                            {collection.description}
+                          </p>
+                        )}
+                        <div className="mt-2 text-xs text-foreground">
+                          ${collection.price} {collection.currency}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           </div>
