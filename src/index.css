@@ -262,6 +262,40 @@
     outline-offset: 2px;
   }
 
+  /* Glassmorphism cards for dashboard */
+  .card-container {
+    background: rgba(13, 17, 28, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: inset 0 0 15px rgba(110, 86, 207, 0.05), 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .card-title {
+    color: #FFFFFF;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+
+  .card-description {
+    color: #94A3B8;
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+
+  .input-label {
+    display: block;
+    color: #FFFFFF;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
   /* Theme-aware hover: white or black based on theme (no accent blue) */
   .hover-foreground:hover {
     background-color: hsl(var(--secondary)) !important;
@@ -714,16 +748,19 @@
   }
 
   .card-elevated {
-    background: rgba(255,255,255,0.025);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 1rem;
-    box-shadow: none;
-    transition: border-color 0.25s ease, background 0.25s ease;
+    background: rgba(13, 17, 28, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: inset 0 0 15px rgba(110, 86, 207, 0.05), 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.3s ease;
   }
 
   .card-elevated:hover {
-    background: rgba(255,255,255,0.04);
-    border-color: rgba(255,255,255,0.12);
+    background: rgba(13, 17, 28, 0.78);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: inset 0 0 18px rgba(110, 86, 207, 0.08), 0 12px 36px rgba(0, 0, 0, 0.55);
   }
 
   .tab-modern {
@@ -1068,7 +1105,7 @@
   }
 
   .card-elevated:hover {
-    box-shadow: 0 0 20px -6px rgba(99,102,241,0.12);
+    box-shadow: inset 0 0 18px rgba(110, 86, 207, 0.08), 0 12px 36px rgba(0, 0, 0, 0.55);
   }
 
   /* Section divider for form grouping */

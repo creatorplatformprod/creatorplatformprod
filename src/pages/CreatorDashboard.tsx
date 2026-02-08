@@ -61,6 +61,7 @@ const CreatorDashboard = () => {
   const [selectedCollectionId, setSelectedCollectionId] = useState('');
   const [collectionFiles, setCollectionFiles] = useState<File[]>([]);
   const [collectionPreviews, setCollectionPreviews] = useState<{ file: File; url: string }[]>([]);
+  const [selectedCollection, setSelectedCollection] = useState<any | null>(null);
   const collectionUploadInputRef = useRef<HTMLInputElement | null>(null);
   const collectionFormRef = useRef<HTMLDivElement | null>(null);
   const [uploadingCollectionMedia, setUploadingCollectionMedia] = useState(false);
@@ -254,6 +255,15 @@ const CreatorDashboard = () => {
     };
   }, [collectionFiles]);
 
+  useEffect(() => {
+    if (!selectedCollectionId) {
+      setSelectedCollection(null);
+      return;
+    }
+    const match = collections.find((collection) => collection._id === selectedCollectionId);
+    setSelectedCollection(match || null);
+  }, [selectedCollectionId, collections]);
+
   const handleUpdateWebsite = () => {
     if (!user?.username) return;
     localStorage.setItem(`publicWebsitePublished:${user.username}`, 'true');
@@ -441,7 +451,7 @@ const CreatorDashboard = () => {
       setSuccess(`Uploaded ${uploadedCount} item${uploadedCount === 1 ? '' : 's'} to collection!`);
       markPublicWebsiteDirty();
       setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
-      setSelectedCollectionId('');
+      setSelectedCollectionId(targetCollectionId);
       setCollectionFiles([]);
       await loadUserData();
     } catch (err: any) {
@@ -475,12 +485,34 @@ const CreatorDashboard = () => {
       if (result.success) {
         setSuccess('All content removed from this collection.');
         markPublicWebsiteDirty();
+        setCollectionFiles([]);
         await loadUserData();
       } else {
         setError(result.error || 'Failed to clear collection content');
       }
     } catch (err: any) {
       setError(err.message || 'Failed to clear collection content');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemoveExistingMedia = async (mediaIndex: number) => {
+    if (!selectedCollectionId || !selectedCollection?.media) return;
+    const nextMedia = selectedCollection.media.filter((_: any, idx: number) => idx !== mediaIndex);
+    try {
+      setLoading(true);
+      setError('');
+      const result = await api.updateCollection(selectedCollectionId, { media: nextMedia });
+      if (result.success) {
+        setSuccess('Content removed from collection.');
+        markPublicWebsiteDirty();
+        await loadUserData();
+      } else {
+        setError(result.error || 'Failed to remove content');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to remove content');
     } finally {
       setLoading(false);
     }
@@ -498,6 +530,37 @@ const CreatorDashboard = () => {
     setTimeout(() => {
       collectionFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 0);
+  };
+
+  const handleSaveCollectionDetails = async () => {
+    if (!selectedCollectionId) {
+      setError('Select a collection to save changes');
+      return;
+    }
+    try {
+      setLoading(true);
+      setError('');
+      setSuccess('');
+      const tags = collectionForm.tags.split(',').map(t => t.trim()).filter(t => t);
+      const result = await api.updateCollection(selectedCollectionId, {
+        title: collectionForm.title,
+        description: collectionForm.description || undefined,
+        price: collectionForm.price,
+        currency: collectionForm.currency,
+        tags: tags.length > 0 ? tags : undefined
+      });
+      if (result.success) {
+        setSuccess('Collection updated.');
+        markPublicWebsiteDirty();
+        await loadUserData();
+      } else {
+        setError(result.error || 'Failed to update collection');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to update collection');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleViewProfile = () => {
@@ -1375,18 +1438,18 @@ const CreatorDashboard = () => {
 
         {/* Collections Tab */}
         {activeTab === 'collections' && (
-          <div className="card-elevated p-5 sm:p-6">
+          <div className="card-container">
             <div className="space-y-5">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-base font-semibold text-foreground">Create Collection</h2>
+                  <h2 className="card-title">Create Collection</h2>
                   <span className="text-xs text-muted-foreground">Fill details below</span>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                   <div className="space-y-3">
                     <div>
-                      <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                      <label className="input-label">
                         Title
                       </label>
                       <Input
@@ -1397,7 +1460,7 @@ const CreatorDashboard = () => {
                     </div>
 
                     <div>
-                      <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                      <label className="input-label">
                         Description
                       </label>
                       <Textarea
@@ -1412,7 +1475,7 @@ const CreatorDashboard = () => {
                   <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                        <label className="input-label">
                           Price
                         </label>
                         <Input
@@ -1425,7 +1488,7 @@ const CreatorDashboard = () => {
                       </div>
 
                       <div>
-                        <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                        <label className="input-label">
                           Currency
                         </label>
                         <select
@@ -1441,7 +1504,7 @@ const CreatorDashboard = () => {
                     </div>
 
                     <div>
-                      <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                      <label className="input-label">
                         Tags (comma separated)
                       </label>
                       <Input
@@ -1452,6 +1515,21 @@ const CreatorDashboard = () => {
                     </div>
                   </div>
                 </div>
+                {selectedCollectionId && (
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      onClick={handleSaveCollectionDetails}
+                      className="btn-67 rounded-full h-9 text-xs px-4"
+                    >
+                      <Save className="h-3.5 w-3.5 mr-1.5" />
+                      Save Changes
+                    </Button>
+                    <span className="text-[11px] text-muted-foreground flex items-center">
+                      Editing: {selectedCollection?.title || 'Untitled collection'}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="border-t border-border/70 pt-5 space-y-4">
@@ -1463,7 +1541,7 @@ const CreatorDashboard = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                   <div className="space-y-3">
                     <div>
-                      <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                      <label className="input-label">
                         Select Collection
                       </label>
                       <select
@@ -1484,7 +1562,7 @@ const CreatorDashboard = () => {
                     </div>
 
                     <div>
-                      <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                      <label className="input-label">
                         Content (image/video, max 25MB each)
                       </label>
                       <Input
@@ -1537,7 +1615,7 @@ const CreatorDashboard = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <div className="text-xs font-medium text-muted-foreground">Preview</div>
+                      <div className="text-xs font-medium text-muted-foreground">Preview</div>
                     {collectionPreviews.length === 0 ? (
                       <div className="border border-dashed border-border rounded-lg p-4 text-xs text-muted-foreground text-center">
                         Select one or more content files to preview them here.
@@ -1579,6 +1657,39 @@ const CreatorDashboard = () => {
                             </div>
                           </div>
                         ))}
+                      </div>
+                    )}
+                    {selectedCollection?.media?.length > 0 && (
+                      <div className="pt-3 space-y-2">
+                        <div className="text-xs font-medium text-muted-foreground">Existing Content</div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          {selectedCollection.media.map((media: any, index: number) => (
+                            <div key={`${media.url}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveExistingMedia(index)}
+                                className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                                aria-label="Remove existing content"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                              {media.mediaType === 'video' ? (
+                                <video
+                                  src={media.thumbnailUrl || media.url}
+                                  className="h-20 w-full object-cover"
+                                  muted
+                                  preload="metadata"
+                                />
+                              ) : (
+                                <img
+                                  src={media.thumbnailUrl || media.url}
+                                  alt="Existing content"
+                                  className="h-20 w-full object-cover"
+                                />
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -1642,14 +1753,14 @@ const CreatorDashboard = () => {
         {/* Unlock Everything Tab */}
         {activeTab === 'unlock' && (
           <div className="space-y-6">
-            <div className="card-elevated p-6 sm:p-8">
-              <h2 className="section-title mb-2">Unlock Everything Price</h2>
-              <p className="text-sm text-muted-foreground mb-4">
+            <div className="card-container">
+              <h2 className="card-title">Unlock Everything Price</h2>
+              <p className="card-description">
                 Set the price for the Unlock Everything button. This gives clients access to all of your collections.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
+                  <label className="input-label">
                     Price
                   </label>
                   <Input
@@ -1661,7 +1772,7 @@ const CreatorDashboard = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
+                  <label className="input-label">
                     Currency
                   </label>
                   <select
