@@ -46,7 +46,7 @@ import AccountMenu from '@/components/AccountMenu';
 
 const CreatorDashboard = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'overview' | 'profile' | 'status-cards' | 'collections' | 'analytics'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'profile' | 'status-cards' | 'collections' | 'analytics' | 'unlock'>('overview');
   const [user, setUser] = useState<any>(null);
   
   const [statusCards, setStatusCards] = useState<any[]>([]);
@@ -691,6 +691,7 @@ const CreatorDashboard = () => {
             {[
               { key: 'overview' as const, icon: Home, label: 'Overview' },
               { key: 'collections' as const, icon: Image, label: 'Collections' },
+              { key: 'unlock' as const, icon: Unlock, label: 'Unlock Everything' },
               { key: 'status-cards' as const, icon: MessageSquare, label: 'Status Cards' },
               { key: 'analytics' as const, icon: BarChart3, label: 'Analytics' },
               { key: 'profile' as const, icon: Settings, label: 'Settings' },
@@ -733,6 +734,7 @@ const CreatorDashboard = () => {
               {[
                 { key: 'overview' as const, icon: Home, label: 'Overview' },
                 { key: 'collections' as const, icon: Image, label: 'Collections' },
+                { key: 'unlock' as const, icon: Unlock, label: 'Unlock' },
                 { key: 'status-cards' as const, icon: MessageSquare, label: 'Posts' },
                 { key: 'analytics' as const, icon: BarChart3, label: 'Analytics' },
                 { key: 'profile' as const, icon: Settings, label: 'Settings' },
@@ -1323,49 +1325,7 @@ const CreatorDashboard = () => {
         {activeTab === 'collections' && (
           <div className="card-elevated p-5 sm:p-6">
             <div className="space-y-5">
-              {/* Unlock Everything Price */}
-              <section className="space-y-3 rounded-xl border border-border/60 bg-muted/20 p-4 sm:p-5">
-                <div className="flex flex-col gap-1">
-                  <h2 className="text-base font-semibold text-foreground">Unlock Everything Price</h2>
-                  <span className="text-xs text-muted-foreground">
-                    Set the price for the Unlock Everything button. This gives clients access to all of your collections.
-                  </span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                      Price
-                    </label>
-                    <Input
-                      type="number"
-                      value={profileData.unlockAllPrice}
-                      onChange={(e) => setProfileData({ ...profileData, unlockAllPrice: parseFloat(e.target.value) })}
-                      placeholder="199.99"
-                      step="0.01"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                      Currency
-                    </label>
-                    <select
-                      value={profileData.unlockAllCurrency}
-                      onChange={(e) => setProfileData({ ...profileData, unlockAllCurrency: e.target.value })}
-                      className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
-                    >
-                      <option value="USD">USD</option>
-                      <option value="EUR">EUR</option>
-                      <option value="GBP">GBP</option>
-                    </select>
-                  </div>
-                </div>
-                <Button onClick={handleSaveUnlockAllPrice} className="w-full btn-67">
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Price
-                </Button>
-              </section>
-
-              <div className="border-t border-border/70 pt-5 space-y-4 rounded-xl border border-border/60 bg-muted/20 p-4 sm:p-5">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-base font-semibold text-foreground">Create Collection</h2>
                   <span className="text-xs text-muted-foreground">Fill details below</span>
@@ -1442,7 +1402,7 @@ const CreatorDashboard = () => {
                 </div>
               </div>
 
-              <div className="border-t border-border/70 pt-5 space-y-4 rounded-xl border border-border/60 bg-muted/20 p-4 sm:p-5">
+              <div className="border-t border-border/70 pt-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-semibold text-foreground">Upload Collection</h3>
                   <span className="text-xs text-muted-foreground">Multi-file, preview first</span>
@@ -1572,6 +1532,50 @@ const CreatorDashboard = () => {
                   )}
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Unlock Everything Tab */}
+        {activeTab === 'unlock' && (
+          <div className="space-y-6">
+            <div className="card-elevated p-6 sm:p-8">
+              <h2 className="section-title mb-2">Unlock Everything Price</h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                Set the price for the Unlock Everything button. This gives clients access to all of your collections.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">
+                    Price
+                  </label>
+                  <Input
+                    type="number"
+                    value={profileData.unlockAllPrice}
+                    onChange={(e) => setProfileData({ ...profileData, unlockAllPrice: parseFloat(e.target.value) })}
+                    placeholder="199.99"
+                    step="0.01"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">
+                    Currency
+                  </label>
+                  <select
+                    value={profileData.unlockAllCurrency}
+                    onChange={(e) => setProfileData({ ...profileData, unlockAllCurrency: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                  >
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                  </select>
+                </div>
+              </div>
+              <Button onClick={handleSaveUnlockAllPrice} className="w-full mt-4 btn-67">
+                <Save className="w-4 h-4 mr-2" />
+                Save Price
+              </Button>
             </div>
           </div>
         )}
