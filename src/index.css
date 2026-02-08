@@ -305,7 +305,7 @@
     border: 1px solid transparent;
     border-radius: 9999px;
     background-image:
-      linear-gradient(rgba(13, 17, 28, 0.4), rgba(13, 17, 28, 0.4)),
+      linear-gradient(transparent, transparent),
       linear-gradient(90deg, #7473ff 0%, #30aed4 50%, #00c1d4 100%);
     background-origin: border-box;
     background-clip: padding-box, border-box;
@@ -325,7 +325,7 @@
     border: 1px solid transparent;
     border-radius: 9999px;
     background-image:
-      linear-gradient(rgba(13, 17, 28, 0.6), rgba(13, 17, 28, 0.6)),
+      linear-gradient(transparent, transparent),
       linear-gradient(90deg, #f97316 0%, #ef4444 55%, #f43f5e 100%);
     background-origin: border-box;
     background-clip: padding-box, border-box;

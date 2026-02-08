@@ -476,35 +476,32 @@ const CreatorDashboard = () => {
     setCollectionFiles((prev) => prev.filter((_, idx) => idx !== index));
   };
 
-  const handleClearCollectionMedia = async () => {
-    // Always clear local previews immediately
-    setCollectionFiles([]);
-    setCollectionPreviews([]);
+  const handleDeleteCollection = async () => {
     if (!selectedCollectionId) {
-      setError('Select a collection to clear its content');
+      setError('Select a collection to delete');
       return;
     }
-    const confirmClear = window.confirm('Remove all content from this collection? This cannot be undone.');
-    if (!confirmClear) return;
+    const confirmDelete = window.confirm('Delete this collection and all its content? This cannot be undone.');
+    if (!confirmDelete) return;
 
-    const previousMedia = selectedCollection?.media || [];
     try {
       setLoading(true);
       setError('');
-      setSelectedCollection((prev: any) => (prev ? { ...prev, media: [] } : prev));
-      const result = await api.updateCollection(selectedCollectionId, { media: [] });
+      const result = await api.deleteCollection(selectedCollectionId);
       if (result.success) {
-        setSuccess('All content removed from this collection.');
+        setSuccess('Collection deleted.');
         markPublicWebsiteDirty();
+        setSelectedCollectionId('');
+        setSelectedCollection(null);
+        setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
         setCollectionFiles([]);
+        setCollectionPreviews([]);
         await loadUserData();
       } else {
-        setSelectedCollection((prev: any) => (prev ? { ...prev, media: previousMedia } : prev));
-        setError(result.error || 'Failed to clear collection content');
+        setError(result.error || 'Failed to delete collection');
       }
     } catch (err: any) {
-      setSelectedCollection((prev: any) => (prev ? { ...prev, media: previousMedia } : prev));
-      setError(err.message || 'Failed to clear collection content');
+      setError(err.message || 'Failed to delete collection');
     } finally {
       setLoading(false);
     }
@@ -517,15 +514,17 @@ const CreatorDashboard = () => {
     try {
       setLoading(true);
       setError('');
-      setSelectedCollection((prev: any) => (prev ? { ...prev, media: nextMedia } : prev));
       const result = await api.updateCollection(selectedCollectionId, { media: nextMedia });
-      if (result.success) {
+      const updatedMedia = result?.collection?.media;
+      const didUpdate = Array.isArray(updatedMedia) ? updatedMedia.length === nextMedia.length : false;
+      if (result.success && didUpdate) {
+        setSelectedCollection((prev: any) => (prev ? { ...prev, media: nextMedia } : prev));
         setSuccess('Content removed from collection.');
         markPublicWebsiteDirty();
         await loadUserData();
       } else {
         setSelectedCollection((prev: any) => (prev ? { ...prev, media: previousMedia } : prev));
-        setError(result.error || 'Failed to remove content');
+        setError(result.error || 'Failed to remove content (server did not update media)');
       }
     } catch (err: any) {
       setSelectedCollection((prev: any) => (prev ? { ...prev, media: previousMedia } : prev));
@@ -619,6 +618,20 @@ const CreatorDashboard = () => {
     const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
     const size = bytes / Math.pow(1024, index);
     return `${size.toFixed(size >= 10 || index === 0 ? 0 : 1)} ${units[index]}`;
+  };
+
+  const resolveMediaUrl = (url?: string) => {
+    if (!url) return '';
+    const base = import.meta.env.VITE_MEDIA_BASE_URL;
+    if (base) {
+      try {
+        const parsed = new URL(url);
+        return `${String(base).replace(/\/+$/, '')}${parsed.pathname}`;
+      } catch {
+        return url;
+      }
+    }
+    return url;
   };
 
   const buildChartSeries = (summary: any) => {
@@ -1631,9 +1644,9 @@ const CreatorDashboard = () => {
                             variant="outline"
                             size="sm"
                             className="btn-collection-danger rounded-full border-transparent text-[11px] h-7 px-3"
-                            onClick={handleClearCollectionMedia}
+                            onClick={handleDeleteCollection}
                           >
-                            Delete all content
+                            Delete collection
                           </Button>
                         )}
                       </div>
@@ -1694,12 +1707,14 @@ const CreatorDashboard = () => {
                         ))}
                       </div>
                     )}
-                    {selectedCollection?.media?.length > 0 && (
+                    {selectedCollectionId && selectedCollection?.media?.length > 0 && (
                       <div className="pt-3 space-y-2">
                         <div className="text-xs font-medium text-muted-foreground">Existing Content</div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {selectedCollection.media.map((media: any, index: number) => {
-                            const mediaSrc = media.thumbnailUrl || media.url;
+                            const thumbSrc = resolveMediaUrl(media.thumbnailUrl || media.url);
+                            const fullSrc = resolveMediaUrl(media.url);
+                            const displaySrc = thumbSrc || fullSrc;
                             return (
                             <div key={`${media.url}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
                               <button
@@ -1710,20 +1725,36 @@ const CreatorDashboard = () => {
                               >
                                 <X className="h-3 w-3" />
                               </button>
+                              <div className="absolute inset-0 flex items-center justify-center text-[11px] text-muted-foreground bg-muted/30">
+                                <Image className="h-4 w-4 mr-1.5" />
+                                Preview unavailable
+                              </div>
                               {media.mediaType === 'video' ? (
-                                <video
-                                  src={media.url}
-                                  poster={media.thumbnailUrl}
-                                  className="h-20 w-full object-cover"
-                                  muted
-                                  preload="metadata"
-                                />
+                                displaySrc ? (
+                                  <video
+                                    src={fullSrc}
+                                    poster={thumbSrc || undefined}
+                                    className="h-20 w-full object-cover relative"
+                                    muted
+                                    preload="metadata"
+                                    onError={(e) => {
+                                      (e.currentTarget as HTMLVideoElement).style.display = 'none';
+                                    }}
+                                  />
+                                ) : null
                               ) : (
-                                <img
-                                  src={mediaSrc}
-                                  alt={media.fileName || 'Content'}
-                                  className="h-20 w-full object-cover"
-                                />
+                                displaySrc ? (
+                                  <img
+                                    src={displaySrc}
+                                    alt=""
+                                    className="h-20 w-full object-cover relative"
+                                    loading="lazy"
+                                    decoding="async"
+                                    onError={(e) => {
+                                      (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                    }}
+                                  />
+                                ) : null
                               )}
                             </div>
                           )})}
