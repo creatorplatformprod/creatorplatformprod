@@ -620,19 +620,26 @@ const CreatorDashboard = () => {
     return `${size.toFixed(size >= 10 || index === 0 ? 0 : 1)} ${units[index]}`;
   };
 
-  const resolveMediaUrl = (url?: string) => {
-    if (!url) return '';
+  const getMediaSrcCandidates = (url?: string) => {
+    if (!url) return [];
+    const candidates: string[] = [];
     try {
       const parsed = new URL(url);
       const placeholderHosts = new Set(['cdn.example.com', 'example.com']);
-      const base = import.meta.env.VITE_MEDIA_BASE_URL || 'https://creatorplatformprod.pages.dev';
-      if (placeholderHosts.has(parsed.hostname) && base) {
-        return `${String(base).replace(/\/+$/, '')}${parsed.pathname}`;
+      if (placeholderHosts.has(parsed.hostname)) {
+        const envBase = import.meta.env.VITE_MEDIA_BASE_URL;
+        if (envBase) {
+          candidates.push(`${String(envBase).replace(/\/+$/, '')}${parsed.pathname}`);
+        }
+        if (typeof window !== 'undefined' && window.location?.origin) {
+          candidates.push(`${String(window.location.origin).replace(/\/+$/, '')}${parsed.pathname}`);
+        }
       }
-      return url;
     } catch {
-      return url;
+      // ignore parse errors
     }
+    candidates.push(url);
+    return Array.from(new Set(candidates.filter(Boolean)));
   };
 
   const buildChartSeries = (summary: any) => {
@@ -1715,8 +1722,9 @@ const CreatorDashboard = () => {
                           {selectedCollection.media.map((media: any, index: number) => {
                             const originalThumb = media.thumbnailUrl || media.url;
                             const originalFull = media.url;
-                            const thumbSrc = resolveMediaUrl(originalThumb);
-                            const fullSrc = resolveMediaUrl(originalFull);
+                            const imageSources = getMediaSrcCandidates(originalThumb || originalFull);
+                            const videoSources = getMediaSrcCandidates(originalFull);
+                            const posterSources = getMediaSrcCandidates(originalThumb || originalFull);
                             return (
                             <div key={`${media.url}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
                               <button
@@ -1728,19 +1736,22 @@ const CreatorDashboard = () => {
                                 <X className="h-3 w-3" />
                               </button>
                               {media.mediaType === 'video' ? (
-                                (fullSrc || originalFull) ? (
+                                videoSources.length > 0 ? (
                                   <video
-                                    src={fullSrc || originalFull}
-                                    poster={thumbSrc || originalThumb || undefined}
+                                    src={videoSources[0]}
+                                    poster={posterSources[0] || undefined}
+                                    data-src-index="0"
                                     className="h-20 w-full object-cover relative z-10"
                                     muted
                                     preload="metadata"
                                     onError={(e) => {
                                       const target = e.currentTarget as HTMLVideoElement;
-                                      if (target.src !== originalFull) {
-                                        target.src = originalFull || target.src;
-                                        if (originalThumb && target.poster !== originalThumb) {
-                                          target.poster = originalThumb;
+                                      const nextIndex = Number(target.dataset.srcIndex || '0') + 1;
+                                      if (nextIndex < videoSources.length) {
+                                        target.dataset.srcIndex = String(nextIndex);
+                                        target.src = videoSources[nextIndex];
+                                        if (posterSources[nextIndex]) {
+                                          target.poster = posterSources[nextIndex];
                                         }
                                       } else {
                                         target.style.display = 'none';
@@ -1749,18 +1760,20 @@ const CreatorDashboard = () => {
                                   />
                                 ) : null
                               ) : (
-                                (thumbSrc || fullSrc || originalThumb || originalFull) ? (
+                                imageSources.length > 0 ? (
                                   <img
-                                    src={thumbSrc || fullSrc || originalThumb || originalFull}
+                                    src={imageSources[0]}
                                     alt=""
+                                    data-src-index="0"
                                     className="h-20 w-full object-cover relative z-10"
                                     loading="lazy"
                                     decoding="async"
                                     onError={(e) => {
                                       const target = e.currentTarget as HTMLImageElement;
-                                      const fallback = originalThumb || originalFull;
-                                      if (fallback && target.src !== fallback) {
-                                        target.src = fallback;
+                                      const nextIndex = Number(target.dataset.srcIndex || '0') + 1;
+                                      if (nextIndex < imageSources.length) {
+                                        target.dataset.srcIndex = String(nextIndex);
+                                        target.src = imageSources[nextIndex];
                                       } else {
                                         target.style.display = 'none';
                                       }
