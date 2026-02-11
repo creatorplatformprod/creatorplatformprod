@@ -111,6 +111,7 @@ const CreatorDashboard = () => {
     bio: '',
     avatar: '',
     coverImage: '',
+    coverOverlay: 0.45,
     walletAddress: '',
     telegramUsername: '',
     telegramBotToken: '',
@@ -230,6 +231,9 @@ const CreatorDashboard = () => {
           bio: userResult.user.bio || '',
           avatar: userResult.user.avatar || '',
           coverImage: userResult.user.coverImage || '',
+          coverOverlay: Number.isFinite(Number(userResult.user.coverOverlay))
+            ? Number(userResult.user.coverOverlay)
+            : 0.45,
           walletAddress: userResult.user.walletAddress || '',
           telegramUsername: userResult.user.telegramUsername || '',
           telegramBotToken: userResult.user.telegramBotToken || '',
@@ -1633,6 +1637,29 @@ const CreatorDashboard = () => {
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-violet-500/10 to-cyan-500/20" />
                   )}
+                </div>
+                <div className="mb-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs text-muted-foreground">Cover Overlay Intensity</label>
+                    <span className="text-xs text-foreground">{Math.round((Number(profileData.coverOverlay || 0.45)) * 100)}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.15"
+                    max="0.85"
+                    step="0.01"
+                    value={Number(profileData.coverOverlay || 0.45)}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        coverOverlay: Math.max(0.15, Math.min(0.85, parseFloat(e.target.value) || 0.45))
+                      })
+                    }
+                    className="w-full accent-cyan-400 cursor-pointer"
+                  />
+                  <p className="text-[11px] text-muted-foreground mt-1">
+                    Higher value darkens the cover more for better text readability.
+                  </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Input

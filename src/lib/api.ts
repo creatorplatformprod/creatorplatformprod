@@ -143,6 +143,7 @@ export const api = {
     domainEmail?: string;
     avatar?: string;
     coverImage?: string;
+    coverOverlay?: number;
     unlockAllPrice?: number | null;
     unlockAllCurrency?: string | null;
   }) => {

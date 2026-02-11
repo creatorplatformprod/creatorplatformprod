@@ -535,6 +535,10 @@ const CreatorProfile = () => {
     ? new URL(window.location.href).searchParams.get('mode')
     : null;
   const showHelp = isPreviewMode && pageMode !== 'clean';
+  const coverOverlay = Math.max(
+    0.15,
+    Math.min(0.85, Number(creatorData?.coverOverlay ?? 0.45))
+  );
 
   const renderSocialIcon = (
     url: string,
@@ -606,6 +610,7 @@ const CreatorProfile = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-cyan-600/15" />
           )}
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-cyan-600/15" />
+          <div className="absolute inset-0" style={{ backgroundColor: `rgba(2, 6, 23, ${coverOverlay})` }} />
           <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
           {/* Subtle pattern overlay */}
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
