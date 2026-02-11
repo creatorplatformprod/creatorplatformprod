@@ -361,6 +361,7 @@
      ======================================== */
   .creator-dashboard {
     position: relative;
+    font-family: "Manrope", "Plus Jakarta Sans", "Segoe UI Variable", "Segoe UI", sans-serif;
   }
 
   .creator-dashboard::before {
@@ -483,6 +484,94 @@
     background: rgba(15, 23, 42, 0.84) !important;
   }
 
+  .creator-dashboard .alert-info,
+  .creator-dashboard .alert-success,
+  .creator-dashboard .alert-error {
+    border-radius: 14px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.7), rgba(2, 6, 23, 0.82));
+    box-shadow: 0 12px 28px rgba(2, 6, 23, 0.36);
+  }
+
+  .creator-dashboard .quick-action-btn {
+    border-color: rgba(148, 163, 184, 0.16) !important;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.52), rgba(15, 23, 42, 0.72)) !important;
+  }
+
+  .creator-dashboard .quick-action-btn:hover {
+    border-color: rgba(125, 211, 252, 0.36) !important;
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.64), rgba(15, 23, 42, 0.86)) !important;
+    transform: translateY(-1px);
+  }
+
+  .creator-dashboard .dashboard-link-btn {
+    color: rgba(125, 211, 252, 0.95) !important;
+    letter-spacing: 0.01em;
+  }
+
+  .creator-dashboard .dashboard-link-btn:hover {
+    color: rgba(186, 230, 253, 1) !important;
+  }
+
+  .creator-dashboard .checklist-btn {
+    border-color: rgba(148, 163, 184, 0.16) !important;
+  }
+
+  .creator-dashboard .checklist-btn:hover {
+    border-color: rgba(125, 211, 252, 0.34) !important;
+    background: rgba(30, 41, 59, 0.36) !important;
+  }
+
+  .creator-dashboard .creator-mobile-tab-item {
+    border-bottom-width: 2px;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .creator-dashboard .creator-mobile-tab-item:hover {
+    background: rgba(15, 23, 42, 0.32);
+  }
+
+  .creator-dashboard .dash-btn-primary {
+    border: 1px solid rgba(56, 189, 248, 0.48) !important;
+    background: linear-gradient(180deg, rgba(14, 165, 233, 0.92), rgba(2, 132, 199, 0.88)) !important;
+    color: #f8fdff !important;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+    box-shadow: 0 12px 28px rgba(3, 105, 161, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  }
+
+  .creator-dashboard .dash-btn-primary:hover {
+    border-color: rgba(103, 232, 249, 0.8) !important;
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.96), rgba(14, 116, 144, 0.94)) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 16px 32px rgba(8, 47, 73, 0.44);
+  }
+
+  .creator-dashboard .dash-btn-secondary {
+    border: 1px solid rgba(148, 163, 184, 0.36) !important;
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.88)) !important;
+    color: rgba(241, 245, 249, 0.98) !important;
+    box-shadow: 0 8px 20px rgba(2, 6, 23, 0.36);
+  }
+
+  .creator-dashboard .dash-btn-secondary:hover {
+    border-color: rgba(125, 211, 252, 0.44) !important;
+    background: linear-gradient(180deg, rgba(51, 65, 85, 0.86), rgba(15, 23, 42, 0.9)) !important;
+    color: #ffffff !important;
+  }
+
+  .creator-dashboard .dash-btn-ghost {
+    border: 1px solid rgba(148, 163, 184, 0.2) !important;
+    background: rgba(15, 23, 42, 0.34) !important;
+    color: rgba(226, 232, 240, 0.96) !important;
+  }
+
+  .creator-dashboard .dash-btn-ghost:hover {
+    border-color: rgba(125, 211, 252, 0.4) !important;
+    background: rgba(30, 41, 59, 0.52) !important;
+    color: #ffffff !important;
+  }
+
   .creator-dashboard .btn-collection-outline {
     border: 1px solid rgba(125, 211, 252, 0.34);
     background: linear-gradient(180deg, rgba(30, 41, 59, 0.82), rgba(15, 23, 42, 0.86));
@@ -525,6 +614,24 @@
     border-color: rgba(125, 211, 252, 0.8);
     background: linear-gradient(180deg, rgba(14, 165, 233, 0.86), rgba(2, 132, 199, 0.88));
     color: #ffffff !important;
+  }
+
+  .creator-dashboard table {
+    border-color: rgba(148, 163, 184, 0.16);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .creator-dashboard thead tr {
+    background: rgba(30, 41, 59, 0.52);
+  }
+
+  .creator-dashboard tbody tr {
+    border-color: rgba(148, 163, 184, 0.12) !important;
+  }
+
+  .creator-dashboard tbody tr:hover {
+    background: rgba(15, 23, 42, 0.42);
   }
 
   /* Theme-aware hover: white or black based on theme (no accent blue) */

@@ -883,7 +883,7 @@ const CreatorDashboard = () => {
                   onClick={handlePreviewPublic} 
                   variant="ghost" 
                   size="sm" 
-                  className="text-muted-foreground hover:text-foreground text-xs h-8 gap-1.5"
+                  className="dash-btn-ghost text-muted-foreground hover:text-foreground text-xs h-8 gap-1.5"
                 >
                   <Eye className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Preview</span>
@@ -891,7 +891,7 @@ const CreatorDashboard = () => {
                 <Button 
                   onClick={handlePublicWebsite} 
                   size="sm"
-                  className="btn-67 shadow-sm h-8 text-xs px-3.5"
+                  className="dash-btn-primary shadow-sm h-8 text-xs px-3.5"
                 >
                   Public Website
                 </Button>
@@ -979,7 +979,7 @@ const CreatorDashboard = () => {
                 <button
                   key={item.key}
                   onClick={() => { setActiveTab(item.key); setError(''); setSuccess(''); setInfoMessage(''); }}
-                  className={`flex items-center gap-1.5 px-4 py-3 text-xs font-medium whitespace-nowrap border-b-2 transition-colors ${
+                  className={`creator-mobile-tab-item flex items-center gap-1.5 px-4 py-3 text-xs font-medium whitespace-nowrap border-b-2 transition-colors ${
                     activeTab === item.key
                       ? 'border-primary text-primary'
                       : 'border-transparent text-muted-foreground hover:text-foreground'
@@ -1111,7 +1111,7 @@ const CreatorDashboard = () => {
                 <div className="space-y-2">
                   <button
                     onClick={() => { setActiveTab('collections'); setError(''); setSuccess(''); setInfoMessage(''); }}
-                    className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
+                    className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center">
@@ -1126,7 +1126,7 @@ const CreatorDashboard = () => {
                   </button>
                   <button
                     onClick={() => { setActiveTab('status-cards'); setError(''); setSuccess(''); setInfoMessage(''); }}
-                    className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
+                    className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center">
@@ -1141,7 +1141,7 @@ const CreatorDashboard = () => {
                   </button>
                   <button
                     onClick={handlePreviewPublic}
-                    className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
+                    className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center">
@@ -1163,7 +1163,7 @@ const CreatorDashboard = () => {
                   <h3 className="text-sm font-semibold text-foreground">Recent Sales</h3>
                   <button
                     onClick={() => { setActiveTab('analytics'); setError(''); setSuccess(''); setInfoMessage(''); }}
-                    className="text-[10px] text-primary hover:text-primary/80 font-medium cursor-pointer bg-transparent border-none"
+                    className="dashboard-link-btn text-[10px] text-primary hover:text-primary/80 font-medium cursor-pointer bg-transparent border-none"
                   >
                     View all
                   </button>
@@ -1211,7 +1211,7 @@ const CreatorDashboard = () => {
                   <button
                     key={i}
                     onClick={step.action}
-                    className={`flex items-center gap-3 px-3 py-3 rounded-xl border transition-all cursor-pointer ${
+                    className={`checklist-btn flex items-center gap-3 px-3 py-3 rounded-xl border transition-all cursor-pointer ${
                       step.done
                         ? 'bg-emerald-500/[0.06] border-emerald-500/20'
                         : 'bg-white/[0.02] border-white/[0.06] hover:border-white/[0.12]'
@@ -1270,6 +1270,7 @@ const CreatorDashboard = () => {
                     onClick={handleUploadAvatar}
                     disabled={!avatarFile || uploadingAvatar}
                     size="sm"
+                    className="dash-btn-secondary"
                   >
                     <Upload className="w-4 h-4 mr-1" />
                     {uploadingAvatar ? 'Uploading...' : 'Upload'}
@@ -1443,7 +1444,7 @@ const CreatorDashboard = () => {
               </div>
             </div>
 
-            <Button onClick={handleSaveProfile} className="w-full md:w-auto btn-67">
+            <Button onClick={handleSaveProfile} className="w-full md:w-auto dash-btn-primary">
               <Save className="w-4 h-4 mr-2" />
               Save Profile
             </Button>
@@ -1496,6 +1497,7 @@ const CreatorDashboard = () => {
                       variant="outline"
                       onClick={handleUploadStatusCardImage}
                       disabled={uploadingStatusCardMedia}
+                      className="dash-btn-secondary"
                     >
                       {uploadingStatusCardMedia ? 'Uploading...' : 'Upload'}
                     </Button>
@@ -1518,7 +1520,7 @@ const CreatorDashboard = () => {
                   </div>
                 )}
 
-                <Button onClick={handleAddStatusCard} className="w-full btn-67">
+                <Button onClick={handleAddStatusCard} className="w-full dash-btn-primary">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Status Card
                 </Button>
@@ -1986,7 +1988,7 @@ const CreatorDashboard = () => {
                   </select>
                 </div>
               </div>
-              <Button onClick={handleSaveUnlockAllPrice} className="w-full mt-4 btn-67">
+              <Button onClick={handleSaveUnlockAllPrice} className="w-full mt-4 dash-btn-primary">
                 <Save className="w-4 h-4 mr-2" />
                 Save Price
               </Button>
@@ -2312,6 +2314,7 @@ const CreatorDashboard = () => {
                   <Button
                     variant="outline"
                     size="sm"
+                    className="dash-btn-secondary"
                     onClick={() => setSalesOffset(Math.max(salesOffset - salesLimit, 0))}
                     disabled={salesOffset === 0}
                   >
@@ -2323,6 +2326,7 @@ const CreatorDashboard = () => {
                   <Button
                     variant="outline"
                     size="sm"
+                    className="dash-btn-secondary"
                     onClick={() => setSalesOffset(salesOffset + salesLimit)}
                     disabled={salesOffset + salesLimit >= salesTotal}
                   >
