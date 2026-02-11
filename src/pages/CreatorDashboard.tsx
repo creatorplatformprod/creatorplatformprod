@@ -648,8 +648,13 @@ const CreatorDashboard = () => {
     const candidates: string[] = [];
     try {
       const parsed = new URL(url);
-      const placeholderHosts = new Set(['cdn.example.com', 'example.com']);
+      const placeholderHosts = new Set(['cdn.example.com', 'example.com', 'your-r2-domain.com']);
       if (placeholderHosts.has(parsed.hostname)) {
+        const apiBase = import.meta.env.VITE_API_URL;
+        if (apiBase) {
+          const apiOrigin = String(apiBase).replace(/\/+$/, '');
+          candidates.push(`${apiOrigin}/api/media${parsed.pathname}`);
+        }
         const envBase = import.meta.env.VITE_MEDIA_BASE_URL;
         if (envBase) {
           candidates.push(`${String(envBase).replace(/\/+$/, '')}${parsed.pathname}`);
