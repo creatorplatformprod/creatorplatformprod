@@ -8,7 +8,45 @@ import StatusCardWithMedia from "@/components/StatusCardWithMedia";
 import Preloader from "@/components/Preloader";
 import TopLoader from "@/components/TopLoader";
 import { api } from "@/lib/api";
-import { getRandomCollections } from "@/collections/collectionsData";
+const MOCK_ASSETS = {
+  avatar: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop",
+  cover: "https://images.pexels.com/photos/3014856/pexels-photo-3014856.jpeg?auto=compress&cs=tinysrgb&w=1600&fit=crop",
+  statusOne: "https://images.pexels.com/photos/265722/pexels-photo-265722.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  statusTwo: "https://images.pexels.com/photos/1758144/pexels-photo-1758144.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  statusThree: "https://images.pexels.com/photos/1468379/pexels-photo-1468379.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  collections: [
+    {
+      title: "After Dark Portraits",
+      description: "Neon-lit portraits and cinematic edits from late-night shoots.",
+      images: [
+        "https://images.pexels.com/photos/1796730/pexels-photo-1796730.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/1386604/pexels-photo-1386604.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ]
+    },
+    {
+      title: "Studio Sets",
+      description: "Polished studio content with color-graded premium frames.",
+      images: [
+        "https://images.pexels.com/photos/2116469/pexels-photo-2116469.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/977810/pexels-photo-977810.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/1656684/pexels-photo-1656684.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ]
+    },
+    {
+      title: "Street Sessions",
+      description: "Editorial street looks, candid motion, and urban backdrops.",
+      images: [
+        "https://images.pexels.com/photos/1858175/pexels-photo-1858175.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/1832323/pexels-photo-1832323.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/1755385/pexels-photo-1755385.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ]
+    }
+  ]
+};
 
 const CreatorProfile = () => {
   const { username } = useParams();
@@ -67,7 +105,7 @@ const CreatorProfile = () => {
       id: "mock-status-1",
       user: {
         name: creatorData?.displayName || "Your Name",
-        avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
+        avatar: creatorData?.avatar || MOCK_ASSETS.avatar,
         verified: true
       },
       title: "",
@@ -77,7 +115,7 @@ const CreatorProfile = () => {
       comments: 89,
       media: {
         type: "image" as const,
-        url: "https://images.pexels.com/photos/3622614/pexels-photo-3622614.jpeg?auto=compress&cs=tinysrgb&w=800",
+        url: MOCK_ASSETS.statusOne,
         alt: "Behind the scenes"
       },
       isMockData: true
@@ -86,7 +124,7 @@ const CreatorProfile = () => {
       id: "mock-status-2",
       user: {
         name: creatorData?.displayName || "Your Name",
-        avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
+        avatar: creatorData?.avatar || MOCK_ASSETS.avatar,
         verified: true
       },
       title: "Thank You 💜",
@@ -100,7 +138,7 @@ const CreatorProfile = () => {
       id: "mock-status-3",
       user: {
         name: creatorData?.displayName || "Your Name",
-        avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
+        avatar: creatorData?.avatar || MOCK_ASSETS.avatar,
         verified: true
       },
       title: "",
@@ -110,22 +148,36 @@ const CreatorProfile = () => {
       comments: 67,
       media: {
         type: "image" as const,
-        url: "https://images.pexels.com/photos/2896840/pexels-photo-2896840.jpeg?auto=compress&cs=tinysrgb&w=800",
+        url: MOCK_ASSETS.statusThree,
         alt: "Golden hour shoot"
       },
       isMockData: true
     }
   ], [creatorData]);
 
-  // Get mock collections for empty preview -- more populated
+  // Purpose-aligned mock collections with stable image sources.
   const mockCollections = useMemo(() => {
-    const samples = getRandomCollections(5);
-    return samples.map(col => ({
-      ...col,
+    return MOCK_ASSETS.collections.map((collection, index) => ({
+      id: `mock-collection-${index + 1}`,
+      title: collection.title,
+      description: collection.description,
+      images: collection.images.map((url) => ({ full: url, thumb: url })),
       user: {
         name: creatorData?.displayName || "Your Name",
-        avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
+        avatar: creatorData?.avatar || MOCK_ASSETS.avatar,
         verified: true
+      },
+      timestamp: 'Recently',
+      likes: 0,
+      comments: 0,
+      type: 'collection' as const,
+      feedType: 'collection' as const,
+      price: 9.99,
+      currency: 'USD',
+      cardLayout: {
+        gridType: 'quad',
+        maxImages: 4,
+        gridClasses: 'grid grid-cols-2 grid-rows-2 gap-1 h-full'
       },
       isMockData: true
     }));
@@ -399,7 +451,7 @@ const CreatorProfile = () => {
   };
 
   const renderPost = (post: any, index: number) => {
-    const isMock = post.isMockData;
+    const isMock = isPreviewMode && post.isMockData;
     
     // Wrapper for mock data badge
     const MockBadgeWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -544,6 +596,15 @@ const CreatorProfile = () => {
       <div className="profile-hero relative">
         {/* Cover Photo Area with gradient overlay */}
         <div className="relative h-36 sm:h-44 lg:h-52 overflow-hidden">
+          {(creatorData?.coverImage || (shouldUseMockData ? MOCK_ASSETS.cover : '')) ? (
+            <img
+              src={creatorData?.coverImage || MOCK_ASSETS.cover}
+              alt="Profile cover"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-cyan-600/15" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-cyan-600/15" />
           <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
           {/* Subtle pattern overlay */}
@@ -665,7 +726,7 @@ const CreatorProfile = () => {
               </button>
             </div>
 
-            {showHelp && formattedCollections.length === 0 && !isPreviewMode && (
+            {showHelp && formattedCollections.length === 0 && (
               <div className="px-4 py-3 border-b border-border">
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   The sidebar will list the titles of every collection you publish for quick navigation. Below you will also see your total collections and post counts.
@@ -673,7 +734,7 @@ const CreatorProfile = () => {
               </div>
             )}
             
-            {shouldUseMockData && mockCollections.length > 0 && (
+            {isPreviewMode && shouldUseMockData && mockCollections.length > 0 && (
               <div className="px-4 py-3 border-b border-border bg-amber-500/5">
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   <span className="inline-flex items-center px-1.5 py-0.5 bg-amber-500/20 text-amber-600 text-[10px] font-medium rounded mr-1">EXAMPLE</span>
@@ -844,7 +905,7 @@ const CreatorProfile = () => {
               <TopLoader />
 
               {/* Mock Data Explanation Banner - Only in preview mode with mock data */}
-              {shouldUseMockData && filteredFeedData.length > 0 && (
+              {isPreviewMode && shouldUseMockData && filteredFeedData.length > 0 && (
                 <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl p-4 mb-4 animate-fade-in">
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
@@ -862,7 +923,7 @@ const CreatorProfile = () => {
               )}
               
               <div className="space-y-6">
-                {showHelp && !searchQuery && filteredFeedData.length === 0 && !isPreviewMode && (
+                {showHelp && !searchQuery && filteredFeedData.length === 0 && (
                   <div className="post-card rounded-xl p-6 sm:p-8 text-center animate-fade-in">
                     <h3 className="text-xl font-bold text-foreground mb-2">Your content will appear here</h3>
                     <p className="text-muted-foreground">

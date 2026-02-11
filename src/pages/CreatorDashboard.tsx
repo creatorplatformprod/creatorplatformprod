@@ -110,6 +110,7 @@ const CreatorDashboard = () => {
     displayName: '',
     bio: '',
     avatar: '',
+    coverImage: '',
     walletAddress: '',
     telegramUsername: '',
     telegramBotToken: '',
@@ -124,6 +125,8 @@ const CreatorDashboard = () => {
   });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [uploadingCoverImage, setUploadingCoverImage] = useState(false);
 
   // Status card form state
   const [statusCardForm, setStatusCardForm] = useState({
@@ -226,6 +229,7 @@ const CreatorDashboard = () => {
           displayName: userResult.user.displayName || '',
           bio: userResult.user.bio || '',
           avatar: userResult.user.avatar || '',
+          coverImage: userResult.user.coverImage || '',
           walletAddress: userResult.user.walletAddress || '',
           telegramUsername: userResult.user.telegramUsername || '',
           telegramBotToken: userResult.user.telegramBotToken || '',
@@ -548,6 +552,26 @@ const CreatorDashboard = () => {
       setError(err.message || 'Failed to save post card');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUploadCoverImage = async () => {
+    if (!coverImageFile) return;
+    try {
+      setUploadingCoverImage(true);
+      setError('');
+      const uploadResult = await api.uploadFile(coverImageFile);
+      if (uploadResult?.url) {
+        setProfileData({ ...profileData, coverImage: uploadResult.url });
+        setCoverImageFile(null);
+        setSuccess('Cover image uploaded. Profile draft will auto-save.');
+      } else {
+        setError('Failed to upload cover image');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to upload cover image');
+    } finally {
+      setUploadingCoverImage(false);
     }
   };
 
@@ -1555,43 +1579,76 @@ const CreatorDashboard = () => {
         {/* Profile Tab */}
         {activeTab === 'profile' && (
           <div className="card-elevated p-5 sm:p-7 space-y-6">
-            {/* Profile Picture Upload */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-secondary/30 rounded-xl">
-              <div className="relative">
-                <div className="w-24 h-24 rounded-full overflow-hidden bg-secondary border-2 border-border">
-                  {profileData.avatar ? (
-                    <img 
-                      src={profileData.avatar} 
-                      alt="Profile" 
-                      className="w-full h-full object-cover"
+            {/* Profile Media Upload */}
+            <div className="space-y-4 p-4 bg-secondary/30 rounded-xl">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-full overflow-hidden bg-secondary border-2 border-border">
+                    {profileData.avatar ? (
+                      <img 
+                        src={profileData.avatar} 
+                        alt="Profile" 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Camera className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 text-center sm:text-left">
+                  <h3 className="font-semibold text-foreground mb-1">Profile Picture</h3>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Shown next to your name on public and preview pages.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
+                      className="text-sm"
                     />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Camera className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                  )}
+                    <Button
+                      onClick={handleUploadAvatar}
+                      disabled={!avatarFile || uploadingAvatar}
+                      size="sm"
+                      className="dash-btn-secondary"
+                    >
+                      <Upload className="w-4 h-4 mr-1" />
+                      {uploadingAvatar ? 'Uploading...' : 'Upload Avatar'}
+                    </Button>
+                  </div>
                 </div>
               </div>
-              <div className="flex-1 text-center sm:text-left">
-                <h3 className="font-semibold text-foreground mb-1">Profile Picture</h3>
+
+              <div className="border-t border-border/60 pt-4">
+                <h3 className="font-semibold text-foreground mb-1">Cover Image</h3>
                 <p className="text-xs text-muted-foreground mb-3">
-                  This will be shown on your public website and preview
+                  Displayed behind your profile header and Unlock Everything button.
                 </p>
+                <div className="rounded-lg overflow-hidden border border-border bg-background/60 mb-3 h-28">
+                  {profileData.coverImage ? (
+                    <img src={profileData.coverImage} alt="Cover" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-violet-500/10 to-cyan-500/20" />
+                  )}
+                </div>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
+                    onChange={(e) => setCoverImageFile(e.target.files?.[0] || null)}
                     className="text-sm"
                   />
                   <Button
-                    onClick={handleUploadAvatar}
-                    disabled={!avatarFile || uploadingAvatar}
+                    onClick={handleUploadCoverImage}
+                    disabled={!coverImageFile || uploadingCoverImage}
                     size="sm"
                     className="dash-btn-secondary"
                   >
                     <Upload className="w-4 h-4 mr-1" />
-                    {uploadingAvatar ? 'Uploading...' : 'Upload'}
+                    {uploadingCoverImage ? 'Uploading...' : 'Upload Cover'}
                   </Button>
                 </div>
               </div>

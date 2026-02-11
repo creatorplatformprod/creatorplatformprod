@@ -142,6 +142,7 @@ export const api = {
     websiteUrl?: string;
     domainEmail?: string;
     avatar?: string;
+    coverImage?: string;
     unlockAllPrice?: number | null;
     unlockAllCurrency?: string | null;
   }) => {
