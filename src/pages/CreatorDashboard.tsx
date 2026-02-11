@@ -474,11 +474,24 @@ const CreatorDashboard = () => {
     localStorage.removeItem(key);
   };
 
+  const persistProfileDraftSnapshot = () => {
+    if (!user?.username) return;
+    const key = getProfileDraftKey(user.username);
+    if (!key) return;
+    localStorage.setItem(key, JSON.stringify(profileData));
+    profileBaselineRef.current = serializeForDirtyCheck(profileData);
+    setIsProfileDirty(false);
+    setProfileAutoSaveState('saved');
+    markPublicWebsiteDirty();
+  };
+
   const handleUpdateWebsite = async () => {
     if (!user?.username) return false;
     setLoading(true);
     setError('');
     try {
+      // Flush latest in-memory profile edits (like cover removal) before publish.
+      persistProfileDraftSnapshot();
       await publishAllCollections();
       await publishProfileDraft();
       localStorage.setItem(`publicWebsitePublished:${user.username}`, 'true');
