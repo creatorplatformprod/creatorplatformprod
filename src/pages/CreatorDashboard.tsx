@@ -68,7 +68,11 @@ const CreatorDashboard = () => {
   const collectionFormRef = useRef<HTMLDivElement | null>(null);
   const [uploadingCollectionMedia, setUploadingCollectionMedia] = useState(false);
   const [statusCardFile, setStatusCardFile] = useState<File | null>(null);
+  const [statusCardPreviewUrl, setStatusCardPreviewUrl] = useState<string>('');
+  const [selectedPostCardId, setSelectedPostCardId] = useState('');
+  const [postCardSearch, setPostCardSearch] = useState('');
   const [uploadingStatusCardMedia, setUploadingStatusCardMedia] = useState(false);
+  const statusCardUploadInputRef = useRef<HTMLInputElement | null>(null);
 
   // Analytics state
   const [analyticsRange, setAnalyticsRange] = useState('30');
@@ -258,6 +262,16 @@ const CreatorDashboard = () => {
   }, [collectionFiles]);
 
   useEffect(() => {
+    if (!statusCardFile) {
+      setStatusCardPreviewUrl('');
+      return;
+    }
+    const url = URL.createObjectURL(statusCardFile);
+    setStatusCardPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [statusCardFile]);
+
+  useEffect(() => {
     if (!selectedCollectionId) {
       setSelectedCollection(null);
       return;
@@ -335,28 +349,79 @@ const CreatorDashboard = () => {
     }
   };
 
-  const handleAddStatusCard = async () => {
+  const handleSavePostCard = async () => {
+    if (!statusCardForm.text.trim() && !statusCardForm.imageUrl.trim()) {
+      setError('Add text or media before saving');
+      return;
+    }
     try {
       setLoading(true);
       setError('');
       setSuccess('');
-      const result = await api.createStatusCard({
+      const payload = {
         text: statusCardForm.text,
         imageUrl: statusCardForm.imageUrl || undefined,
         isLocked: statusCardForm.isLocked,
         order: statusCardForm.order
-      });
+      };
+      const result = selectedPostCardId
+        ? await api.updateStatusCard(selectedPostCardId, payload)
+        : await api.createStatusCard(payload);
       if (result.success) {
-        setSuccess('Status card added!');
+        setSuccess(selectedPostCardId ? 'Post card updated.' : 'Post card created.');
         markPublicWebsiteDirty();
         setStatusCardForm({ text: '', imageUrl: '', isLocked: false, order: 0 });
         setStatusCardFile(null);
+        setSelectedPostCardId('');
         await loadUserData();
       } else {
-        setError(result.error || 'Failed to add status card');
+        setError(result.error || 'Failed to save post card');
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to add status card');
+      setError(err.message || 'Failed to save post card');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditPostCard = (card: any) => {
+    setSelectedPostCardId(card._id || '');
+    setStatusCardForm({
+      text: card.text || '',
+      imageUrl: card.imageUrl || '',
+      isLocked: !!card.isLocked,
+      order: Number(card.order) || 0
+    });
+    setStatusCardFile(null);
+    setStatusCardPreviewUrl('');
+    setTimeout(() => {
+      collectionFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
+  };
+
+  const handleDeletePostCardById = async (cardId: string) => {
+    if (!cardId) return;
+    const confirmDelete = window.confirm('Delete this post card? This cannot be undone.');
+    if (!confirmDelete) return;
+    try {
+      setLoading(true);
+      setError('');
+      const result = await api.deleteStatusCard(cardId);
+      if (result.success) {
+        setSuccess('Post card deleted.');
+        markPublicWebsiteDirty();
+        if (selectedPostCardId === cardId) {
+          setSelectedPostCardId('');
+          setStatusCardForm({ text: '', imageUrl: '', isLocked: false, order: 0 });
+          setStatusCardFile(null);
+          setStatusCardPreviewUrl('');
+        }
+        await loadUserData();
+      } else {
+        setError(result.error || 'Failed to delete post card');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete post card');
     } finally {
       setLoading(false);
     }
@@ -401,7 +466,7 @@ const CreatorDashboard = () => {
       const uploadResult = await api.uploadFile(statusCardFile);
       if (uploadResult?.url) {
         setStatusCardForm({ ...statusCardForm, imageUrl: uploadResult.url });
-        setSuccess('Media uploaded. You can now add the status card.');
+        setSuccess('Media uploaded. You can now save the post card.');
       } else {
         setError('Upload failed');
       }
@@ -929,7 +994,7 @@ const CreatorDashboard = () => {
               { key: 'overview' as const, icon: Home, label: 'Overview' },
               { key: 'collections' as const, icon: Image, label: 'Collections' },
               { key: 'unlock' as const, icon: Unlock, label: 'Unlock Everything' },
-              { key: 'status-cards' as const, icon: MessageSquare, label: 'Status Cards' },
+              { key: 'status-cards' as const, icon: MessageSquare, label: 'Post Cards' },
               { key: 'analytics' as const, icon: BarChart3, label: 'Analytics' },
               { key: 'profile' as const, icon: Settings, label: 'Settings' },
             ].map(item => (
@@ -972,7 +1037,7 @@ const CreatorDashboard = () => {
                 { key: 'overview' as const, icon: Home, label: 'Overview' },
                 { key: 'collections' as const, icon: Image, label: 'Collections' },
                 { key: 'unlock' as const, icon: Unlock, label: 'Unlock' },
-                { key: 'status-cards' as const, icon: MessageSquare, label: 'Posts' },
+                { key: 'status-cards' as const, icon: MessageSquare, label: 'Post Cards' },
                 { key: 'analytics' as const, icon: BarChart3, label: 'Analytics' },
                 { key: 'profile' as const, icon: Settings, label: 'Settings' },
               ].map(item => (
@@ -1133,7 +1198,7 @@ const CreatorDashboard = () => {
                         <Edit className="w-4 h-4 text-violet-400" />
                       </div>
                       <div className="text-left">
-                        <p className="text-xs font-semibold text-foreground">New Status Post</p>
+                        <p className="text-xs font-semibold text-foreground">New Post Card</p>
                         <p className="text-[10px] text-muted-foreground">Share an update with fans</p>
                       </div>
                     </div>
@@ -1451,110 +1516,237 @@ const CreatorDashboard = () => {
           </div>
         )}
 
-        {/* Status Cards Tab */}
+        {/* Post Cards Tab */}
         {activeTab === 'status-cards' && (
-          <div className="space-y-6">
-            {/* Add Status Card Form */}
-            <div className="card-elevated p-6 sm:p-8">
-              <h2 className="section-title mb-4">Add Status Card</h2>
-              
-              <div className="space-y-4" ref={collectionFormRef}>
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
+            <div className="xl:col-span-4 card-container space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="card-title">Post Cards</h2>
+                <span className="text-xs text-muted-foreground">{statusCards.length} total</span>
+              </div>
+              <Input
+                value={postCardSearch}
+                onChange={(e) => setPostCardSearch(e.target.value)}
+                placeholder="Search post cards..."
+              />
+              <Button
+                type="button"
+                className="w-full dash-btn-secondary"
+                onClick={() => {
+                  setSelectedPostCardId('');
+                  setStatusCardForm({ text: '', imageUrl: '', isLocked: false, order: 0 });
+                  setStatusCardFile(null);
+                  setStatusCardPreviewUrl('');
+                }}
+              >
+                <Plus className="h-3.5 w-3.5 mr-1.5" />
+                New Post Card
+              </Button>
+              <div className="space-y-2 max-h-[560px] overflow-y-auto pr-1">
+                {statusCards.length === 0 ? (
+                  <div className="border border-dashed border-border rounded-lg p-5 text-center text-xs text-muted-foreground">
+                    No post cards yet.
+                  </div>
+                ) : (
+                  statusCards
+                    .filter((card) => {
+                      const term = postCardSearch.trim().toLowerCase();
+                      if (!term) return true;
+                      return String(card.text || '').toLowerCase().includes(term);
+                    })
+                    .map((card, index) => {
+                      const isActive = selectedPostCardId === card._id;
+                      return (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => handleEditPostCard(card)}
+                          className={`w-full text-left border rounded-lg p-3 transition-colors ${
+                            isActive ? 'border-primary/60 bg-primary/10' : 'border-border bg-background hover:border-primary/40'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0">
+                              <h4 className="text-sm font-semibold text-foreground truncate">
+                                {card.text || 'Untitled post card'}
+                              </h4>
+                              <p className="text-[11px] text-muted-foreground mt-0.5">
+                                {card.imageUrl ? 'Has media' : 'Text only'} {card.isLocked ? '• Locked' : ''}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Button
+                                type="button"
+                                size="sm"
+                                className="dash-btn-secondary rounded-full text-[10px] h-6 px-2"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditPostCard(card);
+                                }}
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                className="btn-collection-danger rounded-full text-[10px] h-6 px-2"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeletePostCardById(card._id);
+                                }}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })
+                )}
+              </div>
+            </div>
+
+            <div className="xl:col-span-8 card-container space-y-5" ref={collectionFormRef}>
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Text Content
-                  </label>
+                  <h3 className="text-lg font-semibold text-foreground">Post Card Editor</h3>
+                  <p className="text-xs text-muted-foreground">
+                    {selectedPostCardId ? 'Editing selected post card.' : 'Create a post card and publish updates to your homepage.'}
+                  </p>
+                </div>
+                {selectedPostCardId && (
+                  <Button
+                    type="button"
+                    className="btn-collection-danger"
+                    onClick={() => handleDeletePostCardById(selectedPostCardId)}
+                  >
+                    <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                    Delete Post Card
+                  </Button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 gap-3">
+                <div>
+                  <label className="input-label">Text Content</label>
                   <Textarea
                     value={statusCardForm.text}
                     onChange={(e) => setStatusCardForm({ ...statusCardForm, text: e.target.value })}
-                    placeholder="Your status message..."
-                    rows={3}
+                    placeholder="Your update..."
+                    rows={4}
                   />
                 </div>
-
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Image URL (Optional)
-                  </label>
+                  <label className="input-label">Media URL (Optional)</label>
                   <Input
                     value={statusCardForm.imageUrl}
                     onChange={(e) => setStatusCardForm({ ...statusCardForm, imageUrl: e.target.value })}
                     placeholder="https://..."
                   />
                 </div>
-
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium text-foreground block">
-                    Or upload image/video (max 25MB)
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="isLocked"
+                    checked={statusCardForm.isLocked}
+                    onChange={(e) => setStatusCardForm({ ...statusCardForm, isLocked: e.target.checked })}
+                    className="w-4 h-4"
+                  />
+                  <label htmlFor="isLocked" className="text-sm text-foreground flex items-center gap-2">
+                    {statusCardForm.isLocked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
+                    Lock this post card
                   </label>
-                  <div className="flex flex-col md:flex-row gap-3">
-                    <Input
-                      type="file"
-                      accept="image/*,video/*"
-                      onChange={(e) => setStatusCardFile(e.target.files?.[0] || null)}
-                    />
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <Button onClick={handleSavePostCard} className="dash-btn-primary">
+                  <Save className="w-4 h-4 mr-2" />
+                  {selectedPostCardId ? 'Save Changes' : 'Create Post Card'}
+                </Button>
+                {selectedPostCardId && (
+                  <span className="text-[11px] text-muted-foreground">Post Card ID: {selectedPostCardId}</span>
+                )}
+              </div>
+
+              <div className="border-t border-border/70 pt-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold text-foreground">Media Manager</h3>
+                  <span className="text-xs text-muted-foreground">Upload one image or video per post card</span>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  <div className="space-y-3">
+                    <div>
+                      <label className="input-label">Upload image/video (max 25MB)</label>
+                      <Input
+                        ref={statusCardUploadInputRef}
+                        type="file"
+                        accept="image/*,video/*"
+                        onChange={(e) => setStatusCardFile(e.target.files?.[0] || null)}
+                      />
+                      <div className="flex flex-wrap items-center gap-2 mt-2">
+                        <Button
+                          type="button"
+                          className="dash-btn-secondary text-[11px] h-7 px-3"
+                          onClick={() => statusCardUploadInputRef.current?.click()}
+                        >
+                          Select media
+                        </Button>
+                        <Button
+                          type="button"
+                          className="dash-btn-secondary text-[11px] h-7 px-3"
+                          onClick={() => setStatusCardFile(null)}
+                          disabled={!statusCardFile}
+                        >
+                          Clear selected media
+                        </Button>
+                      </div>
+                    </div>
                     <Button
                       type="button"
-                      variant="outline"
                       onClick={handleUploadStatusCardImage}
-                      disabled={uploadingStatusCardMedia}
-                      className="dash-btn-secondary"
+                      disabled={uploadingStatusCardMedia || !statusCardFile}
+                      className="w-full dash-btn-primary"
                     >
-                      {uploadingStatusCardMedia ? 'Uploading...' : 'Upload'}
+                      {uploadingStatusCardMedia ? 'Uploading...' : 'Upload Media'}
                     </Button>
                   </div>
+
+                  <div className="space-y-3">
+                    <div className="text-xs font-medium text-muted-foreground">Preview</div>
+                    {statusCardPreviewUrl ? (
+                      <div className="relative border border-border rounded-md overflow-hidden bg-muted/20">
+                        {statusCardFile?.type?.startsWith('image/') ? (
+                          <img src={statusCardPreviewUrl} alt="" className="h-28 w-full object-cover" />
+                        ) : (
+                          <video src={statusCardPreviewUrl} className="h-28 w-full object-cover" muted controls preload="metadata" />
+                        )}
+                      </div>
+                    ) : statusCardForm.imageUrl ? (
+                      <div className="relative border border-border rounded-md overflow-hidden bg-muted/20">
+                        {isVideoMedia({ url: statusCardForm.imageUrl }) ? (
+                          <video
+                            src={getMediaSrcCandidates(statusCardForm.imageUrl)[0] || statusCardForm.imageUrl}
+                            className="h-28 w-full object-cover"
+                            muted
+                            controls
+                            preload="metadata"
+                          />
+                        ) : (
+                          <img
+                            src={getMediaSrcCandidates(statusCardForm.imageUrl)[0] || statusCardForm.imageUrl}
+                            alt=""
+                            className="h-28 w-full object-cover"
+                          />
+                        )}
+                      </div>
+                    ) : (
+                      <div className="border border-dashed border-border rounded-lg p-4 text-xs text-muted-foreground text-center">
+                        Select or upload media to preview it here.
+                      </div>
+                    )}
+                  </div>
                 </div>
-
-                {statusCardForm.imageUrl && (
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      id="isLocked"
-                      checked={statusCardForm.isLocked}
-                      onChange={(e) => setStatusCardForm({ ...statusCardForm, isLocked: e.target.checked })}
-                      className="w-4 h-4"
-                    />
-                    <label htmlFor="isLocked" className="text-sm text-foreground flex items-center gap-2">
-                      {statusCardForm.isLocked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
-                      Lock this status card (requires unlock to view)
-                    </label>
-                  </div>
-                )}
-
-                <Button onClick={handleAddStatusCard} className="w-full dash-btn-primary">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Status Card
-                </Button>
-              </div>
-            </div>
-
-            {/* Existing Status Cards */}
-            <div className="card-elevated p-6 sm:p-8">
-              <h3 className="text-xl font-bold text-foreground mb-4">Your Status Cards</h3>
-              <div className="space-y-4">
-                {statusCards.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center text-center py-12 px-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500/15 to-pink-500/15 border border-white/[0.06] flex items-center justify-center mb-4">
-                      <svg className="w-5 h-5 text-violet-400/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    </div>
-                    <p className="text-sm font-medium text-foreground mb-1">No status posts yet</p>
-                    <p className="text-xs text-muted-foreground max-w-[240px] leading-relaxed">
-                      Status posts keep your audience engaged and appear on your homepage.
-                    </p>
-                  </div>
-                ) : (
-                  statusCards.map((card, index) => (
-                    <div key={index} className="border border-border rounded-lg p-4">
-                      <p className="text-foreground">{card.text}</p>
-                      {card.imageUrl && (
-                        <div className="mt-2 flex items-center gap-2">
-                          <Image className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-sm text-muted-foreground">Has image</span>
-                          {card.isLocked && <Lock className="w-4 h-4 text-primary" />}
-                        </div>
-                      )}
-                    </div>
-                  ))
-                )}
               </div>
             </div>
           </div>
