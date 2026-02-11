@@ -4,11 +4,21 @@ import { ArrowLeft, Loader2, CheckCircle2, Gift, AlertCircle, Clock, ChevronDown
 const RAW_API_URL =
   import.meta.env.VITE_API_URL ||
   'https://creator-platform-api-production.creatorplatformprod.workers.dev';
+const FALLBACK_API_URL = 'https://creator-platform-api-production.creatorplatformprod.workers.dev';
 
 // Environment configuration
 const CONFIG = {
   API_URL: RAW_API_URL.replace(/\/+$/, ''),
   CONTENT_URL: 'https://sixsevencreator.com'
+};
+
+const getProviderEndpoints = (amount: string) => {
+  const endpoints = [`${CONFIG.API_URL}/api/payment/providers?amount=${amount}&currency=USD`];
+  const fallbackBase = FALLBACK_API_URL.replace(/\/+$/, '');
+  if (fallbackBase !== CONFIG.API_URL) {
+    endpoints.push(`${fallbackBase}/api/payment/providers?amount=${amount}&currency=USD`);
+  }
+  return endpoints;
 };
 
 // Rosy pink color - matches TipButton in FeedHeader
@@ -100,22 +110,37 @@ const TipCheckoutPage = () => {
   const fetchProviders = async (amount: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `${CONFIG.API_URL}/api/payment/providers?amount=${amount}&currency=USD`
-      );
+      let lastError: unknown = null;
+      const endpoints = getProviderEndpoints(amount);
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch providers');
+      for (const endpoint of endpoints) {
+        try {
+          const response = await fetch(endpoint);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const text = await response.text();
+          let data: any;
+          try {
+            data = JSON.parse(text);
+          } catch {
+            throw new Error('Invalid JSON response');
+          }
+
+          if (data.success) {
+            setAvailableProviders(data.providers);
+            // Don't auto-select - let user choose like CheckoutPage
+            return;
+          }
+
+          throw new Error(data.error || 'Failed to fetch available providers');
+        } catch (error) {
+          lastError = error;
+        }
       }
 
-      const data = await response.json();
-
-      if (data.success) {
-        setAvailableProviders(data.providers);
-        // Don't auto-select - let user choose like CheckoutPage
-      } else {
-        throw new Error(data.error || 'Failed to fetch available providers');
-      }
+      throw lastError || new Error('Failed to fetch providers');
     } catch (error) {
       console.error('Provider fetch error:', error);
       setPaymentError('Unable to load payment providers. Please refresh the page.');

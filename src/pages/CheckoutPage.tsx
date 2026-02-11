@@ -4,11 +4,21 @@ import { ArrowLeft, Loader2, CheckCircle2, Lock, ChevronDown, ChevronUp, Clock, 
 const RAW_API_URL =
   import.meta.env.VITE_API_URL ||
   'https://creator-platform-api-production.creatorplatformprod.workers.dev';
+const FALLBACK_API_URL = 'https://creator-platform-api-production.creatorplatformprod.workers.dev';
 
 // Environment configuration
 const CONFIG = {
   API_URL: RAW_API_URL.replace(/\/+$/, ''),
   CONTENT_URL: import.meta.env.VITE_CONTENT_URL || window.location.origin
+};
+
+const getProviderEndpoints = (amount) => {
+  const endpoints = [`${CONFIG.API_URL}/api/payment/providers?amount=${amount}&currency=USD`];
+  const fallbackBase = FALLBACK_API_URL.replace(/\/+$/, '');
+  if (fallbackBase !== CONFIG.API_URL) {
+    endpoints.push(`${fallbackBase}/api/payment/providers?amount=${amount}&currency=USD`);
+  }
+  return endpoints;
 };
 
 const CheckoutPage = () => {
@@ -201,21 +211,36 @@ const CheckoutPage = () => {
   const fetchProviders = async (amount) => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `${CONFIG.API_URL}/api/payment/providers?amount=${amount}&currency=USD`
-      );
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch providers');
+      let lastError = null;
+      const endpoints = getProviderEndpoints(amount);
+
+      for (const endpoint of endpoints) {
+        try {
+          const response = await fetch(endpoint);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const text = await response.text();
+          let data;
+          try {
+            data = JSON.parse(text);
+          } catch {
+            throw new Error('Invalid JSON response');
+          }
+
+          if (data.success) {
+            setAvailableProviders(data.providers);
+            return;
+          }
+
+          throw new Error(data.error || 'Failed to fetch available providers');
+        } catch (error) {
+          lastError = error;
+        }
       }
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        setAvailableProviders(data.providers);
-      } else {
-        throw new Error(data.error || 'Failed to fetch available providers');
-      }
+
+      throw lastError || new Error('Failed to fetch providers');
     } catch (error) {
       console.error('Provider fetch error:', error);
       setPaymentError('Unable to load payment providers. Please refresh the page.');
