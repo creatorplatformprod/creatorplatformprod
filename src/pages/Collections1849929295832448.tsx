@@ -40,6 +40,29 @@ const Collections1849929295832448 = () => {
 
       // For dynamic access: verify the access token
       if (!accessToken) {
+        // Owner preview bypass: allow logged-in creator to preview unlocked bundle.
+        const token = localStorage.getItem('token');
+        if (token) {
+          try {
+            const me = await api.getCurrentUser();
+            const isOwner =
+              me?.success &&
+              (!creatorParam ||
+                me.user?.username?.toLowerCase() === creatorParam.toLowerCase());
+            if (isOwner) {
+              const mine = await api.getMyCollections();
+              if (mine?.success) {
+                setRemoteCollections(mine.collections || []);
+                setAccessVerified(true);
+                setVerifying(false);
+                return;
+              }
+            }
+          } catch {
+            // fall through to denied
+          }
+        }
+
         setAccessDenied(true);
         setVerifying(false);
         return;
@@ -51,7 +74,18 @@ const Collections1849929295832448 = () => {
           setAccessVerified(true);
 
           // Load creator's collections from API
-          const creatorUsername = creatorParam || verify.creator || '';
+          let creatorUsername = creatorParam || verify.creatorUsername || verify.creator || '';
+          if (!creatorUsername && verify.creatorId) {
+            try {
+              const userResult = await api.getUserById(verify.creatorId);
+              if (userResult?.success && userResult.user?.username) {
+                creatorUsername = userResult.user.username;
+              }
+            } catch {
+              // Ignore fallback fetch failures.
+            }
+          }
+
           if (creatorUsername) {
             const result = await api.getCollections(creatorUsername);
             if (result?.success && result.collections?.length > 0) {

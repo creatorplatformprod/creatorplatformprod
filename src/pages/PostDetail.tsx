@@ -72,6 +72,45 @@ const PostDetail = () => {
       const accessToken = params.get('access');
 
       if (!accessToken) {
+        // Owner preview bypass: allow creator to open unlocked view without payment token.
+        const token = localStorage.getItem('token');
+        if (token) {
+          try {
+            const me = await api.getCurrentUser();
+            if (me?.success) {
+              const mine = await api.getMyCollections();
+              const ownCollection = (mine?.collections || []).find(
+                (collection: any) => collection?._id === secureId
+              );
+              if (ownCollection) {
+                setRemoteCollection({
+                  id: ownCollection._id,
+                  title: ownCollection.title,
+                  description: ownCollection.description || '',
+                  images: (ownCollection.media || []).map((media: any) => ({
+                    full: media.url,
+                    thumb: media.thumbnailUrl || media.url
+                  })),
+                  user: {
+                    name: me.user?.displayName || me.user?.username || 'Creator',
+                    avatar: me.user?.avatar || '/placeholder.svg',
+                    verified: me.user?.isVerified || false,
+                    twitterUrl: me.user?.twitterUrl || '',
+                    instagramUrl: me.user?.instagramUrl || '',
+                    domainEmail: me.user?.domainEmail || 'support@sixsevencreator.com',
+                    telegramUsername: me.user?.telegramUsername || ''
+                  },
+                  timestamp: ownCollection.createdAt
+                    ? new Date(ownCollection.createdAt).toLocaleDateString()
+                    : 'Recently'
+                });
+                return;
+              }
+            }
+          } catch {
+            // fall through to access denied
+          }
+        }
         setAccessDenied(true);
         return;
       }

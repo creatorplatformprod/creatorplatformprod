@@ -28,6 +28,17 @@ const CreatorProfile = () => {
   const [fanRegistered, setFanRegistered] = useState(false);
   const [fanInputEmail, setFanInputEmail] = useState('');
   const hasDraftCapablePreview = isPreviewMode;
+  const getProfileDraft = (targetUsername?: string) => {
+    if (!targetUsername) return null;
+    try {
+      const raw = localStorage.getItem(`publicWebsiteProfileDraft:${targetUsername}`);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : null;
+    } catch {
+      return null;
+    }
+  };
   
   // Fan email persistence -- pre-fill for payments
   useEffect(() => {
@@ -146,10 +157,12 @@ const CreatorProfile = () => {
               api.getStatusCards(safeUsername)
             ]);
 
+            const baseUser = publicUserResult?.success
+              ? publicUserResult.user
+              : authUserResult.user;
+            const profileDraft = getProfileDraft(safeUsername);
             setCreatorData(
-              publicUserResult?.success
-                ? publicUserResult.user
-                : authUserResult.user
+              profileDraft ? { ...baseUser, ...profileDraft } : baseUser
             );
             setCollections(privateCollectionsResult?.success ? (privateCollectionsResult.collections || []) : []);
             setStatusCards(statusCardsResult?.success ? (statusCardsResult.statusCards || []) : []);
@@ -239,7 +252,6 @@ const CreatorProfile = () => {
   }, [collections, creatorData]);
 
   const shouldUseMockData =
-    isPreviewMode &&
     formattedStatusData.length === 0 &&
     formattedCollections.length === 0;
 
@@ -470,10 +482,7 @@ const CreatorProfile = () => {
   const pageMode = typeof window !== 'undefined'
     ? new URL(window.location.href).searchParams.get('mode')
     : null;
-  const isPublicRoute = typeof window !== 'undefined'
-    ? window.location.pathname.startsWith('/public/')
-    : false;
-  const showHelp = (isPublicRoute ? 'clean' : pageMode) !== 'clean';
+  const showHelp = isPreviewMode && pageMode !== 'clean';
 
   const renderSocialIcon = (
     url: string,
@@ -910,7 +919,7 @@ const CreatorProfile = () => {
                 </p>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
                   <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Gallery</button>
-                  <button onClick={() => window.location.href = `/${username}/collections`} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Collections</button>
+                  <button onClick={() => window.location.href = `/collections?creator=${username}`} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Collections</button>
                 </div>
               </div>
             </footer>

@@ -199,6 +199,22 @@ const CreatorDashboard = () => {
     refreshPublicWebsiteState(user.username);
   };
 
+  const getProfileDraftKey = (username?: string) =>
+    username ? `publicWebsiteProfileDraft:${username}` : '';
+
+  const readProfileDraft = (username?: string) => {
+    const key = getProfileDraftKey(username);
+    if (!key) return null;
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : null;
+    } catch {
+      return null;
+    }
+  };
+
   const loadUserData = async () => {
     try {
       setLoading(true);
@@ -222,8 +238,10 @@ const CreatorDashboard = () => {
           unlockAllPrice: userResult.user.unlockAllPrice || 0,
           unlockAllCurrency: userResult.user.unlockAllCurrency || 'USD'
         };
-        setProfileData(nextProfileData);
-        profileBaselineRef.current = serializeForDirtyCheck(nextProfileData);
+        const draft = readProfileDraft(userResult.user.username);
+        const mergedProfileData = draft ? { ...nextProfileData, ...draft } : nextProfileData;
+        setProfileData(mergedProfileData);
+        profileBaselineRef.current = serializeForDirtyCheck(mergedProfileData);
         setIsProfileDirty(false);
       }
 
@@ -339,24 +357,18 @@ const CreatorDashboard = () => {
     if (!isProfileDirty) return;
 
     setProfileAutoSaveState('saving');
-    const timer = window.setTimeout(async () => {
+    const timer = window.setTimeout(() => {
       try {
-        const result = await api.updateProfile(profileData);
-        if (result?.success) {
-          profileBaselineRef.current = serializeForDirtyCheck(profileData);
-          setIsProfileDirty(false);
-          setProfileAutoSaveState('saved');
-          markPublicWebsiteDirty();
-          if (result.user) {
-            setUser((prev: any) => ({ ...(prev || {}), ...result.user }));
-          }
-        } else {
-          setProfileAutoSaveState('error');
-          setError(result?.error || 'Failed to auto-save profile');
-        }
+        const key = getProfileDraftKey(user.username);
+        if (!key) return;
+        localStorage.setItem(key, JSON.stringify(profileData));
+        profileBaselineRef.current = serializeForDirtyCheck(profileData);
+        setIsProfileDirty(false);
+        setProfileAutoSaveState('saved');
+        markPublicWebsiteDirty();
       } catch (err: any) {
         setProfileAutoSaveState('error');
-        setError(err.message || 'Failed to auto-save profile');
+        setError(err.message || 'Failed to auto-save profile draft');
       }
     }, 700);
 
@@ -420,12 +432,34 @@ const CreatorDashboard = () => {
     );
   };
 
+  const publishProfileDraft = async () => {
+    if (!user?.username) return;
+    const key = getProfileDraftKey(user.username);
+    if (!key) return;
+    let draft: any = null;
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        draft = JSON.parse(raw);
+      }
+    } catch {
+      draft = null;
+    }
+    if (!draft || typeof draft !== 'object') return;
+    const result = await api.updateProfile(draft);
+    if (!result?.success) {
+      throw new Error(result?.error || 'Failed to publish profile changes');
+    }
+    localStorage.removeItem(key);
+  };
+
   const handleUpdateWebsite = async () => {
     if (!user?.username) return false;
     setLoading(true);
     setError('');
     try {
       await publishAllCollections();
+      await publishProfileDraft();
       localStorage.setItem(`publicWebsitePublished:${user.username}`, 'true');
       localStorage.setItem(`publicWebsiteDirty:${user.username}`, 'false');
       refreshPublicWebsiteState(user.username);
@@ -442,22 +476,19 @@ const CreatorDashboard = () => {
 
   const handleSaveProfile = async () => {
     try {
-      setLoading(true);
       setError('');
       setSuccess('');
-      const result = await api.updateProfile(profileData);
-      if (result.success) {
-        setSuccess('Profile saved successfully!');
-        setProfileAutoSaveState('saved');
-        markPublicWebsiteDirty();
-        await loadUserData();
-      } else {
-        setError(result.error || 'Failed to save profile');
-      }
+      if (!user?.username) return;
+      const key = getProfileDraftKey(user.username);
+      if (!key) return;
+      localStorage.setItem(key, JSON.stringify(profileData));
+      profileBaselineRef.current = serializeForDirtyCheck(profileData);
+      setIsProfileDirty(false);
+      setProfileAutoSaveState('saved');
+      markPublicWebsiteDirty();
+      setSuccess('Profile draft saved. Publish from Preview to make it live.');
     } catch (err: any) {
-      setError(err.message || 'Failed to save profile');
-    } finally {
-      setLoading(false);
+      setError(err.message || 'Failed to save profile draft');
     }
   };
 
@@ -1734,16 +1765,16 @@ const CreatorDashboard = () => {
             <div className="dashboard-sticky-action-bar flex items-center justify-between gap-3">
               <span className="text-xs text-muted-foreground">
                 {profileAutoSaveState === 'saving'
-                  ? 'Saving profile changes...'
+                  ? 'Saving profile draft...'
                   : profileAutoSaveState === 'error'
-                  ? 'Auto-save failed. Try editing again.'
+                  ? 'Draft auto-save failed. Try editing again.'
                   : isProfileDirty
                   ? 'Unsaved changes'
-                  : 'All changes saved automatically'}
+                  : 'Draft saved. Publish to make live'}
               </span>
               <Button onClick={handleSaveProfile} className="w-full md:w-auto dash-btn-secondary">
                 <Save className="w-4 h-4 mr-2" />
-                Save Now (Optional)
+                Save Draft Now
               </Button>
             </div>
           </div>

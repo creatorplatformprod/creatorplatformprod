@@ -1,12 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ArrowLeft, CreditCard, Loader2, Users } from "lucide-react";
+import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Preloader from "../components/Preloader";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
 import { getAllCollectionIds, getCollection } from "@/collections/collectionsData";
+import { specialSecureIds } from "@/utils/secureIdMapper";
 
 const Collections = () => {
   const [searchParams] = useSearchParams();
@@ -25,6 +26,8 @@ const Collections = () => {
   const [bundlePrice, setBundlePrice] = useState(199.99);
   const [bundleCurrency, setBundleCurrency] = useState('USD');
   const [creatorId, setCreatorId] = useState('');
+  const [canRevealContent, setCanRevealContent] = useState(false);
+  const [revealStoreUrl, setRevealStoreUrl] = useState('');
 
   const imagesPerPage = 24;
 
@@ -106,8 +109,32 @@ const Collections = () => {
     const loadCollections = async () => {
       setIsLoading(true);
       try {
-        // If we have a creator username, load their public collections
+        // If viewing a creator page and this is the same logged-in creator,
+        // use private collections so owner can preview hidden/unpublished content.
         if (creatorUsername) {
+          const token = localStorage.getItem('token');
+          if (token) {
+            try {
+              const me = await api.getCurrentUser();
+              const isOwner =
+                me?.success &&
+                me?.user?.username?.toLowerCase() === creatorUsername.toLowerCase();
+              if (isOwner) {
+                const mine = await api.getMyCollections();
+                if (mine?.success) {
+                  setCollectionsData(mine.collections || []);
+                  setCreatorId(me.user?._id || me.user?.id || '');
+                  if (mine.bundle?.price) setBundlePrice(mine.bundle.price);
+                  if (mine.bundle?.currency) setBundleCurrency(mine.bundle.currency);
+                  return;
+                }
+              }
+            } catch {
+              // Fall through to public collections.
+            }
+          }
+
+          // Public visitor path: only published collections.
           const result = await api.getCollections(creatorUsername);
           if (result?.success && result.collections?.length > 0) {
             setCollectionsData(result.collections);
@@ -140,6 +167,42 @@ const Collections = () => {
     loadCollections();
   }, [creatorUsername]);
 
+  useEffect(() => {
+    const resolveRevealAccess = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setCanRevealContent(false);
+        setRevealStoreUrl('');
+        return;
+      }
+      try {
+        const me = await api.getCurrentUser();
+        if (!me?.success || !me?.user?.username) {
+          setCanRevealContent(false);
+          setRevealStoreUrl('');
+          return;
+        }
+        if (creatorUsername) {
+          const isOwner = me.user.username.toLowerCase() === creatorUsername.toLowerCase();
+          setCanRevealContent(isOwner);
+          setRevealStoreUrl(
+            isOwner
+              ? `/collections/${specialSecureIds.COLLECTIONS}?creator=${creatorUsername}`
+              : ''
+          );
+          return;
+        }
+        setCanRevealContent(true);
+        setRevealStoreUrl(`/collections/${specialSecureIds.COLLECTIONS}?creator=${me.user.username}`);
+      } catch {
+        setCanRevealContent(false);
+        setRevealStoreUrl('');
+      }
+    };
+
+    resolveRevealAccess();
+  }, [creatorUsername]);
+
   function getRandomDimensions(index) {
     const ratios = [
       { width: 400, height: 600 },
@@ -155,11 +218,14 @@ const Collections = () => {
   const collectionIds = useMemo(() => getAllCollectionIds(), []);
 
   const allImages = useMemo(() => {
-    // If we have real API data, use it
-    if (collectionsData && collectionsData.length > 0) {
+    const visibleApiCollections = (collectionsData || []).filter(
+      (col: any) => col && col._id !== 'all' && !col.isBundle
+    );
+
+    // If we have real API collections with actual media, use them.
+    if (visibleApiCollections.length > 0) {
       const items: any[] = [];
-      const visible = collectionsData.filter((col: any) => col && col._id !== 'all' && !col.isBundle);
-      visible.forEach((collection: any) => {
+      visibleApiCollections.forEach((collection: any) => {
         const mediaItems = collection.media || [];
         mediaItems.forEach((mediaItem: any, index: number) => {
           if (!mediaItem?.url) return;
@@ -183,7 +249,7 @@ const Collections = () => {
       return items;
     }
 
-    // Fallback: build directly from collectionsData (Ofweb pattern)
+    // Fallback: use mock collections when API has no visible collection content.
     const items: any[] = [];
     collectionIds.forEach(id => {
       const collection = getCollection(id);
@@ -409,6 +475,15 @@ const Collections = () => {
           >
             <ArrowLeft className="w-5 h-5 sm:w-5 sm:h-5" />
           </button>
+          {canRevealContent && revealStoreUrl && (
+            <button
+              onClick={() => window.location.href = revealStoreUrl}
+              className="fixed top-4 right-4 z-[60] h-9 sm:h-8 px-3 rounded-full bg-emerald-500/20 border border-emerald-400/30 backdrop-blur-xl hover:bg-emerald-500/30 text-emerald-300 transition-all duration-300 shadow-lg text-xs font-medium inline-flex items-center gap-1.5"
+            >
+              <Eye className="w-3.5 h-3.5" />
+              Reveal Content
+            </button>
+          )}
 
           <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[60] flex flex-col items-center">
             <span className="text-xs text-white font-medium drop-shadow-lg">Scroll down to preview</span>

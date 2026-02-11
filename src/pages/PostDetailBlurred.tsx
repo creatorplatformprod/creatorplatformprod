@@ -1,12 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CreditCard, Loader2, Users } from "lucide-react";
+import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import { getCollection } from "@/collections/collectionsData";
+import { getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
+import { getSecureId } from "@/utils/secureIdMapper";
 
 const PostDetailBlurred = () => {
   const { id } = useParams();
@@ -18,6 +19,7 @@ const PostDetailBlurred = () => {
   const [isCardPaymentLoading, setIsCardPaymentLoading] = useState(false);
   const [remoteCollection, setRemoteCollection] = useState<any>(null);
   const [remoteLoading, setRemoteLoading] = useState(false);
+  const [canRevealContent, setCanRevealContent] = useState(false);
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -97,6 +99,7 @@ const PostDetailBlurred = () => {
   };
 
   const localCollection = getCollection(id as string);
+  const fallbackMockCollection = getCollection(getAllCollectionIds()[0] || '');
 
   const loadRemoteCollection = async () => {
     if (!id || localCollection) return;
@@ -134,9 +137,74 @@ const PostDetailBlurred = () => {
         };
 
         setRemoteCollection(mapped);
+        return;
+      }
+
+      // Owner preview fallback for unpublished/private content.
+      const token = localStorage.getItem('token');
+      if (token) {
+        const me = await api.getCurrentUser();
+        if (me?.success) {
+          const mine = await api.getMyCollections();
+          const ownCollection = (mine?.collections || []).find((c: any) => c?._id === id);
+          if (ownCollection) {
+            setRemoteCollection({
+              id: ownCollection._id,
+              title: ownCollection.title,
+              description: ownCollection.description || '',
+              images: (ownCollection.media || []).map((media: any) => ({
+                full: media.url,
+                thumb: media.thumbnailUrl || media.url
+              })),
+              user: {
+                name: me.user?.displayName || me.user?.username || 'Creator',
+                avatar: me.user?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop',
+                verified: me.user?.isVerified || false
+              },
+              timestamp: ownCollection.createdAt
+                ? new Date(ownCollection.createdAt).toLocaleDateString()
+                : 'Recently',
+              price: ownCollection.price || 4.99,
+              creatorId: ownCollection.creatorId || me.user?._id || ''
+            });
+            return;
+          }
+        }
       }
     } catch (error) {
       console.error('Failed to load collection:', error);
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const me = await api.getCurrentUser();
+          const mine = await api.getMyCollections();
+          const ownCollection = (mine?.collections || []).find((c: any) => c?._id === id);
+          if (ownCollection) {
+            setRemoteCollection({
+              id: ownCollection._id,
+              title: ownCollection.title,
+              description: ownCollection.description || '',
+              images: (ownCollection.media || []).map((media: any) => ({
+                full: media.url,
+                thumb: media.thumbnailUrl || media.url
+              })),
+              user: {
+                name: me?.user?.displayName || me?.user?.username || 'Creator',
+                avatar: me?.user?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop',
+                verified: me?.user?.isVerified || false
+              },
+              timestamp: ownCollection.createdAt
+                ? new Date(ownCollection.createdAt).toLocaleDateString()
+                : 'Recently',
+              price: ownCollection.price || 4.99,
+              creatorId: ownCollection.creatorId || me?.user?._id || ''
+            });
+            return;
+          }
+        }
+      } catch {
+        // ignore fallback failures
+      }
       setRemoteCollection(null);
     } finally {
       setRemoteLoading(false);
@@ -147,7 +215,40 @@ const PostDetailBlurred = () => {
     loadRemoteCollection();
   }, [id]);
 
-  const collection = remoteCollection || localCollection;
+  useEffect(() => {
+    const resolveRevealAccess = async () => {
+      if (!id) {
+        setCanRevealContent(false);
+        return;
+      }
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setCanRevealContent(false);
+        return;
+      }
+      try {
+        const mine = await api.getMyCollections();
+        const ownsCollection = !!(mine?.collections || []).find((collection: any) => collection?._id === id);
+        setCanRevealContent(ownsCollection || !!localCollection);
+      } catch {
+        setCanRevealContent(!!localCollection);
+      }
+    };
+    resolveRevealAccess();
+  }, [id, localCollection]);
+
+  const getRevealUrl = () => {
+    if (!id) return '#';
+    // Mock/local collections use secure IDs on revealed route.
+    if (localCollection) {
+      const secureId = getSecureId(id);
+      return secureId ? `/post/${secureId}` : `/post/${id}`;
+    }
+    // Real creator collections use direct collection IDs with owner bypass.
+    return `/post/${id}`;
+  };
+
+  const collection = remoteCollection || localCollection || fallbackMockCollection;
   
   // Get the price for this collection (default to 4.99 if no price set)
   const collectionPrice = collection?.price || 4.99;
@@ -318,6 +419,15 @@ const PostDetailBlurred = () => {
       >
         <ArrowLeft className="w-5 h-5 sm:w-5 sm:h-5" />
       </button>
+      {canRevealContent && id && (
+        <button
+          onClick={() => navigate(getRevealUrl())}
+          className="fixed top-4 right-4 z-[60] h-9 sm:h-8 px-3 rounded-full bg-emerald-500/20 border border-emerald-400/30 backdrop-blur-xl hover:bg-emerald-500/30 text-emerald-300 transition-all duration-300 shadow-lg text-xs font-medium inline-flex items-center gap-1.5"
+        >
+          <Eye className="w-3.5 h-3.5" />
+          Reveal Content
+        </button>
+      )}
 
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[60] flex flex-col items-center">
         <span className="text-xs text-white font-medium drop-shadow-lg">Scroll down to preview</span>
