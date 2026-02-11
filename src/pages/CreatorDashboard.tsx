@@ -1285,7 +1285,7 @@ const CreatorDashboard = () => {
                 onClick={() => requestTabChange(item.key)}
                 className={`creator-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ${
                   activeTab === item.key
-                    ? 'bg-cyan-400/[0.12] text-foreground font-medium border-cyan-300/70 shadow-[0_0_0_1px_rgba(34,211,238,0.5),0_0_16px_rgba(34,211,238,0.22)]'
+                    ? 'bg-cyan-400/[0.10] text-foreground font-medium border-cyan-300/60 shadow-[0_0_0_1px_rgba(34,211,238,0.38),0_0_10px_rgba(34,211,238,0.15)]'
                     : 'text-muted-foreground hover:text-foreground hover:bg-cyan-500/[0.06] hover:border-cyan-300/30'
                 }`}
               >
