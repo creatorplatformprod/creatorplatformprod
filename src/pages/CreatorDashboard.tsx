@@ -1662,15 +1662,30 @@ const CreatorDashboard = () => {
                     onChange={(e) => setCoverImageFile(e.target.files?.[0] || null)}
                     className="text-sm"
                   />
-                  <Button
-                    onClick={handleUploadCoverImage}
-                    disabled={!coverImageFile || uploadingCoverImage}
-                    size="sm"
-                    className="dash-btn-secondary"
-                  >
-                    <Upload className="w-4 h-4 mr-1" />
-                    {uploadingCoverImage ? 'Uploading...' : 'Upload Cover'}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleUploadCoverImage}
+                      disabled={!coverImageFile || uploadingCoverImage}
+                      size="sm"
+                      className="dash-btn-secondary"
+                    >
+                      <Upload className="w-4 h-4 mr-1" />
+                      {uploadingCoverImage ? 'Uploading...' : 'Upload Cover'}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setCoverImageFile(null);
+                        setProfileData({ ...profileData, coverImage: '' });
+                        setSuccess('Cover removed. Draft updated.');
+                      }}
+                      disabled={!profileData.coverImage}
+                      size="sm"
+                      className="btn-collection-danger"
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Remove Cover
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
