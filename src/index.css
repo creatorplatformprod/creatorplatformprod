@@ -370,9 +370,9 @@
     z-index: 0;
     pointer-events: none;
     background:
-      radial-gradient(960px 560px at 12% -8%, rgba(139, 92, 246, 0.18), transparent 62%),
-      radial-gradient(900px 500px at 102% 12%, rgba(99, 102, 241, 0.16), transparent 62%),
-      radial-gradient(760px 460px at 50% 110%, rgba(167, 139, 250, 0.10), transparent 66%),
+      radial-gradient(980px 580px at 12% -8%, rgba(56, 189, 248, 0.16), transparent 62%),
+      radial-gradient(920px 520px at 102% 12%, rgba(99, 102, 241, 0.13), transparent 62%),
+      radial-gradient(780px 480px at 50% 110%, rgba(14, 165, 233, 0.09), transparent 66%),
       linear-gradient(180deg, rgba(3, 8, 21, 0.72), rgba(2, 6, 18, 0.96));
   }
 
@@ -385,18 +385,18 @@
     background: rgba(6, 11, 22, 0.9);
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
-    border-bottom: 1px solid rgba(124, 58, 237, 0.18);
-    box-shadow: 0 8px 28px rgba(2, 6, 23, 0.42), 0 0 10px rgba(124, 58, 237, 0.06);
+    border-bottom: 1px solid rgba(56, 189, 248, 0.14);
+    box-shadow: 0 8px 28px rgba(2, 6, 23, 0.42), 0 0 7px rgba(56, 189, 248, 0.05);
   }
 
   .creator-sidebar {
     background:
       linear-gradient(180deg, rgba(8, 16, 30, 0.9), rgba(5, 11, 22, 0.84)),
-      linear-gradient(180deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.03));
-    border-right-color: rgba(124, 58, 237, 0.10) !important;
+      linear-gradient(180deg, rgba(56, 189, 248, 0.04), rgba(99, 102, 241, 0.02));
+    border-right-color: rgba(56, 189, 248, 0.08) !important;
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    box-shadow: inset -1px 0 0 rgba(124, 58, 237, 0.03);
+    box-shadow: inset -1px 0 0 rgba(56, 189, 248, 0.02);
   }
 
   .creator-nav-item {
@@ -416,11 +416,11 @@
   .creator-dashboard .creator-nav-item-active {
     background:
       linear-gradient(rgba(20, 28, 52, 0.9), rgba(12, 19, 38, 0.9)) padding-box,
-      linear-gradient(120deg, rgba(99, 102, 241, 0.55), rgba(139, 92, 246, 0.45), rgba(34, 211, 238, 0.28)) border-box;
+      linear-gradient(120deg, rgba(14, 165, 233, 0.40), rgba(99, 102, 241, 0.34), rgba(34, 211, 238, 0.22)) border-box;
     border: 1px solid transparent;
     box-shadow:
-      0 0 0 1px rgba(99, 102, 241, 0.12),
-      0 0 8px rgba(124, 58, 237, 0.10);
+      0 0 0 1px rgba(56, 189, 248, 0.08),
+      0 0 6px rgba(56, 189, 248, 0.08);
   }
 
   .creator-main {
@@ -440,13 +440,13 @@
   .creator-dashboard .card-elevated {
     background:
       linear-gradient(180deg, rgba(8, 18, 36, 0.95), rgba(5, 12, 26, 0.92)) padding-box,
-      linear-gradient(125deg, rgba(99, 102, 241, 0.45), rgba(139, 92, 246, 0.35), rgba(34, 211, 238, 0.22)) border-box;
+      linear-gradient(125deg, rgba(14, 165, 233, 0.36), rgba(99, 102, 241, 0.30), rgba(34, 211, 238, 0.20)) border-box;
     border: 1px solid transparent;
     border-radius: 18px;
     box-shadow:
       0 18px 40px rgba(2, 6, 23, 0.5),
-      0 0 0 1px rgba(124, 58, 237, 0.08),
-      0 0 14px rgba(124, 58, 237, 0.12),
+      0 0 0 1px rgba(56, 189, 248, 0.06),
+      0 0 10px rgba(56, 189, 248, 0.09),
       inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
@@ -454,11 +454,11 @@
   .creator-dashboard .card-elevated:hover {
     background:
       linear-gradient(180deg, rgba(9, 20, 39, 0.96), rgba(6, 13, 29, 0.94)) padding-box,
-      linear-gradient(125deg, rgba(129, 140, 248, 0.58), rgba(167, 139, 250, 0.46), rgba(56, 189, 248, 0.30)) border-box;
+      linear-gradient(125deg, rgba(56, 189, 248, 0.44), rgba(129, 140, 248, 0.38), rgba(34, 211, 238, 0.26)) border-box;
     border: 1px solid transparent;
     box-shadow:
       0 22px 54px rgba(2, 6, 23, 0.56),
-      0 0 18px rgba(124, 58, 237, 0.16),
+      0 0 12px rgba(56, 189, 248, 0.11),
       inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
@@ -566,8 +566,8 @@
 
   .creator-dashboard .creator-mobile-tab-item-active {
     color: rgba(199, 210, 254, 1) !important;
-    border-bottom-color: rgba(129, 140, 248, 0.95) !important;
-    box-shadow: inset 0 -1px 0 rgba(129, 140, 248, 0.75), 0 6px 12px rgba(99, 102, 241, 0.10);
+    border-bottom-color: rgba(56, 189, 248, 0.88) !important;
+    box-shadow: inset 0 -1px 0 rgba(56, 189, 248, 0.65), 0 5px 10px rgba(56, 189, 248, 0.07);
     background: linear-gradient(180deg, rgba(30, 41, 59, 0.24), rgba(15, 23, 42, 0.18));
   }
 
