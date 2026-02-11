@@ -59,6 +59,7 @@ const CreatorDashboard = () => {
   const [hasPublicChanges, setHasPublicChanges] = useState(false);
   const [isPublicPublished, setIsPublicPublished] = useState(false);
   const [selectedCollectionId, setSelectedCollectionId] = useState('');
+  const [collectionSearch, setCollectionSearch] = useState('');
   const [collectionFiles, setCollectionFiles] = useState<File[]>([]);
   const [collectionPreviews, setCollectionPreviews] = useState<{ file: File; url: string }[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<any | null>(null);
@@ -416,41 +417,15 @@ const CreatorDashboard = () => {
       setError('Please choose one or more content files to upload');
       return;
     }
+    if (!selectedCollectionId) {
+      setError('Create or select a collection before uploading content');
+      return;
+    }
 
     try {
       setUploadingCollectionMedia(true);
       setError('');
-      let targetCollectionId = selectedCollectionId;
-      const createdNewCollection = !selectedCollectionId;
-
-      if (!targetCollectionId) {
-        if (!collectionForm.title.trim()) {
-          setError('Enter a collection title or select an existing collection');
-          return;
-        }
-        const tags = collectionForm.tags.split(',').map(t => t.trim()).filter(t => t);
-        const createResult = await api.createCollection({
-          title: collectionForm.title,
-          description: collectionForm.description || undefined,
-          price: collectionForm.price,
-          currency: collectionForm.currency,
-          tags: tags.length > 0 ? tags : undefined,
-          media: []
-        });
-        if (!createResult?.success) {
-          throw new Error(createResult?.error || 'Failed to create collection');
-        }
-
-        targetCollectionId =
-          createResult.collection?._id ||
-          createResult.collection?.id ||
-          createResult.collectionId ||
-          createResult.id;
-
-        if (!targetCollectionId) {
-          throw new Error('Collection created, but no ID was returned');
-        }
-      }
+      const targetCollectionId = selectedCollectionId;
 
       let uploadedCount = 0;
       for (const file of collectionFiles) {
@@ -474,13 +449,7 @@ const CreatorDashboard = () => {
 
       setSuccess(`Uploaded ${uploadedCount} item${uploadedCount === 1 ? '' : 's'} to collection!`);
       markPublicWebsiteDirty();
-      if (createdNewCollection) {
-        setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
-        setSelectedCollectionId('');
-        setSelectedCollection(null);
-      } else {
-        setSelectedCollectionId(targetCollectionId);
-      }
+      setSelectedCollectionId(targetCollectionId);
       setCollectionFiles([]);
       await loadUserData();
     } catch (err: any) {
@@ -497,6 +466,51 @@ const CreatorDashboard = () => {
 
   const handleRemoveSelectedFile = (index: number) => {
     setCollectionFiles((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
+  const handleCreateCollection = async () => {
+    if (!collectionForm.title.trim()) {
+      setError('Collection title is required');
+      return;
+    }
+    try {
+      setLoading(true);
+      setError('');
+      setSuccess('');
+      const tags = collectionForm.tags.split(',').map(t => t.trim()).filter(t => t);
+      const result = await api.createCollection({
+        title: collectionForm.title,
+        description: collectionForm.description || undefined,
+        price: Number(collectionForm.price) || 0,
+        currency: collectionForm.currency,
+        tags: tags.length > 0 ? tags : undefined,
+        media: []
+      });
+      if (!result?.success) {
+        setError(result?.error || 'Failed to create collection');
+        return;
+      }
+      const createdId =
+        result.collection?._id ||
+        result.collection?.id ||
+        result.collectionId ||
+        result.id;
+      if (!createdId) {
+        setError('Collection created but no ID was returned');
+        return;
+      }
+
+      setSuccess('Collection created. You can now upload content.');
+      markPublicWebsiteDirty();
+      setSelectedCollectionId(createdId);
+      setCollectionFiles([]);
+      setCollectionPreviews([]);
+      await loadUserData();
+    } catch (err: any) {
+      setError(err.message || 'Failed to create collection');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDeleteCollection = async () => {
@@ -623,9 +637,7 @@ const CreatorDashboard = () => {
       if (result.success) {
         setSuccess('Collection updated.');
         markPublicWebsiteDirty();
-        setSelectedCollectionId('');
-        setSelectedCollection(null);
-        setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
+        setSelectedCollectionId(selectedCollectionId);
         await loadUserData();
       } else {
         setError(result.error || 'Failed to update collection');
@@ -1548,133 +1560,220 @@ const CreatorDashboard = () => {
 
         {/* Collections Tab */}
         {activeTab === 'collections' && (
-          <div className="card-container">
-            <div className="space-y-5">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="card-title">Create Collection</h2>
-                  <span className="text-xs text-muted-foreground">Fill details below</span>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                  <div className="space-y-3">
-                    <div>
-                      <label className="input-label">
-                        Title
-                      </label>
-                      <Input
-                        value={collectionForm.title}
-                        onChange={(e) => setCollectionForm({ ...collectionForm, title: e.target.value })}
-                        placeholder="My Exclusive Collection"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="input-label">
-                        Description
-                      </label>
-                      <Textarea
-                        value={collectionForm.description}
-                        onChange={(e) => setCollectionForm({ ...collectionForm, description: e.target.value })}
-                        placeholder="Describe your collection..."
-                        rows={3}
-                      />
-                    </div>
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
+            <div className="xl:col-span-4 card-container space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="card-title">Collections</h2>
+                <span className="text-xs text-muted-foreground">{collections.length} total</span>
+              </div>
+              <Input
+                value={collectionSearch}
+                onChange={(e) => setCollectionSearch(e.target.value)}
+                placeholder="Search collections..."
+              />
+              <Button
+                type="button"
+                onClick={() => {
+                  setSelectedCollectionId('');
+                  setSelectedCollection(null);
+                  setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
+                  setCollectionFiles([]);
+                  setCollectionPreviews([]);
+                }}
+                className="w-full btn-collection-outline rounded-full h-9 text-xs"
+              >
+                <Plus className="h-3.5 w-3.5 mr-1.5" />
+                New Collection
+              </Button>
+              <div className="space-y-2 max-h-[560px] overflow-y-auto pr-1">
+                {collections.length === 0 ? (
+                  <div className="border border-dashed border-border rounded-lg p-5 text-center text-xs text-muted-foreground">
+                    No collections yet.
                   </div>
-
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="input-label">
-                          Price
-                        </label>
-                        <Input
-                          type="number"
-                          value={collectionForm.price}
-                          onChange={(e) => setCollectionForm({ ...collectionForm, price: parseFloat(e.target.value) })}
-                          placeholder="4.99"
-                          step="0.01"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="input-label">
-                          Currency
-                        </label>
-                        <select
-                          value={collectionForm.currency}
-                          onChange={(e) => setCollectionForm({ ...collectionForm, currency: e.target.value })}
-                          className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                ) : (
+                  collections
+                    .filter((collection) => {
+                      const term = collectionSearch.trim().toLowerCase();
+                      if (!term) return true;
+                      return (
+                        String(collection.title || '').toLowerCase().includes(term) ||
+                        String(collection.description || '').toLowerCase().includes(term)
+                      );
+                    })
+                    .map((collection, index) => {
+                      const isActive = selectedCollectionId === collection._id;
+                      return (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => handleEditCollection(collection)}
+                          className={`w-full text-left border rounded-lg p-3 transition-colors ${
+                            isActive ? 'border-primary/60 bg-primary/10' : 'border-border bg-background hover:border-primary/40'
+                          }`}
                         >
-                          <option value="USD">USD</option>
-                          <option value="EUR">EUR</option>
-                          <option value="GBP">GBP</option>
-                        </select>
-                      </div>
-                    </div>
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0">
+                              <h4 className="text-sm font-semibold text-foreground truncate">{collection.title}</h4>
+                              <p className="text-[11px] text-muted-foreground mt-0.5">
+                                {(collection.media?.length || 0)} items • ${Number(collection.price || 0).toFixed(2)} {collection.currency || 'USD'}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="btn-collection-outline rounded-full border-transparent text-[10px] h-6 px-2"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditCollection(collection);
+                                }}
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="btn-collection-danger rounded-full border-transparent text-[10px] h-6 px-2"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteCollectionById(collection._id, collection.title);
+                                }}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })
+                )}
+              </div>
+            </div>
 
-                    <div>
-                      <label className="input-label">
-                        Tags (comma separated)
-                      </label>
-                      <Input
-                        value={collectionForm.tags}
-                        onChange={(e) => setCollectionForm({ ...collectionForm, tags: e.target.value })}
-                        placeholder="art, photography, exclusive"
-                      />
-                    </div>
-                  </div>
+            <div className="xl:col-span-8 card-container space-y-5" ref={collectionFormRef}>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground">Collection Editor</h3>
+                  <p className="text-xs text-muted-foreground">
+                    {selectedCollectionId ? `Editing: ${selectedCollection?.title || collectionForm.title || 'Untitled collection'}` : 'Create a collection first, then upload content.'}
+                  </p>
                 </div>
                 {selectedCollectionId && (
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      type="button"
-                      onClick={handleSaveCollectionDetails}
-                      className="btn-collection-outline rounded-full h-9 text-xs px-4"
-                    >
-                      <Save className="h-3.5 w-3.5 mr-1.5" />
-                      Save Changes
-                    </Button>
-                    <span className="text-[11px] text-muted-foreground flex items-center">
-                      Editing: {selectedCollection?.title || 'Untitled collection'}
-                    </span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="btn-collection-danger rounded-full border-transparent text-xs h-8 px-3"
+                    onClick={handleDeleteCollection}
+                  >
+                    <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                    Delete Collection
+                  </Button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                <div className="space-y-3">
+                  <div>
+                    <label className="input-label">Title</label>
+                    <Input
+                      value={collectionForm.title}
+                      onChange={(e) => setCollectionForm({ ...collectionForm, title: e.target.value })}
+                      placeholder="My Exclusive Collection"
+                    />
                   </div>
+                  <div>
+                    <label className="input-label">Description</label>
+                    <Textarea
+                      value={collectionForm.description}
+                      onChange={(e) => setCollectionForm({ ...collectionForm, description: e.target.value })}
+                      placeholder="Describe your collection..."
+                      rows={3}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="input-label">Price</label>
+                      <Input
+                        type="number"
+                        value={collectionForm.price}
+                        onChange={(e) => setCollectionForm({ ...collectionForm, price: parseFloat(e.target.value) })}
+                        placeholder="4.99"
+                        step="0.01"
+                      />
+                    </div>
+                    <div>
+                      <label className="input-label">Currency</label>
+                      <select
+                        value={collectionForm.currency}
+                        onChange={(e) => setCollectionForm({ ...collectionForm, currency: e.target.value })}
+                        className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                      >
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="input-label">Tags (comma separated)</label>
+                    <Input
+                      value={collectionForm.tags}
+                      onChange={(e) => setCollectionForm({ ...collectionForm, tags: e.target.value })}
+                      placeholder="art, photography, exclusive"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                {!selectedCollectionId ? (
+                  <Button
+                    type="button"
+                    onClick={handleCreateCollection}
+                    className="btn-collection-outline rounded-full h-9 text-xs px-4"
+                  >
+                    <Plus className="h-3.5 w-3.5 mr-1.5" />
+                    Create Collection
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={handleSaveCollectionDetails}
+                    className="btn-collection-outline rounded-full h-9 text-xs px-4"
+                  >
+                    <Save className="h-3.5 w-3.5 mr-1.5" />
+                    Save Changes
+                  </Button>
+                )}
+                {selectedCollectionId && (
+                  <span className="text-[11px] text-muted-foreground">
+                    Collection ID: {selectedCollectionId}
+                  </span>
                 )}
               </div>
 
               <div className="border-t border-border/70 pt-5 space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-base font-semibold text-foreground">Upload Collection</h3>
-                  <span className="text-xs text-muted-foreground">Multi-content, preview first</span>
+                  <h3 className="text-base font-semibold text-foreground">Media Manager</h3>
+                  <span className="text-xs text-muted-foreground">Step 2 of 2: upload and organize content</span>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                {!selectedCollectionId && (
+                  <div className="border border-dashed border-border rounded-lg p-5 text-center text-sm text-muted-foreground">
+                    Create or select a collection from the left panel to enable uploads.
+                  </div>
+                )}
+
+                <div className={`grid grid-cols-1 lg:grid-cols-2 gap-3 ${!selectedCollectionId ? 'opacity-60 pointer-events-none' : ''}`}>
                   <div className="space-y-3">
                     <div>
-                      <label className="input-label">
-                        Select Collection
-                      </label>
-                      <select
-                        value={selectedCollectionId}
-                        onChange={(e) => setSelectedCollectionId(e.target.value)}
-                        className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
-                      >
-                        <option value="">Choose a collection</option>
-                        {collections.map((collection) => (
-                          <option key={collection._id} value={collection._id}>
-                            {collection.title}
-                          </option>
-                        ))}
-                      </select>
-                      <p className="text-[11px] text-muted-foreground mt-1">
-                        Leave empty to create a new collection from the form above.
-                      </p>
-                    </div>
-
-                    <div>
-                      <label className="input-label">
-                        Content (image/video, max 25MB each)
-                      </label>
+                      <label className="input-label">Content (image/video, max 25MB each)</label>
                       <Input
                         ref={collectionUploadInputRef}
                         type="file"
@@ -1715,32 +1814,21 @@ const CreatorDashboard = () => {
                             {collectionFiles.length} selected
                           </span>
                         )}
-                        {selectedCollectionId && (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="btn-collection-danger rounded-full border-transparent text-[11px] h-7 px-3"
-                            onClick={handleDeleteCollection}
-                          >
-                            Delete collection
-                          </Button>
-                        )}
                       </div>
                     </div>
 
-                      <Button
-                        type="button"
-                        onClick={handleUploadCollectionMedia}
-                        disabled={uploadingCollectionMedia}
+                    <Button
+                      type="button"
+                      onClick={handleUploadCollectionMedia}
+                      disabled={uploadingCollectionMedia || !selectedCollectionId}
                       className="w-full btn-collection-outline rounded-full h-9 text-xs"
-                      >
-                        {uploadingCollectionMedia ? 'Uploading...' : 'Upload Collection'}
-                      </Button>
+                    >
+                      {uploadingCollectionMedia ? 'Uploading...' : 'Upload to Selected Collection'}
+                    </Button>
                   </div>
 
                   <div className="space-y-3">
-                      <div className="text-xs font-medium text-muted-foreground">Preview</div>
+                    <div className="text-xs font-medium text-muted-foreground">Selected Files Preview</div>
                     {collectionPreviews.length === 0 ? (
                       <div className="border border-dashed border-border rounded-lg p-4 text-xs text-muted-foreground text-center">
                         Select one or more content files to preview them here.
@@ -1758,32 +1846,21 @@ const CreatorDashboard = () => {
                               <X className="h-3 w-3" />
                             </button>
                             {preview.file.type.startsWith('image/') ? (
-                              <img
-                                src={preview.url}
-                                alt={preview.file.name}
-                                className="h-20 w-full object-cover"
-                              />
+                              <img src={preview.url} alt={preview.file.name} className="h-20 w-full object-cover" />
                             ) : (
-                              <video
-                                src={preview.url}
-                                className="h-20 w-full object-cover"
-                                muted
-                                controls
-                                preload="metadata"
-                              />
+                              <video src={preview.url} className="h-20 w-full object-cover" muted controls preload="metadata" />
                             )}
                             <div className="px-2 py-1">
                               <div className="text-[11px] text-foreground truncate" title={preview.file.name}>
                                 {preview.file.name}
                               </div>
-                              <div className="text-[10px] text-muted-foreground">
-                                {formatFileSize(preview.file.size)}
-                              </div>
+                              <div className="text-[10px] text-muted-foreground">{formatFileSize(preview.file.size)}</div>
                             </div>
                           </div>
                         ))}
                       </div>
                     )}
+
                     {selectedCollectionId && (
                       <div className="pt-3 space-y-2">
                         <div className="text-xs font-medium text-muted-foreground">Existing Content</div>
@@ -1801,63 +1878,64 @@ const CreatorDashboard = () => {
                               const posterSources = getMediaSrcCandidates(originalThumb || originalFull);
                               const isVideo = isVideoMedia(media);
                               return (
-                              <div key={`${media.url || 'media'}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
-                                <button
-                                  type="button"
-                                  onClick={() => handleRemoveExistingMedia(index)}
-                                  className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
-                                  aria-label="Remove existing content"
-                                >
-                                  <X className="h-3 w-3" />
-                                </button>
-                                {isVideo ? (
-                                  videoSources.length > 0 ? (
-                                    <video
-                                      src={videoSources[0]}
-                                      poster={posterSources[0] || undefined}
-                                      data-src-index="0"
-                                      className="h-20 w-full object-cover relative z-10"
-                                      muted
-                                      preload="metadata"
-                                      onError={(e) => {
-                                        const target = e.currentTarget as HTMLVideoElement;
-                                        const nextIndex = Number(target.dataset.srcIndex || '0') + 1;
-                                        if (nextIndex < videoSources.length) {
-                                          target.dataset.srcIndex = String(nextIndex);
-                                          target.src = videoSources[nextIndex];
-                                          if (posterSources[nextIndex]) {
-                                            target.poster = posterSources[nextIndex];
+                                <div key={`${media.url || 'media'}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveExistingMedia(index)}
+                                    className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                                    aria-label="Remove existing content"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </button>
+                                  {isVideo ? (
+                                    videoSources.length > 0 ? (
+                                      <video
+                                        src={videoSources[0]}
+                                        poster={posterSources[0] || undefined}
+                                        data-src-index="0"
+                                        className="h-20 w-full object-cover relative z-10"
+                                        muted
+                                        preload="metadata"
+                                        onError={(e) => {
+                                          const target = e.currentTarget as HTMLVideoElement;
+                                          const nextIndex = Number(target.dataset.srcIndex || '0') + 1;
+                                          if (nextIndex < videoSources.length) {
+                                            target.dataset.srcIndex = String(nextIndex);
+                                            target.src = videoSources[nextIndex];
+                                            if (posterSources[nextIndex]) {
+                                              target.poster = posterSources[nextIndex];
+                                            }
+                                          } else {
+                                            target.style.display = 'none';
                                           }
-                                        } else {
-                                          target.style.display = 'none';
-                                        }
-                                      }}
-                                    />
-                                  ) : null
-                                ) : (
-                                  imageSources.length > 0 ? (
-                                    <img
-                                      src={imageSources[0]}
-                                      alt=""
-                                      data-src-index="0"
-                                      className="h-20 w-full object-cover relative z-10"
-                                      loading="lazy"
-                                      decoding="async"
-                                      onError={(e) => {
-                                        const target = e.currentTarget as HTMLImageElement;
-                                        const nextIndex = Number(target.dataset.srcIndex || '0') + 1;
-                                        if (nextIndex < imageSources.length) {
-                                          target.dataset.srcIndex = String(nextIndex);
-                                          target.src = imageSources[nextIndex];
-                                        } else {
-                                          target.style.display = 'none';
-                                        }
-                                      }}
-                                    />
-                                  ) : null
-                                )}
-                              </div>
-                            )})}
+                                        }}
+                                      />
+                                    ) : null
+                                  ) : (
+                                    imageSources.length > 0 ? (
+                                      <img
+                                        src={imageSources[0]}
+                                        alt=""
+                                        data-src-index="0"
+                                        className="h-20 w-full object-cover relative z-10"
+                                        loading="lazy"
+                                        decoding="async"
+                                        onError={(e) => {
+                                          const target = e.currentTarget as HTMLImageElement;
+                                          const nextIndex = Number(target.dataset.srcIndex || '0') + 1;
+                                          if (nextIndex < imageSources.length) {
+                                            target.dataset.srcIndex = String(nextIndex);
+                                            target.src = imageSources[nextIndex];
+                                          } else {
+                                            target.style.display = 'none';
+                                          }
+                                        }}
+                                      />
+                                    ) : null
+                                  )}
+                                </div>
+                              );
+                            })}
                           </div>
                         ) : (
                           <div className="border border-dashed border-border rounded-lg p-4 text-xs text-muted-foreground text-center">
@@ -1869,73 +1947,9 @@ const CreatorDashboard = () => {
                   </div>
                 </div>
               </div>
-
-              <div className="border-t border-border/70 pt-5">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-base font-semibold text-foreground">Your Collections</h3>
-                  <span className="text-xs text-muted-foreground">{collections.length} total</span>
-                </div>
-                <div className="space-y-3">
-                  {collections.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center text-center py-10 px-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500/15 to-cyan-500/15 border border-white/[0.06] flex items-center justify-center mb-3">
-                        <svg className="w-5 h-5 text-indigo-400/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-                      </div>
-                      <p className="text-sm font-medium text-foreground mb-1">No collections yet</p>
-                      <p className="text-xs text-muted-foreground max-w-[240px] leading-relaxed">
-                        Create your first collection above to start selling exclusive content.
-                      </p>
-                    </div>
-                  ) : (
-                    collections.map((collection, index) => (
-                      <div key={index} className="border border-border rounded-lg p-3">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="min-w-0">
-                            <h4 className="text-sm font-semibold text-foreground truncate">{collection.title}</h4>
-                            <span className="text-xs text-muted-foreground">
-                              {collection.media?.length || 0} items
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
-                              onClick={() => handleEditCollection(collection)}
-                            >
-                              <Edit className="h-3 w-3 mr-1" />
-                              Edit
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              className="btn-collection-danger rounded-full border-transparent text-[11px] h-7 px-3"
-                              onClick={() => handleDeleteCollectionById(collection._id, collection.title)}
-                            >
-                              <Trash2 className="h-3 w-3 mr-1" />
-                              Delete
-                            </Button>
-                          </div>
-                        </div>
-                        {collection.description && (
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                            {collection.description}
-                          </p>
-                        )}
-                        <div className="mt-2 text-xs text-foreground">
-                          ${collection.price} {collection.currency}
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
             </div>
           </div>
         )}
-
         {/* Unlock Everything Tab */}
         {activeTab === 'unlock' && (
           <div className="space-y-6">
@@ -2327,3 +2341,4 @@ const CreatorDashboard = () => {
 };
 
 export default CreatorDashboard;
+
