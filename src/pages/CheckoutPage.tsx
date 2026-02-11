@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Loader2, CheckCircle2, Lock, ChevronDown, ChevronUp, Clock, AlertCircle, CreditCard } from "lucide-react";
 
-// Environment configuration - no hardcoded URLs
+const RAW_API_URL =
+  import.meta.env.VITE_API_URL ||
+  'https://creator-platform-api-production.creatorplatformprod.workers.dev';
+
+// Environment configuration
 const CONFIG = {
-  API_URL: import.meta.env.VITE_API_URL || window.location.origin,
+  API_URL: RAW_API_URL.replace(/\/+$/, ''),
   CONTENT_URL: import.meta.env.VITE_CONTENT_URL || window.location.origin
 };
 
