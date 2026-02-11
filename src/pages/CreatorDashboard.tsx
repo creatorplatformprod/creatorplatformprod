@@ -75,6 +75,12 @@ const CreatorDashboard = () => {
   const [postCardSearch, setPostCardSearch] = useState('');
   const [uploadingStatusCardMedia, setUploadingStatusCardMedia] = useState(false);
   const statusCardUploadInputRef = useRef<HTMLInputElement | null>(null);
+  const profileBaselineRef = useRef('');
+  const postCardBaselineRef = useRef('');
+  const collectionBaselineRef = useRef('');
+  const [isProfileDirty, setIsProfileDirty] = useState(false);
+  const [isPostCardDirty, setIsPostCardDirty] = useState(false);
+  const [isCollectionDirty, setIsCollectionDirty] = useState(false);
 
   // Analytics state
   const [analyticsRange, setAnalyticsRange] = useState('30');
@@ -135,6 +141,20 @@ const CreatorDashboard = () => {
     tags: ''
   });
 
+  const serializeForDirtyCheck = (value: any) => JSON.stringify(value ?? {});
+
+  useEffect(() => {
+    if (!profileBaselineRef.current) {
+      profileBaselineRef.current = serializeForDirtyCheck(profileData);
+    }
+    if (!postCardBaselineRef.current) {
+      postCardBaselineRef.current = serializeForDirtyCheck(statusCardForm);
+    }
+    if (!collectionBaselineRef.current) {
+      collectionBaselineRef.current = serializeForDirtyCheck(collectionForm);
+    }
+  }, []);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tokenParam = params.get('token');
@@ -185,7 +205,7 @@ const CreatorDashboard = () => {
       if (userResult.success && userResult.user) {
         setUser(userResult.user);
         refreshPublicWebsiteState(userResult.user.username);
-        setProfileData({
+        const nextProfileData = {
           displayName: userResult.user.displayName || '',
           bio: userResult.user.bio || '',
           avatar: userResult.user.avatar || '',
@@ -200,7 +220,10 @@ const CreatorDashboard = () => {
           domainEmail: userResult.user.domainEmail || '',
           unlockAllPrice: userResult.user.unlockAllPrice || 0,
           unlockAllCurrency: userResult.user.unlockAllCurrency || 'USD'
-        });
+        };
+        setProfileData(nextProfileData);
+        profileBaselineRef.current = serializeForDirtyCheck(nextProfileData);
+        setIsProfileDirty(false);
       }
 
       if (userResult.user?.username) {
@@ -304,6 +327,55 @@ const CreatorDashboard = () => {
     };
   }, [selectedCollectionId, collections]);
 
+  useEffect(() => {
+    setIsProfileDirty(
+      serializeForDirtyCheck(profileData) !== profileBaselineRef.current
+    );
+  }, [profileData]);
+
+  useEffect(() => {
+    setIsPostCardDirty(
+      serializeForDirtyCheck(statusCardForm) !== postCardBaselineRef.current
+    );
+  }, [statusCardForm]);
+
+  useEffect(() => {
+    setIsCollectionDirty(
+      serializeForDirtyCheck(collectionForm) !== collectionBaselineRef.current
+    );
+  }, [collectionForm]);
+
+  const hasUnsavedChanges =
+    isProfileDirty ||
+    isPostCardDirty ||
+    isCollectionDirty ||
+    collectionFiles.length > 0 ||
+    !!statusCardFile;
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!hasUnsavedChanges) return;
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+  const requestTabChange = (nextTab: typeof activeTab) => {
+    if (nextTab === activeTab) return;
+    if (hasUnsavedChanges) {
+      const confirmLeave = window.confirm(
+        'You have unsaved changes. Leave this tab and discard them?'
+      );
+      if (!confirmLeave) return;
+    }
+    setActiveTab(nextTab);
+    setError('');
+    setSuccess('');
+    setInfoMessage('');
+  };
+
   const handleUpdateWebsite = () => {
     if (!user?.username) return;
     localStorage.setItem(`publicWebsitePublished:${user.username}`, 'true');
@@ -373,7 +445,10 @@ const CreatorDashboard = () => {
       if (result.success) {
         setSuccess(selectedPostCardId ? 'Post card updated.' : 'Post card created.');
         markPublicWebsiteDirty();
-        setStatusCardForm({ text: '', imageUrl: '', isLocked: false, order: 0 });
+        const resetPostCard = { text: '', imageUrl: '', isLocked: false, order: 0 };
+        setStatusCardForm(resetPostCard);
+        postCardBaselineRef.current = serializeForDirtyCheck(resetPostCard);
+        setIsPostCardDirty(false);
         setStatusCardFile(null);
         setSelectedPostCardId('');
         await loadUserData();
@@ -388,13 +463,16 @@ const CreatorDashboard = () => {
   };
 
   const handleEditPostCard = (card: any) => {
-    setSelectedPostCardId(card._id || '');
-    setStatusCardForm({
+    const nextPostCard = {
       text: card.text || '',
       imageUrl: card.imageUrl || '',
       isLocked: !!card.isLocked,
       order: Number(card.order) || 0
-    });
+    };
+    setSelectedPostCardId(card._id || '');
+    setStatusCardForm(nextPostCard);
+    postCardBaselineRef.current = serializeForDirtyCheck(nextPostCard);
+    setIsPostCardDirty(false);
     setStatusCardFile(null);
     setStatusCardPreviewUrl('');
     setTimeout(() => {
@@ -414,8 +492,11 @@ const CreatorDashboard = () => {
         setSuccess('Post card deleted.');
         markPublicWebsiteDirty();
         if (selectedPostCardId === cardId) {
+          const resetPostCard = { text: '', imageUrl: '', isLocked: false, order: 0 };
           setSelectedPostCardId('');
-          setStatusCardForm({ text: '', imageUrl: '', isLocked: false, order: 0 });
+          setStatusCardForm(resetPostCard);
+          postCardBaselineRef.current = serializeForDirtyCheck(resetPostCard);
+          setIsPostCardDirty(false);
           setStatusCardFile(null);
           setStatusCardPreviewUrl('');
         }
@@ -607,6 +688,8 @@ const CreatorDashboard = () => {
       setSuccess('Collection created. You can now upload content.');
       markPublicWebsiteDirty();
       setSelectedCollectionId(createdId);
+      collectionBaselineRef.current = serializeForDirtyCheck(collectionForm);
+      setIsCollectionDirty(false);
       setCollectionFiles([]);
       setCollectionPreviews([]);
       await loadUserData();
@@ -634,7 +717,10 @@ const CreatorDashboard = () => {
         markPublicWebsiteDirty();
         setSelectedCollectionId('');
         setSelectedCollection(null);
-        setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
+        const resetCollection = { title: '', description: '', price: 0, currency: 'USD', tags: '' };
+        setCollectionForm(resetCollection);
+        collectionBaselineRef.current = serializeForDirtyCheck(resetCollection);
+        setIsCollectionDirty(false);
         setCollectionFiles([]);
         setCollectionPreviews([]);
         await loadUserData();
@@ -665,7 +751,10 @@ const CreatorDashboard = () => {
         if (selectedCollectionId === collectionId) {
           setSelectedCollectionId('');
           setSelectedCollection(null);
-          setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
+          const resetCollection = { title: '', description: '', price: 0, currency: 'USD', tags: '' };
+          setCollectionForm(resetCollection);
+          collectionBaselineRef.current = serializeForDirtyCheck(resetCollection);
+          setIsCollectionDirty(false);
           setCollectionFiles([]);
           setCollectionPreviews([]);
         }
@@ -707,14 +796,46 @@ const CreatorDashboard = () => {
     }
   };
 
+  const handleMoveExistingMedia = async (mediaIndex: number, direction: 'up' | 'down') => {
+    if (!selectedCollectionId || !selectedCollection?.media) return;
+    const previousMedia = [...selectedCollection.media];
+    const targetIndex = direction === 'up' ? mediaIndex - 1 : mediaIndex + 1;
+    if (targetIndex < 0 || targetIndex >= previousMedia.length) return;
+
+    const nextMedia = [...previousMedia];
+    const [moved] = nextMedia.splice(mediaIndex, 1);
+    nextMedia.splice(targetIndex, 0, moved);
+    try {
+      setLoading(true);
+      setError('');
+      const result = await api.updateCollection(selectedCollectionId, { media: nextMedia });
+      const updatedMedia = result?.collection?.media;
+      if (result.success && Array.isArray(updatedMedia) && updatedMedia.length === nextMedia.length) {
+        setSelectedCollection((prev: any) => (prev ? { ...prev, media: updatedMedia } : prev));
+        setSuccess('Collection media order updated.');
+        markPublicWebsiteDirty();
+        await loadUserData();
+      } else {
+        setError(result.error || 'Failed to reorder media');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to reorder media');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleEditCollection = (collection: any) => {
-    setCollectionForm({
+    const nextCollectionForm = {
       title: collection.title || '',
       description: collection.description || '',
       price: Number(collection.price) || 0,
       currency: collection.currency || 'USD',
       tags: Array.isArray(collection.tags) ? collection.tags.join(', ') : ''
-    });
+    };
+    setCollectionForm(nextCollectionForm);
+    collectionBaselineRef.current = serializeForDirtyCheck(nextCollectionForm);
+    setIsCollectionDirty(false);
     setSelectedCollectionId(collection._id || '');
     setTimeout(() => {
       collectionFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -742,6 +863,8 @@ const CreatorDashboard = () => {
       if (result.success) {
         setSuccess('Collection updated.');
         markPublicWebsiteDirty();
+        collectionBaselineRef.current = serializeForDirtyCheck(collectionForm);
+        setIsCollectionDirty(false);
         setSelectedCollectionId(selectedCollectionId);
         await loadUserData();
       } else {
@@ -1040,7 +1163,7 @@ const CreatorDashboard = () => {
             ].map(item => (
               <button
                 key={item.key}
-                onClick={() => { setActiveTab(item.key); setError(''); setSuccess(''); setInfoMessage(''); }}
+                onClick={() => requestTabChange(item.key)}
                 className={`creator-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ${
                   activeTab === item.key
                     ? 'bg-white/[0.08] text-foreground font-medium shadow-sm'
@@ -1083,7 +1206,7 @@ const CreatorDashboard = () => {
               ].map(item => (
                 <button
                   key={item.key}
-                  onClick={() => { setActiveTab(item.key); setError(''); setSuccess(''); setInfoMessage(''); }}
+                  onClick={() => requestTabChange(item.key)}
                   className={`creator-mobile-tab-item flex items-center gap-1.5 px-4 py-3 text-xs font-medium whitespace-nowrap border-b-2 transition-colors ${
                     activeTab === item.key
                       ? 'border-primary text-primary'
@@ -1215,7 +1338,7 @@ const CreatorDashboard = () => {
                 <h3 className="text-sm font-semibold text-foreground mb-4">Quick Actions</h3>
                 <div className="space-y-2">
                   <button
-                    onClick={() => { setActiveTab('collections'); setError(''); setSuccess(''); setInfoMessage(''); }}
+                    onClick={() => requestTabChange('collections')}
                     className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
@@ -1230,7 +1353,7 @@ const CreatorDashboard = () => {
                     <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
                   </button>
                   <button
-                    onClick={() => { setActiveTab('status-cards'); setError(''); setSuccess(''); setInfoMessage(''); }}
+                    onClick={() => requestTabChange('status-cards')}
                     className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
@@ -1267,7 +1390,7 @@ const CreatorDashboard = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-semibold text-foreground">Recent Sales</h3>
                   <button
-                    onClick={() => { setActiveTab('analytics'); setError(''); setSuccess(''); setInfoMessage(''); }}
+                    onClick={() => requestTabChange('analytics')}
                     className="dashboard-link-btn text-[10px] text-primary hover:text-primary/80 font-medium cursor-pointer bg-transparent border-none"
                   >
                     View all
@@ -1308,9 +1431,9 @@ const CreatorDashboard = () => {
               <p className="text-xs text-muted-foreground mb-4">Complete these steps to launch your creator page</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {[
-                  { label: 'Set up profile', done: !!(profileData.displayName && profileData.bio), action: () => setActiveTab('profile') },
-                  { label: 'Upload avatar', done: !!profileData.avatar, action: () => setActiveTab('profile') },
-                  { label: 'Create a collection', done: collections.length > 0, action: () => setActiveTab('collections') },
+                  { label: 'Set up profile', done: !!(profileData.displayName && profileData.bio), action: () => requestTabChange('profile') },
+                  { label: 'Upload avatar', done: !!profileData.avatar, action: () => requestTabChange('profile') },
+                  { label: 'Create a collection', done: collections.length > 0, action: () => requestTabChange('collections') },
                   { label: 'Publish your site', done: isPublicPublished, action: handlePublicWebsite },
                 ].map((step, i) => (
                   <button
@@ -1549,10 +1672,15 @@ const CreatorDashboard = () => {
               </div>
             </div>
 
-            <Button onClick={handleSaveProfile} className="w-full md:w-auto dash-btn-primary">
-              <Save className="w-4 h-4 mr-2" />
-              Save Profile
-            </Button>
+            <div className="dashboard-sticky-action-bar flex items-center justify-between gap-3">
+              <span className="text-xs text-muted-foreground">
+                {isProfileDirty ? 'Unsaved changes' : 'All changes saved'}
+              </span>
+              <Button onClick={handleSaveProfile} className="w-full md:w-auto dash-btn-primary">
+                <Save className="w-4 h-4 mr-2" />
+                Save Profile
+              </Button>
+            </div>
           </div>
         )}
 
@@ -1573,8 +1701,11 @@ const CreatorDashboard = () => {
                 type="button"
                 className="w-full dash-btn-secondary"
                 onClick={() => {
+                  const resetPostCard = { text: '', imageUrl: '', isLocked: false, order: 0 };
                   setSelectedPostCardId('');
-                  setStatusCardForm({ text: '', imageUrl: '', isLocked: false, order: 0 });
+                  setStatusCardForm(resetPostCard);
+                  postCardBaselineRef.current = serializeForDirtyCheck(resetPostCard);
+                  setIsPostCardDirty(false);
                   setStatusCardFile(null);
                   setStatusCardPreviewUrl('');
                 }}
@@ -1583,7 +1714,11 @@ const CreatorDashboard = () => {
                 New Post Card
               </Button>
               <div className="space-y-2 max-h-[560px] overflow-y-auto pr-1">
-                {statusCards.length === 0 ? (
+                {loading ? (
+                  <div className="border border-dashed border-border rounded-lg p-5 text-center text-xs text-muted-foreground">
+                    Loading post cards...
+                  </div>
+                ) : statusCards.length === 0 ? (
                   <div className="border border-dashed border-border rounded-lg p-5 text-center text-xs text-muted-foreground">
                     No post cards yet.
                   </div>
@@ -1734,7 +1869,7 @@ const CreatorDashboard = () => {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="dashboard-sticky-action-bar flex flex-wrap items-center gap-2">
                 <Button onClick={handleSavePostCard} className="dash-btn-primary">
                   <Save className="w-4 h-4 mr-2" />
                   {selectedPostCardId ? 'Save Changes' : 'Create Post Card'}
@@ -1742,6 +1877,9 @@ const CreatorDashboard = () => {
                 {selectedPostCardId && (
                   <span className="text-[11px] text-muted-foreground">Post Card ID: {selectedPostCardId}</span>
                 )}
+                <span className="text-[11px] text-muted-foreground ml-auto">
+                  {isPostCardDirty ? 'Unsaved changes' : 'All changes saved'}
+                </span>
               </div>
 
               <div className="border-t border-border/70 pt-5 space-y-4">
@@ -1843,9 +1981,12 @@ const CreatorDashboard = () => {
               <Button
                 type="button"
                 onClick={() => {
+                  const resetCollection = { title: '', description: '', price: 0, currency: 'USD', tags: '' };
                   setSelectedCollectionId('');
                   setSelectedCollection(null);
-                  setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
+                  setCollectionForm(resetCollection);
+                  collectionBaselineRef.current = serializeForDirtyCheck(resetCollection);
+                  setIsCollectionDirty(false);
                   setCollectionFiles([]);
                   setCollectionPreviews([]);
                 }}
@@ -1855,7 +1996,11 @@ const CreatorDashboard = () => {
                 New Collection
               </Button>
               <div className="space-y-2 max-h-[560px] overflow-y-auto pr-1">
-                {collections.length === 0 ? (
+                {loading ? (
+                  <div className="border border-dashed border-border rounded-lg p-5 text-center text-xs text-muted-foreground">
+                    Loading collections...
+                  </div>
+                ) : collections.length === 0 ? (
                   <div className="border border-dashed border-border rounded-lg p-5 text-center text-xs text-muted-foreground">
                     No collections yet.
                   </div>
@@ -2000,7 +2145,7 @@ const CreatorDashboard = () => {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="dashboard-sticky-action-bar flex flex-wrap items-center gap-2">
                 {!selectedCollectionId ? (
                   <Button
                     type="button"
@@ -2025,6 +2170,9 @@ const CreatorDashboard = () => {
                     Collection ID: {selectedCollectionId}
                   </span>
                 )}
+                <span className="text-[11px] text-muted-foreground ml-auto">
+                  {isCollectionDirty || collectionFiles.length > 0 ? 'Unsaved changes' : 'All changes saved'}
+                </span>
               </div>
 
               <div className="border-t border-border/70 pt-5 space-y-4">
@@ -2148,6 +2296,26 @@ const CreatorDashboard = () => {
                               const isVideo = isVideoMedia(media);
                               return (
                                 <div key={`${media.url || 'media'}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
+                                  <div className="absolute left-1 top-1 z-10 flex items-center gap-1">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleMoveExistingMedia(index, 'up')}
+                                      className="flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 disabled:opacity-40"
+                                      disabled={index === 0}
+                                      aria-label="Move media up"
+                                    >
+                                      <ChevronUp className="h-3 w-3" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleMoveExistingMedia(index, 'down')}
+                                      className="flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 disabled:opacity-40"
+                                      disabled={index === selectedCollection.media.length - 1}
+                                      aria-label="Move media down"
+                                    >
+                                      <ChevronDown className="h-3 w-3" />
+                                    </button>
+                                  </div>
                                   <button
                                     type="button"
                                     onClick={() => handleRemoveExistingMedia(index)}
