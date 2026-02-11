@@ -39,6 +39,8 @@ import {
   Copy,
   CheckCircle2,
   ArrowUpRight,
+  ChevronUp,
+  ChevronDown,
   Clock,
   X,
 } from 'lucide-react';
@@ -422,6 +424,42 @@ const CreatorDashboard = () => {
       }
     } catch (err: any) {
       setError(err.message || 'Failed to delete post card');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMovePostCard = async (cardId: string, direction: 'up' | 'down') => {
+    const ordered = [...statusCards].sort((a, b) => {
+      const aOrder = Number.isFinite(Number(a.order)) ? Number(a.order) : 0;
+      const bOrder = Number.isFinite(Number(b.order)) ? Number(b.order) : 0;
+      return aOrder - bOrder;
+    });
+
+    const currentIndex = ordered.findIndex((card) => card._id === cardId);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= ordered.length) return;
+
+    const reordered = [...ordered];
+    const [moved] = reordered.splice(currentIndex, 1);
+    reordered.splice(targetIndex, 0, moved);
+    const withOrder = reordered.map((card, index) => ({ ...card, order: index }));
+
+    setStatusCards(withOrder);
+    try {
+      setLoading(true);
+      setError('');
+      await Promise.all(
+        withOrder.map((card) => api.updateStatusCard(card._id, { order: card.order }))
+      );
+      setSuccess('Post card order updated.');
+      markPublicWebsiteDirty();
+      await loadUserData();
+    } catch (err: any) {
+      setError(err.message || 'Failed to update post card order');
+      await loadUserData();
     } finally {
       setLoading(false);
     }
@@ -1548,14 +1586,22 @@ const CreatorDashboard = () => {
                     No post cards yet.
                   </div>
                 ) : (
-                  statusCards
-                    .filter((card) => {
+                  (() => {
+                    const orderedCards = [...statusCards].sort((a, b) => {
+                      const aOrder = Number.isFinite(Number(a.order)) ? Number(a.order) : 0;
+                      const bOrder = Number.isFinite(Number(b.order)) ? Number(b.order) : 0;
+                      return aOrder - bOrder;
+                    });
+                    const filteredCards = orderedCards.filter((card) => {
                       const term = postCardSearch.trim().toLowerCase();
                       if (!term) return true;
                       return String(card.text || '').toLowerCase().includes(term);
-                    })
-                    .map((card, index) => {
+                    });
+                    return filteredCards.map((card, index) => {
                       const isActive = selectedPostCardId === card._id;
+                      const absoluteIndex = orderedCards.findIndex((item) => item._id === card._id);
+                      const isFirst = absoluteIndex <= 0;
+                      const isLast = absoluteIndex === orderedCards.length - 1;
                       return (
                         <button
                           key={index}
@@ -1571,10 +1617,36 @@ const CreatorDashboard = () => {
                                 {card.text || 'Untitled post card'}
                               </h4>
                               <p className="text-[11px] text-muted-foreground mt-0.5">
-                                {card.imageUrl ? 'Has media' : 'Text only'} {card.isLocked ? '• Locked' : ''}
+                                {card.imageUrl ? 'Has media' : 'Text only'} {card.isLocked ? '• Locked' : ''} • Order {Number.isFinite(Number(card.order)) ? Number(card.order) : 0}
                               </p>
                             </div>
                             <div className="flex items-center gap-1">
+                              <Button
+                                type="button"
+                                size="sm"
+                                className="dash-btn-secondary h-6 w-6 p-0"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleMovePostCard(card._id, 'up');
+                                }}
+                                disabled={isFirst}
+                                aria-label="Move up"
+                              >
+                                <ChevronUp className="h-3.5 w-3.5" />
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                className="dash-btn-secondary h-6 w-6 p-0"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleMovePostCard(card._id, 'down');
+                                }}
+                                disabled={isLast}
+                                aria-label="Move down"
+                              >
+                                <ChevronDown className="h-3.5 w-3.5" />
+                              </Button>
                               <Button
                                 type="button"
                                 size="sm"
@@ -1601,7 +1673,8 @@ const CreatorDashboard = () => {
                           </div>
                         </button>
                       );
-                    })
+                    });
+                  })()
                 )}
               </div>
             </div>
