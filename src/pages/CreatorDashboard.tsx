@@ -530,6 +530,38 @@ const CreatorDashboard = () => {
     }
   };
 
+  const handleDeleteCollectionById = async (collectionId: string, collectionTitle?: string) => {
+    if (!collectionId) return;
+    const confirmDelete = window.confirm(
+      `Delete "${collectionTitle || 'this collection'}" and all its content? This cannot be undone.`
+    );
+    if (!confirmDelete) return;
+
+    try {
+      setLoading(true);
+      setError('');
+      const result = await api.deleteCollection(collectionId);
+      if (result.success) {
+        setSuccess('Collection deleted.');
+        markPublicWebsiteDirty();
+        if (selectedCollectionId === collectionId) {
+          setSelectedCollectionId('');
+          setSelectedCollection(null);
+          setCollectionForm({ title: '', description: '', price: 0, currency: 'USD', tags: '' });
+          setCollectionFiles([]);
+          setCollectionPreviews([]);
+        }
+        await loadUserData();
+      } else {
+        setError(result.error || 'Failed to delete collection');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete collection');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleRemoveExistingMedia = async (mediaIndex: number) => {
     if (!selectedCollectionId || !selectedCollection?.media) return;
     const previousMedia = selectedCollection.media;
@@ -1688,7 +1720,7 @@ const CreatorDashboard = () => {
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
+                            className="btn-collection-danger rounded-full border-transparent text-[11px] h-7 px-3"
                             onClick={handleDeleteCollection}
                           >
                             Delete collection
@@ -1864,16 +1896,28 @@ const CreatorDashboard = () => {
                               {collection.media?.length || 0} items
                             </span>
                           </div>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
-                            onClick={() => handleEditCollection(collection)}
-                          >
-                            <Edit className="h-3 w-3 mr-1" />
-                            Edit
-                          </Button>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
+                              onClick={() => handleEditCollection(collection)}
+                            >
+                              <Edit className="h-3 w-3 mr-1" />
+                              Edit
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="btn-collection-danger rounded-full border-transparent text-[11px] h-7 px-3"
+                              onClick={() => handleDeleteCollectionById(collection._id, collection.title)}
+                            >
+                              <Trash2 className="h-3 w-3 mr-1" />
+                              Delete
+                            </Button>
+                          </div>
                         </div>
                         {collection.description && (
                           <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
