@@ -13,7 +13,7 @@ const ONBOARDING_STEPS = [
   },
   {
     title: "Publish Your Page",
-    description: "Click 'Publish' in the top-right to make your page live. You can publish even before adding content -- your page will show example content until you add your own.",
+    description: "Click 'Publish' in the top-right to push your latest saved dashboard changes to your public website.",
     icon: "🚀"
   },
   {
@@ -38,6 +38,8 @@ const PublicWebsitePreview = () => {
   const navigate = useNavigate();
   const [published, setPublished] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishError, setPublishError] = useState("");
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [activeDevice, setActiveDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [copied, setCopied] = useState(false);
@@ -104,12 +106,46 @@ const PublicWebsitePreview = () => {
     };
   }, [username]);
 
-  const handlePublish = () => {
+  const publishCollectionsForOwner = async () => {
     if (!username) return;
-    localStorage.setItem(`publicWebsitePublished:${username}`, "true");
-    localStorage.setItem(`publicWebsiteDirty:${username}`, "false");
-    setPublished(true);
-    setHasChanges(false);
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const me = await api.getCurrentUser();
+    const isOwner =
+      me?.success && me?.user?.username?.toLowerCase() === username.toLowerCase();
+    if (!isOwner) return;
+
+    const myCollectionsResult = await api.getMyCollections();
+    if (!myCollectionsResult?.success) return;
+
+    const unpublishedCollections = (myCollectionsResult.collections || []).filter(
+      (collection: any) => !collection?.isPublished
+    );
+    if (unpublishedCollections.length === 0) return;
+
+    await Promise.all(
+      unpublishedCollections.map((collection: any) =>
+        api.updateCollection(collection._id, { isPublished: true })
+      )
+    );
+  };
+
+  const handlePublish = async () => {
+    if (!username) return;
+    setPublishError("");
+    setIsPublishing(true);
+    try {
+      await publishCollectionsForOwner();
+      localStorage.setItem(`publicWebsitePublished:${username}`, "true");
+      localStorage.setItem(`publicWebsiteDirty:${username}`, "false");
+      setPublished(true);
+      setHasChanges(false);
+    } catch (error: any) {
+      setPublishError(error?.message || "Failed to publish changes.");
+    } finally {
+      setIsPublishing(false);
+    }
   };
 
   // Onboarding -- show on first preview visit
@@ -183,11 +219,11 @@ const PublicWebsitePreview = () => {
                 <span className="hidden sm:inline">Open</span>
               </Button>
               {hasChanges ? (
-                <Button onClick={handlePublish} className="btn-67 shadow-sm h-8 text-xs px-4">
+                <Button onClick={handlePublish} disabled={isPublishing} className="btn-67 shadow-sm h-8 text-xs px-4">
                   Save Changes
                 </Button>
               ) : !published ? (
-                <Button onClick={handlePublish} className="btn-67 shadow-sm h-8 text-xs px-4">
+                <Button onClick={handlePublish} disabled={isPublishing} className="btn-67 shadow-sm h-8 text-xs px-4">
                   Publish
                 </Button>
               ) : (
@@ -209,6 +245,11 @@ const PublicWebsitePreview = () => {
             <p className="text-sm text-amber-600 dark:text-amber-400">
               You have unsaved changes. Click "Save Changes" to publish them.
             </p>
+          </div>
+        )}
+        {publishError && (
+          <div className="mb-4 alert-danger">
+            <p className="text-sm text-red-600 dark:text-red-400">{publishError}</p>
           </div>
         )}
         {!hasChanges && published && (

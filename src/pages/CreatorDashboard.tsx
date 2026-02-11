@@ -81,6 +81,7 @@ const CreatorDashboard = () => {
   const [isProfileDirty, setIsProfileDirty] = useState(false);
   const [isPostCardDirty, setIsPostCardDirty] = useState(false);
   const [isCollectionDirty, setIsCollectionDirty] = useState(false);
+  const [profileAutoSaveState, setProfileAutoSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   // Analytics state
   const [analyticsRange, setAnalyticsRange] = useState('30');
@@ -334,6 +335,35 @@ const CreatorDashboard = () => {
   }, [profileData]);
 
   useEffect(() => {
+    if (!user?.username) return;
+    if (!isProfileDirty) return;
+
+    setProfileAutoSaveState('saving');
+    const timer = window.setTimeout(async () => {
+      try {
+        const result = await api.updateProfile(profileData);
+        if (result?.success) {
+          profileBaselineRef.current = serializeForDirtyCheck(profileData);
+          setIsProfileDirty(false);
+          setProfileAutoSaveState('saved');
+          markPublicWebsiteDirty();
+          if (result.user) {
+            setUser((prev: any) => ({ ...(prev || {}), ...result.user }));
+          }
+        } else {
+          setProfileAutoSaveState('error');
+          setError(result?.error || 'Failed to auto-save profile');
+        }
+      } catch (err: any) {
+        setProfileAutoSaveState('error');
+        setError(err.message || 'Failed to auto-save profile');
+      }
+    }, 700);
+
+    return () => window.clearTimeout(timer);
+  }, [profileData, isProfileDirty, user?.username]);
+
+  useEffect(() => {
     setIsPostCardDirty(
       serializeForDirtyCheck(statusCardForm) !== postCardBaselineRef.current
     );
@@ -376,11 +406,38 @@ const CreatorDashboard = () => {
     setInfoMessage('');
   };
 
-  const handleUpdateWebsite = () => {
-    if (!user?.username) return;
-    localStorage.setItem(`publicWebsitePublished:${user.username}`, 'true');
-    localStorage.setItem(`publicWebsiteDirty:${user.username}`, 'false');
-    refreshPublicWebsiteState(user.username);
+  const publishAllCollections = async () => {
+    const collectionsResult = await api.getMyCollections();
+    if (!collectionsResult?.success) return;
+    const unpublished = (collectionsResult.collections || []).filter(
+      (collection: any) => !collection?.isPublished
+    );
+    if (unpublished.length === 0) return;
+    await Promise.all(
+      unpublished.map((collection: any) =>
+        api.updateCollection(collection._id, { isPublished: true })
+      )
+    );
+  };
+
+  const handleUpdateWebsite = async () => {
+    if (!user?.username) return false;
+    setLoading(true);
+    setError('');
+    try {
+      await publishAllCollections();
+      localStorage.setItem(`publicWebsitePublished:${user.username}`, 'true');
+      localStorage.setItem(`publicWebsiteDirty:${user.username}`, 'false');
+      refreshPublicWebsiteState(user.username);
+      setSuccess('Public website published with your latest saved changes.');
+      await loadUserData();
+      return true;
+    } catch (err: any) {
+      setError(err.message || 'Failed to publish website');
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSaveProfile = async () => {
@@ -391,6 +448,7 @@ const CreatorDashboard = () => {
       const result = await api.updateProfile(profileData);
       if (result.success) {
         setSuccess('Profile saved successfully!');
+        setProfileAutoSaveState('saved');
         markPublicWebsiteDirty();
         await loadUserData();
       } else {
@@ -412,7 +470,7 @@ const CreatorDashboard = () => {
       if (uploadResult?.url) {
         setProfileData({ ...profileData, avatar: uploadResult.url });
         setAvatarFile(null);
-        setSuccess('Avatar uploaded! Click Save Profile to apply.');
+        setSuccess('Avatar uploaded. Profile will auto-save.');
       } else {
         setError('Failed to upload avatar');
       }
@@ -889,9 +947,10 @@ const CreatorDashboard = () => {
     }
   };
 
-  const handlePublicWebsite = () => {
+  const handlePublicWebsite = async () => {
     if (!user?.username) return;
-    // Always navigate to the public page -- it works even when empty (shows mock data)
+    const publishedNow = await handleUpdateWebsite();
+    if (!publishedNow) return;
     navigate(`/public/${user.username}`);
   };
 
@@ -1674,11 +1733,17 @@ const CreatorDashboard = () => {
 
             <div className="dashboard-sticky-action-bar flex items-center justify-between gap-3">
               <span className="text-xs text-muted-foreground">
-                {isProfileDirty ? 'Unsaved changes' : 'All changes saved'}
+                {profileAutoSaveState === 'saving'
+                  ? 'Saving profile changes...'
+                  : profileAutoSaveState === 'error'
+                  ? 'Auto-save failed. Try editing again.'
+                  : isProfileDirty
+                  ? 'Unsaved changes'
+                  : 'All changes saved automatically'}
               </span>
-              <Button onClick={handleSaveProfile} className="w-full md:w-auto dash-btn-primary">
+              <Button onClick={handleSaveProfile} className="w-full md:w-auto dash-btn-secondary">
                 <Save className="w-4 h-4 mr-2" />
-                Save Profile
+                Save Now (Optional)
               </Button>
             </div>
           </div>

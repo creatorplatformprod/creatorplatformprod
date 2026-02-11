@@ -8,7 +8,7 @@ import StatusCardWithMedia from "@/components/StatusCardWithMedia";
 import Preloader from "@/components/Preloader";
 import TopLoader from "@/components/TopLoader";
 import { api } from "@/lib/api";
-import { collections as mockCollectionsData, getRandomCollections } from "@/collections/collectionsData";
+import { getRandomCollections } from "@/collections/collectionsData";
 
 const CreatorProfile = () => {
   const { username } = useParams();
@@ -27,10 +27,8 @@ const CreatorProfile = () => {
   const [showFanPrompt, setShowFanPrompt] = useState(false);
   const [fanRegistered, setFanRegistered] = useState(false);
   const [fanInputEmail, setFanInputEmail] = useState('');
+  const hasDraftCapablePreview = isPreviewMode;
   
-  // Check if creator has any real content
-  const hasRealContent = collections.length > 0 || statusCards.length > 0;
-
   // Fan email persistence -- pre-fill for payments
   useEffect(() => {
     const savedEmail = localStorage.getItem('fan_email');
@@ -124,13 +122,45 @@ const CreatorProfile = () => {
 
   useEffect(() => {
     loadCreatorProfile();
-  }, [username]);
+  }, [username, isPreviewMode]);
 
   const loadCreatorProfile = async () => {
     try {
       setIsLoading(true);
-      const data = await api.getCreatorProfile(username || '');
-      
+      const safeUsername = username || '';
+      if (!safeUsername) {
+        return;
+      }
+
+      if (hasDraftCapablePreview) {
+        try {
+          const authUserResult = await api.getCurrentUser();
+          const isOwnerViewingPreview =
+            authUserResult?.success &&
+            authUserResult?.user?.username?.toLowerCase() === safeUsername.toLowerCase();
+
+          if (isOwnerViewingPreview) {
+            const [publicUserResult, privateCollectionsResult, statusCardsResult] = await Promise.all([
+              api.getUser(safeUsername),
+              api.getMyCollections(),
+              api.getStatusCards(safeUsername)
+            ]);
+
+            setCreatorData(
+              publicUserResult?.success
+                ? publicUserResult.user
+                : authUserResult.user
+            );
+            setCollections(privateCollectionsResult?.success ? (privateCollectionsResult.collections || []) : []);
+            setStatusCards(statusCardsResult?.success ? (statusCardsResult.statusCards || []) : []);
+            return;
+          }
+        } catch {
+          // Fall back to public endpoint for non-owner preview sessions.
+        }
+      }
+
+      const data = await api.getCreatorProfile(safeUsername);
       if (data.success) {
         setCreatorData(data.user);
         setCollections(data.collections || []);
@@ -208,14 +238,19 @@ const CreatorProfile = () => {
     }));
   }, [collections, creatorData]);
 
+  const shouldUseMockData =
+    isPreviewMode &&
+    formattedStatusData.length === 0 &&
+    formattedCollections.length === 0;
+
   // Create mixed feed (status cards + collections)
-  // Use mock data in preview mode when no real content exists
+  // Use mock data only when there is zero real content.
   const feedData = useMemo(() => {
     const mixedFeed = [];
     
     // Determine which data to use
-    const statusToUse = formattedStatusData.length > 0 ? formattedStatusData : (isPreviewMode ? mockStatusCards : []);
-    const collectionsToUse = formattedCollections.length > 0 ? formattedCollections : (isPreviewMode ? mockCollections : []);
+    const statusToUse = shouldUseMockData ? mockStatusCards : formattedStatusData;
+    const collectionsToUse = shouldUseMockData ? mockCollections : formattedCollections;
     
     // Add first status card at the beginning
     if (statusToUse.length > 0) {
@@ -245,7 +280,7 @@ const CreatorProfile = () => {
     });
 
     return mixedFeed.sort((a, b) => a.sortOrder - b.sortOrder);
-  }, [formattedStatusData, formattedCollections, isPreviewMode, mockStatusCards, mockCollections]);
+  }, [formattedStatusData, formattedCollections, shouldUseMockData, mockStatusCards, mockCollections]);
 
   const filteredFeedData = useMemo(() => {
     let data = feedData;
@@ -404,12 +439,12 @@ const CreatorProfile = () => {
   };
 
   const allCollections = useMemo(() => {
-    // Use mock collections only in preview mode when no real content
-    if (formattedCollections.length === 0 && isPreviewMode) {
+    // Use mock collections only when there is no real content at all.
+    if (shouldUseMockData) {
       return mockCollections;
     }
     return formattedCollections;
-  }, [formattedCollections, isPreviewMode, mockCollections]);
+  }, [formattedCollections, shouldUseMockData, mockCollections]);
 
   const handleCollectionClick = (collectionId: string) => {
     const element = document.getElementById(`collection-${collectionId}`);
@@ -513,7 +548,7 @@ const CreatorProfile = () => {
               <img
                 src={creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400'}
                 alt={creatorData?.displayName || 'Creator'}
-                className="w-22 h-22 sm:w-26 sm:h-26 object-cover bg-background"
+                className="w-20 h-20 sm:w-24 sm:h-24 object-cover bg-background"
               />
             </div>
             <div className="flex-1 min-w-0 pt-1 sm:pt-4">
@@ -629,7 +664,7 @@ const CreatorProfile = () => {
               </div>
             )}
             
-            {isPreviewMode && formattedCollections.length === 0 && mockCollections.length > 0 && (
+            {shouldUseMockData && mockCollections.length > 0 && (
               <div className="px-4 py-3 border-b border-border bg-amber-500/5">
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   <span className="inline-flex items-center px-1.5 py-0.5 bg-amber-500/20 text-amber-600 text-[10px] font-medium rounded mr-1">EXAMPLE</span>
@@ -800,7 +835,7 @@ const CreatorProfile = () => {
               <TopLoader />
 
               {/* Mock Data Explanation Banner - Only in preview mode with mock data */}
-              {isPreviewMode && !hasRealContent && filteredFeedData.length > 0 && (
+              {shouldUseMockData && filteredFeedData.length > 0 && (
                 <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl p-4 mb-4 animate-fade-in">
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
