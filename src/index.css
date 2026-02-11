@@ -147,14 +147,6 @@
     color-scheme: dark;
   }
 
-  .light {
-    color-scheme: light;
-  }
-
-  .dark {
-    color-scheme: dark;
-  }
-
   * {
     border-color: hsl(var(--border));
   }
@@ -1065,7 +1057,7 @@
     border-radius: 0.625rem;
   }
 
-  .landing-input-white::placeholder { color: #9ca3af; }
+  .landing-input-white::placeholder { color: #6b7280; }
 
   .landing-input-white:focus {
     border-color: #0ea5e9;

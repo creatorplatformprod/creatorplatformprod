@@ -2,7 +2,6 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import TipButton from "@/components/TipButton";
-import ThemeToggle from "@/components/ThemeToggle";
 
 interface FeedHeaderProps {
   onSearch: (query: string) => void;
@@ -129,7 +128,6 @@ const FeedHeader = ({
               <Search className="w-4 h-4" />
             </button>
 
-            <ThemeToggle />
             <TipButton onTipClick={() => {}} />
           </div>
         </div>
