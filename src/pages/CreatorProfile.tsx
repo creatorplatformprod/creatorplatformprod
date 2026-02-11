@@ -47,6 +47,7 @@ const MOCK_ASSETS = {
     }
   ]
 };
+const DEFAULT_COVER_OVERLAY = 0.45;
 
 const CreatorProfile = () => {
   const { username } = useParams();
@@ -535,10 +536,7 @@ const CreatorProfile = () => {
     ? new URL(window.location.href).searchParams.get('mode')
     : null;
   const showHelp = isPreviewMode && pageMode !== 'clean';
-  const coverOverlay = Math.max(
-    0.15,
-    Math.min(0.85, Number(creatorData?.coverOverlay ?? 0.45))
-  );
+  const coverOverlay = DEFAULT_COVER_OVERLAY;
 
   const renderSocialIcon = (
     url: string,
@@ -599,7 +597,7 @@ const CreatorProfile = () => {
       {/* Profile Hero Section */}
       <div className="profile-hero relative">
         {/* Cover Photo Area with gradient overlay */}
-        <div className="relative h-36 sm:h-44 lg:h-52 overflow-hidden">
+        <div className="relative h-52 sm:h-64 lg:h-72 overflow-hidden">
           {(creatorData?.coverImage || (shouldUseMockData ? MOCK_ASSETS.cover : '')) ? (
             <img
               src={creatorData?.coverImage || MOCK_ASSETS.cover}
@@ -617,7 +615,7 @@ const CreatorProfile = () => {
         </div>
 
         {/* Profile Info */}
-        <div className={`relative max-w-4xl mx-auto px-4 -mt-14 sm:-mt-16 pb-4 transition-all duration-300 ${sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0'}`}>
+        <div className={`relative max-w-4xl mx-auto px-4 -mt-20 sm:-mt-24 pb-4 transition-all duration-300 ${sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0'}`}>
           <div className="flex flex-col sm:flex-row items-start gap-4">
             <div className="profile-avatar-ring flex-shrink-0">
               <img

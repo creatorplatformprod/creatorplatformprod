@@ -2,6 +2,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import TipButton from "@/components/TipButton";
+import ThemeToggle from "@/components/ThemeToggle";
 
 interface FeedHeaderProps {
   onSearch: (query: string) => void;
@@ -20,11 +21,6 @@ const FeedHeader = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
-
-  useEffect(() => {
-    // Force dark mode on mount (including inside iframes)
-    document.documentElement.classList.add('dark');
-  }, []);
 
   useEffect(() => {
     const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
@@ -133,6 +129,7 @@ const FeedHeader = ({
               <Search className="w-4 h-4" />
             </button>
 
+            <ThemeToggle />
             <TipButton onTipClick={() => {}} />
           </div>
         </div>

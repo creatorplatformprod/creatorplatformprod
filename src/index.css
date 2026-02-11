@@ -143,9 +143,16 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  /* Force light color-scheme to match globally forced light mode */
   :root {
+    color-scheme: dark;
+  }
+
+  .light {
     color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
   }
 
   * {
@@ -1906,145 +1913,5 @@
 .tip-pay-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-}
-
-/* ========================================
-   GLOBAL WHITE SURFACE PASS
-   Keeps existing layout/components, flips dark shells to white.
-   ======================================== */
-
-:root {
-  --background: 0 0% 100%;
-  --foreground: 222 47% 11%;
-  --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
-  --secondary: 220 20% 96%;
-  --secondary-foreground: 222 47% 11%;
-  --muted: 220 20% 96%;
-  --muted-foreground: 215 16% 46%;
-  --border: 220 16% 90%;
-  --input: 220 20% 97%;
-  --feed-bg: 0 0% 100%;
-  --post-bg: 0 0% 100%;
-  --post-hover: 220 20% 98%;
-}
-
-body {
-  background: #ffffff;
-  color: hsl(var(--foreground));
-}
-
-.feed-bg {
-  background: #ffffff !important;
-}
-
-.card-container,
-.card-elevated,
-.post-card,
-.bento-stat,
-.stat-card-glow {
-  background: #ffffff !important;
-  border: 1px solid rgba(15, 23, 42, 0.10) !important;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
-}
-
-.creator-dashboard::before {
-  background: radial-gradient(900px 420px at 50% -25%, rgba(14, 165, 233, 0.10), transparent 62%) !important;
-}
-
-.creator-top-nav {
-  background: rgba(255, 255, 255, 0.92) !important;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06) !important;
-}
-
-.creator-sidebar,
-.dash-sidebar,
-.sidebar-glass {
-  background: rgba(255, 255, 255, 0.92) !important;
-  border-right: 1px solid rgba(15, 23, 42, 0.08) !important;
-  backdrop-filter: blur(10px);
-}
-
-.creator-mobile-tabs {
-  background: rgba(255, 255, 255, 0.95) !important;
-  border-bottom-color: rgba(15, 23, 42, 0.10) !important;
-}
-
-.creator-nav-item:hover,
-.dash-sidebar-item:hover {
-  background: rgba(2, 132, 199, 0.07) !important;
-}
-
-.dash-sidebar-item.active,
-.creator-nav-item.active {
-  background: rgba(14, 165, 233, 0.13) !important;
-  color: hsl(var(--foreground)) !important;
-}
-
-.creator-dashboard input,
-.creator-dashboard textarea,
-.creator-dashboard select {
-  background: #ffffff !important;
-  border-color: rgba(15, 23, 42, 0.18) !important;
-  color: hsl(var(--foreground)) !important;
-}
-
-.creator-dashboard input::placeholder,
-.creator-dashboard textarea::placeholder {
-  color: rgba(51, 65, 85, 0.55) !important;
-}
-
-.creator-dashboard .input-label,
-.input-label {
-  color: rgba(15, 23, 42, 0.85) !important;
-}
-
-.creator-dashboard .section-title,
-.creator-dashboard .card-title,
-.section-title,
-.card-title {
-  color: hsl(var(--foreground)) !important;
-}
-
-.creator-dashboard .alert-info,
-.creator-dashboard .alert-success,
-.creator-dashboard .alert-error {
-  background: #ffffff !important;
-  border: 1px solid rgba(15, 23, 42, 0.12) !important;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05) !important;
-}
-
-.creator-dashboard table {
-  background: #ffffff;
-}
-
-.creator-dashboard thead tr {
-  background: rgba(15, 23, 42, 0.04) !important;
-}
-
-.creator-dashboard tbody tr:hover {
-  background: rgba(2, 132, 199, 0.05) !important;
-}
-
-.profile-hero {
-  background: linear-gradient(180deg, rgba(14, 165, 233, 0.06), rgba(255, 255, 255, 0)) !important;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
-}
-
-.content-filter-tabs {
-  background: rgba(15, 23, 42, 0.03) !important;
-  border-color: rgba(15, 23, 42, 0.08) !important;
-}
-
-.content-filter-tab.active {
-  background: #ffffff !important;
-  border: 1px solid rgba(15, 23, 42, 0.10);
-}
-
-.brand-wordmark .text-white {
-  color: hsl(var(--foreground)) !important;
 }
 }

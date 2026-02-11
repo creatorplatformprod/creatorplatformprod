@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink, Monitor, Smartphone, Copy, Check, Link2 } from "lucide-react";
 import AccountMenu from "@/components/AccountMenu";
 import { api } from "@/lib/api";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const ONBOARDING_STEPS = [
   {
@@ -235,6 +236,7 @@ const PublicWebsitePreview = () => {
             
             {/* Right */}
             <div className="flex items-center gap-2">
+              <ThemeToggle />
               <Button 
                 variant="ghost" 
                 size="sm" 
