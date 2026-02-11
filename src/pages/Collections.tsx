@@ -12,6 +12,7 @@ import { specialSecureIds } from "@/utils/secureIdMapper";
 const Collections = () => {
   const [searchParams] = useSearchParams();
   const creatorUsername = searchParams.get('creator') || '';
+  const isPreviewMode = searchParams.get('mode') === 'preview';
   const [showUnlockModal, setShowUnlockModal] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [loadedImages, setLoadedImages] = useState(new Set());
@@ -187,13 +188,13 @@ const Collections = () => {
           setCanRevealContent(isOwner);
           setRevealStoreUrl(
             isOwner
-              ? `/collections/${specialSecureIds.COLLECTIONS}?creator=${creatorUsername}`
+              ? `/collections/${specialSecureIds.COLLECTIONS}?creator=${creatorUsername}${isPreviewMode ? '&mode=preview' : ''}`
               : ''
           );
           return;
         }
         setCanRevealContent(true);
-        setRevealStoreUrl(`/collections/${specialSecureIds.COLLECTIONS}?creator=${me.user.username}`);
+        setRevealStoreUrl(`/collections/${specialSecureIds.COLLECTIONS}?creator=${me.user.username}${isPreviewMode ? '&mode=preview' : ''}`);
       } catch {
         setCanRevealContent(false);
         setRevealStoreUrl('');
@@ -201,7 +202,7 @@ const Collections = () => {
     };
 
     resolveRevealAccess();
-  }, [creatorUsername]);
+  }, [creatorUsername, isPreviewMode]);
 
   function getRandomDimensions(index) {
     const ratios = [

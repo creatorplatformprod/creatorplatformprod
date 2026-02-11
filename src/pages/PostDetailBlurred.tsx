@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
@@ -12,6 +12,9 @@ import { getSecureId } from "@/utils/secureIdMapper";
 const PostDetailBlurred = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const creatorParam = searchParams.get('creator') || '';
+  const isPreviewMode = searchParams.get('mode') === 'preview';
   const [loadedImages, setLoadedImages] = useState(new Set<string>());
   const [measuredDims, setMeasuredDims] = useState({});
   const [paymentError, setPaymentError] = useState("");
@@ -255,14 +258,17 @@ const PostDetailBlurred = () => {
 
   const getRevealUrl = () => {
     if (!id) return '#';
+    const query = creatorParam
+      ? `?creator=${encodeURIComponent(creatorParam)}${isPreviewMode ? '&mode=preview' : ''}`
+      : (isPreviewMode ? '?mode=preview' : '');
     // Mock/local collections use secure IDs on revealed route.
     if (localCollection) {
       const resolvedId = localCollection.id;
       const secureId = getSecureId(resolvedId);
-      return secureId ? `/post/${secureId}` : `/post/${resolvedId}`;
+      return secureId ? `/post/${secureId}${query}` : `/post/${resolvedId}${query}`;
     }
     // Real creator collections use direct collection IDs with owner bypass.
-    return `/post/${id}`;
+    return `/post/${id}${query}`;
   };
 
   const collection = remoteCollection || localCollection || fallbackMockCollection;

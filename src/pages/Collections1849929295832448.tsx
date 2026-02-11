@@ -16,11 +16,12 @@ const Collections1849929295832448 = () => {
   const [searchParams] = useSearchParams();
   const accessToken = searchParams.get('access') || '';
   const creatorParam = searchParams.get('creator') || '';
+  const isPreviewMode = searchParams.get('mode') === 'preview';
   const [currentPage, setCurrentPage] = useState(1);
   const [loadedImages, setLoadedImages] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
-  const [isPreloading, setIsPreloading] = useState(true);
-  const [showPreloader, setShowPreloader] = useState(true);
+  const [isPreloading, setIsPreloading] = useState(!isPreviewMode);
+  const [showPreloader, setShowPreloader] = useState(!isPreviewMode);
   const [measuredDims, setMeasuredDims] = useState({});
   const [accessVerified, setAccessVerified] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
@@ -30,6 +31,21 @@ const Collections1849929295832448 = () => {
   useEffect(() => {
     const verifyAndLoad = async () => {
       setVerifying(true);
+
+      // Fast path for creator preview: don't block UI on access verification calls.
+      if (isPreviewMode && localStorage.getItem('token')) {
+        setAccessVerified(true);
+        setVerifying(false);
+        try {
+          const mine = await api.getMyCollections();
+          if (mine?.success) {
+            setRemoteCollections(mine.collections || []);
+          }
+        } catch {
+          // Ignore and keep fallback behavior.
+        }
+        return;
+      }
 
       // If it's the legacy hardcoded secure ID, allow (backward compat)
       if (secureId && isCollectionsSecureId(secureId) && !accessToken) {
@@ -105,7 +121,20 @@ const Collections1849929295832448 = () => {
 
     verifyAndLoad();
     document.documentElement.classList.add('dark');
-  }, [secureId, accessToken, creatorParam]);
+  }, [secureId, accessToken, creatorParam, isPreviewMode]);
+
+  const getProfileFallbackUrl = () => {
+    if (!creatorParam) return '/';
+    return `/public/${creatorParam}${isPreviewMode ? '?mode=preview' : ''}`;
+  };
+
+  const handleBackNavigation = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate(getProfileFallbackUrl());
+  };
 
   const imagesPerPage = 24;
 
@@ -457,7 +486,7 @@ const Collections1849929295832448 = () => {
           <p className="text-sm text-muted-foreground mb-4">
             You need a valid access token to view this content. Please complete the purchase to get access.
           </p>
-          <Button onClick={() => navigate('/')} className="btn-67">
+          <Button onClick={handleBackNavigation} className="btn-67">
             Go Home
           </Button>
         </div>
@@ -474,7 +503,7 @@ const Collections1849929295832448 = () => {
           <header className="sticky top-0 z-10 nav-elevated p-3 sm:p-4">
             <div className="max-w-6xl mx-auto flex items-center justify-between">
               <Button 
-                onClick={() => navigate('/')} 
+                onClick={handleBackNavigation} 
                 variant="ghost" 
                 size="sm"
                 className="hover:bg-secondary"

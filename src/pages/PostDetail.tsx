@@ -1,5 +1,5 @@
 // PostDetail.tsx - UPDATED WITH INLINE VIDEO
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -13,6 +13,9 @@ import { api } from "@/lib/api";
 const PostDetail = () => {
   const { secureId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const creatorParam = searchParams.get('creator') || '';
+  const isPreviewMode = searchParams.get('mode') === 'preview';
   const [loadedImages, setLoadedImages] = useState(new Set<string>());
   const [currentImagePage, setCurrentImagePage] = useState(1);
   const [isLoadingImages, setIsLoadingImages] = useState(false);
@@ -181,6 +184,24 @@ const PostDetail = () => {
   const localCollection = getCollectionFromSecureId();
   const collection = remoteCollection || localCollection;
 
+  const getProfileFallbackUrl = () => {
+    if (!creatorParam) return '/';
+    return `/public/${creatorParam}${isPreviewMode ? '?mode=preview' : ''}`;
+  };
+
+  const getCollectionsFallbackUrl = () => {
+    if (!creatorParam) return '/collections';
+    return `/collections?creator=${encodeURIComponent(creatorParam)}${isPreviewMode ? '&mode=preview' : ''}`;
+  };
+
+  const handleBackNavigation = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate(getProfileFallbackUrl());
+  };
+
   const getRandomDimensions = (index: number) => {
     const ratios = [
       { width: 400, height: 600 },
@@ -291,12 +312,15 @@ const PostDetail = () => {
   };
 
   if (accessDenied && secureId && !isValidSecureId(secureId)) {
+    const previewQuery = creatorParam
+      ? `?creator=${encodeURIComponent(creatorParam)}${isPreviewMode ? '&mode=preview' : ''}`
+      : (isPreviewMode ? '?mode=preview' : '');
     return (
       <div className="min-h-screen feed-bg flex items-center justify-center">
         <div className="text-center max-w-md">
           <h1 className="text-2xl font-bold text-foreground mb-4">Access Required</h1>
           <p className="text-muted-foreground mb-6">Purchase this collection to unlock full access.</p>
-          <Button onClick={() => navigate(`/post-blurred/${secureId}`)} variant="outline">
+          <Button onClick={() => navigate(`/post-blurred/${secureId}${previewQuery}`)} variant="outline">
             View Preview
           </Button>
         </div>
@@ -320,7 +344,7 @@ const PostDetail = () => {
       <div className="min-h-screen feed-bg flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Collection not found</h1>
-          <Button onClick={() => navigate("/")} variant="outline">
+          <Button onClick={handleBackNavigation} variant="outline">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Feed
           </Button>
@@ -338,7 +362,7 @@ const PostDetail = () => {
         <div className="max-w-6xl mx-auto p-3 sm:p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button 
-              onClick={() => navigate("/")} 
+              onClick={handleBackNavigation} 
               variant="ghost" 
               size="sm"
               className="hover:bg-secondary"
@@ -495,8 +519,8 @@ const PostDetail = () => {
                 &copy; {new Date().getFullYear()} {collection.user.name}. All rights reserved.
               </p>
               <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <button onClick={() => navigate('/')} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Gallery</button>
-                <button onClick={() => navigate('/collections')} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Collections</button>
+                <button onClick={() => navigate(getProfileFallbackUrl())} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Gallery</button>
+                <button onClick={() => navigate(getCollectionsFallbackUrl())} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Collections</button>
               </div>
             </div>
           </footer>
