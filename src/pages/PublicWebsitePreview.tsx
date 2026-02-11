@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink, Monitor, Smartphone, Copy, Check, Link2 } from "lucide-react";
 import AccountMenu from "@/components/AccountMenu";
 import { api } from "@/lib/api";
-import { specialSecureIds } from "@/utils/secureIdMapper";
 
 const ONBOARDING_STEPS = [
   {
@@ -46,20 +45,15 @@ const PublicWebsitePreview = () => {
   const [copied, setCopied] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(-1);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [previewCollections, setPreviewCollections] = useState<any[]>([]);
-  const [loadingPreviewCollections, setLoadingPreviewCollections] = useState(false);
   
   const previewUrl = useMemo(() => {
-    if (!username) return "#";
-    return `/${username}?mode=preview`;
+    if (!username) return "/public-unavailable";
+    return `/public/${username}?mode=preview`;
   }, [username]);
-  const blurredStoreUrl = useMemo(() => {
-    if (!username) return "#";
-    return `/collections?creator=${username}`;
-  }, [username]);
-  const unlockedStoreUrl = useMemo(() => {
-    if (!username) return "#";
-    return `/collections/${specialSecureIds.COLLECTIONS}?creator=${username}`;
+
+  const publicUrl = useMemo(() => {
+    if (!username) return "/public-unavailable";
+    return `/public/${username}`;
   }, [username]);
 
   const refreshPublishState = () => {
@@ -97,39 +91,6 @@ const PublicWebsitePreview = () => {
 
     loadCurrentUser();
   }, []);
-
-  useEffect(() => {
-    const loadPreviewCollections = async () => {
-      if (!username) return;
-      setLoadingPreviewCollections(true);
-      try {
-        const token = localStorage.getItem("token");
-        const currentUsername = currentUser?.username?.toLowerCase?.() || "";
-        const isOwner = !!token && currentUsername === username.toLowerCase();
-
-        if (isOwner) {
-          const mine = await api.getMyCollections();
-          if (mine?.success) {
-            setPreviewCollections((mine.collections || []).filter((c: any) => c?._id && !c?.isBundle && c?._id !== "all"));
-            return;
-          }
-        }
-
-        const published = await api.getCollections(username);
-        if (published?.success) {
-          setPreviewCollections((published.collections || []).filter((c: any) => c?._id && !c?.isBundle && c?._id !== "all"));
-        } else {
-          setPreviewCollections([]);
-        }
-      } catch {
-        setPreviewCollections([]);
-      } finally {
-        setLoadingPreviewCollections(false);
-      }
-    };
-
-    loadPreviewCollections();
-  }, [username, currentUser]);
 
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
@@ -251,7 +212,7 @@ const PublicWebsitePreview = () => {
   };
 
   const handleCopyUrl = () => {
-    const url = `${window.location.origin}/${username}`;
+    const url = `${window.location.origin}${publicUrl}`;
     navigator.clipboard.writeText(url).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -285,7 +246,7 @@ const PublicWebsitePreview = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => window.open(`/${username}`, '_blank')}
+                onClick={() => window.open(publicUrl, '_blank')}
                 className="text-muted-foreground hover:text-foreground text-xs h-8 gap-1.5"
               >
                 <ExternalLink className="w-3 h-3" />
@@ -365,7 +326,7 @@ const PublicWebsitePreview = () => {
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] rounded-lg border border-white/[0.06]">
               <Link2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
-              <span className="text-[11px] text-muted-foreground font-mono">sixsevencreator.com/{username}</span>
+              <span className="text-[11px] text-muted-foreground font-mono">sixsevencreator.com/public/{username}</span>
             </div>
             <button
               onClick={handleCopyUrl}
@@ -376,66 +337,6 @@ const PublicWebsitePreview = () => {
             </button>
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-2 mb-5">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => window.open(blurredStoreUrl, "_blank")}
-            className="text-muted-foreground hover:text-foreground text-xs h-8"
-          >
-            Open Blurred Store
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => window.open(unlockedStoreUrl, "_blank")}
-            className="text-muted-foreground hover:text-foreground text-xs h-8"
-          >
-            Open Unlocked Store
-          </Button>
-        </div>
-
-        <div className="mb-5 border border-white/[0.08] rounded-xl p-3 sm:p-4 bg-white/[0.02]">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <h3 className="text-xs sm:text-sm font-semibold text-foreground">Per-Collection Post Preview</h3>
-            <span className="text-[11px] text-muted-foreground">{previewCollections.length} items</span>
-          </div>
-          {loadingPreviewCollections ? (
-            <p className="text-xs text-muted-foreground">Loading collection links...</p>
-          ) : previewCollections.length === 0 ? (
-            <p className="text-xs text-muted-foreground">Create a collection first to preview blurred/revealed post routes.</p>
-          ) : (
-            <div className="space-y-2">
-              {previewCollections.map((collection: any) => (
-                <div key={collection._id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium text-foreground truncate">{collection.title || "Untitled collection"}</p>
-                    <p className="text-[11px] text-muted-foreground truncate">ID: {collection._id}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => window.open(`/post-blurred/${collection._id}`, "_blank")}
-                      className="text-muted-foreground hover:text-foreground text-xs h-7 px-2.5"
-                    >
-                      Blurred
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => window.open(`/post/${collection._id}`, "_blank")}
-                      className="text-muted-foreground hover:text-foreground text-xs h-7 px-2.5"
-                    >
-                      Revealed
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
         {/* Device Preview Frame */}
         <div className="flex justify-center">
           {/* Desktop Frame */}
@@ -454,7 +355,7 @@ const PublicWebsitePreview = () => {
                       <div className="flex-1 flex justify-center">
                         <div className="flex items-center gap-2 px-4 py-1 bg-white/[0.05] rounded-md border border-white/[0.08] max-w-sm w-full">
                           <svg className="w-3 h-3 text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                          <span className="text-[10px] text-muted-foreground truncate">sixsevencreator.com/{username}</span>
+                          <span className="text-[10px] text-muted-foreground truncate">sixsevencreator.com/public/{username}</span>
                         </div>
                       </div>
                     </div>
