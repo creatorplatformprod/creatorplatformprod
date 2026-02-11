@@ -476,7 +476,7 @@ const Collections = () => {
           >
             <ArrowLeft className="w-5 h-5 sm:w-5 sm:h-5" />
           </button>
-          {canRevealContent && revealStoreUrl && (
+          {isPreviewMode && canRevealContent && revealStoreUrl && (
             <button
               onClick={() => window.location.href = revealStoreUrl}
               className="fixed top-4 right-4 z-[60] h-9 sm:h-8 px-3 rounded-full bg-emerald-500/20 border border-emerald-400/30 backdrop-blur-xl hover:bg-emerald-500/30 text-emerald-300 transition-all duration-300 shadow-lg text-xs font-medium inline-flex items-center gap-1.5"

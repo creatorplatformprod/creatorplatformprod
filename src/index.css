@@ -370,9 +370,9 @@
     z-index: 0;
     pointer-events: none;
     background:
-      radial-gradient(1000px 500px at 18% -8%, rgba(56, 189, 248, 0.12), transparent 60%),
-      radial-gradient(900px 480px at 110% 12%, rgba(99, 102, 241, 0.10), transparent 62%),
-      linear-gradient(180deg, rgba(4, 9, 20, 0.6), rgba(2, 6, 18, 0.92));
+      radial-gradient(980px 540px at 14% -10%, rgba(34, 211, 238, 0.20), transparent 58%),
+      radial-gradient(920px 520px at 108% 10%, rgba(99, 102, 241, 0.22), transparent 60%),
+      linear-gradient(180deg, rgba(3, 8, 21, 0.72), rgba(2, 6, 18, 0.96));
   }
 
   .creator-dashboard > * {
@@ -381,18 +381,19 @@
   }
 
   .creator-top-nav {
-    background: rgba(6, 11, 22, 0.86);
+    background: rgba(6, 11, 22, 0.9);
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
-    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
-    box-shadow: 0 8px 28px rgba(2, 6, 23, 0.38);
+    border-bottom: 1px solid rgba(56, 189, 248, 0.24);
+    box-shadow: 0 8px 28px rgba(2, 6, 23, 0.46), 0 0 18px rgba(34, 211, 238, 0.12);
   }
 
   .creator-sidebar {
-    background: linear-gradient(180deg, rgba(10, 17, 31, 0.84), rgba(6, 12, 24, 0.75));
-    border-right-color: rgba(148, 163, 184, 0.14) !important;
+    background: linear-gradient(180deg, rgba(8, 16, 30, 0.9), rgba(5, 11, 22, 0.84));
+    border-right-color: rgba(56, 189, 248, 0.24) !important;
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
+    box-shadow: inset -1px 0 0 rgba(34, 211, 238, 0.12);
   }
 
   .creator-nav-item {
@@ -424,20 +425,23 @@
 
   .creator-dashboard .card-container,
   .creator-dashboard .card-elevated {
-    background: linear-gradient(180deg, rgba(10, 18, 34, 0.92), rgba(6, 12, 26, 0.9));
-    border: 1px solid rgba(148, 163, 184, 0.16);
+    background: linear-gradient(180deg, rgba(8, 18, 36, 0.95), rgba(5, 12, 26, 0.92));
+    border: 1px solid rgba(56, 189, 248, 0.34);
     border-radius: 18px;
     box-shadow:
-      0 18px 40px rgba(2, 6, 23, 0.48),
+      0 18px 40px rgba(2, 6, 23, 0.52),
+      0 0 0 1px rgba(34, 211, 238, 0.08),
+      0 0 24px rgba(34, 211, 238, 0.14),
       inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
   .creator-dashboard .card-container:hover,
   .creator-dashboard .card-elevated:hover {
-    border-color: rgba(125, 211, 252, 0.28);
+    border-color: rgba(34, 211, 238, 0.62);
     box-shadow:
-      0 22px 54px rgba(2, 6, 23, 0.56),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      0 22px 54px rgba(2, 6, 23, 0.58),
+      0 0 36px rgba(34, 211, 238, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
   .creator-dashboard .card-title {
