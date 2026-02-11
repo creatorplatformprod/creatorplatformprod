@@ -1582,7 +1582,7 @@ const CreatorDashboard = () => {
                   setCollectionFiles([]);
                   setCollectionPreviews([]);
                 }}
-                className="w-full btn-collection-outline rounded-full h-9 text-xs"
+                className="w-full dash-btn-secondary rounded-full h-9 text-xs"
               >
                 <Plus className="h-3.5 w-3.5 mr-1.5" />
                 New Collection
@@ -1625,7 +1625,7 @@ const CreatorDashboard = () => {
                                 type="button"
                                 variant="outline"
                                 size="sm"
-                                className="btn-collection-outline rounded-full border-transparent text-[10px] h-6 px-2"
+                                className="dash-btn-secondary rounded-full text-[10px] h-6 px-2"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleEditCollection(collection);
@@ -1738,7 +1738,7 @@ const CreatorDashboard = () => {
                   <Button
                     type="button"
                     onClick={handleCreateCollection}
-                    className="btn-collection-outline rounded-full h-9 text-xs px-4"
+                    className="dash-btn-primary rounded-full h-9 text-xs px-4"
                   >
                     <Plus className="h-3.5 w-3.5 mr-1.5" />
                     Create Collection
@@ -1747,7 +1747,7 @@ const CreatorDashboard = () => {
                   <Button
                     type="button"
                     onClick={handleSaveCollectionDetails}
-                    className="btn-collection-outline rounded-full h-9 text-xs px-4"
+                    className="dash-btn-primary rounded-full h-9 text-xs px-4"
                   >
                     <Save className="h-3.5 w-3.5 mr-1.5" />
                     Save Changes
@@ -1793,7 +1793,7 @@ const CreatorDashboard = () => {
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
+                          className="dash-btn-secondary rounded-full text-[11px] h-7 px-3"
                           onClick={() => collectionUploadInputRef.current?.click()}
                         >
                           Add more content
@@ -1802,7 +1802,7 @@ const CreatorDashboard = () => {
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="btn-collection-outline rounded-full border-transparent text-[11px] h-7 px-3"
+                          className="dash-btn-secondary rounded-full text-[11px] h-7 px-3"
                           onClick={() => {
                             setCollectionFiles([]);
                             setCollectionPreviews([]);
@@ -1823,7 +1823,7 @@ const CreatorDashboard = () => {
                       type="button"
                       onClick={handleUploadCollectionMedia}
                       disabled={uploadingCollectionMedia || !selectedCollectionId}
-                      className="w-full btn-collection-outline rounded-full h-9 text-xs"
+                      className="w-full dash-btn-primary rounded-full h-9 text-xs"
                     >
                       {uploadingCollectionMedia ? 'Uploading...' : 'Upload to Selected Collection'}
                     </Button>

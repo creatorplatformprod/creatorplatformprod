@@ -531,89 +531,86 @@
     background: rgba(15, 23, 42, 0.32);
   }
 
-  .creator-dashboard .dash-btn-primary {
-    border: 1px solid rgba(56, 189, 248, 0.48) !important;
-    background: linear-gradient(180deg, rgba(14, 165, 233, 0.92), rgba(2, 132, 199, 0.88)) !important;
+  .creator-dashboard .btn-collection-outline,
+  .creator-dashboard .btn-collection-danger,
+  .creator-dashboard .dash-btn-primary,
+  .creator-dashboard .dash-btn-secondary,
+  .creator-dashboard .dash-btn-ghost,
+  .creator-dashboard .btn-67 {
+    border-radius: 12px;
+    min-height: 2.25rem;
+    font-weight: 600;
+    letter-spacing: 0.005em;
+    transition: all 0.18s ease;
+  }
+
+  .creator-dashboard .dash-btn-primary,
+  .creator-dashboard .btn-67 {
+    border: 1px solid rgba(56, 189, 248, 0.56) !important;
+    background: #0ea5e9 !important;
     color: #f8fdff !important;
-    font-weight: 650;
-    letter-spacing: 0.01em;
-    box-shadow: 0 12px 28px rgba(3, 105, 161, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    box-shadow: 0 6px 18px rgba(2, 132, 199, 0.34);
   }
 
-  .creator-dashboard .dash-btn-primary:hover {
-    border-color: rgba(103, 232, 249, 0.8) !important;
-    background: linear-gradient(180deg, rgba(56, 189, 248, 0.96), rgba(14, 116, 144, 0.94)) !important;
+  .creator-dashboard .dash-btn-primary:hover,
+  .creator-dashboard .btn-67:hover {
+    background: #0284c7 !important;
+    border-color: rgba(125, 211, 252, 0.9) !important;
+    color: #ffffff !important;
     transform: translateY(-1px);
-    box-shadow: 0 16px 32px rgba(8, 47, 73, 0.44);
+    box-shadow: 0 10px 24px rgba(3, 105, 161, 0.4);
   }
 
-  .creator-dashboard .dash-btn-secondary {
-    border: 1px solid rgba(148, 163, 184, 0.36) !important;
-    background: linear-gradient(180deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.88)) !important;
+  .creator-dashboard .dash-btn-secondary,
+  .creator-dashboard .btn-collection-outline {
+    border: 1px solid rgba(148, 163, 184, 0.34) !important;
+    background: rgba(30, 41, 59, 0.72) !important;
     color: rgba(241, 245, 249, 0.98) !important;
-    box-shadow: 0 8px 20px rgba(2, 6, 23, 0.36);
+    box-shadow: 0 3px 12px rgba(2, 6, 23, 0.26);
   }
 
-  .creator-dashboard .dash-btn-secondary:hover {
-    border-color: rgba(125, 211, 252, 0.44) !important;
-    background: linear-gradient(180deg, rgba(51, 65, 85, 0.86), rgba(15, 23, 42, 0.9)) !important;
+  .creator-dashboard .dash-btn-secondary:hover,
+  .creator-dashboard .btn-collection-outline:hover {
+    border-color: rgba(125, 211, 252, 0.5) !important;
+    background: rgba(51, 65, 85, 0.92) !important;
     color: #ffffff !important;
   }
 
   .creator-dashboard .dash-btn-ghost {
-    border: 1px solid rgba(148, 163, 184, 0.2) !important;
-    background: rgba(15, 23, 42, 0.34) !important;
-    color: rgba(226, 232, 240, 0.96) !important;
+    border: 1px solid rgba(148, 163, 184, 0.22) !important;
+    background: rgba(15, 23, 42, 0.22) !important;
+    color: rgba(226, 232, 240, 0.94) !important;
+    box-shadow: none;
   }
 
   .creator-dashboard .dash-btn-ghost:hover {
     border-color: rgba(125, 211, 252, 0.4) !important;
-    background: rgba(30, 41, 59, 0.52) !important;
-    color: #ffffff !important;
-  }
-
-  .creator-dashboard .btn-collection-outline {
-    border: 1px solid rgba(125, 211, 252, 0.34);
-    background: linear-gradient(180deg, rgba(30, 41, 59, 0.82), rgba(15, 23, 42, 0.86));
-    color: #f8fafc !important;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    box-shadow: 0 6px 20px rgba(2, 6, 23, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  }
-
-  .creator-dashboard .btn-collection-outline:hover {
-    border-color: rgba(56, 189, 248, 0.62);
-    background: linear-gradient(180deg, rgba(37, 99, 235, 0.32), rgba(14, 165, 233, 0.28));
-    box-shadow: 0 10px 30px rgba(14, 116, 144, 0.34);
+    background: rgba(30, 41, 59, 0.5) !important;
     color: #ffffff !important;
   }
 
   .creator-dashboard .btn-collection-danger {
-    border: 1px solid rgba(248, 113, 113, 0.34);
-    background: linear-gradient(180deg, rgba(69, 10, 10, 0.34), rgba(30, 12, 18, 0.44));
+    border: 1px solid rgba(248, 113, 113, 0.44) !important;
+    background: rgba(127, 29, 29, 0.35) !important;
     color: #ffe4e6 !important;
-    font-weight: 600;
-    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.42);
+    box-shadow: 0 4px 14px rgba(69, 10, 10, 0.28);
   }
 
   .creator-dashboard .btn-collection-danger:hover {
-    border-color: rgba(248, 113, 113, 0.62);
-    background: linear-gradient(180deg, rgba(190, 24, 93, 0.36), rgba(185, 28, 28, 0.4));
-    box-shadow: 0 10px 28px rgba(136, 19, 55, 0.3);
+    border-color: rgba(248, 113, 113, 0.75) !important;
+    background: rgba(185, 28, 28, 0.55) !important;
     color: #fff1f2 !important;
   }
 
-  .creator-dashboard .btn-67 {
-    border: 1px solid rgba(56, 189, 248, 0.4);
-    background: linear-gradient(180deg, rgba(14, 116, 144, 0.88), rgba(12, 74, 110, 0.88));
-    color: #ecfeff !important;
-    box-shadow: 0 8px 22px rgba(8, 47, 73, 0.45);
-  }
-
-  .creator-dashboard .btn-67:hover {
-    border-color: rgba(125, 211, 252, 0.8);
-    background: linear-gradient(180deg, rgba(14, 165, 233, 0.86), rgba(2, 132, 199, 0.88));
-    color: #ffffff !important;
+  .creator-dashboard .dash-btn-primary:disabled,
+  .creator-dashboard .dash-btn-secondary:disabled,
+  .creator-dashboard .dash-btn-ghost:disabled,
+  .creator-dashboard .btn-collection-outline:disabled,
+  .creator-dashboard .btn-collection-danger:disabled,
+  .creator-dashboard .btn-67:disabled {
+    opacity: 0.45 !important;
+    transform: none !important;
+    box-shadow: none !important;
   }
 
   .creator-dashboard table {
