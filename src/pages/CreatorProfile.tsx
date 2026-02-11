@@ -544,6 +544,10 @@ const CreatorProfile = () => {
     : null;
   const showHelp = isPreviewMode && pageMode !== 'clean';
   const coverOverlay = DEFAULT_COVER_OVERLAY;
+  const creatorCoverImage =
+    typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
+  const previewFallbackCover = isPreviewMode && shouldUseMockData ? MOCK_ASSETS.cover : '';
+  const heroCoverImage = creatorCoverImage || previewFallbackCover;
 
   const renderSocialIcon = (
     url: string,
@@ -605,9 +609,9 @@ const CreatorProfile = () => {
       <div className="profile-hero relative">
         {/* Cover Photo Area with gradient overlay */}
         <div className="relative h-52 sm:h-64 lg:h-72 overflow-hidden">
-          {(creatorData?.coverImage || (shouldUseMockData ? MOCK_ASSETS.cover : '')) ? (
+          {heroCoverImage ? (
             <img
-              src={creatorData?.coverImage || MOCK_ASSETS.cover}
+              src={heroCoverImage}
               alt="Profile cover"
               className="absolute inset-0 w-full h-full object-cover"
             />
