@@ -173,8 +173,18 @@ const CreatorDashboard = () => {
       return;
     }
 
-    if (tabParam === 'profile') {
-      setActiveTab('profile');
+    if (tabParam) {
+      const allowedTabs: Array<typeof activeTab> = [
+        'overview',
+        'collections',
+        'unlock',
+        'status-cards',
+        'analytics',
+        'profile'
+      ];
+      if (allowedTabs.includes(tabParam as typeof activeTab)) {
+        setActiveTab(tabParam as typeof activeTab);
+      }
     }
 
     if (noticeParam === 'fill-links') {
@@ -1218,19 +1228,20 @@ const CreatorDashboard = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex items-center justify-between h-14">
               {/* Left - Brand */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                 <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-                <div className="w-px h-6 bg-white/[0.10]" />
-                <span className="text-sm font-semibold text-foreground tracking-tight">Dashboard</span>
+                <div className="hidden sm:block w-px h-6 bg-white/[0.10]" />
+                <span className="hidden sm:inline text-sm font-semibold text-foreground tracking-tight">Dashboard</span>
               </div>
               
               {/* Right - Actions */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <Button 
                   onClick={handlePreviewPublic} 
                   variant="ghost" 
                   size="sm" 
-                  className="dash-btn-ghost text-muted-foreground hover:text-foreground text-xs h-8 gap-1.5"
+                  className="dash-btn-ghost text-muted-foreground hover:text-foreground text-xs h-9 w-9 sm:h-8 sm:w-auto sm:px-3 gap-1.5 px-0"
+                  aria-label="Preview"
                 >
                   <Eye className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Preview</span>
@@ -1238,9 +1249,11 @@ const CreatorDashboard = () => {
                 <Button 
                   onClick={handlePublicWebsite} 
                   size="sm"
-                  className="dash-btn-primary shadow-sm h-8 text-xs px-3.5"
+                  className="dash-btn-primary shadow-sm h-9 sm:h-8 text-xs px-2.5 sm:px-3.5 gap-1.5"
+                  aria-label="Public website"
                 >
-                  Public Website
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Public Website</span>
                 </Button>
                 <AccountMenu currentUser={user} />
               </div>

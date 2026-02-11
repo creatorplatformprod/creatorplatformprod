@@ -544,7 +544,7 @@ const CheckoutPage = () => {
       <main className="max-w-5xl mx-auto px-3 sm:px-4 py-6 sm:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 sm:gap-10">
           {/* Order Summary -- Left Column */}
-          <div className="lg:col-span-2 order-2 lg:order-1">
+          <div className="lg:col-span-2 order-1 lg:order-1">
             <div className="lg:sticky lg:top-24">
               <div className="lg:hidden mb-4">
                 <button
@@ -611,7 +611,7 @@ const CheckoutPage = () => {
           </div>
 
           {/* Payment Form -- Right Column (primary focus) */}
-          <div className="lg:col-span-3 order-1 lg:order-2">
+          <div className="lg:col-span-3 order-2 lg:order-2">
             <div className="card-elevated rounded-2xl p-5 sm:p-7">
               <h1 className="text-lg sm:text-xl font-bold text-foreground mb-1 tracking-tight">Payment</h1>
               <p className="text-xs text-muted-foreground mb-6">

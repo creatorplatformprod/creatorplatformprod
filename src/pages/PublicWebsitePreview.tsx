@@ -226,35 +226,38 @@ const PublicWebsitePreview = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-14">
             {/* Left */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-              <div className="w-px h-6 bg-white/[0.10]" />
-              <span className="text-sm font-semibold text-foreground tracking-tight">Preview</span>
+              <div className="hidden sm:block w-px h-6 bg-white/[0.10]" />
+              <span className="hidden sm:inline text-sm font-semibold text-foreground tracking-tight">Preview</span>
               <div className="dot-live" title="Live" />
             </div>
             
             {/* Right */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => navigate("/dashboard")}
-                className="text-muted-foreground hover:text-foreground text-xs h-8"
+                className="text-muted-foreground hover:text-foreground text-xs h-9 sm:h-8 px-2 sm:px-3"
               >
-                Back to Dashboard
+                <span className="hidden md:inline">Back to Dashboard</span>
+                <span className="md:hidden">Back</span>
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => window.open(publicUrl, '_blank')}
-                className="text-muted-foreground hover:text-foreground text-xs h-8 gap-1.5"
+                className="text-muted-foreground hover:text-foreground text-xs h-9 w-9 sm:h-8 sm:w-auto sm:px-3 gap-1.5 px-0"
+                aria-label="Open public website"
               >
                 <ExternalLink className="w-3 h-3" />
                 <span className="hidden sm:inline">Open</span>
               </Button>
               {hasChanges ? (
                 <Button onClick={handlePublish} disabled={isPublishing} className="btn-67 shadow-sm h-8 text-xs px-4">
-                  Save Changes
+                  <span className="hidden sm:inline">Save Changes</span>
+                  <span className="sm:hidden">Save</span>
                 </Button>
               ) : !published ? (
                 <Button onClick={handlePublish} disabled={isPublishing} className="btn-67 shadow-sm h-8 text-xs px-4">

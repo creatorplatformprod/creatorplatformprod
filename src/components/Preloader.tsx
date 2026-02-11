@@ -24,8 +24,9 @@ const Preloader = ({ isVisible, onComplete }) => {
     >
       <div className="relative z-10 flex flex-col items-center gap-4">
         <div className="brand-wordmark text-xl md:text-2xl"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-        <div className="relative h-[2px] w-28 overflow-hidden rounded-full bg-white/10">
-          <div className="absolute inset-y-0 left-0 w-1/2 rounded-full bg-gradient-to-r from-indigo-500 to-cyan-500 animate-[preloader-slide_1.2s_ease-in-out_infinite]" />
+        <div className="relative w-6 h-6">
+          <div className="absolute inset-0 rounded-full border-2 border-white/15" />
+          <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-indigo-500 border-r-cyan-500 animate-spin" />
         </div>
       </div>
     </div>
