@@ -62,6 +62,7 @@ const CreatorDashboard = () => {
   const [collectionFiles, setCollectionFiles] = useState<File[]>([]);
   const [collectionPreviews, setCollectionPreviews] = useState<{ file: File; url: string }[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<any | null>(null);
+  const [selectedCollectionLoading, setSelectedCollectionLoading] = useState(false);
   const collectionUploadInputRef = useRef<HTMLInputElement | null>(null);
   const collectionFormRef = useRef<HTMLDivElement | null>(null);
   const [uploadingCollectionMedia, setUploadingCollectionMedia] = useState(false);
@@ -262,6 +263,28 @@ const CreatorDashboard = () => {
     }
     const match = collections.find((collection) => collection._id === selectedCollectionId);
     setSelectedCollection(match || null);
+
+    let cancelled = false;
+    setSelectedCollectionLoading(true);
+    api.getCollection(selectedCollectionId)
+      .then((result) => {
+        if (cancelled) return;
+        if (result?.success && result.collection) {
+          setSelectedCollection(result.collection);
+        }
+      })
+      .catch(() => {
+        // Keep the best available local data.
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setSelectedCollectionLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [selectedCollectionId, collections]);
 
   const handleUpdateWebsite = () => {
@@ -640,6 +663,15 @@ const CreatorDashboard = () => {
     }
     candidates.push(url);
     return Array.from(new Set(candidates.filter(Boolean)));
+  };
+
+  const isVideoMedia = (media: any) => {
+    const type = String(media?.mediaType || '').toLowerCase();
+    if (type) {
+      return type.includes('video');
+    }
+    const url = String(media?.url || '');
+    return /\.(mp4|webm|mov|ogg|avi)(\?|#|$)/i.test(url);
   };
 
   const buildChartSeries = (summary: any) => {
@@ -1715,75 +1747,86 @@ const CreatorDashboard = () => {
                         ))}
                       </div>
                     )}
-                    {selectedCollectionId && selectedCollection?.media?.length > 0 && (
+                    {selectedCollectionId && (
                       <div className="pt-3 space-y-2">
                         <div className="text-xs font-medium text-muted-foreground">Existing Content</div>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                          {selectedCollection.media.map((media: any, index: number) => {
-                            const originalThumb = media.thumbnailUrl || media.url;
-                            const originalFull = media.url;
-                            const imageSources = getMediaSrcCandidates(originalThumb || originalFull);
-                            const videoSources = getMediaSrcCandidates(originalFull);
-                            const posterSources = getMediaSrcCandidates(originalThumb || originalFull);
-                            return (
-                            <div key={`${media.url}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveExistingMedia(index)}
-                                className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
-                                aria-label="Remove existing content"
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                              {media.mediaType === 'video' ? (
-                                videoSources.length > 0 ? (
-                                  <video
-                                    src={videoSources[0]}
-                                    poster={posterSources[0] || undefined}
-                                    data-src-index="0"
-                                    className="h-20 w-full object-cover relative z-10"
-                                    muted
-                                    preload="metadata"
-                                    onError={(e) => {
-                                      const target = e.currentTarget as HTMLVideoElement;
-                                      const nextIndex = Number(target.dataset.srcIndex || '0') + 1;
-                                      if (nextIndex < videoSources.length) {
-                                        target.dataset.srcIndex = String(nextIndex);
-                                        target.src = videoSources[nextIndex];
-                                        if (posterSources[nextIndex]) {
-                                          target.poster = posterSources[nextIndex];
+                        {selectedCollectionLoading ? (
+                          <div className="border border-dashed border-border rounded-lg p-4 text-xs text-muted-foreground text-center">
+                            Loading existing content...
+                          </div>
+                        ) : selectedCollection?.media?.length > 0 ? (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            {selectedCollection.media.map((media: any, index: number) => {
+                              const originalThumb = media.thumbnailUrl || media.url;
+                              const originalFull = media.url;
+                              const imageSources = getMediaSrcCandidates(originalThumb || originalFull);
+                              const videoSources = getMediaSrcCandidates(originalFull);
+                              const posterSources = getMediaSrcCandidates(originalThumb || originalFull);
+                              const isVideo = isVideoMedia(media);
+                              return (
+                              <div key={`${media.url || 'media'}-${index}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20">
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveExistingMedia(index)}
+                                  className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                                  aria-label="Remove existing content"
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                                {isVideo ? (
+                                  videoSources.length > 0 ? (
+                                    <video
+                                      src={videoSources[0]}
+                                      poster={posterSources[0] || undefined}
+                                      data-src-index="0"
+                                      className="h-20 w-full object-cover relative z-10"
+                                      muted
+                                      preload="metadata"
+                                      onError={(e) => {
+                                        const target = e.currentTarget as HTMLVideoElement;
+                                        const nextIndex = Number(target.dataset.srcIndex || '0') + 1;
+                                        if (nextIndex < videoSources.length) {
+                                          target.dataset.srcIndex = String(nextIndex);
+                                          target.src = videoSources[nextIndex];
+                                          if (posterSources[nextIndex]) {
+                                            target.poster = posterSources[nextIndex];
+                                          }
+                                        } else {
+                                          target.style.display = 'none';
                                         }
-                                      } else {
-                                        target.style.display = 'none';
-                                      }
-                                    }}
-                                  />
-                                ) : null
-                              ) : (
-                                imageSources.length > 0 ? (
-                                  <img
-                                    src={imageSources[0]}
-                                    alt=""
-                                    data-src-index="0"
-                                    className="h-20 w-full object-cover relative z-10"
-                                    loading="lazy"
-                                    decoding="async"
-                                    onError={(e) => {
-                                      const target = e.currentTarget as HTMLImageElement;
-                                      const nextIndex = Number(target.dataset.srcIndex || '0') + 1;
-                                      if (nextIndex < imageSources.length) {
-                                        target.dataset.srcIndex = String(nextIndex);
-                                        target.src = imageSources[nextIndex];
-                                      } else {
-                                        target.style.display = 'none';
-                                      }
-                                    }}
-                                  />
-                                ) : null
-                              )}
-                            </div>
-                          )})}
-                        </div>
+                                      }}
+                                    />
+                                  ) : null
+                                ) : (
+                                  imageSources.length > 0 ? (
+                                    <img
+                                      src={imageSources[0]}
+                                      alt=""
+                                      data-src-index="0"
+                                      className="h-20 w-full object-cover relative z-10"
+                                      loading="lazy"
+                                      decoding="async"
+                                      onError={(e) => {
+                                        const target = e.currentTarget as HTMLImageElement;
+                                        const nextIndex = Number(target.dataset.srcIndex || '0') + 1;
+                                        if (nextIndex < imageSources.length) {
+                                          target.dataset.srcIndex = String(nextIndex);
+                                          target.src = imageSources[nextIndex];
+                                        } else {
+                                          target.style.display = 'none';
+                                        }
+                                      }}
+                                    />
+                                  ) : null
+                                )}
+                              </div>
+                            )})}
+                          </div>
+                        ) : (
+                          <div className="border border-dashed border-border rounded-lg p-4 text-xs text-muted-foreground text-center">
+                            No existing content yet.
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
