@@ -53,7 +53,7 @@ const PublicWebsitePreview = () => {
 
   const publicUrl = useMemo(() => {
     if (!username) return "/public-unavailable";
-    return `/public/${username}`;
+    return `/${username}`;
   }, [username]);
 
   const refreshPublishState = () => {
@@ -326,7 +326,7 @@ const PublicWebsitePreview = () => {
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] rounded-lg border border-white/[0.06]">
               <Link2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
-              <span className="text-[11px] text-muted-foreground font-mono">sixsevencreator.com/public/{username}</span>
+              <span className="text-[11px] text-muted-foreground font-mono">sixsevencreator.com/{username}</span>
             </div>
             <button
               onClick={handleCopyUrl}
@@ -355,7 +355,7 @@ const PublicWebsitePreview = () => {
                       <div className="flex-1 flex justify-center">
                         <div className="flex items-center gap-2 px-4 py-1 bg-white/[0.05] rounded-md border border-white/[0.08] max-w-sm w-full">
                           <svg className="w-3 h-3 text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                          <span className="text-[10px] text-muted-foreground truncate">sixsevencreator.com/public/{username}</span>
+                          <span className="text-[10px] text-muted-foreground truncate">sixsevencreator.com/{username}</span>
                         </div>
                       </div>
                     </div>

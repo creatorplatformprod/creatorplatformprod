@@ -1011,7 +1011,7 @@ const CreatorDashboard = () => {
 
   const handlePublicWebsite = () => {
     if (!user?.username) return;
-    navigate(`/public/${user.username}`);
+    navigate(`/${user.username}`);
   };
 
   const formatMoney = (value: number, currencyCode?: string) => {
