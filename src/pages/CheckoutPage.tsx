@@ -462,6 +462,14 @@ const CheckoutPage = () => {
               <ArrowLeft className="w-4 h-4" />
               <span>Return to Store</span>
             </button>
+            <button
+              onClick={() => {
+                window.location.href = '/recover-access';
+              }}
+              className="w-full mt-2 text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2 bg-transparent border-none cursor-pointer"
+            >
+              Recover previous access links
+            </button>
           </div>
           
           <div className="pt-4 border-t border-border">

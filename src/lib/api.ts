@@ -326,6 +326,19 @@ export const api = {
     return apiRequest(`/api/payment/verify?token=${token}`);
   },
 
+  /**
+   * Recover access links by email (no-account flow)
+   */
+  recoverAccessLinks: async (data: {
+    email: string;
+    creatorUsername?: string;
+  }) => {
+    return apiRequest('/api/payment/recover-access', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
   // ==================== Analytics ====================
 
   /**

@@ -19,6 +19,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import TipCheckoutPage from "./pages/TipCheckoutPage";
 import AuthCallback from "./pages/AuthCallback";
 import Pricing from "./pages/Pricing";
+import RecoverAccess from "./pages/RecoverAccess";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
             {/* Checkout Routes */}
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/tip-checkout" element={<TipCheckoutPage />} />
+            <Route path="/recover-access" element={<RecoverAccess />} />
             
             {/* Legacy Index (for existing content) */}
             <Route path="/index" element={<Index />} />

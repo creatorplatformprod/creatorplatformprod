@@ -628,7 +628,7 @@ const PostDetailBlurred = () => {
                 />
               </div>
               
-              <button
+              <button 
                 onClick={handleCardPaymentClick}
                 disabled={isCardPaymentLoading}
                 className="w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
@@ -641,6 +641,15 @@ const PostDetailBlurred = () => {
                     {`Unlock Now -- ${formattedPrice}`}
                   </>
                 )}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.href = '/recover-access';
+                }}
+                className="mt-2 text-[11px] text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2 bg-transparent border-none cursor-pointer"
+              >
+                Lost your access link? Recover via email
               </button>
             </div>
           </div>

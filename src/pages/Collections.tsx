@@ -623,6 +623,16 @@ const Collections = () => {
                         </>
                       )}
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const creatorQuery = creatorUsername ? `?creator=${encodeURIComponent(creatorUsername)}` : '';
+                        window.location.href = `/recover-access${creatorQuery}`;
+                      }}
+                      className="mt-2 text-[11px] text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2 bg-transparent border-none cursor-pointer"
+                    >
+                      Lost your access link? Recover via email
+                    </button>
                   </div>
                 </div>
               </div>
