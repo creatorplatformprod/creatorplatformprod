@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, type SyntheticEvent } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { Heart, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Flame, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather, Info } from "lucide-react";
 import FeedHeader from "@/components/FeedHeader";
@@ -518,6 +518,13 @@ const CreatorProfile = () => {
     }
   };
 
+  const handleAvatarImageError = (event: SyntheticEvent<HTMLImageElement>) => {
+    const img = event.currentTarget;
+    if (img.dataset.fallbackApplied === '1') return;
+    img.dataset.fallbackApplied = '1';
+    img.src = MOCK_ASSETS.avatar;
+  };
+
   const formatSocialUrl = (value?: string) => {
     if (!value) return '';
     const trimmed = value.trim();
@@ -622,6 +629,7 @@ const CreatorProfile = () => {
                 src={creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400'}
                 alt={creatorData?.displayName || 'Creator'}
                 className="w-20 h-20 sm:w-24 sm:h-24 object-cover bg-background"
+                onError={handleAvatarImageError}
               />
             </div>
             <div className="flex-1 min-w-0 pt-1 sm:pt-4">
