@@ -1298,7 +1298,7 @@ const CreatorDashboard = () => {
                 onClick={() => requestTabChange(item.key)}
                 className={`creator-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ${
                   activeTab === item.key
-                    ? 'bg-violet-500/[0.08] text-foreground font-medium border-violet-300/45 shadow-[0_0_0_1px_rgba(167,139,250,0.20),0_0_6px_rgba(139,92,246,0.10)]'
+                    ? 'creator-nav-item-active text-foreground font-medium'
                     : 'text-muted-foreground hover:text-foreground hover:bg-violet-500/[0.04] hover:border-violet-300/20'
                 }`}
               >
@@ -1341,7 +1341,7 @@ const CreatorDashboard = () => {
                   onClick={() => requestTabChange(item.key)}
                   className={`creator-mobile-tab-item flex items-center gap-1.5 px-4 py-3 text-xs font-medium whitespace-nowrap border-b-2 transition-colors ${
                     activeTab === item.key
-                      ? 'border-cyan-300 text-cyan-200'
+                      ? 'creator-mobile-tab-item-active'
                       : 'border-transparent text-muted-foreground hover:text-foreground'
                   }`}
                 >

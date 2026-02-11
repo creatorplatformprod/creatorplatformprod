@@ -385,16 +385,18 @@
     background: rgba(6, 11, 22, 0.9);
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
-    border-bottom: 1px solid rgba(124, 58, 237, 0.20);
-    box-shadow: 0 8px 28px rgba(2, 6, 23, 0.42), 0 0 14px rgba(124, 58, 237, 0.08);
+    border-bottom: 1px solid rgba(124, 58, 237, 0.18);
+    box-shadow: 0 8px 28px rgba(2, 6, 23, 0.42), 0 0 10px rgba(124, 58, 237, 0.06);
   }
 
   .creator-sidebar {
-    background: linear-gradient(180deg, rgba(8, 16, 30, 0.9), rgba(5, 11, 22, 0.84));
-    border-right-color: rgba(124, 58, 237, 0.12) !important;
+    background:
+      linear-gradient(180deg, rgba(8, 16, 30, 0.9), rgba(5, 11, 22, 0.84)),
+      linear-gradient(180deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.03));
+    border-right-color: rgba(124, 58, 237, 0.10) !important;
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    box-shadow: inset -1px 0 0 rgba(124, 58, 237, 0.04);
+    box-shadow: inset -1px 0 0 rgba(124, 58, 237, 0.03);
   }
 
   .creator-nav-item {
@@ -409,6 +411,16 @@
   .creator-nav-item .icon,
   .creator-nav-item svg {
     transition: color 0.2s ease;
+  }
+
+  .creator-dashboard .creator-nav-item-active {
+    background:
+      linear-gradient(rgba(20, 28, 52, 0.9), rgba(12, 19, 38, 0.9)) padding-box,
+      linear-gradient(120deg, rgba(99, 102, 241, 0.55), rgba(139, 92, 246, 0.45), rgba(34, 211, 238, 0.28)) border-box;
+    border: 1px solid transparent;
+    box-shadow:
+      0 0 0 1px rgba(99, 102, 241, 0.12),
+      0 0 8px rgba(124, 58, 237, 0.10);
   }
 
   .creator-main {
@@ -426,22 +438,27 @@
 
   .creator-dashboard .card-container,
   .creator-dashboard .card-elevated {
-    background: linear-gradient(180deg, rgba(8, 18, 36, 0.95), rgba(5, 12, 26, 0.92));
-    border: 1px solid rgba(109, 40, 217, 0.34);
+    background:
+      linear-gradient(180deg, rgba(8, 18, 36, 0.95), rgba(5, 12, 26, 0.92)) padding-box,
+      linear-gradient(125deg, rgba(99, 102, 241, 0.45), rgba(139, 92, 246, 0.35), rgba(34, 211, 238, 0.22)) border-box;
+    border: 1px solid transparent;
     border-radius: 18px;
     box-shadow:
       0 18px 40px rgba(2, 6, 23, 0.5),
-      0 0 0 1px rgba(124, 58, 237, 0.10),
-      0 0 24px rgba(124, 58, 237, 0.20),
+      0 0 0 1px rgba(124, 58, 237, 0.08),
+      0 0 14px rgba(124, 58, 237, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
   .creator-dashboard .card-container:hover,
   .creator-dashboard .card-elevated:hover {
-    border-color: rgba(167, 139, 250, 0.52);
+    background:
+      linear-gradient(180deg, rgba(9, 20, 39, 0.96), rgba(6, 13, 29, 0.94)) padding-box,
+      linear-gradient(125deg, rgba(129, 140, 248, 0.58), rgba(167, 139, 250, 0.46), rgba(56, 189, 248, 0.30)) border-box;
+    border: 1px solid transparent;
     box-shadow:
       0 22px 54px rgba(2, 6, 23, 0.56),
-      0 0 34px rgba(139, 92, 246, 0.30),
+      0 0 18px rgba(124, 58, 237, 0.16),
       inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
@@ -545,6 +562,13 @@
 
   .creator-dashboard .creator-mobile-tab-item:hover {
     background: rgba(15, 23, 42, 0.32);
+  }
+
+  .creator-dashboard .creator-mobile-tab-item-active {
+    color: rgba(199, 210, 254, 1) !important;
+    border-bottom-color: rgba(129, 140, 248, 0.95) !important;
+    box-shadow: inset 0 -1px 0 rgba(129, 140, 248, 0.75), 0 6px 12px rgba(99, 102, 241, 0.10);
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.24), rgba(15, 23, 42, 0.18));
   }
 
   .creator-dashboard .btn-collection-outline,
