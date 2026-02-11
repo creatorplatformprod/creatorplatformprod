@@ -98,7 +98,23 @@ const PostDetailBlurred = () => {
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   };
 
-  const localCollection = getCollection(id as string);
+  const resolveLocalCollection = (collectionId?: string) => {
+    if (!collectionId) return undefined;
+    const directCollection = getCollection(collectionId);
+    if (directCollection) return directCollection;
+
+    const mockMatch = collectionId.match(/^mock-collection-(\d+)$/i);
+    if (!mockMatch) return undefined;
+
+    const allIds = getAllCollectionIds();
+    if (allIds.length === 0) return undefined;
+
+    const parsed = Number.parseInt(mockMatch[1], 10);
+    const index = Number.isNaN(parsed) ? 0 : Math.max(parsed - 1, 0) % allIds.length;
+    return getCollection(allIds[index]);
+  };
+
+  const localCollection = resolveLocalCollection(id as string);
   const fallbackMockCollection = getCollection(getAllCollectionIds()[0] || '');
 
   const loadRemoteCollection = async () => {
@@ -241,8 +257,9 @@ const PostDetailBlurred = () => {
     if (!id) return '#';
     // Mock/local collections use secure IDs on revealed route.
     if (localCollection) {
-      const secureId = getSecureId(id);
-      return secureId ? `/post/${secureId}` : `/post/${id}`;
+      const resolvedId = localCollection.id;
+      const secureId = getSecureId(resolvedId);
+      return secureId ? `/post/${secureId}` : `/post/${resolvedId}`;
     }
     // Real creator collections use direct collection IDs with owner bypass.
     return `/post/${id}`;
