@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -865,9 +865,9 @@ const CreatorDashboard = () => {
   }, [analyticsRange, analyticsGroupBy, analyticsMetric, analyticsStatus, analyticsCollectionId, analyticsCurrency, salesSearch]);
 
   return (
-    <div className="min-h-screen feed-bg">
+    <div className="creator-dashboard min-h-screen feed-bg">
         {/* Top Navbar */}
-        <nav className="sticky top-0 z-50 nav-elevated">
+        <nav className="creator-top-nav sticky top-0 z-50 nav-elevated">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex items-center justify-between h-14">
               {/* Left - Brand */}
@@ -902,8 +902,8 @@ const CreatorDashboard = () => {
         </nav>
 
         <div className="flex min-h-[calc(100vh-52px)]">
-        {/* ── Left Sidebar Nav ── */}
-        <aside className="hidden lg:flex flex-col w-[220px] flex-shrink-0 border-r border-white/[0.06] bg-[rgba(8,11,20,0.4)]">
+        {/* â”€â”€ Left Sidebar Nav â”€â”€ */}
+        <aside className="creator-sidebar hidden lg:flex flex-col w-[220px] flex-shrink-0 border-r border-white/[0.06] bg-[rgba(8,11,20,0.4)]">
           {/* Creator avatar + name */}
           <div className="px-4 pt-5 pb-4 border-b border-white/[0.06]">
             <div className="flex items-center gap-3">
@@ -936,7 +936,7 @@ const CreatorDashboard = () => {
               <button
                 key={item.key}
                 onClick={() => { setActiveTab(item.key); setError(''); setSuccess(''); setInfoMessage(''); }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ${
+                className={`creator-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ${
                   activeTab === item.key
                     ? 'bg-white/[0.08] text-foreground font-medium shadow-sm'
                     : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
@@ -963,10 +963,10 @@ const CreatorDashboard = () => {
           </div>
         </aside>
 
-        {/* ── Main Content Area ── */}
-        <div className="flex-1 min-w-0">
+        {/* â”€â”€ Main Content Area â”€â”€ */}
+        <div className="creator-main flex-1 min-w-0">
           {/* Mobile tab bar (horizontal, shown only on < lg) */}
-          <div className="lg:hidden sticky top-[52px] z-40 bg-[rgba(8,11,20,0.92)] backdrop-blur-xl border-b border-white/[0.06]">
+          <div className="creator-mobile-tabs lg:hidden sticky top-[52px] z-40 bg-[rgba(8,11,20,0.92)] backdrop-blur-xl border-b border-white/[0.06]">
             <div className="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {[
                 { key: 'overview' as const, icon: Home, label: 'Overview' },
@@ -992,7 +992,7 @@ const CreatorDashboard = () => {
             </div>
           </div>
 
-          <div className="px-4 sm:px-6 lg:px-8 py-5 sm:py-6 max-w-5xl">
+          <div className="creator-content-shell px-4 sm:px-6 lg:px-8 py-5 sm:py-6 max-w-5xl">
 
         {/* Messages */}
         {infoMessage && (
@@ -1011,7 +1011,7 @@ const CreatorDashboard = () => {
           </div>
         )}
 
-        {/* ══════════ Overview Tab ══════════ */}
+        {/* â•â•â•â•â•â•â•â•â•â• Overview Tab â•â•â•â•â•â•â•â•â•â• */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
             {/* Welcome header */}
@@ -1278,7 +1278,7 @@ const CreatorDashboard = () => {
               </div>
             </div>
 
-            {/* ── Section: Profile ── */}
+            {/* â”€â”€ Section: Profile â”€â”€ */}
             <h3 className="form-section-header">Profile</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -1305,7 +1305,7 @@ const CreatorDashboard = () => {
               </div>
             </div>
 
-            {/* ── Section: Social Links ── */}
+            {/* â”€â”€ Section: Social Links â”€â”€ */}
             <h3 className="form-section-header">Social Links</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -1381,7 +1381,7 @@ const CreatorDashboard = () => {
 
             </div>
 
-            {/* ── Section: Advanced ── */}
+            {/* â”€â”€ Section: Advanced â”€â”€ */}
             <h3 className="form-section-header">Advanced</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -1422,7 +1422,7 @@ const CreatorDashboard = () => {
                   placeholder="123456789"
                 />
                 <p className="text-xs text-muted-foreground mt-2">
-                  Add your bot to a chat and use that chat’s ID. You’ll get a message for each payment and completion.
+                  Add your bot to a chat and use that chatâ€™s ID. Youâ€™ll get a message for each payment and completion.
                 </p>
               </div>
 
@@ -1615,7 +1615,7 @@ const CreatorDashboard = () => {
                             <div className="min-w-0">
                               <h4 className="text-sm font-semibold text-foreground truncate">{collection.title}</h4>
                               <p className="text-[11px] text-muted-foreground mt-0.5">
-                                {(collection.media?.length || 0)} items � ${Number(collection.price || 0).toFixed(2)} {collection.currency || 'USD'}
+                                {(collection.media?.length || 0)} items • ${Number(collection.price || 0).toFixed(2)} {collection.currency || 'USD'}
                               </p>
                             </div>
                             <div className="flex items-center gap-1">
@@ -2221,7 +2221,7 @@ const CreatorDashboard = () => {
                         <div>
                           <p className="text-sm text-muted-foreground">Date</p>
                           <p className="text-sm text-foreground font-medium">
-                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : '—'}
+                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : 'â€”'}
                           </p>
                         </div>
                         <span className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -2249,7 +2249,7 @@ const CreatorDashboard = () => {
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <p className="text-sm text-muted-foreground">Buyer</p>
-                          <p className="text-sm text-foreground font-medium">{sale.emailMasked || '—'}</p>
+                          <p className="text-sm text-foreground font-medium">{sale.emailMasked || 'â€”'}</p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">Order</p>
@@ -2285,7 +2285,7 @@ const CreatorDashboard = () => {
                       salesList.map((sale: any) => (
                         <tr key={sale.id} className="border-t border-border">
                           <td className="px-4 py-3 text-foreground">
-                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : '—'}
+                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : 'â€”'}
                           </td>
                           <td className="px-4 py-3 text-foreground">{sale.collectionTitle}</td>
                           <td className="px-4 py-3 text-foreground">
@@ -2295,7 +2295,7 @@ const CreatorDashboard = () => {
                             {formatMoney(sale.creatorAmount, sale.currency)}
                           </td>
                           <td className="px-4 py-3 text-foreground capitalize">{sale.status}</td>
-                          <td className="px-4 py-3 text-foreground">{sale.emailMasked || '—'}</td>
+                          <td className="px-4 py-3 text-foreground">{sale.emailMasked || 'â€”'}</td>
                           <td className="px-4 py-3 text-muted-foreground">{sale.orderId}</td>
                         </tr>
                       ))
@@ -2341,4 +2341,5 @@ const CreatorDashboard = () => {
 };
 
 export default CreatorDashboard;
+
 
