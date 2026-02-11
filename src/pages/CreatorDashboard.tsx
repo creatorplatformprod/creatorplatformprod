@@ -1298,8 +1298,8 @@ const CreatorDashboard = () => {
                 onClick={() => requestTabChange(item.key)}
                 className={`creator-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ${
                   activeTab === item.key
-                    ? 'bg-cyan-400/[0.10] text-foreground font-medium border-cyan-300/60 shadow-[0_0_0_1px_rgba(34,211,238,0.38),0_0_10px_rgba(34,211,238,0.15)]'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-cyan-500/[0.06] hover:border-cyan-300/30'
+                    ? 'bg-violet-500/[0.08] text-foreground font-medium border-violet-300/45 shadow-[0_0_0_1px_rgba(167,139,250,0.20),0_0_6px_rgba(139,92,246,0.10)]'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-violet-500/[0.04] hover:border-violet-300/20'
                 }`}
               >
                 <item.icon className={`w-4 h-4 flex-shrink-0 ${activeTab === item.key ? 'text-primary' : ''}`} />
