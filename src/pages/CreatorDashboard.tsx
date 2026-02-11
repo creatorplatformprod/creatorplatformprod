@@ -362,7 +362,8 @@ const CreatorDashboard = () => {
       setSuccess('');
       const payload = {
         text: statusCardForm.text,
-        imageUrl: statusCardForm.imageUrl || undefined,
+        // Keep empty string so editing can intentionally clear existing media.
+        imageUrl: statusCardForm.imageUrl,
         isLocked: statusCardForm.isLocked,
         order: statusCardForm.order
       };
@@ -732,10 +733,11 @@ const CreatorDashboard = () => {
       const tags = collectionForm.tags.split(',').map(t => t.trim()).filter(t => t);
       const result = await api.updateCollection(selectedCollectionId, {
         title: collectionForm.title,
-        description: collectionForm.description || undefined,
+        // Allow clearing description/tags by sending empty values instead of undefined.
+        description: collectionForm.description,
         price: collectionForm.price,
         currency: collectionForm.currency,
-        tags: tags.length > 0 ? tags : undefined
+        tags
       });
       if (result.success) {
         setSuccess('Collection updated.');
