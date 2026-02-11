@@ -1006,10 +1006,8 @@ const CreatorDashboard = () => {
     }
   };
 
-  const handlePublicWebsite = async () => {
+  const handlePublicWebsite = () => {
     if (!user?.username) return;
-    const publishedNow = await handleUpdateWebsite();
-    if (!publishedNow) return;
     navigate(`/public/${user.username}`);
   };
 
