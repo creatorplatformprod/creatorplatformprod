@@ -1900,6 +1900,8 @@ const CreatorDashboard = () => {
                       const absoluteIndex = orderedCards.findIndex((item) => item._id === card._id);
                       const isFirst = absoluteIndex <= 0;
                       const isLast = absoluteIndex === orderedCards.length - 1;
+                      const cardMediaSources = card.imageUrl ? getMediaSrcCandidates(card.imageUrl) : [];
+                      const cardHasVideo = card.imageUrl ? isVideoMedia({ url: card.imageUrl }) : false;
                       return (
                         <button
                           key={index}
@@ -1917,6 +1919,25 @@ const CreatorDashboard = () => {
                               <p className="text-[11px] text-muted-foreground mt-0.5">
                                 {card.imageUrl ? 'Has media' : 'Text only'} {card.isLocked ? '• Locked' : ''} • Order {Number.isFinite(Number(card.order)) ? Number(card.order) : 0}
                               </p>
+                              {card.imageUrl && (
+                                <div className="mt-2 h-14 w-24 overflow-hidden rounded-md border border-border bg-muted/20">
+                                  {cardHasVideo ? (
+                                    <video
+                                      src={cardMediaSources[0] || card.imageUrl}
+                                      className="h-full w-full object-cover"
+                                      muted
+                                      preload="metadata"
+                                    />
+                                  ) : (
+                                    <img
+                                      src={cardMediaSources[0] || card.imageUrl}
+                                      alt="Post media preview"
+                                      className="h-full w-full object-cover"
+                                      loading="lazy"
+                                    />
+                                  )}
+                                </div>
+                              )}
                             </div>
                             <div className="flex items-center gap-1">
                               <Button
@@ -2177,6 +2198,9 @@ const CreatorDashboard = () => {
                     })
                     .map((collection, index) => {
                       const isActive = selectedCollectionId === collection._id;
+                      const collectionMedia = Array.isArray(collection.media) ? collection.media : [];
+                      const showcaseItems = collectionMedia.slice(0, 3);
+                      const remainingCount = Math.max(collectionMedia.length - showcaseItems.length, 0);
                       return (
                         <button
                           key={index}
@@ -2192,6 +2216,29 @@ const CreatorDashboard = () => {
                               <p className="text-[11px] text-muted-foreground mt-0.5">
                                 {(collection.media?.length || 0)} items • ${Number(collection.price || 0).toFixed(2)} {collection.currency || 'USD'}
                               </p>
+                              {showcaseItems.length > 0 && (
+                                <div className="mt-2 flex items-center gap-1.5">
+                                  {showcaseItems.map((media: any, mediaIndex: number) => {
+                                    const isVideo = isVideoMedia(media);
+                                    const sources = getMediaSrcCandidates(media?.thumbnailUrl || media?.url);
+                                    const src = sources[0] || media?.thumbnailUrl || media?.url;
+                                    return (
+                                      <div key={`${collection._id}-media-${mediaIndex}`} className="h-14 w-14 overflow-hidden rounded-md border border-border bg-muted/20">
+                                        {isVideo ? (
+                                          <video src={src} className="h-full w-full object-cover" muted preload="metadata" />
+                                        ) : (
+                                          <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                  {remainingCount > 0 && (
+                                    <div className="h-14 min-w-[2.5rem] rounded-md border border-border bg-muted/20 px-2 text-[11px] font-medium text-muted-foreground flex items-center justify-center">
+                                      +{remainingCount}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
                             </div>
                             <div className="flex items-center gap-1">
                               <Button
