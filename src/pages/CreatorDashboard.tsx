@@ -467,7 +467,12 @@ const CreatorDashboard = () => {
       draft = null;
     }
     if (!draft || typeof draft !== 'object') return;
-    const result = await api.updateProfile(draft);
+    const payload = { ...draft };
+    // Prevent accidental avatar clearing from stale/partial draft snapshots.
+    if (typeof payload.avatar === 'string' && payload.avatar.trim() === '') {
+      delete payload.avatar;
+    }
+    const result = await api.updateProfile(payload);
     if (!result?.success) {
       throw new Error(result?.error || 'Failed to publish profile changes');
     }
@@ -478,7 +483,17 @@ const CreatorDashboard = () => {
     if (!user?.username) return;
     const key = getProfileDraftKey(user.username);
     if (!key) return;
-    localStorage.setItem(key, JSON.stringify(profileData));
+    const snapshot = { ...profileData } as any;
+    // Preserve the published avatar unless user explicitly replaced it.
+    if (
+      typeof snapshot.avatar === 'string' &&
+      snapshot.avatar.trim() === '' &&
+      typeof user?.avatar === 'string' &&
+      user.avatar.trim() !== ''
+    ) {
+      snapshot.avatar = user.avatar;
+    }
+    localStorage.setItem(key, JSON.stringify(snapshot));
     profileBaselineRef.current = serializeForDirtyCheck(profileData);
     setIsProfileDirty(false);
     setProfileAutoSaveState('saved');
