@@ -188,6 +188,11 @@ const CreatorProfile = () => {
     loadCreatorProfile();
   }, [username, isPreviewMode]);
 
+  useEffect(() => {
+    const creatorName = creatorData?.displayName || creatorData?.username || "Creator";
+    document.title = `${creatorName} | SixSevenCreator`;
+  }, [creatorData]);
+
   const loadCreatorProfile = async () => {
     try {
       setIsLoading(true);
