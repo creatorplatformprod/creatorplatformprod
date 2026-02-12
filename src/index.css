@@ -1474,6 +1474,151 @@
     color: hsl(var(--foreground));
   }
 
+  /* Public Website Templates */
+  .public-template {
+    --template-feed-bg: hsl(var(--feed-bg));
+    --template-grid-color: rgba(99, 102, 241, 0.05);
+    --template-hero-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(14, 165, 233, 0.08) 55%, transparent 80%);
+    --template-nav-line: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.22) 30%, rgba(14, 165, 233, 0.22) 70%, transparent);
+    --template-pill-bg: rgba(255, 255, 255, 0.04);
+    --template-pill-border: rgba(255, 255, 255, 0.1);
+    --template-avatar-ring: linear-gradient(135deg, #6366f1, #8b5cf6, #0ea5e9);
+    --template-button-bg: linear-gradient(90deg, #4f46e5 0%, #06b6d4 100%);
+    --template-button-shadow: rgba(79, 70, 229, 0.35);
+    --template-shell-border: rgba(255, 255, 255, 0.06);
+    --template-font: 'Inter', system-ui, sans-serif;
+    font-family: var(--template-font);
+  }
+
+  .public-template.feed-bg {
+    background: var(--template-feed-bg);
+  }
+
+  .public-template.feed-bg::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      linear-gradient(45deg, var(--template-grid-color) 1px, transparent 1px),
+      linear-gradient(-45deg, var(--template-grid-color) 1px, transparent 1px);
+    background-size: 30px 30px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, black 0%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, black 0%, transparent 75%);
+  }
+
+  .public-template .profile-hero {
+    background: var(--template-hero-bg);
+  }
+
+  .public-template .nav-elevated::after {
+    background: var(--template-nav-line);
+  }
+
+  .public-template .profile-avatar-ring {
+    background: var(--template-avatar-ring);
+  }
+
+  .public-template .stat-pill {
+    background: var(--template-pill-bg);
+    border-color: var(--template-pill-border);
+  }
+
+  .public-template .template-filter-shell {
+    border-color: var(--template-shell-border);
+  }
+
+  .public-template .template-filter-tab-active {
+    background: var(--template-pill-bg);
+    border: 1px solid var(--template-pill-border);
+  }
+
+  .public-template .template-accent-btn {
+    background: var(--template-button-bg) !important;
+    box-shadow: 0 12px 28px -14px var(--template-button-shadow);
+  }
+
+  .public-template-midnight-glass {
+    --template-feed-bg: radial-gradient(1200px 700px at 12% -8%, rgba(14, 165, 233, 0.17), transparent 58%),
+      radial-gradient(900px 620px at 95% 12%, rgba(99, 102, 241, 0.13), transparent 60%),
+      linear-gradient(180deg, #050b16 0%, #070d1a 100%);
+    --template-grid-color: rgba(56, 189, 248, 0.055);
+    --template-hero-bg: linear-gradient(140deg, rgba(56, 189, 248, 0.14), rgba(99, 102, 241, 0.12) 48%, transparent 78%);
+    --template-nav-line: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.3) 30%, rgba(99, 102, 241, 0.26) 70%, transparent);
+    --template-pill-bg: rgba(14, 165, 233, 0.12);
+    --template-pill-border: rgba(56, 189, 248, 0.28);
+    --template-avatar-ring: linear-gradient(135deg, #0ea5e9, #6366f1, #8b5cf6);
+    --template-button-bg: linear-gradient(90deg, #0284c7 0%, #4f46e5 100%);
+    --template-button-shadow: rgba(14, 116, 144, 0.55);
+    --template-shell-border: rgba(56, 189, 248, 0.2);
+    --template-font: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  .public-template-nord-minimal {
+    --template-feed-bg: radial-gradient(1200px 640px at 10% -8%, rgba(136, 192, 208, 0.15), transparent 58%),
+      radial-gradient(860px 560px at 96% 16%, rgba(129, 161, 193, 0.14), transparent 62%),
+      linear-gradient(180deg, #1f2532 0%, #252c3a 100%);
+    --template-grid-color: rgba(216, 222, 233, 0.05);
+    --template-hero-bg: linear-gradient(140deg, rgba(143, 188, 187, 0.16), rgba(129, 161, 193, 0.12) 54%, transparent 82%);
+    --template-nav-line: linear-gradient(90deg, transparent, rgba(136, 192, 208, 0.34) 30%, rgba(129, 161, 193, 0.34) 70%, transparent);
+    --template-pill-bg: rgba(143, 188, 187, 0.14);
+    --template-pill-border: rgba(143, 188, 187, 0.34);
+    --template-avatar-ring: linear-gradient(135deg, #8fbcbb, #88c0d0, #81a1c1);
+    --template-button-bg: linear-gradient(90deg, #5e81ac 0%, #81a1c1 100%);
+    --template-button-shadow: rgba(129, 161, 193, 0.5);
+    --template-shell-border: rgba(143, 188, 187, 0.24);
+    --template-font: 'Inter', system-ui, sans-serif;
+  }
+
+  .public-template-tokyo-neon {
+    --template-feed-bg: radial-gradient(1120px 620px at 10% -8%, rgba(122, 162, 247, 0.18), transparent 56%),
+      radial-gradient(980px 620px at 95% 8%, rgba(247, 118, 142, 0.15), transparent 58%),
+      linear-gradient(180deg, #16161e 0%, #1a1b26 100%);
+    --template-grid-color: rgba(187, 154, 247, 0.08);
+    --template-hero-bg: linear-gradient(140deg, rgba(122, 162, 247, 0.18), rgba(187, 154, 247, 0.12) 52%, rgba(247, 118, 142, 0.1) 78%);
+    --template-nav-line: linear-gradient(90deg, transparent, rgba(122, 162, 247, 0.38) 30%, rgba(247, 118, 142, 0.34) 70%, transparent);
+    --template-pill-bg: rgba(122, 162, 247, 0.16);
+    --template-pill-border: rgba(122, 162, 247, 0.34);
+    --template-avatar-ring: linear-gradient(135deg, #7aa2f7, #bb9af7, #f7768e);
+    --template-button-bg: linear-gradient(90deg, #7aa2f7 0%, #f7768e 100%);
+    --template-button-shadow: rgba(247, 118, 142, 0.5);
+    --template-shell-border: rgba(122, 162, 247, 0.24);
+    --template-font: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  .public-template-noir-luxe {
+    --template-feed-bg: radial-gradient(1120px 600px at 14% -8%, rgba(212, 175, 55, 0.14), transparent 58%),
+      radial-gradient(980px 620px at 96% 6%, rgba(166, 124, 82, 0.12), transparent 62%),
+      linear-gradient(180deg, #11100f 0%, #191514 100%);
+    --template-grid-color: rgba(212, 175, 55, 0.06);
+    --template-hero-bg: linear-gradient(140deg, rgba(212, 175, 55, 0.16), rgba(166, 124, 82, 0.12) 58%, transparent 82%);
+    --template-nav-line: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.36) 30%, rgba(166, 124, 82, 0.32) 70%, transparent);
+    --template-pill-bg: rgba(212, 175, 55, 0.14);
+    --template-pill-border: rgba(212, 175, 55, 0.36);
+    --template-avatar-ring: linear-gradient(135deg, #f1d17a, #d4af37, #a67c52);
+    --template-button-bg: linear-gradient(90deg, #d4af37 0%, #a67c52 100%);
+    --template-button-shadow: rgba(212, 175, 55, 0.55);
+    --template-shell-border: rgba(212, 175, 55, 0.26);
+    --template-font: 'Fraunces', 'Times New Roman', serif;
+  }
+
+  .public-template-electric-creator {
+    --template-feed-bg: radial-gradient(1100px 620px at 10% -8%, rgba(34, 211, 238, 0.18), transparent 56%),
+      radial-gradient(980px 640px at 94% 10%, rgba(168, 85, 247, 0.2), transparent 58%),
+      linear-gradient(180deg, #120b2f 0%, #1b1140 100%);
+    --template-grid-color: rgba(34, 211, 238, 0.08);
+    --template-hero-bg: linear-gradient(140deg, rgba(34, 211, 238, 0.2), rgba(168, 85, 247, 0.16) 56%, rgba(244, 114, 182, 0.1) 80%);
+    --template-nav-line: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.36) 30%, rgba(168, 85, 247, 0.38) 70%, transparent);
+    --template-pill-bg: rgba(34, 211, 238, 0.14);
+    --template-pill-border: rgba(34, 211, 238, 0.36);
+    --template-avatar-ring: linear-gradient(135deg, #22d3ee, #a855f7, #f472b6);
+    --template-button-bg: linear-gradient(90deg, #22d3ee 0%, #a855f7 60%, #f472b6 100%);
+    --template-button-shadow: rgba(168, 85, 247, 0.6);
+    --template-shell-border: rgba(168, 85, 247, 0.25);
+    --template-font: 'Space Grotesk', system-ui, sans-serif;
+  }
+
   /* Improved card-elevated hover glow */
   .card-elevated {
     transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.3s ease;

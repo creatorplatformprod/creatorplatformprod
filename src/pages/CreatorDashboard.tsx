@@ -46,6 +46,7 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
+import { DEFAULT_PUBLIC_WEBSITE_TEMPLATE, resolvePublicWebsiteTemplateId } from '@/lib/publicWebsiteTemplates';
 
 const DEFAULT_COVER_OVERLAY = 0.45;
 
@@ -114,6 +115,7 @@ const CreatorDashboard = () => {
     avatar: '',
     coverImage: '',
     coverOverlay: DEFAULT_COVER_OVERLAY,
+    websiteTemplate: DEFAULT_PUBLIC_WEBSITE_TEMPLATE,
     walletAddress: '',
     telegramUsername: '',
     telegramBotToken: '',
@@ -244,6 +246,7 @@ const CreatorDashboard = () => {
           avatar: userResult.user.avatar || '',
           coverImage: userResult.user.coverImage || '',
           coverOverlay: DEFAULT_COVER_OVERLAY,
+          websiteTemplate: resolvePublicWebsiteTemplateId(userResult.user.websiteTemplate),
           walletAddress: userResult.user.walletAddress || '',
           telegramUsername: userResult.user.telegramUsername || '',
           telegramBotToken: userResult.user.telegramBotToken || '',
@@ -259,7 +262,8 @@ const CreatorDashboard = () => {
         const draft = readProfileDraft(userResult.user.username);
         const mergedProfileData = {
           ...(draft ? { ...nextProfileData, ...draft } : nextProfileData),
-          coverOverlay: DEFAULT_COVER_OVERLAY
+          coverOverlay: DEFAULT_COVER_OVERLAY,
+          websiteTemplate: resolvePublicWebsiteTemplateId(draft?.websiteTemplate || nextProfileData.websiteTemplate)
         };
         setProfileData(mergedProfileData);
         profileBaselineRef.current = serializeForDirtyCheck(mergedProfileData);

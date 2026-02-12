@@ -144,6 +144,7 @@ export const api = {
     avatar?: string;
     coverImage?: string;
     coverOverlay?: number;
+    websiteTemplate?: string;
     unlockAllPrice?: number | null;
     unlockAllCurrency?: string | null;
   }) => {

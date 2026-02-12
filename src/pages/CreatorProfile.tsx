@@ -8,6 +8,7 @@ import StatusCardWithMedia from "@/components/StatusCardWithMedia";
 import Preloader from "@/components/Preloader";
 import TopLoader from "@/components/TopLoader";
 import { api } from "@/lib/api";
+import { resolvePublicWebsiteTemplateId } from "@/lib/publicWebsiteTemplates";
 const MOCK_ASSETS = {
   avatar: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop",
   cover: "https://images.pexels.com/photos/3014856/pexels-photo-3014856.jpeg?auto=compress&cs=tinysrgb&w=1600&fit=crop",
@@ -549,6 +550,7 @@ const CreatorProfile = () => {
     : null;
   const showHelp = isPreviewMode && pageMode !== 'clean';
   const coverOverlay = DEFAULT_COVER_OVERLAY;
+  const activeTemplate = resolvePublicWebsiteTemplateId(creatorData?.websiteTemplate);
   const creatorCoverImage =
     typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
   const previewFallbackCover = isPreviewMode && shouldUseMockData ? MOCK_ASSETS.cover : '';
@@ -591,7 +593,7 @@ const CreatorProfile = () => {
 
   if (!creatorData) {
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center">
+      <div className="min-h-screen feed-bg public-template public-template-midnight-glass flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Creator not found</h1>
           <p className="text-muted-foreground">The profile you're looking for doesn't exist.</p>
@@ -601,7 +603,7 @@ const CreatorProfile = () => {
   }
 
   return (
-    <div className="min-h-screen feed-bg">
+    <div className={`min-h-screen feed-bg public-template public-template-${activeTemplate}`}>
       {/* Full Width Navbar - Always on top */}
       <FeedHeader 
         onSearch={handleSearch} 
@@ -662,7 +664,7 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 transition-all shadow-lg shadow-indigo-500/20"
+                className="template-accent-btn flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 transition-all shadow-lg shadow-indigo-500/20"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
@@ -674,14 +676,14 @@ const CreatorProfile = () => {
           </div>
 
           {/* Content Filter Tabs - Integrated into hero */}
-          <div className={`mt-4 flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] w-fit`}>
+          <div className={`template-filter-shell mt-4 flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] w-fit`}>
             {(['all', 'collections', 'posts'] as const).map(filter => (
               <button
                 key={filter}
                 onClick={() => setFeedFilter(filter)}
-                className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+                className={`template-filter-tab px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
                   feedFilter === filter
-                    ? 'bg-white/[0.10] text-foreground shadow-sm'
+                    ? 'template-filter-tab-active bg-white/[0.10] text-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
                 }`}
               >
