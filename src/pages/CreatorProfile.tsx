@@ -20,10 +20,10 @@ type MockSourcePack = {
 
 const pexelsImageUrl = (id: number, width = 1600) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
+const pexelsThumbUrl = (url: string, width = 560) => url.replace(/w=\d+/, `w=${width}`);
 
 const PINK_LEMONADE_IMAGE_IDS = [
-  7346600, 7346601, 7346602, 7346603, 7346604, 7346605, 7346606, 7346607, 7346608, 7346609,
-  7346610, 7346611, 7346612, 7346613, 7346615, 7346619, 7346620, 7346621, 7346623, 7346626,
+  7346615, 7346619, 7346620, 7346621, 7346623, 7346626,
   7346628, 7346629, 7346631, 7346632, 7346633, 7346634, 7346635, 7346656, 7346657, 7346658,
   7346659, 7346660, 7346661, 7346662, 7346663, 7346666, 7346667, 7346668, 7346672, 7346673,
   7346674, 7346675, 7346677, 7346678, 7346680, 7346681, 7346684, 7346688, 7346689, 7346690,
@@ -157,7 +157,7 @@ const CreatorProfile = () => {
       "6 days ago",
       "1 week ago"
     ];
-    const statusMediaCount = Math.min(8, mockPhotos.length);
+    const statusMediaCount = Math.min(6, mockPhotos.length);
 
     return MOCK_STATUS_TEXTS.map((text, index) => ({
       id: `mock-status-${index + 1}`,
@@ -176,6 +176,7 @@ const CreatorProfile = () => {
             media: {
               type: "image" as const,
               url: mockPhotos[index],
+              thumbnail: pexelsThumbUrl(mockPhotos[index], 720),
               alt: `Mock post ${index + 1}`
             }
           }
@@ -186,7 +187,7 @@ const CreatorProfile = () => {
 
   const mockCollections = useMemo(() => {
     const titles = seededShuffle(MOCK_COLLECTION_TITLES, mockSeed + 911);
-    const statusMediaCount = Math.min(8, mockPhotos.length);
+    const statusMediaCount = Math.min(6, mockPhotos.length);
     const availableForCollections = Math.max(0, mockPhotos.length - statusMediaCount);
     const maxCollectionCount = Math.floor(availableForCollections / 4);
     const total = Math.min(Math.max(10, titles.length), maxCollectionCount, titles.length);
@@ -195,7 +196,7 @@ const CreatorProfile = () => {
       const imageStart = statusMediaCount + (index * 4);
       const images = Array.from({ length: 4 }, (_, offset) => {
         const photo = mockPhotos[imageStart + offset];
-        return { full: photo, thumb: photo };
+        return { full: photo, thumb: pexelsThumbUrl(photo, 560) };
       });
 
       return {

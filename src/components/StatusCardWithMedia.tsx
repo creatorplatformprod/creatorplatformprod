@@ -212,7 +212,7 @@ const StatusCardWithMedia = ({
             {media.type === "image" ? (
               <ProgressiveImage
                 src={media.url}
-                thumbnail={getThumbnailUrl(media.url)}
+                thumbnail={media.thumbnail || getThumbnailUrl(media.url)}
                 alt={media.alt || title}
                 className="w-full h-auto max-h-96 object-cover"
                 onLoad={() => setIsMediaLoaded(true)}
