@@ -49,7 +49,7 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="w-9 h-9 rounded-full bg-secondary/70 hover:bg-secondary flex items-center justify-center transition-all duration-200 border border-border">
+        <button className="group w-9 h-9 rounded-full bg-secondary/70 hover:bg-sky-500/10 flex items-center justify-center transition-all duration-200 border border-border hover:border-sky-400/30">
           {currentUser?.avatar ? (
             <Avatar className="w-8 h-8">
               <AvatarImage
@@ -63,7 +63,7 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="w-4 h-4" style={{ color: skyUserColor }} />
+            <User className="w-4 h-4 text-sky-400 transition-colors group-hover:text-sky-300 group-focus:text-sky-300" />
           )}
         </button>
       </DropdownMenuTrigger>

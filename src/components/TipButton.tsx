@@ -107,9 +107,10 @@ const TipButton = ({ onTipClick }: TipButtonProps) => {
         ref={buttonRef}
         onClick={handleButtonClick}
         className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-rose-500/10 transition-colors duration-200 text-sm font-semibold"
+        style={{ color: roseColor }}
       >
         <Gift className="w-4 h-4" style={{ color: roseColor }} />
-        <span className="text-foreground/85 transition-colors duration-200 group-hover:text-rose-400">Tip</span>
+        <span>Tip</span>
       </button>
 
       {/* Floating Tip Modal - Minimalistic */}

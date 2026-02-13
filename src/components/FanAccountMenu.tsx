@@ -24,7 +24,7 @@ const FanAccountMenu = ({ onOpenAuth, align = "end" }: FanAccountMenuProps) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-rose-500/10 transition-colors duration-200 text-sm font-medium"
+          className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-sky-500/10 transition-colors duration-200 text-sm font-medium"
           style={{ color: roseColor }}
         >
           {fan?.avatar ? (
@@ -35,7 +35,7 @@ const FanAccountMenu = ({ onOpenAuth, align = "end" }: FanAccountMenuProps) => {
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="h-4 w-4" style={{ color: skyUserColor }} />
+            <User className="h-4 w-4 text-sky-400 transition-colors group-hover:text-sky-300 group-focus:text-sky-300" />
           )}
         </button>
       </DropdownMenuTrigger>

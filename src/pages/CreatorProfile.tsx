@@ -631,7 +631,7 @@ const CreatorProfile = () => {
 
         {/* Profile Info */}
         <div className={`template-profile-shell relative max-w-4xl mx-auto px-4 -mt-20 sm:-mt-24 pb-4 transition-all duration-300 ${mainOffsetClass}`}>
-          <div className="template-profile-row flex flex-col sm:flex-row items-start gap-4">
+          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-4">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
                 src={creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400'}
@@ -640,8 +640,8 @@ const CreatorProfile = () => {
                 onError={handleAvatarImageError}
               />
             </div>
-            <div className="flex-1 min-w-0 pt-1 sm:pt-4">
-              <div className="flex items-center gap-2">
+            <div className="flex-1 min-w-0 pt-1 sm:pt-4 text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start gap-2">
                 <h1 className="template-display-name text-xl sm:text-2xl font-bold text-foreground truncate">
                   {creatorData?.displayName || creatorData?.username || 'Creator'}
                 </h1>
@@ -653,7 +653,7 @@ const CreatorProfile = () => {
               {creatorData?.bio && (
                 <p className="template-bio text-sm text-muted-foreground mt-1 line-clamp-2">{creatorData.bio}</p>
               )}
-              <div className="template-stats flex flex-wrap items-center gap-3 mt-3">
+              <div className="template-stats flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-3">
                 <span className="stat-pill">{allCollections.length} Collections</span>
                 <span className="stat-pill">{formattedStatusData.length} Posts</span>
               </div>
@@ -661,7 +661,7 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta mt-3 sm:mt-5 ml-0 md:ml-auto self-start md:self-center text-xl sm:text-2xl lg:text-[2rem] font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent hover:from-indigo-300 hover:to-cyan-300 transition-all"
+                className="template-unlock-cta mt-3 sm:mt-5 mx-auto md:mx-0 md:ml-auto self-center md:self-center px-4 py-2 rounded-xl text-sm sm:text-base font-bold tracking-tight text-cyan-100 border border-cyan-300/30 bg-gradient-to-b from-cyan-500/40 via-sky-500/30 to-indigo-600/35 shadow-[0_7px_18px_rgba(56,189,248,0.28),inset_0_1px_0_rgba(255,255,255,0.35)] hover:translate-y-[-1px] hover:shadow-[0_10px_22px_rgba(56,189,248,0.34),inset_0_1px_0_rgba(255,255,255,0.35)] active:translate-y-0 transition-all"
               >
                 Unlock Everything
               </button>
@@ -669,7 +669,7 @@ const CreatorProfile = () => {
           </div>
 
           {/* Content Filter Tabs - Integrated into hero */}
-          <div className={`template-filter-shell template-filter-container mt-4 flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] w-fit`}>
+          <div className={`template-filter-shell template-filter-container mt-4 mx-auto sm:mx-0 flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] w-fit`}>
             {(['all', 'collections', 'posts'] as const).map(filter => (
               <button
                 key={filter}
