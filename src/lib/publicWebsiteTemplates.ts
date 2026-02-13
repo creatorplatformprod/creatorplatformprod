@@ -2,46 +2,46 @@ export const PUBLIC_WEBSITE_TEMPLATES = [
   {
     id: "midnight-glass",
     name: "Midnight Glass",
-    description: "Premium dark glass with clean gradients and conversion-focused contrast.",
+    description: "Dashboard-like dark experience with immersive hero and premium glass cards.",
     bestFor: "General premium creator pages",
     palette: ["#050b16", "#0ea5e9", "#6366f1"],
-    source: "Webflow dark SaaS templates + Framer marketplace patterns",
-    sourceUrl: "https://webflow.com/templates/html/darkflow-saas-website-template"
+    source: "Dashboard + dark immersive references",
+    sourceUrl: "https://webflow.com/templates/html/dark-website-templates"
   },
   {
     id: "nord-minimal",
     name: "Nord Minimal",
-    description: "Calm editorial minimalism with quiet cards and low-noise accents.",
-    bestFor: "Photographers and clean personal brands",
-    palette: ["#252c3a", "#88c0d0", "#81a1c1"],
-    source: "Nord palette system + minimal portfolio directions",
-    sourceUrl: "https://www.nordtheme.com/docs/colors-and-palettes"
+    description: "Minimal portfolio-forward layout with softer, editorial spacing.",
+    bestFor: "Personal brand and photography-first pages",
+    palette: ["#f5f7fa", "#d6dde7", "#9aa9bf"],
+    source: "Portfolio grids from Webflow and Framer clean personal sites",
+    sourceUrl: "https://webflow.com/templates/html/portfolio-website-templates"
   },
   {
     id: "tokyo-neon",
     name: "Tokyo Neon",
-    description: "High-energy neon contrast with stronger call-to-action hierarchy.",
-    bestFor: "Nightlife, cosplay, music, and bold creator brands",
-    palette: ["#1a1b26", "#7aa2f7", "#f7768e"],
-    source: "Tokyo Night palette + high-contrast portfolio trends",
-    sourceUrl: "https://github.com/folke/tokyonight.nvim"
+    description: "Modular panel-driven gallery with neon accents and app-style rhythm.",
+    bestFor: "Nightlife, music, cosplay, and high-contrast brands",
+    palette: ["#0a1120", "#4f46e5", "#f43f5e"],
+    source: "Panel-based app/gallery references",
+    sourceUrl: "https://www.framer.com/marketplace/templates/"
   },
   {
     id: "noir-luxe",
     name: "Noir Luxe",
-    description: "Dark editorial luxury with serif-forward voice and warm metal accents.",
+    description: "Magazine/editorial luxury style with storytelling hero and serif tone.",
     bestFor: "Luxury creators, fashion, and premium memberships",
     palette: ["#151312", "#d4af37", "#a67c52"],
-    source: "Luxury editorial portfolio trends from award sites",
+    source: "Editorial + luxury portfolio references",
     sourceUrl: "https://www.awwwards.com/websites/sites_of_the_day/"
   },
   {
     id: "electric-creator",
     name: "Electric Creator",
-    description: "Vibrant gradient-forward style inspired by creator link-in-bio ecosystems.",
-    bestFor: "Social-first creators optimizing for taps and subscriptions",
+    description: "Interactive homepage feel with energetic masonry/bento composition.",
+    bestFor: "Conversion-focused creator pages and launch drops",
     palette: ["#1b1140", "#22d3ee", "#a855f7"],
-    source: "Creator-link ecosystems and modern template marketplaces",
+    source: "Interactive landing + creator ecosystem references",
     sourceUrl: "https://www.framer.com/marketplace/templates/"
   }
 ] as const;

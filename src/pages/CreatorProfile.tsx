@@ -195,9 +195,12 @@ const CreatorProfile = () => {
   }, [creatorData]);
 
   useEffect(() => {
-    if (resolvePublicWebsiteTemplateId(creatorData?.websiteTemplate) === "noir-luxe") {
+    const resolved = resolvePublicWebsiteTemplateId(creatorData?.websiteTemplate);
+    if (resolved === "nord-minimal" || resolved === "noir-luxe") {
       setSidebarOpen(false);
+      return;
     }
+    setSidebarOpen(true);
   }, [creatorData?.websiteTemplate]);
 
   const loadCreatorProfile = async () => {
@@ -557,7 +560,12 @@ const CreatorProfile = () => {
   const showHelp = isPreviewMode && pageMode !== 'clean';
   const coverOverlay = DEFAULT_COVER_OVERLAY;
   const activeTemplate = resolvePublicWebsiteTemplateId(creatorData?.websiteTemplate);
-  const showSidebar = activeTemplate !== "noir-luxe";
+  const useMasonryFlow =
+    activeTemplate === "tokyo-neon" ||
+    activeTemplate === "electric-creator";
+  const showSidebar =
+    activeTemplate === "midnight-glass" ||
+    activeTemplate === "tokyo-neon";
   const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
   const creatorCoverImage =
     typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
@@ -953,10 +961,8 @@ const CreatorProfile = () => {
               )}
               
               <div className={`template-feed-stack ${
-                activeTemplate === 'noir-luxe'
+                useMasonryFlow
                   ? 'template-feed-stack-masonry'
-                  : activeTemplate === 'electric-creator'
-                  ? ''
                   : 'space-y-6'
               }`}>
                 {showHelp && !searchQuery && filteredFeedData.length === 0 && (
@@ -967,7 +973,7 @@ const CreatorProfile = () => {
                     </p>
                   </div>
                 )}
-                {(activeTemplate === 'noir-luxe'
+                {(useMasonryFlow
                   ? filteredFeedData.map((post, index) => ({ type: 'single', posts: [post], index }))
                   : createStatusGroups(filteredFeedData)
                 ).map((group, groupIndex) => {

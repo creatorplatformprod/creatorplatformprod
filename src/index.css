@@ -1595,18 +1595,16 @@
   }
 
   .public-template-nord-minimal {
-    --template-feed-bg: radial-gradient(1200px 640px at 10% -8%, rgba(136, 192, 208, 0.15), transparent 58%),
-      radial-gradient(860px 560px at 96% 16%, rgba(129, 161, 193, 0.14), transparent 62%),
-      linear-gradient(180deg, #1f2532 0%, #252c3a 100%);
-    --template-grid-color: rgba(216, 222, 233, 0.05);
-    --template-hero-bg: linear-gradient(140deg, rgba(143, 188, 187, 0.16), rgba(129, 161, 193, 0.12) 54%, transparent 82%);
-    --template-nav-line: linear-gradient(90deg, transparent, rgba(136, 192, 208, 0.34) 30%, rgba(129, 161, 193, 0.34) 70%, transparent);
-    --template-pill-bg: rgba(143, 188, 187, 0.14);
-    --template-pill-border: rgba(143, 188, 187, 0.34);
-    --template-avatar-ring: linear-gradient(135deg, #8fbcbb, #88c0d0, #81a1c1);
-    --template-button-bg: linear-gradient(90deg, #5e81ac 0%, #81a1c1 100%);
-    --template-button-shadow: rgba(129, 161, 193, 0.5);
-    --template-shell-border: rgba(143, 188, 187, 0.24);
+    --template-feed-bg: linear-gradient(180deg, #f6f8fc 0%, #eef2f7 100%);
+    --template-grid-color: rgba(148, 163, 184, 0.08);
+    --template-hero-bg: linear-gradient(140deg, rgba(148, 163, 184, 0.18), rgba(226, 232, 240, 0.2) 60%, transparent 85%);
+    --template-nav-line: linear-gradient(90deg, transparent, rgba(100, 116, 139, 0.22) 30%, rgba(148, 163, 184, 0.2) 70%, transparent);
+    --template-pill-bg: rgba(255, 255, 255, 0.92);
+    --template-pill-border: rgba(148, 163, 184, 0.28);
+    --template-avatar-ring: linear-gradient(135deg, #94a3b8, #64748b, #cbd5e1);
+    --template-button-bg: linear-gradient(90deg, #475569 0%, #64748b 100%);
+    --template-button-shadow: rgba(100, 116, 139, 0.35);
+    --template-shell-border: rgba(148, 163, 184, 0.24);
     --template-font: 'Inter', system-ui, sans-serif;
   }
 
@@ -1620,15 +1618,15 @@
   }
 
   .public-template-nord-minimal .post-card {
-    background: rgba(45, 53, 69, 0.88);
-    border-color: rgba(216, 222, 233, 0.16);
+    background: rgba(255, 255, 255, 0.94);
+    border-color: rgba(148, 163, 184, 0.24);
     border-radius: 14px;
-    box-shadow: 0 10px 24px rgba(10, 14, 22, 0.28);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
   }
 
   .public-template-nord-minimal .post-card:hover {
-    border-color: rgba(143, 188, 187, 0.42);
-    box-shadow: 0 16px 30px rgba(10, 14, 22, 0.35);
+    border-color: rgba(100, 116, 139, 0.42);
+    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.12);
   }
 
   .public-template-nord-minimal .template-filter-tab-active {
@@ -1642,8 +1640,8 @@
 
   .public-template-nord-minimal .template-sidebar {
     width: 260px !important;
-    border-right: 1px solid rgba(216, 222, 233, 0.16);
-    background: linear-gradient(180deg, rgba(49, 58, 77, 0.9), rgba(41, 50, 66, 0.9));
+    border-right: 1px solid rgba(148, 163, 184, 0.16);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(241, 245, 249, 0.86));
   }
 
   .public-template-nord-minimal.template-sidebar-open .template-main-column {
@@ -1703,6 +1701,46 @@
 
   .public-template-tokyo-neon .template-feed-item .post-card:hover {
     transform: rotate(0deg) translateY(-3px);
+  }
+
+  .public-template-masonry-gallery {
+    --template-feed-bg: radial-gradient(950px 460px at 5% -6%, rgba(59, 130, 246, 0.16), transparent 60%),
+      radial-gradient(860px 500px at 98% 10%, rgba(99, 102, 241, 0.15), transparent 60%),
+      linear-gradient(180deg, #0b1324 0%, #0f172a 100%);
+    --template-grid-color: rgba(99, 102, 241, 0.08);
+    --template-hero-bg: linear-gradient(140deg, rgba(59, 130, 246, 0.16), rgba(99, 102, 241, 0.14) 58%, transparent 85%);
+    --template-nav-line: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.34) 30%, rgba(99, 102, 241, 0.34) 70%, transparent);
+    --template-pill-bg: rgba(59, 130, 246, 0.14);
+    --template-pill-border: rgba(59, 130, 246, 0.34);
+    --template-avatar-ring: linear-gradient(135deg, #3b82f6, #6366f1, #60a5fa);
+    --template-button-bg: linear-gradient(90deg, #2563eb 0%, #4f46e5 100%);
+    --template-button-shadow: rgba(37, 99, 235, 0.46);
+    --template-shell-border: rgba(99, 102, 241, 0.22);
+    --template-font: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  .public-template-masonry-gallery .template-main-shell {
+    max-width: 1180px;
+  }
+
+  .public-template-masonry-gallery .template-feed-stack-masonry {
+    columns: 2;
+    column-gap: 1rem;
+  }
+
+  .public-template-masonry-gallery .template-feed-item {
+    margin-bottom: 1rem;
+  }
+
+  .public-template-masonry-gallery .post-card {
+    background: linear-gradient(180deg, rgba(12, 22, 41, 0.94), rgba(11, 19, 35, 0.9));
+    border-color: rgba(99, 102, 241, 0.26);
+  }
+
+  @media (max-width: 900px) {
+    .public-template-masonry-gallery .template-feed-stack-masonry {
+      columns: 1;
+    }
   }
 
   .public-template-noir-luxe {
@@ -1879,6 +1917,36 @@
 
   .public-template-electric-creator .template-feed-item:nth-child(4n + 4) {
     grid-column: span 7;
+  }
+
+  .public-template-dark-immersive {
+    --template-feed-bg: radial-gradient(1200px 640px at 20% -10%, rgba(15, 23, 42, 0.42), transparent 60%),
+      radial-gradient(980px 620px at 90% 8%, rgba(30, 41, 59, 0.32), transparent 62%),
+      linear-gradient(180deg, #04070f 0%, #090f1d 100%);
+    --template-grid-color: rgba(148, 163, 184, 0.05);
+    --template-hero-bg: linear-gradient(140deg, rgba(15, 23, 42, 0.4), rgba(30, 41, 59, 0.3) 55%, transparent 86%);
+    --template-nav-line: linear-gradient(90deg, transparent, rgba(100, 116, 139, 0.24) 30%, rgba(148, 163, 184, 0.22) 70%, transparent);
+    --template-pill-bg: rgba(15, 23, 42, 0.66);
+    --template-pill-border: rgba(148, 163, 184, 0.34);
+    --template-avatar-ring: linear-gradient(135deg, #334155, #475569, #94a3b8);
+    --template-button-bg: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+    --template-button-shadow: rgba(30, 41, 59, 0.5);
+    --template-shell-border: rgba(148, 163, 184, 0.2);
+    --template-font: 'Inter', system-ui, sans-serif;
+  }
+
+  .public-template-dark-immersive .template-cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(2, 6, 23, 0.56));
+    pointer-events: none;
+  }
+
+  .public-template-dark-immersive .post-card {
+    background: rgba(8, 14, 26, 0.92);
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: 0 18px 42px rgba(2, 6, 23, 0.5);
   }
 
   @media (max-width: 1024px) {
@@ -2367,3 +2435,5 @@
   cursor: not-allowed;
 }
 }
+
+
