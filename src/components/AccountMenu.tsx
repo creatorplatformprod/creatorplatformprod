@@ -51,12 +51,12 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
       <DropdownMenuTrigger asChild>
         <button className="group w-9 h-9 rounded-full bg-secondary/70 hover:bg-sky-500/10 flex items-center justify-center transition-all duration-200 border border-border hover:border-sky-400/30">
           {currentUser?.avatar ? (
-            <Avatar className="w-8 h-8">
+            <Avatar className="w-8 h-8 border border-sky-400/45">
               <AvatarImage
                 src={currentUser.avatar}
                 alt={currentUser.displayName || currentUser.username || "User"}
               />
-              <AvatarFallback>
+              <AvatarFallback className="bg-sky-500/30 text-sky-100">
                 {(currentUser.displayName || currentUser.username || "U")
                   .slice(0, 1)
                   .toUpperCase()}
@@ -78,7 +78,7 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
               Dashboard
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => (window.location.href = `${previewPath}`)}>
-              <User className="w-4 h-4 mr-2" style={{ color: skyUserColor }} />
+              <User className="w-4 h-4 mr-2" />
               Preview Mode
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -127,7 +127,7 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
           </>
         ) : (
           <DropdownMenuItem onClick={() => (window.location.href = "/")}>
-            <User className="w-4 h-4 mr-2" style={{ color: skyUserColor }} />
+            <User className="w-4 h-4 mr-2" />
             Creator Login
           </DropdownMenuItem>
         )}

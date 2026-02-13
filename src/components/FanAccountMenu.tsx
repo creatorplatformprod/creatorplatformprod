@@ -17,7 +17,6 @@ type FanAccountMenuProps = {
 
 const FanAccountMenu = ({ onOpenAuth, align = "end" }: FanAccountMenuProps) => {
   const { fan, logoutFan } = useFanAuth();
-  const roseColor = "#db2777";
   const skyUserColor = "#38bdf8";
 
   return (
@@ -25,12 +24,11 @@ const FanAccountMenu = ({ onOpenAuth, align = "end" }: FanAccountMenuProps) => {
       <DropdownMenuTrigger asChild>
         <button
           className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-sky-500/10 transition-colors duration-200 text-sm font-medium"
-          style={{ color: roseColor }}
         >
           {fan?.avatar ? (
-            <Avatar className="h-5 w-5 border border-rose-400/40">
+            <Avatar className="h-5 w-5 border border-sky-400/45">
               <AvatarImage src={fan.avatar} alt={fan.displayName || fan.email} />
-              <AvatarFallback>
+              <AvatarFallback className="bg-sky-500/30 text-sky-100">
                 {(fan.displayName || fan.email || "F").slice(0, 1).toUpperCase()}
               </AvatarFallback>
             </Avatar>
@@ -66,9 +64,9 @@ const FanAccountMenu = ({ onOpenAuth, align = "end" }: FanAccountMenuProps) => {
             </DropdownMenuItem>
           </>
         ) : (
-          <DropdownMenuItem className="group hover:bg-rose-500/10 focus:bg-rose-500/10" onClick={onOpenAuth}>
-            <LogIn className="mr-2 h-4 w-4 text-rose-400" />
-            <span className="text-foreground/85 transition-colors group-hover:text-rose-300 group-focus:text-rose-300">
+          <DropdownMenuItem className="group hover:bg-sky-500/10 focus:bg-sky-500/10" onClick={onOpenAuth}>
+            <LogIn className="mr-2 h-4 w-4 text-sky-400" />
+            <span className="text-foreground/85 transition-colors group-hover:text-sky-300 group-focus:text-sky-300">
               Log in or Register
             </span>
           </DropdownMenuItem>

@@ -661,7 +661,7 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta mt-3 sm:mt-5 mx-auto md:mx-0 md:ml-auto self-center md:self-center px-4 py-2 rounded-xl text-sm sm:text-base font-bold tracking-tight text-cyan-100 border border-cyan-300/30 bg-gradient-to-b from-cyan-500/40 via-sky-500/30 to-indigo-600/35 shadow-[0_7px_18px_rgba(56,189,248,0.28),inset_0_1px_0_rgba(255,255,255,0.35)] hover:translate-y-[-1px] hover:shadow-[0_10px_22px_rgba(56,189,248,0.34),inset_0_1px_0_rgba(255,255,255,0.35)] active:translate-y-0 transition-all"
+                className="template-unlock-cta mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-base sm:text-lg md:text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent hover:from-indigo-300 hover:to-cyan-300 transition-all"
               >
                 Unlock Everything
               </button>
