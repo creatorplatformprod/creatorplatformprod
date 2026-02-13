@@ -194,6 +194,12 @@ const CreatorProfile = () => {
     document.title = `${creatorName} | SixSevenCreator`;
   }, [creatorData]);
 
+  useEffect(() => {
+    if (resolvePublicWebsiteTemplateId(creatorData?.websiteTemplate) === "noir-luxe") {
+      setSidebarOpen(false);
+    }
+  }, [creatorData?.websiteTemplate]);
+
   const loadCreatorProfile = async () => {
     try {
       setIsLoading(true);
@@ -551,6 +557,8 @@ const CreatorProfile = () => {
   const showHelp = isPreviewMode && pageMode !== 'clean';
   const coverOverlay = DEFAULT_COVER_OVERLAY;
   const activeTemplate = resolvePublicWebsiteTemplateId(creatorData?.websiteTemplate);
+  const showSidebar = activeTemplate !== "noir-luxe";
+  const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
   const creatorCoverImage =
     typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
   const previewFallbackCover = isPreviewMode && shouldUseMockData ? MOCK_ASSETS.cover : '';
@@ -603,7 +611,7 @@ const CreatorProfile = () => {
   }
 
   return (
-    <div className={`min-h-screen feed-bg public-template public-template-${activeTemplate}`}>
+    <div className={`min-h-screen feed-bg public-template public-template-${activeTemplate} template-layout template-layout-${activeTemplate} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
       {/* Full Width Navbar - Always on top */}
       <FeedHeader 
         onSearch={handleSearch} 
@@ -613,9 +621,9 @@ const CreatorProfile = () => {
       />
 
       {/* Profile Hero Section */}
-      <div className="profile-hero relative">
+      <div className="profile-hero template-hero relative">
         {/* Cover Photo Area with gradient overlay */}
-        <div className="relative h-52 sm:h-64 lg:h-72 overflow-hidden">
+        <div className="template-cover relative h-52 sm:h-64 lg:h-72 overflow-hidden">
           {heroCoverImage ? (
             <img
               src={heroCoverImage}
@@ -633,8 +641,8 @@ const CreatorProfile = () => {
         </div>
 
         {/* Profile Info */}
-        <div className={`relative max-w-4xl mx-auto px-4 -mt-20 sm:-mt-24 pb-4 transition-all duration-300 ${sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0'}`}>
-          <div className="flex flex-col sm:flex-row items-start gap-4">
+        <div className={`template-profile-shell relative max-w-4xl mx-auto px-4 -mt-20 sm:-mt-24 pb-4 transition-all duration-300 ${mainOffsetClass}`}>
+          <div className="template-profile-row flex flex-col sm:flex-row items-start gap-4">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
                 src={creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400'}
@@ -645,7 +653,7 @@ const CreatorProfile = () => {
             </div>
             <div className="flex-1 min-w-0 pt-1 sm:pt-4">
               <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">
+                <h1 className="template-display-name text-xl sm:text-2xl font-bold text-foreground truncate">
                   {creatorData?.displayName || creatorData?.username || 'Creator'}
                 </h1>
                 <svg className="w-5 h-5 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
@@ -654,9 +662,9 @@ const CreatorProfile = () => {
                 </svg>
               </div>
               {creatorData?.bio && (
-                <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{creatorData.bio}</p>
+                <p className="template-bio text-sm text-muted-foreground mt-1 line-clamp-2">{creatorData.bio}</p>
               )}
-              <div className="flex flex-wrap items-center gap-3 mt-3">
+              <div className="template-stats flex flex-wrap items-center gap-3 mt-3">
                 <span className="stat-pill">{allCollections.length} Collections</span>
                 <span className="stat-pill">{formattedStatusData.length} Posts</span>
               </div>
@@ -664,7 +672,7 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-accent-btn flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 transition-all shadow-lg shadow-indigo-500/20"
+                className="template-accent-btn template-unlock-cta flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 transition-all shadow-lg shadow-indigo-500/20"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
@@ -676,7 +684,7 @@ const CreatorProfile = () => {
           </div>
 
           {/* Content Filter Tabs - Integrated into hero */}
-          <div className={`template-filter-shell mt-4 flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] w-fit`}>
+          <div className={`template-filter-shell template-filter-container mt-4 flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] w-fit`}>
             {(['all', 'collections', 'posts'] as const).map(filter => (
               <button
                 key={filter}
@@ -728,10 +736,10 @@ const CreatorProfile = () => {
       )}
 
       {/* Content Area with Sidebar */}
-      <div className="flex">
+      <div className="template-content-wrap flex">
         {/* Desktop Sidebar - Below navbar, hidden on mobile */}
         <aside
-          className={`hidden lg:block fixed left-0 z-20 transition-all duration-300 sidebar-glass ${
+          className={`${showSidebar ? 'hidden lg:block' : 'hidden'} fixed left-0 z-20 transition-all duration-300 sidebar-glass template-sidebar ${
             sidebarOpen ? 'translate-x-0 w-[300px]' : '-translate-x-full w-[300px]'
           }`}
           style={{ top: '65px', height: 'calc(100vh - 65px)' }}
@@ -896,7 +904,7 @@ const CreatorProfile = () => {
         </aside>
 
         {/* Arrow to open sidebar */}
-        {!sidebarOpen && (
+        {!sidebarOpen && showSidebar && (
           <button
             onClick={() => setSidebarOpen(true)}
             className="hidden lg:flex fixed left-4 top-1/2 transform -translate-y-1/2 z-30 bg-background border border-border rounded-full w-10 h-10 items-center justify-center"
@@ -907,9 +915,9 @@ const CreatorProfile = () => {
         )}
 
         {/* Main Content */}
-        <div className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0'}`} style={{ marginTop: '0px' }}>
-          <main className="max-w-4xl mx-auto px-4 py-6">
-            <div className="space-y-6">
+        <div className={`template-main-column flex-1 transition-all duration-300 ${mainOffsetClass}`} style={{ marginTop: '0px' }}>
+          <main className="template-main-shell max-w-4xl mx-auto px-4 py-6">
+            <div className="template-main-stack space-y-6">
               {searchQuery && (
                 <div className="post-card rounded-xl p-4 animate-fade-in">
                   <p className="text-muted-foreground">
@@ -944,7 +952,13 @@ const CreatorProfile = () => {
                 </div>
               )}
               
-              <div className="space-y-6">
+              <div className={`template-feed-stack ${
+                activeTemplate === 'noir-luxe'
+                  ? 'template-feed-stack-masonry'
+                  : activeTemplate === 'electric-creator'
+                  ? ''
+                  : 'space-y-6'
+              }`}>
                 {showHelp && !searchQuery && filteredFeedData.length === 0 && (
                   <div className="post-card rounded-xl p-6 sm:p-8 text-center animate-fade-in">
                     <h3 className="text-xl font-bold text-foreground mb-2">Your content will appear here</h3>
@@ -953,16 +967,19 @@ const CreatorProfile = () => {
                     </p>
                   </div>
                 )}
-                {createStatusGroups(filteredFeedData).map((group, groupIndex) => {
+                {(activeTemplate === 'noir-luxe'
+                  ? filteredFeedData.map((post, index) => ({ type: 'single', posts: [post], index }))
+                  : createStatusGroups(filteredFeedData)
+                ).map((group, groupIndex) => {
                   if (group.type === 'status-pair') {
                     return (
                       <div 
                         key={`group-${groupIndex}`}
-                        className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in"
+                        className="template-feed-item template-feed-pair-grid grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in"
                         style={{ animationDelay: `${groupIndex * 0.1}s` }}
                       >
                         {group.posts.map((post, postIndex) => (
-                          <div key={`${post.id}-${group.index + postIndex}`}>
+                          <div key={`${post.id}-${group.index + postIndex}`} className="template-feed-item">
                             {renderPost(post, group.index + postIndex)}
                           </div>
                         ))}
@@ -974,7 +991,7 @@ const CreatorProfile = () => {
                       <div 
                         key={`${post.id}-${group.index}`}
                         id={post.feedType === 'collection' ? `collection-${post.id}` : undefined}
-                        className="animate-fade-in"
+                        className="template-feed-item animate-fade-in"
                         style={{ animationDelay: `${groupIndex * 0.1}s` }}
                       >
                         {renderPost(post, group.index)}
