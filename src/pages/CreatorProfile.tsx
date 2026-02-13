@@ -908,7 +908,7 @@ const CreatorProfile = () => {
 
         {/* Main Content */}
         <div className={`template-main-column flex-1 transition-all duration-300 ${mainOffsetClass}`} style={{ marginTop: '0px' }}>
-          <main className="template-main-shell max-w-[1400px] mx-auto px-4 py-6">
+          <main className="template-main-shell max-w-4xl mx-auto px-4 py-6">
             <div className="template-main-stack space-y-6">
               {searchQuery && (
                 <div className="post-card rounded-xl p-4 animate-fade-in">
