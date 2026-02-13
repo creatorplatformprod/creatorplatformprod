@@ -598,8 +598,9 @@ const CreatorProfile = () => {
   const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
   const creatorCoverImage =
     typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
-  const previewFallbackCover = isPreviewMode && shouldUseMockData ? mockPack.cover : '';
-  const heroCoverImage = creatorCoverImage || previewFallbackCover;
+  const mockFallbackCover = shouldUseMockData ? mockPack.cover : '';
+  const heroCoverImage = creatorCoverImage || mockFallbackCover;
+  const profileAvatarImage = shouldUseMockData ? mockPack.avatar : (creatorData?.avatar || mockAvatar);
 
   const renderSocialIcon = (
     url: string,
@@ -683,7 +684,7 @@ const CreatorProfile = () => {
           <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-4">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
-                src={creatorData?.avatar || mockAvatar}
+                src={profileAvatarImage}
                 alt={creatorData?.displayName || 'Creator'}
                 className="w-20 h-20 sm:w-24 sm:h-24 object-cover bg-background"
                 onError={handleAvatarImageError}
