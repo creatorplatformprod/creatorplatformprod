@@ -18,22 +18,25 @@ type MockSourcePack = {
   photos: string[];
 };
 
+const pexelsImageUrl = (id: number, width = 1600) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
+
+const PINK_LEMONADE_IMAGE_IDS = [
+  7346600, 7346601, 7346602, 7346603, 7346604, 7346605, 7346606, 7346607, 7346608, 7346609,
+  7346610, 7346611, 7346612, 7346613, 7346615, 7346619, 7346620, 7346621, 7346623, 7346626,
+  7346628, 7346629, 7346631, 7346632, 7346633, 7346634, 7346635, 7346656, 7346657, 7346658,
+  7346659, 7346660, 7346661, 7346662, 7346663, 7346666, 7346667, 7346668, 7346672, 7346673,
+  7346674, 7346675, 7346677, 7346678, 7346680, 7346681, 7346684, 7346688, 7346689, 7346690,
+  7346691, 7346692, 7346693, 7346694, 7346695, 7346696, 7346697, 7346698, 7346699, 7346701,
+  7346703
+];
+
 const MOCK_SOURCE_PACKS: MockSourcePack[] = [
   {
     key: "pink-lemonade",
-    avatar: "https://images.pexels.com/photos/7346629/pexels-photo-7346629.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop",
-    cover: "https://images.pexels.com/photos/2526868/pexels-photo-2526868.jpeg?auto=compress&cs=tinysrgb&w=1800&fit=crop",
-    photos: [
-      "https://images.pexels.com/photos/2526868/pexels-photo-2526868.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "https://images.pexels.com/photos/2387882/pexels-photo-2387882.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "https://images.pexels.com/photos/18005884/pexels-photo-18005884.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "https://images.pexels.com/photos/7346629/pexels-photo-7346629.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "https://images.pexels.com/photos/4473482/pexels-photo-4473482.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "https://images.pexels.com/photos/4552361/pexels-photo-4552361.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "https://images.pexels.com/photos/7697303/pexels-photo-7697303.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "https://images.pexels.com/photos/12051817/pexels-photo-12051817.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "https://images.pexels.com/photos/7816356/pexels-photo-7816356.jpeg?auto=compress&cs=tinysrgb&w=1600"
-    ]
+    avatar: pexelsImageUrl(7346629, 420) + "&fit=crop",
+    cover: pexelsImageUrl(7346691, 1800) + "&fit=crop",
+    photos: PINK_LEMONADE_IMAGE_IDS.map((id) => pexelsImageUrl(id, 1600))
   }
 ];
 
@@ -154,6 +157,7 @@ const CreatorProfile = () => {
       "6 days ago",
       "1 week ago"
     ];
+    const statusMediaCount = Math.min(8, mockPhotos.length);
 
     return MOCK_STATUS_TEXTS.map((text, index) => ({
       id: `mock-status-${index + 1}`,
@@ -167,11 +171,11 @@ const CreatorProfile = () => {
       timestamp: timestamps[index % timestamps.length],
       likes: 250 + ((mockSeed + index * 91) % 3400),
       comments: 8 + ((mockSeed + index * 17) % 320),
-      ...(index % 2 === 0
+      ...(index < statusMediaCount
         ? {
             media: {
               type: "image" as const,
-              url: mockPhotos[index % mockPhotos.length],
+              url: mockPhotos[index],
               alt: `Mock post ${index + 1}`
             }
           }
@@ -182,11 +186,15 @@ const CreatorProfile = () => {
 
   const mockCollections = useMemo(() => {
     const titles = seededShuffle(MOCK_COLLECTION_TITLES, mockSeed + 911);
-    const total = Math.max(10, titles.length);
+    const statusMediaCount = Math.min(8, mockPhotos.length);
+    const availableForCollections = Math.max(0, mockPhotos.length - statusMediaCount);
+    const maxCollectionCount = Math.floor(availableForCollections / 4);
+    const total = Math.min(Math.max(10, titles.length), maxCollectionCount, titles.length);
     return Array.from({ length: total }, (_, index) => {
       const title = titles[index % titles.length];
+      const imageStart = statusMediaCount + (index * 4);
       const images = Array.from({ length: 4 }, (_, offset) => {
-        const photo = mockPhotos[(index * 3 + offset) % mockPhotos.length];
+        const photo = mockPhotos[imageStart + offset];
         return { full: photo, thumb: photo };
       });
 
