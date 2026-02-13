@@ -673,7 +673,7 @@ const Collections1849929295832448 = () => {
             <div className="flex justify-center mt-4">
               <div className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-full backdrop-blur-sm">
                 <span className="text-xs sm:text-sm text-muted-foreground">
-                  Showing {Math.min(endIndex, allImages.length)} of {allImages.length} exclusive items from {remoteCollections.length || collectionIds.length} collections
+                  Showing {Math.min(endIndex, allImages.length)} of {allImages.length} exclusive items from {remoteCollections.length || localMockCollections.length} collections
                 </span>
               </div>
             </div>
