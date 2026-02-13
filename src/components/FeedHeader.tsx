@@ -130,8 +130,8 @@ const FeedHeader = ({
               <Search className="w-4 h-4" />
             </button>
 
-            {rightSlot}
             <TipButton onTipClick={() => {}} />
+            {rightSlot}
           </div>
         </div>
 

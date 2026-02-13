@@ -9,6 +9,8 @@ import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
 import { getSecureId } from "@/utils/secureIdMapper";
 import { useFanAuth } from "@/contexts/FanAuthContext";
+import FanAccountMenu from "@/components/FanAccountMenu";
+import FanAuthModal from "@/components/FanAuthModal";
 
 const PostDetailBlurred = () => {
   const { id } = useParams();
@@ -24,6 +26,7 @@ const PostDetailBlurred = () => {
   const [remoteCollection, setRemoteCollection] = useState<any>(null);
   const [remoteLoading, setRemoteLoading] = useState(false);
   const [canRevealContent, setCanRevealContent] = useState(false);
+  const [showFanAuthModal, setShowFanAuthModal] = useState(false);
   const { fan } = useFanAuth();
 
   useEffect(() => {
@@ -448,15 +451,18 @@ const PostDetailBlurred = () => {
       >
         <ArrowLeft className="w-5 h-5 sm:w-5 sm:h-5" />
       </button>
-      {isPreviewMode && canRevealContent && id && (
-        <button
-          onClick={() => navigate(getRevealUrl())}
-          className="fixed top-4 right-4 z-[60] h-9 sm:h-8 px-3 rounded-full bg-emerald-500/20 border border-emerald-400/30 backdrop-blur-xl hover:bg-emerald-500/30 text-emerald-300 transition-all duration-300 shadow-lg text-xs font-medium inline-flex items-center gap-1.5"
-        >
-          <Eye className="w-3.5 h-3.5" />
-          Reveal Content
-        </button>
-      )}
+      <div className="fixed top-4 right-4 z-[60] flex items-center gap-2">
+        {isPreviewMode && canRevealContent && id && (
+          <button
+            onClick={() => navigate(getRevealUrl())}
+            className="h-9 sm:h-8 px-3 rounded-full bg-emerald-500/20 border border-emerald-400/30 backdrop-blur-xl hover:bg-emerald-500/30 text-emerald-300 transition-all duration-300 shadow-lg text-xs font-medium inline-flex items-center gap-1.5"
+          >
+            <Eye className="w-3.5 h-3.5" />
+            Reveal Content
+          </button>
+        )}
+        <FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} />
+      </div>
 
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[60] flex flex-col items-center">
         <span className="text-xs text-white font-medium drop-shadow-lg">Scroll down to preview</span>
@@ -690,6 +696,11 @@ const PostDetailBlurred = () => {
             </div>
           </div>
         </div>
+
+        <FanAuthModal
+          open={showFanAuthModal}
+          onClose={() => setShowFanAuthModal(false)}
+        />
       </main>
     </div>
   );

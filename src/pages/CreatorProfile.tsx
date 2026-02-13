@@ -661,12 +661,8 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-accent-btn template-unlock-cta flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 transition-all shadow-lg shadow-indigo-500/20"
+                className="template-unlock-cta ml-auto self-start sm:self-center mt-3 sm:mt-5 text-lg sm:text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent hover:from-indigo-300 hover:to-cyan-300 transition-all"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
-                  <path d="M9 11V7C9 4.79086 10.7909 3 13 3C15.2091 3 17 4.79086 17 7V11" stroke="currentColor" strokeWidth="2" fill="none"/>
-                </svg>
                 Unlock Everything
               </button>
             )}
@@ -911,8 +907,6 @@ const CreatorProfile = () => {
               <div className={`template-feed-stack ${
                 useMasonryFlow
                   ? 'template-feed-stack-masonry'
-                  : templateStyleClass === 'midnight-glass'
-                  ? ''
                   : 'space-y-6'
               }`}>
                 {showHelp && !searchQuery && filteredFeedData.length === 0 && (
