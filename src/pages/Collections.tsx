@@ -6,11 +6,54 @@ import Preloader from "../components/Preloader";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
-import { getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 import { specialSecureIds } from "@/utils/secureIdMapper";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import FanAccountMenu from "@/components/FanAccountMenu";
 import FanAuthModal from "@/components/FanAuthModal";
+
+const MOCK_COLLECTION_TITLES = [
+  "Pink Lemonade Mood",
+  "Velvet Sunshine",
+  "Candy Light Sessions",
+  "Rose Quartz Frames",
+  "Pastel Motion",
+  "Soft Focus Diary",
+  "Skyline Bubblegum",
+  "Sweet Hour Drop",
+  "Velvet Portrait Club",
+  "Milkshake Neon",
+  "Sugar Lens",
+  "Cloud Bloom Set"
+];
+
+const PINK_LEMONADE_IMAGE_IDS = [
+  7346615, 7346619, 7346620, 7346621, 7346623, 7346626, 7346628, 7346629, 7346631, 7346632,
+  7346633, 7346634, 7346635, 7346656, 7346657, 7346658, 7346659, 7346660, 7346661, 7346662,
+  7346663, 7346666, 7346667, 7346668, 7346672, 7346673, 7346674, 7346675, 7346677, 7346678,
+  7346680, 7346681, 7346684, 7346688, 7346689, 7346690, 7346691, 7346692, 7346693, 7346694,
+  7346695, 7346696, 7346697, 7346698, 7346699, 7346701, 7346703
+];
+
+const pexelsImageUrl = (id, width = 1600) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
+const pexelsThumbUrl = (url, width = 560) => url.replace(/w=\d+/, `w=${width}`);
+const hashString = (value) => {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+};
+const seededShuffle = (items, seed) => {
+  const arr = [...items];
+  let state = (seed || 1) >>> 0;
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    const j = state % (i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
 
 const Collections = () => {
   const [searchParams] = useSearchParams();
@@ -220,8 +263,12 @@ const Collections = () => {
     return ratios[index % ratios.length];
   }
 
-  // Build allImages: use API data if available, otherwise directly from collectionsData (same as Ofweb)
-  const collectionIds = useMemo(() => getAllCollectionIds(), []);
+  const mockSeed = useMemo(() => hashString((creatorUsername || 'creator').toLowerCase()), [creatorUsername]);
+  const mockPhotos = useMemo(
+    () => seededShuffle(PINK_LEMONADE_IMAGE_IDS.map((id) => pexelsImageUrl(id, 1600)), mockSeed + 77),
+    [mockSeed]
+  );
+  const mockCollectionCount = Math.floor(mockPhotos.length / 4);
 
   const allImages = useMemo(() => {
     const visibleApiCollections = (collectionsData || []).filter(
@@ -255,42 +302,28 @@ const Collections = () => {
       return items;
     }
 
-    // Fallback: use mock collections when API has no visible collection content.
+    // Fallback: use same seeded pink mock universe as CreatorProfile.
     const items: any[] = [];
-    collectionIds.forEach(id => {
-      const collection = getCollection(id);
-      if (collection) {
-        collection.images.forEach((imageData: any, index: number) => {
-          const imageSrc = typeof imageData === 'string' ? imageData : imageData.full;
-          const mediaType = isVideoUrl(imageSrc) ? 'video' : 'image';
-          let thumbSrc;
-          if (mediaType === 'video') {
-            thumbSrc = typeof imageData === 'string'
-              ? imageSrc.replace('/collection', '/thumbs/collection').replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg')
-              : (imageData.thumb || imageSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg'));
-          } else {
-            thumbSrc = typeof imageData === 'string'
-              ? imageSrc.replace('/collection', '/thumbs/collection')
-              : imageData.thumb;
-          }
-          items.push({
-            src: imageSrc,
-            thumb: thumbSrc,
-            collectionId: id,
-            collectionTitle: collection.title,
-            imageIndex: index,
-            mediaType,
-            ...getRandomDimensions(items.length)
-          });
-        });
-      }
-    });
+    for (let idx = 0; idx < mockPhotos.length; idx += 1) {
+      const imageSrc = mockPhotos[idx];
+      const collectionIndex = Math.floor(idx / 4);
+      const collectionTitle = MOCK_COLLECTION_TITLES[collectionIndex % MOCK_COLLECTION_TITLES.length];
+      items.push({
+        src: imageSrc,
+        thumb: pexelsThumbUrl(imageSrc, 560),
+        collectionId: `mock-collection-${collectionIndex + 1}`,
+        collectionTitle,
+        imageIndex: idx % 4,
+        mediaType: 'image',
+        ...getRandomDimensions(items.length)
+      });
+    }
     return items;
-  }, [collectionsData, collectionIds]);
+  }, [collectionsData, mockPhotos]);
 
   const collectionCount = collectionsData.length > 0
     ? collectionsData.filter((col: any) => col && col._id !== 'all' && !col.isBundle).length
-    : collectionIds.length;
+    : mockCollectionCount;
   const totalItems = allImages.length;
   const videoCount = allImages.filter((item) => item.mediaType === 'video').length;
   const imageCount = totalItems - videoCount;
