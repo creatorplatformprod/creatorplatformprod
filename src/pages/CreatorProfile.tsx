@@ -50,6 +50,27 @@ const MOCK_ASSETS = {
 };
 const DEFAULT_COVER_OVERLAY = 0.45;
 
+const getTemplateStyleClass = (templateId: string) => {
+  switch (templateId) {
+    case "minimal-portfolio":
+      return "nord-minimal";
+    case "magazine-editorial":
+      return "noir-luxe";
+    case "dashboard-app-style":
+      return "midnight-glass";
+    case "masonry-gallery":
+      return "masonry-gallery";
+    case "masonry-gallery-panels":
+      return "tokyo-neon";
+    case "dark-immersive":
+      return "dark-immersive";
+    case "interactive-homepage":
+      return "electric-creator";
+    default:
+      return "midnight-glass";
+  }
+};
+
 const CreatorProfile = () => {
   const { username } = useParams();
   const navigate = useNavigate();
@@ -196,7 +217,7 @@ const CreatorProfile = () => {
 
   useEffect(() => {
     const resolved = resolvePublicWebsiteTemplateId(creatorData?.websiteTemplate);
-    if (resolved === "nord-minimal" || resolved === "noir-luxe") {
+    if (resolved === "minimal-portfolio" || resolved === "magazine-editorial") {
       setSidebarOpen(false);
       return;
     }
@@ -560,12 +581,15 @@ const CreatorProfile = () => {
   const showHelp = isPreviewMode && pageMode !== 'clean';
   const coverOverlay = DEFAULT_COVER_OVERLAY;
   const activeTemplate = resolvePublicWebsiteTemplateId(creatorData?.websiteTemplate);
+  const templateStyleClass = getTemplateStyleClass(activeTemplate);
   const useMasonryFlow =
-    activeTemplate === "tokyo-neon" ||
-    activeTemplate === "electric-creator";
+    activeTemplate === "masonry-gallery" ||
+    activeTemplate === "masonry-gallery-panels" ||
+    activeTemplate === "interactive-homepage";
   const showSidebar =
-    activeTemplate === "midnight-glass" ||
-    activeTemplate === "tokyo-neon";
+    activeTemplate === "dashboard-app-style" ||
+    activeTemplate === "masonry-gallery-panels" ||
+    activeTemplate === "dark-immersive";
   const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
   const creatorCoverImage =
     typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
@@ -619,7 +643,7 @@ const CreatorProfile = () => {
   }
 
   return (
-    <div className={`min-h-screen feed-bg public-template public-template-${activeTemplate} template-layout template-layout-${activeTemplate} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
+    <div className={`min-h-screen feed-bg public-template public-template-${templateStyleClass} template-layout template-layout-${templateStyleClass} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
       {/* Full Width Navbar - Always on top */}
       <FeedHeader 
         onSearch={handleSearch} 
@@ -963,6 +987,8 @@ const CreatorProfile = () => {
               <div className={`template-feed-stack ${
                 useMasonryFlow
                   ? 'template-feed-stack-masonry'
+                  : activeTemplate === 'dashboard-app-style'
+                  ? ''
                   : 'space-y-6'
               }`}>
                 {showHelp && !searchQuery && filteredFeedData.length === 0 && (
