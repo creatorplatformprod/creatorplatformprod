@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import { getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
@@ -11,6 +10,50 @@ import { getSecureId } from "@/utils/secureIdMapper";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import FanAccountMenu from "@/components/FanAccountMenu";
 import FanAuthModal from "@/components/FanAuthModal";
+
+const MOCK_COLLECTION_TITLES = [
+  "Pink Lemonade Mood",
+  "Velvet Sunshine",
+  "Candy Light Sessions",
+  "Rose Quartz Frames",
+  "Pastel Motion",
+  "Soft Focus Diary",
+  "Skyline Bubblegum",
+  "Sweet Hour Drop",
+  "Velvet Portrait Club",
+  "Milkshake Neon",
+  "Sugar Lens",
+  "Cloud Bloom Set"
+];
+
+const PINK_LEMONADE_IMAGE_IDS = [
+  7346615, 7346619, 7346620, 7346621, 7346623, 7346626, 7346628, 7346629, 7346631, 7346632,
+  7346633, 7346634, 7346635, 7346656, 7346657, 7346658, 7346659, 7346660, 7346661, 7346662,
+  7346663, 7346666, 7346667, 7346668, 7346672, 7346673, 7346674, 7346675, 7346677, 7346678,
+  7346680, 7346681, 7346684, 7346688, 7346689, 7346690, 7346691, 7346692, 7346693, 7346694,
+  7346695, 7346696, 7346697, 7346698, 7346699, 7346701, 7346703
+];
+
+const pexelsImageUrl = (id: number, width = 1600) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
+const pexelsThumbUrl = (url: string, width = 560) => url.replace(/w=\d+/, `w=${width}`);
+const hashString = (value: string) => {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+};
+const seededShuffle = <T,>(items: T[], seed: number) => {
+  const arr = [...items];
+  let state = (seed || 1) >>> 0;
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    const j = state % (i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
 
 const PostDetailBlurred = () => {
   const { id } = useParams();
@@ -28,6 +71,30 @@ const PostDetailBlurred = () => {
   const [canRevealContent, setCanRevealContent] = useState(false);
   const [showFanAuthModal, setShowFanAuthModal] = useState(false);
   const { fan } = useFanAuth();
+  const mockSeed = hashString((creatorParam || 'creator').toLowerCase());
+  const mockPhotos = seededShuffle(PINK_LEMONADE_IMAGE_IDS.map((imgId) => pexelsImageUrl(imgId, 1600)), mockSeed + 77);
+  const mockCollectionCount = Math.min(MOCK_COLLECTION_TITLES.length, Math.floor(mockPhotos.length / 4));
+  const localMockCollections = Array.from({ length: mockCollectionCount }, (_, index) => {
+    const imageStart = index * 4;
+    const images = Array.from({ length: 4 }, (_, offset) => {
+      const full = mockPhotos[imageStart + offset];
+      return { full, thumb: pexelsThumbUrl(full, 560) };
+    });
+    return {
+      id: `mock-collection-${index + 1}`,
+      title: MOCK_COLLECTION_TITLES[index % MOCK_COLLECTION_TITLES.length],
+      description: `Exclusive ${MOCK_COLLECTION_TITLES[index % MOCK_COLLECTION_TITLES.length].toLowerCase()} set with polished edits and premium frames.`,
+      images,
+      user: {
+        name: 'Creator',
+        avatar: pexelsImageUrl(7346629, 420) + "&fit=crop",
+        verified: true
+      },
+      timestamp: index < 3 ? "Today" : `${Math.min(index + 1, 12)} days ago`,
+      price: 6.99 + ((index + mockSeed) % 6),
+      creatorId: ''
+    };
+  });
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -108,22 +175,18 @@ const PostDetailBlurred = () => {
 
   const resolveLocalCollection = (collectionId?: string) => {
     if (!collectionId) return undefined;
-    const directCollection = getCollection(collectionId);
+    const directCollection = localMockCollections.find((collection) => collection.id === collectionId);
     if (directCollection) return directCollection;
 
     const mockMatch = collectionId.match(/^mock-collection-(\d+)$/i);
     if (!mockMatch) return undefined;
-
-    const allIds = getAllCollectionIds();
-    if (allIds.length === 0) return undefined;
-
     const parsed = Number.parseInt(mockMatch[1], 10);
-    const index = Number.isNaN(parsed) ? 0 : Math.max(parsed - 1, 0) % allIds.length;
-    return getCollection(allIds[index]);
+    const index = Number.isNaN(parsed) ? 0 : Math.max(parsed - 1, 0) % localMockCollections.length;
+    return localMockCollections[index];
   };
 
   const localCollection = resolveLocalCollection(id as string);
-  const fallbackMockCollection = getCollection(getAllCollectionIds()[0] || '');
+  const fallbackMockCollection = localMockCollections[0];
 
   const loadRemoteCollection = async () => {
     if (!id || localCollection) return;
@@ -338,7 +401,7 @@ const PostDetailBlurred = () => {
             [imageSrc]: { width: dimensions.width, height: dimensions.height }
           }));
         };
-        img.src = imageSrc.split('?')[0];
+        img.src = imageSrc;
       }
     });
   };
