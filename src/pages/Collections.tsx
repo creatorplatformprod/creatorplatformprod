@@ -268,7 +268,31 @@ const Collections = () => {
     () => seededShuffle(PINK_LEMONADE_IMAGE_IDS.map((id) => pexelsImageUrl(id, 1600)), mockSeed + 77),
     [mockSeed]
   );
-  const mockCollectionCount = Math.floor(mockPhotos.length / 4);
+  const localMockCollections = useMemo(() => {
+    const titles = seededShuffle(MOCK_COLLECTION_TITLES, mockSeed + 911);
+    const statusMediaCount = Math.min(6, mockPhotos.length);
+    const availableForCollections = Math.max(0, mockPhotos.length - statusMediaCount);
+    const maxCollectionCount = Math.floor(availableForCollections / 4);
+    const total = Math.min(Math.max(10, titles.length), maxCollectionCount, titles.length);
+    return Array.from({ length: total }, (_, index) => {
+      const title = titles[index % titles.length];
+      const imageStart = statusMediaCount + (index * 4);
+      const images = Array.from({ length: 4 }, (_, offset) => {
+        const imageSrc = mockPhotos[imageStart + offset];
+        return {
+          src: imageSrc,
+          thumb: pexelsThumbUrl(imageSrc, 560),
+          mediaType: 'image'
+        };
+      });
+      return {
+        id: `mock-collection-${index + 1}`,
+        title,
+        images
+      };
+    });
+  }, [mockPhotos, mockSeed]);
+  const mockCollectionCount = localMockCollections.length;
 
   const allImages = useMemo(() => {
     const visibleApiCollections = (collectionsData || []).filter(
@@ -304,22 +328,21 @@ const Collections = () => {
 
     // Fallback: use same seeded pink mock universe as CreatorProfile.
     const items: any[] = [];
-    for (let idx = 0; idx < mockPhotos.length; idx += 1) {
-      const imageSrc = mockPhotos[idx];
-      const collectionIndex = Math.floor(idx / 4);
-      const collectionTitle = MOCK_COLLECTION_TITLES[collectionIndex % MOCK_COLLECTION_TITLES.length];
-      items.push({
-        src: imageSrc,
-        thumb: pexelsThumbUrl(imageSrc, 560),
-        collectionId: `mock-collection-${collectionIndex + 1}`,
-        collectionTitle,
-        imageIndex: idx % 4,
-        mediaType: 'image',
-        ...getRandomDimensions(items.length)
+    localMockCollections.forEach((collection) => {
+      collection.images.forEach((mediaItem, index) => {
+        items.push({
+          src: mediaItem.src,
+          thumb: mediaItem.thumb,
+          collectionId: collection.id,
+          collectionTitle: collection.title,
+          imageIndex: index,
+          mediaType: mediaItem.mediaType,
+          ...getRandomDimensions(items.length)
+        });
       });
-    }
+    });
     return items;
-  }, [collectionsData, mockPhotos]);
+  }, [collectionsData, localMockCollections]);
 
   const collectionCount = collectionsData.length > 0
     ? collectionsData.filter((col: any) => col && col._id !== 'all' && !col.isBundle).length
