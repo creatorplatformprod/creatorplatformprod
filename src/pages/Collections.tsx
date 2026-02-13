@@ -8,6 +8,7 @@ import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
 import { getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 import { specialSecureIds } from "@/utils/secureIdMapper";
+import { useFanAuth } from "@/contexts/FanAuthContext";
 
 const Collections = () => {
   const [searchParams] = useSearchParams();
@@ -29,6 +30,7 @@ const Collections = () => {
   const [creatorId, setCreatorId] = useState('');
   const [canRevealContent, setCanRevealContent] = useState(false);
   const [revealStoreUrl, setRevealStoreUrl] = useState('');
+  const { fan } = useFanAuth();
 
   const imagesPerPage = 24;
 
@@ -94,11 +96,11 @@ const Collections = () => {
 
   // Pre-fill email from fan registration
   useEffect(() => {
-    const savedEmail = localStorage.getItem('fan_email');
-    if (savedEmail && !customerEmail) {
-      setCustomerEmail(savedEmail);
+    const preferredEmail = fan?.email || localStorage.getItem('fan_email');
+    if (preferredEmail && !customerEmail) {
+      setCustomerEmail(preferredEmail);
     }
-  }, []);
+  }, [fan?.email, customerEmail]);
 
   const isVideoUrl = (url) => {
     const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
@@ -431,7 +433,7 @@ const Collections = () => {
   };
 
   const handleCardPaymentClick = () => {
-    const sanitizedEmail = sanitizeEmail(customerEmail);
+    const sanitizedEmail = sanitizeEmail(fan?.email || customerEmail);
 
     if (!sanitizedEmail) {
       setPaymentError('Please enter your email address');
@@ -441,6 +443,10 @@ const Collections = () => {
     if (!isValidEmail(sanitizedEmail)) {
       setPaymentError('Please enter a valid email address (e.g., name@example.com)');
       return;
+    }
+
+    if (!fan?.email) {
+      localStorage.setItem('fan_email', sanitizedEmail);
     }
 
     setIsCardPaymentLoading(true);
@@ -590,24 +596,31 @@ const Collections = () => {
                     )}
                     
                     <div className="mb-3 sm:mb-4">
-                      <input
-                        type="email"
-                        placeholder="Enter your email address"
-                        value={customerEmail}
-                        onChange={(e) => {
-                          setCustomerEmail(e.target.value);
-                          setPaymentError("");
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === 'Go') {
-                            e.preventDefault();
-                            handleCardPaymentClick();
-                          }
-                        }}
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                        required
-                        maxLength={254}
-                      />
+                      {fan?.email ? (
+                        <div className="w-full rounded-xl border border-white/[0.1] bg-white/[0.04] px-3 sm:px-4 py-2.5 text-left">
+                          <p className="text-[11px] text-muted-foreground">Paying as</p>
+                          <p className="text-xs sm:text-sm font-medium text-foreground">{fan.email}</p>
+                        </div>
+                      ) : (
+                        <input
+                          type="email"
+                          placeholder="Enter your email address"
+                          value={customerEmail}
+                          onChange={(e) => {
+                            setCustomerEmail(e.target.value);
+                            setPaymentError("");
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === 'Go') {
+                              e.preventDefault();
+                              handleCardPaymentClick();
+                            }
+                          }}
+                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          required
+                          maxLength={254}
+                        />
+                      )}
                     </div>
                     
                     <button 

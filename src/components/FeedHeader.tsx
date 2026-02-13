@@ -9,12 +9,14 @@ interface FeedHeaderProps {
   sidebarOpen?: boolean;
   title?: string;
   subtitle?: string;
+  rightSlot?: JSX.Element;
 }
 
 const FeedHeader = ({
   onSearch,
   onLogoClick,
   title = "Creator",
+  rightSlot,
 }: FeedHeaderProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -128,6 +130,7 @@ const FeedHeader = ({
               <Search className="w-4 h-4" />
             </button>
 
+            {rightSlot}
             <TipButton onTipClick={() => {}} />
           </div>
         </div>

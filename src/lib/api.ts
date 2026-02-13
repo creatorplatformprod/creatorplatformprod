@@ -13,12 +13,26 @@ const getToken = (): string | null => {
   return localStorage.getItem('token');
 };
 
+const getFanToken = (): string | null => {
+  return localStorage.getItem('fan_token');
+};
+
 // Helper for API requests
 const apiRequest = async (
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  authType: 'creator' | 'fan' | 'none' | 'auto' = 'creator'
 ): Promise<any> => {
-  const token = getToken();
+  const creatorToken = getToken();
+  const fanToken = getFanToken();
+  const token =
+    authType === 'none'
+      ? null
+      : authType === 'fan'
+      ? fanToken
+      : authType === 'auto'
+      ? (creatorToken || fanToken)
+      : creatorToken;
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     ...options.headers,
@@ -107,6 +121,61 @@ export const api = {
    */
   googleAuth: () => {
     window.location.href = `${API_BASE_URL}/api/auth/google`;
+  },
+
+  // ==================== Fan Authentication ====================
+
+  fanRegister: async (data: {
+    email: string;
+    password: string;
+    displayName?: string;
+  }) => {
+    return apiRequest('/api/fans/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }, 'none');
+  },
+
+  fanLogin: async (email: string, password: string) => {
+    return apiRequest('/api/fans/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    }, 'none');
+  },
+
+  getCurrentFan: async () => {
+    return apiRequest('/api/fans/me', {}, 'fan');
+  },
+
+  updateFanProfile: async (data: {
+    displayName?: string;
+    bio?: string;
+    avatar?: string;
+  }) => {
+    return apiRequest('/api/fans/profile', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }, 'fan');
+  },
+
+  changeFanPassword: async (data: {
+    currentPassword: string;
+    newPassword: string;
+  }) => {
+    return apiRequest('/api/fans/change-password', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }, 'fan');
+  },
+
+  getFanUnlocks: async (creatorUsername?: string) => {
+    const query = creatorUsername ? `?creatorUsername=${encodeURIComponent(creatorUsername)}` : '';
+    return apiRequest(`/api/fans/unlocks${query}`, {}, 'fan');
+  },
+
+  fanGoogleAuth: (returnTo?: string) => {
+    const query = returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : '';
+    window.location.href = `${API_BASE_URL}/api/fans/auth/google${query}`;
   },
 
   // ==================== User Profile ====================
@@ -318,7 +387,7 @@ export const api = {
     return apiRequest('/api/payment/create-session', {
       method: 'POST',
       body: JSON.stringify(data),
-    });
+    }, 'fan');
   },
 
   /**

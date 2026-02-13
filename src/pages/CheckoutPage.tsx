@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Loader2, CheckCircle2, Lock, ChevronDown, ChevronUp, Clock, AlertCircle, CreditCard } from "lucide-react";
+import { useFanAuth } from "@/contexts/FanAuthContext";
 
 const RAW_API_URL =
   import.meta.env.VITE_API_URL ||
@@ -34,6 +35,7 @@ const CheckoutPage = () => {
   const [sessionExpired, setSessionExpired] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
+  const { fan } = useFanAuth();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -48,7 +50,7 @@ const CheckoutPage = () => {
     
     // Use URL param email, or fall back to saved fan email
     const savedFanEmail = localStorage.getItem('fan_email') || '';
-    setCustomerEmail(email || savedFanEmail);
+    setCustomerEmail(email || fan?.email || savedFanEmail);
     
     // Validate checkout data early
     if (amount && collectionId) {
@@ -93,6 +95,12 @@ const CheckoutPage = () => {
       setIsLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (fan?.email) {
+      setCustomerEmail(fan.email);
+    }
+  }, [fan?.email]);
 
   // Fire purchase analytics event when payment succeeds
   useEffect(() => {
@@ -299,13 +307,14 @@ const CheckoutPage = () => {
   };
 
   const handleProviderSelect = async (provider) => {
+    const effectiveEmail = (fan?.email || customerEmail || "").toLowerCase().trim();
     // Enhanced email validation with better error message
-    if (!customerEmail) {
+    if (!effectiveEmail) {
       setPaymentError('Please enter your email address');
       return;
     }
     
-    if (!isValidEmail(customerEmail)) {
+    if (!isValidEmail(effectiveEmail)) {
       setPaymentError('Please enter a valid email address (e.g., name@example.com)');
       return;
     }
@@ -329,19 +338,27 @@ const CheckoutPage = () => {
     setSelectedProvider(provider.id);
     setIsProcessing(true);
     setPaymentError("");
+    if (!fan?.email) {
+      localStorage.setItem('fan_email', effectiveEmail);
+    }
 
     try {
+      const fanToken = localStorage.getItem('fan_token');
+      const requestHeaders = {
+        'Content-Type': 'application/json',
+        ...(fanToken ? { Authorization: `Bearer ${fanToken}` } : {})
+      };
       const response = await fetch(
         `${CONFIG.API_URL}/api/payment/create-session`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: requestHeaders,
           body: JSON.stringify({
             amount: checkoutData.amount,
             collectionId: checkoutData.collectionId,
             currency: 'USD',
             provider: provider.id,
-            email: customerEmail.toLowerCase().trim(),
+            email: effectiveEmail,
             ...(checkoutData.creatorId ? { creatorId: checkoutData.creatorId } : {})
           })
         }
@@ -636,22 +653,28 @@ const CheckoutPage = () => {
                     <label className="block text-sm font-medium text-foreground mb-2">
                       Email Address *
                     </label>
-                    <input
-                      type="email"
-                      value={customerEmail}
-                      onChange={(e) => {
-                        setCustomerEmail(e.target.value);
-                        if (paymentError && paymentError.includes('email')) {
-                          setPaymentError('');
-                        }
-                      }}
-                      placeholder="name@example.com"
-                      className="w-full px-4 py-2.5 sm:py-3 bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                      required
-                      maxLength={254}
-                    />
+                    {fan?.email ? (
+                      <div className="w-full rounded-xl border border-white/[0.1] bg-white/[0.03] px-4 py-3">
+                        <p className="text-sm text-foreground font-medium">{fan.email}</p>
+                      </div>
+                    ) : (
+                      <input
+                        type="email"
+                        value={customerEmail}
+                        onChange={(e) => {
+                          setCustomerEmail(e.target.value);
+                          if (paymentError && paymentError.includes('email')) {
+                            setPaymentError('');
+                          }
+                        }}
+                        placeholder="name@example.com"
+                        className="w-full px-4 py-2.5 sm:py-3 bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        required
+                        maxLength={254}
+                      />
+                    )}
                     <p className="text-xs text-muted-foreground mt-1">
-                      We'll send your purchase confirmation here
+                      {fan?.email ? "Using your logged-in account email." : "We'll send your purchase confirmation here"}
                     </p>
                   </div>
 
@@ -728,7 +751,7 @@ const CheckoutPage = () => {
                       const provider = availableProviders.find((p) => p.id === selectedProvider);
                       if (provider) handleProviderSelect(provider);
                     }}
-                    disabled={isProcessing || !customerEmail || !selectedProvider}
+                    disabled={isProcessing || !(fan?.email || customerEmail) || !selectedProvider}
                     className="checkout-pay-btn w-full"
                   >
                     {isProcessing ? (

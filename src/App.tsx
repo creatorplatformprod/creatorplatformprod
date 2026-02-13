@@ -20,6 +20,10 @@ import TipCheckoutPage from "./pages/TipCheckoutPage";
 import AuthCallback from "./pages/AuthCallback";
 import Pricing from "./pages/Pricing";
 import RecoverAccess from "./pages/RecoverAccess";
+import FanAuthCallback from "./pages/FanAuthCallback";
+import FanAccount from "./pages/FanAccount";
+import FanUnlocks from "./pages/FanUnlocks";
+import { FanAuthProvider } from "./contexts/FanAuthContext";
 
 const queryClient = new QueryClient();
 
@@ -29,8 +33,9 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <Routes>
+        <FanAuthProvider>
+          <BrowserRouter>
+            <Routes>
             {/* Landing Page - must be first */}
             <Route path="/" element={<Landing />} />
             <Route path="/pricing" element={<Pricing />} />
@@ -57,6 +62,9 @@ const App = () => (
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/tip-checkout" element={<TipCheckoutPage />} />
             <Route path="/recover-access" element={<RecoverAccess />} />
+            <Route path="/fan/auth/callback" element={<FanAuthCallback />} />
+            <Route path="/fan/account" element={<FanAccount />} />
+            <Route path="/fan/unlocks" element={<FanUnlocks />} />
             
             {/* Legacy Index (for existing content) */}
             <Route path="/index" element={<Index />} />
@@ -66,8 +74,9 @@ const App = () => (
 
             {/* Fallback route for 404 */}
             <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+            </Routes>
+          </BrowserRouter>
+        </FanAuthProvider>
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>

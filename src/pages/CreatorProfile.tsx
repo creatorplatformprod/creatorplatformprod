@@ -7,7 +7,10 @@ import StatusCard from "@/components/StatusCard";
 import StatusCardWithMedia from "@/components/StatusCardWithMedia";
 import Preloader from "@/components/Preloader";
 import TopLoader from "@/components/TopLoader";
+import FanAccountMenu from "@/components/FanAccountMenu";
+import FanAuthModal from "@/components/FanAuthModal";
 import { api } from "@/lib/api";
+import { useFanAuth } from "@/contexts/FanAuthContext";
 const MOCK_ASSETS = {
   avatar: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop",
   cover: "https://images.pexels.com/photos/3014856/pexels-photo-3014856.jpeg?auto=compress&cs=tinysrgb&w=1600&fit=crop",
@@ -62,10 +65,8 @@ const CreatorProfile = () => {
   const [collections, setCollections] = useState<any[]>([]);
   const [statusCards, setStatusCards] = useState<any[]>([]);
   const [feedFilter, setFeedFilter] = useState<'all' | 'collections' | 'posts'>('all');
-  const [fanEmail, setFanEmail] = useState('');
-  const [showFanPrompt, setShowFanPrompt] = useState(false);
-  const [fanRegistered, setFanRegistered] = useState(false);
-  const [fanInputEmail, setFanInputEmail] = useState('');
+  const [showFanAuthModal, setShowFanAuthModal] = useState(false);
+  const { fan, loading: fanLoading, guestMode } = useFanAuth();
   const hasDraftCapablePreview = isPreviewMode;
   const getProfileDraft = (targetUsername?: string) => {
     if (!targetUsername) return null;
@@ -79,26 +80,18 @@ const CreatorProfile = () => {
     }
   };
   
-  // Fan email persistence -- pre-fill for payments
   useEffect(() => {
-    const savedEmail = localStorage.getItem('fan_email');
-    if (savedEmail) {
-      setFanEmail(savedEmail);
-      setFanRegistered(true);
-    } else if (!isPreviewMode) {
-      // Show prompt after 3 seconds for non-preview visitors
-      const timer = setTimeout(() => setShowFanPrompt(true), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [isPreviewMode]);
-
-  const handleFanRegister = () => {
-    if (!fanInputEmail || !fanInputEmail.includes('@')) return;
-    localStorage.setItem('fan_email', fanInputEmail.trim().toLowerCase());
-    setFanEmail(fanInputEmail.trim().toLowerCase());
-    setFanRegistered(true);
-    setShowFanPrompt(false);
-  };
+    if (isPreviewMode || fanLoading) return;
+    const seen = localStorage.getItem('fan_entry_prompt_seen') === 'true';
+    const hasKnownEmail = !!localStorage.getItem('fan_email');
+    const shouldPrompt = !seen && !fan && !guestMode && !hasKnownEmail;
+    if (!shouldPrompt) return;
+    const timer = window.setTimeout(() => {
+      setShowFanAuthModal(true);
+      localStorage.setItem('fan_entry_prompt_seen', 'true');
+    }, 800);
+    return () => window.clearTimeout(timer);
+  }, [isPreviewMode, fanLoading, fan, guestMode]);
   
   // Mock status cards for empty preview -- richer content
   const mockStatusCards = useMemo(() => [
@@ -613,6 +606,7 @@ const CreatorProfile = () => {
         onLogoClick={() => setSidebarOpen(!sidebarOpen)} 
         sidebarOpen={sidebarOpen} 
         title={creatorData?.displayName || creatorData?.username || "Creator"}
+        rightSlot={<FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} />}
       />
 
       {/* Profile Hero Section */}
@@ -696,39 +690,6 @@ const CreatorProfile = () => {
           </div>
         </div>
       </div>
-
-      {/* Fan Email Prompt -- slides in for new visitors */}
-      {showFanPrompt && !fanRegistered && !isPreviewMode && (
-        <div className="border-b border-white/[0.06] bg-gradient-to-r from-indigo-500/[0.06] via-transparent to-cyan-500/[0.06] animate-fade-in">
-          <div className="max-w-4xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center gap-3">
-            <p className="text-xs text-muted-foreground flex-1">
-              <span className="font-medium text-foreground">Save your email</span> for faster checkout on all purchases
-            </p>
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <input
-                type="email"
-                placeholder="your@email.com"
-                value={fanInputEmail}
-                onChange={(e) => setFanInputEmail(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleFanRegister()}
-                className="flex-1 sm:w-52 px-3 py-1.5 text-xs bg-white/[0.04] border border-white/[0.08] rounded-lg text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/40"
-              />
-              <button
-                onClick={handleFanRegister}
-                className="px-3 py-1.5 text-xs font-medium rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors"
-              >
-                Save
-              </button>
-              <button
-                onClick={() => setShowFanPrompt(false)}
-                className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Content Area with Sidebar */}
       <div className="template-content-wrap flex">
@@ -1021,6 +982,11 @@ const CreatorProfile = () => {
           </main>
         </div>
       </div>
+
+      <FanAuthModal
+        open={showFanAuthModal}
+        onClose={() => setShowFanAuthModal(false)}
+      />
     </div>
   );
 };
