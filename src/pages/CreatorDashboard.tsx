@@ -46,7 +46,6 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
-import { DEFAULT_PUBLIC_WEBSITE_TEMPLATE, resolvePublicWebsiteTemplateId } from '@/lib/publicWebsiteTemplates';
 
 const DEFAULT_COVER_OVERLAY = 0.45;
 
@@ -115,7 +114,6 @@ const CreatorDashboard = () => {
     avatar: '',
     coverImage: '',
     coverOverlay: DEFAULT_COVER_OVERLAY,
-    websiteTemplate: DEFAULT_PUBLIC_WEBSITE_TEMPLATE,
     walletAddress: '',
     telegramUsername: '',
     telegramBotToken: '',
@@ -227,7 +225,11 @@ const CreatorDashboard = () => {
       const raw = localStorage.getItem(key);
       if (!raw) return null;
       const parsed = JSON.parse(raw);
-      return parsed && typeof parsed === 'object' ? parsed : null;
+      if (!parsed || typeof parsed !== 'object') return null;
+      const cleaned = { ...parsed };
+      // Template system disabled: ignore legacy draft field.
+      delete (cleaned as any).websiteTemplate;
+      return cleaned;
     } catch {
       return null;
     }
@@ -246,7 +248,6 @@ const CreatorDashboard = () => {
           avatar: userResult.user.avatar || '',
           coverImage: userResult.user.coverImage || '',
           coverOverlay: DEFAULT_COVER_OVERLAY,
-          websiteTemplate: resolvePublicWebsiteTemplateId(userResult.user.websiteTemplate),
           walletAddress: userResult.user.walletAddress || '',
           telegramUsername: userResult.user.telegramUsername || '',
           telegramBotToken: userResult.user.telegramBotToken || '',
@@ -262,8 +263,7 @@ const CreatorDashboard = () => {
         const draft = readProfileDraft(userResult.user.username);
         const mergedProfileData = {
           ...(draft ? { ...nextProfileData, ...draft } : nextProfileData),
-          coverOverlay: DEFAULT_COVER_OVERLAY,
-          websiteTemplate: resolvePublicWebsiteTemplateId(draft?.websiteTemplate || nextProfileData.websiteTemplate)
+          coverOverlay: DEFAULT_COVER_OVERLAY
         };
         setProfileData(mergedProfileData);
         profileBaselineRef.current = serializeForDirtyCheck(mergedProfileData);
@@ -472,6 +472,8 @@ const CreatorDashboard = () => {
     }
     if (!draft || typeof draft !== 'object') return;
     const payload = { ...draft };
+    // Template system disabled: do not publish template field.
+    delete payload.websiteTemplate;
     // Prevent accidental avatar clearing from stale/partial draft snapshots.
     if (typeof payload.avatar === 'string' && payload.avatar.trim() === '') {
       delete payload.avatar;

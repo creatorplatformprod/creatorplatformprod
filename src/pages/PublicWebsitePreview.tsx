@@ -1,15 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Monitor, Smartphone, Copy, Check, Link2, Palette } from "lucide-react";
+import { ExternalLink, Monitor, Smartphone, Copy, Check, Link2 } from "lucide-react";
 import AccountMenu from "@/components/AccountMenu";
 import { api } from "@/lib/api";
-import {
-  DEFAULT_PUBLIC_WEBSITE_TEMPLATE,
-  PUBLIC_WEBSITE_TEMPLATES,
-  resolvePublicWebsiteTemplateId,
-  type PublicWebsiteTemplateId,
-} from "@/lib/publicWebsiteTemplates";
 
 const ONBOARDING_STEPS = [
   {
@@ -51,22 +45,12 @@ const PublicWebsitePreview = () => {
   const [copied, setCopied] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(-1);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<PublicWebsiteTemplateId>(
-    DEFAULT_PUBLIC_WEBSITE_TEMPLATE
-  );
-  const [previewRefreshKey, setPreviewRefreshKey] = useState(0);
   
-  const draftKey = useMemo(() => (username ? `publicWebsiteProfileDraft:${username}` : ""), [username]);
-  const isOwnerPreview = !!(
-    currentUser?.username &&
-    username &&
-    currentUser.username.toLowerCase() === username.toLowerCase()
-  );
 
   const previewUrl = useMemo(() => {
     if (!username) return "/public-unavailable";
-    return `/public/${username}?mode=preview&v=${previewRefreshKey}`;
-  }, [username, previewRefreshKey]);
+    return `/public/${username}?mode=preview`;
+  }, [username]);
 
   const publicUrl = useMemo(() => {
     if (!username) return "/public-unavailable";
@@ -109,31 +93,8 @@ const PublicWebsitePreview = () => {
     loadCurrentUser();
   }, []);
 
-  useEffect(() => {
-    const loadTemplate = async () => {
-      if (!username) return;
-      try {
-        if (draftKey) {
-          const rawDraft = localStorage.getItem(draftKey);
-          if (rawDraft) {
-            const parsedDraft = JSON.parse(rawDraft);
-            const fromDraft = resolvePublicWebsiteTemplateId(parsedDraft?.websiteTemplate);
-            setSelectedTemplate(fromDraft);
-            return;
-          }
-        }
-
-        const userResult = await api.getUser(username);
-        if (userResult?.success) {
-          setSelectedTemplate(resolvePublicWebsiteTemplateId(userResult.user?.websiteTemplate));
-        }
-      } catch {
-        setSelectedTemplate(DEFAULT_PUBLIC_WEBSITE_TEMPLATE);
-      }
-    };
-
-    loadTemplate();
-  }, [username, draftKey]);
+  // Template switching is intentionally disabled for now.
+  // Keep preview locked to the general public design.
 
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
@@ -200,6 +161,8 @@ const PublicWebsitePreview = () => {
       draft = null;
     }
     if (!draft || typeof draft !== "object") return;
+    // Template system disabled: ignore legacy template draft field.
+    delete draft.websiteTemplate;
 
     const result = await api.updateProfile(draft);
     if (result?.success) {
@@ -260,31 +223,6 @@ const PublicWebsitePreview = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
-  };
-
-  const handleTemplateSelect = (templateId: PublicWebsiteTemplateId) => {
-    if (!username || !isOwnerPreview) return;
-
-    setSelectedTemplate(templateId);
-
-    try {
-      let draft: Record<string, any> = {};
-      if (draftKey) {
-        const raw = localStorage.getItem(draftKey);
-        if (raw) {
-          draft = JSON.parse(raw) || {};
-        }
-      }
-
-      draft.websiteTemplate = templateId;
-      localStorage.setItem(draftKey, JSON.stringify(draft));
-      localStorage.setItem(`publicWebsiteDirty:${username}`, "true");
-      setHasChanges(true);
-      setPublished(false);
-      setPreviewRefreshKey((value) => value + 1);
-    } catch (error: any) {
-      setPublishError(error?.message || "Failed to save template selection.");
-    }
   };
 
   return (
@@ -409,44 +347,7 @@ const PublicWebsitePreview = () => {
           </div>
         </div>
 
-        {isOwnerPreview && (
-          <div className="mb-5 rounded-xl border border-white/[0.08] bg-white/[0.02] p-3 sm:p-4">
-            <div className="mb-3 flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-              <Palette className="h-3.5 w-3.5" />
-              Public Style Templates
-            </div>
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {PUBLIC_WEBSITE_TEMPLATES.map((template) => {
-                const active = selectedTemplate === template.id;
-                return (
-                  <button
-                    key={template.id}
-                    onClick={() => handleTemplateSelect(template.id)}
-                    className={`rounded-lg border p-3 text-left transition-colors ${
-                      active
-                        ? "border-primary/60 bg-primary/10"
-                        : "border-white/[0.08] bg-white/[0.01] hover:bg-white/[0.04]"
-                    }`}
-                  >
-                    <div className="mb-2 flex items-center gap-1.5">
-                      {template.palette.map((swatch) => (
-                        <span
-                          key={`${template.id}-${swatch}`}
-                          className="h-2.5 w-2.5 rounded-full"
-                          style={{ backgroundColor: swatch }}
-                        />
-                      ))}
-                    </div>
-                    <p className="text-xs font-semibold text-foreground">{template.name}</p>
-                    <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">{template.description}</p>
-                    <p className="mt-2 text-[10px] text-primary/80">{template.bestFor}</p>
-                    <p className="mt-1 text-[10px] text-muted-foreground/80">{template.source}</p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        {/* Template picker intentionally disabled for now. */}
         {/* Device Preview Frame */}
         <div className="flex justify-center">
           {/* Desktop Frame */}

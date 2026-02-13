@@ -8,7 +8,6 @@ import StatusCardWithMedia from "@/components/StatusCardWithMedia";
 import Preloader from "@/components/Preloader";
 import TopLoader from "@/components/TopLoader";
 import { api } from "@/lib/api";
-import { resolvePublicWebsiteTemplateId } from "@/lib/publicWebsiteTemplates";
 const MOCK_ASSETS = {
   avatar: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop",
   cover: "https://images.pexels.com/photos/3014856/pexels-photo-3014856.jpeg?auto=compress&cs=tinysrgb&w=1600&fit=crop",
@@ -49,27 +48,6 @@ const MOCK_ASSETS = {
   ]
 };
 const DEFAULT_COVER_OVERLAY = 0.45;
-
-const getTemplateStyleClass = (templateId: string) => {
-  switch (templateId) {
-    case "minimal-portfolio":
-      return "nord-minimal";
-    case "magazine-editorial":
-      return "noir-luxe";
-    case "dashboard-app-style":
-      return "midnight-glass";
-    case "masonry-gallery":
-      return "masonry-gallery";
-    case "masonry-gallery-panels":
-      return "tokyo-neon";
-    case "dark-immersive":
-      return "dark-immersive";
-    case "interactive-homepage":
-      return "electric-creator";
-    default:
-      return "midnight-glass";
-  }
-};
 
 const CreatorProfile = () => {
   const { username } = useParams();
@@ -214,15 +192,6 @@ const CreatorProfile = () => {
     const creatorName = creatorData?.displayName || creatorData?.username || "Creator";
     document.title = `${creatorName} | SixSevenCreator`;
   }, [creatorData]);
-
-  useEffect(() => {
-    const resolved = resolvePublicWebsiteTemplateId(creatorData?.websiteTemplate);
-    if (resolved === "minimal-portfolio" || resolved === "magazine-editorial") {
-      setSidebarOpen(false);
-      return;
-    }
-    setSidebarOpen(true);
-  }, [creatorData?.websiteTemplate]);
 
   const loadCreatorProfile = async () => {
     try {
@@ -580,16 +549,10 @@ const CreatorProfile = () => {
     : null;
   const showHelp = isPreviewMode && pageMode !== 'clean';
   const coverOverlay = DEFAULT_COVER_OVERLAY;
-  const activeTemplate = resolvePublicWebsiteTemplateId(creatorData?.websiteTemplate);
-  const templateStyleClass = getTemplateStyleClass(activeTemplate);
-  const useMasonryFlow =
-    activeTemplate === "masonry-gallery" ||
-    activeTemplate === "masonry-gallery-panels" ||
-    activeTemplate === "interactive-homepage";
-  const showSidebar =
-    activeTemplate === "dashboard-app-style" ||
-    activeTemplate === "masonry-gallery-panels" ||
-    activeTemplate === "dark-immersive";
+  // Template switching is intentionally disabled for now.
+  const templateStyleClass = "midnight-glass";
+  const useMasonryFlow = false;
+  const showSidebar = true;
   const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
   const creatorCoverImage =
     typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
@@ -987,7 +950,7 @@ const CreatorProfile = () => {
               <div className={`template-feed-stack ${
                 useMasonryFlow
                   ? 'template-feed-stack-masonry'
-                  : activeTemplate === 'dashboard-app-style'
+                  : templateStyleClass === 'midnight-glass'
                   ? ''
                   : 'space-y-6'
               }`}>
