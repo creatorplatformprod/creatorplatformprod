@@ -10,6 +10,50 @@ import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
 
+const MOCK_COLLECTION_TITLES = [
+  "Pink Lemonade Mood",
+  "Velvet Sunshine",
+  "Candy Light Sessions",
+  "Rose Quartz Frames",
+  "Pastel Motion",
+  "Soft Focus Diary",
+  "Skyline Bubblegum",
+  "Sweet Hour Drop",
+  "Velvet Portrait Club",
+  "Milkshake Neon",
+  "Sugar Lens",
+  "Cloud Bloom Set"
+];
+
+const PINK_LEMONADE_IMAGE_IDS = [
+  7346615, 7346619, 7346620, 7346621, 7346623, 7346626, 7346628, 7346629, 7346631, 7346632,
+  7346633, 7346634, 7346635, 7346656, 7346657, 7346658, 7346659, 7346660, 7346661, 7346662,
+  7346663, 7346666, 7346667, 7346668, 7346672, 7346673, 7346674, 7346675, 7346677, 7346678,
+  7346680, 7346681, 7346684, 7346688, 7346689, 7346690, 7346691, 7346692, 7346693, 7346694,
+  7346695, 7346696, 7346697, 7346698, 7346699, 7346701, 7346703
+];
+
+const pexelsImageUrl = (id: number, width = 1600) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
+const pexelsThumbUrl = (url: string, width = 560) => url.replace(/w=\d+/, `w=${width}`);
+const hashString = (value: string) => {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+};
+const seededShuffle = <T,>(items: T[], seed: number) => {
+  const arr = [...items];
+  let state = (seed || 1) >>> 0;
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    const j = state % (i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
+
 const PostDetail = () => {
   const { secureId } = useParams();
   const navigate = useNavigate();
@@ -23,6 +67,32 @@ const PostDetail = () => {
   const [remoteCollection, setRemoteCollection] = useState<any>(null);
   const [remoteLoading, setRemoteLoading] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
+  const mockSeed = hashString((creatorParam || 'creator').toLowerCase());
+  const mockPhotos = seededShuffle(PINK_LEMONADE_IMAGE_IDS.map((imgId) => pexelsImageUrl(imgId, 1600)), mockSeed + 77);
+  const mockCollectionCount = Math.min(MOCK_COLLECTION_TITLES.length, Math.floor(mockPhotos.length / 4));
+  const localMockCollections = Array.from({ length: mockCollectionCount }, (_, index) => {
+    const imageStart = index * 4;
+    const images = Array.from({ length: 4 }, (_, offset) => {
+      const full = mockPhotos[imageStart + offset];
+      return { full, thumb: pexelsThumbUrl(full, 560) };
+    });
+    return {
+      id: `mock-collection-${index + 1}`,
+      title: MOCK_COLLECTION_TITLES[index % MOCK_COLLECTION_TITLES.length],
+      description: `Exclusive ${MOCK_COLLECTION_TITLES[index % MOCK_COLLECTION_TITLES.length].toLowerCase()} set with polished edits and premium frames.`,
+      images,
+      user: {
+        name: 'Creator',
+        avatar: pexelsImageUrl(7346629, 420) + "&fit=crop",
+        verified: true,
+        twitterUrl: '',
+        instagramUrl: '',
+        domainEmail: 'support@sixsevencreator.com',
+        telegramUsername: ''
+      },
+      timestamp: index < 3 ? "Today" : `${Math.min(index + 1, 12)} days ago`
+    };
+  });
 
   const imagesPerPage = 12;
 
@@ -58,7 +128,14 @@ const PostDetail = () => {
   };
 
   const getCollectionFromSecureId = () => {
-    if (!secureId || !isValidSecureId(secureId)) {
+    if (!secureId) {
+      return null;
+    }
+    const localMock = localMockCollections.find((collection) => collection.id === secureId);
+    if (localMock) {
+      return localMock;
+    }
+    if (!isValidSecureId(secureId)) {
       return null;
     }
     const actualId = getCollectionId(secureId);
@@ -66,7 +143,7 @@ const PostDetail = () => {
   };
 
   const loadRemoteCollection = async () => {
-    if (!secureId || isValidSecureId(secureId)) return;
+    if (!secureId || isValidSecureId(secureId) || /^mock-collection-\d+$/i.test(secureId)) return;
     setRemoteLoading(true);
     setAccessDenied(false);
 
