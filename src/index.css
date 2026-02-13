@@ -1539,6 +1539,20 @@
     box-shadow: 0 12px 28px -14px var(--template-button-shadow);
   }
 
+  .public-template .post-card {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: transform 180ms ease, box-shadow 220ms ease, border-color 220ms ease, background-color 220ms ease;
+  }
+
+  .public-template .post-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .public-template .template-filter-tab {
+    border: 1px solid transparent;
+  }
+
   .public-template-midnight-glass {
     --template-feed-bg: radial-gradient(1200px 700px at 12% -8%, rgba(14, 165, 233, 0.17), transparent 58%),
       radial-gradient(900px 620px at 95% 12%, rgba(99, 102, 241, 0.13), transparent 60%),
@@ -1553,6 +1567,17 @@
     --template-button-shadow: rgba(14, 116, 144, 0.55);
     --template-shell-border: rgba(56, 189, 248, 0.2);
     --template-font: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  .public-template-midnight-glass .post-card {
+    background: linear-gradient(180deg, rgba(8, 18, 36, 0.94), rgba(6, 14, 28, 0.92));
+    border-color: rgba(56, 189, 248, 0.2);
+    box-shadow: 0 14px 34px rgba(2, 6, 23, 0.46), 0 0 0 1px rgba(56, 189, 248, 0.08);
+  }
+
+  .public-template-midnight-glass .post-card:hover {
+    border-color: rgba(56, 189, 248, 0.34);
+    box-shadow: 0 22px 40px rgba(2, 6, 23, 0.55), 0 0 20px rgba(56, 189, 248, 0.14);
   }
 
   .public-template-nord-minimal {
@@ -1571,6 +1596,31 @@
     --template-font: 'Inter', system-ui, sans-serif;
   }
 
+  .public-template-nord-minimal .profile-avatar-ring {
+    border-radius: 18px;
+    padding: 2px;
+  }
+
+  .public-template-nord-minimal .profile-avatar-ring > * {
+    border-radius: 16px;
+  }
+
+  .public-template-nord-minimal .post-card {
+    background: rgba(45, 53, 69, 0.88);
+    border-color: rgba(216, 222, 233, 0.16);
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(10, 14, 22, 0.28);
+  }
+
+  .public-template-nord-minimal .post-card:hover {
+    border-color: rgba(143, 188, 187, 0.42);
+    box-shadow: 0 16px 30px rgba(10, 14, 22, 0.35);
+  }
+
+  .public-template-nord-minimal .template-filter-tab-active {
+    border-radius: 9px;
+  }
+
   .public-template-tokyo-neon {
     --template-feed-bg: radial-gradient(1120px 620px at 10% -8%, rgba(122, 162, 247, 0.18), transparent 56%),
       radial-gradient(980px 620px at 95% 8%, rgba(247, 118, 142, 0.15), transparent 58%),
@@ -1585,6 +1635,21 @@
     --template-button-shadow: rgba(247, 118, 142, 0.5);
     --template-shell-border: rgba(122, 162, 247, 0.24);
     --template-font: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  .public-template-tokyo-neon .post-card {
+    background: linear-gradient(180deg, rgba(30, 32, 48, 0.94), rgba(24, 24, 37, 0.9));
+    border-color: rgba(122, 162, 247, 0.36);
+    box-shadow: 0 10px 30px rgba(10, 10, 20, 0.52), inset 0 0 24px rgba(122, 162, 247, 0.08);
+  }
+
+  .public-template-tokyo-neon .post-card:hover {
+    border-color: rgba(247, 118, 142, 0.58);
+    box-shadow: 0 16px 34px rgba(10, 10, 20, 0.6), 0 0 20px rgba(247, 118, 142, 0.16);
+  }
+
+  .public-template-tokyo-neon .template-filter-tab-active {
+    box-shadow: 0 0 16px rgba(122, 162, 247, 0.2);
   }
 
   .public-template-noir-luxe {
@@ -1603,6 +1668,27 @@
     --template-font: 'Fraunces', 'Times New Roman', serif;
   }
 
+  .public-template-noir-luxe .post-card {
+    background: linear-gradient(180deg, rgba(28, 24, 22, 0.96), rgba(20, 17, 16, 0.92));
+    border-color: rgba(212, 175, 55, 0.24);
+    box-shadow: 0 16px 34px rgba(8, 6, 6, 0.54), 0 0 0 1px rgba(212, 175, 55, 0.08);
+  }
+
+  .public-template-noir-luxe .post-card h3,
+  .public-template-noir-luxe .post-card h4,
+  .public-template-noir-luxe h1 {
+    letter-spacing: 0.01em;
+  }
+
+  .public-template-noir-luxe .post-card:hover {
+    border-color: rgba(241, 209, 122, 0.5);
+    box-shadow: 0 22px 40px rgba(8, 6, 6, 0.65), 0 0 18px rgba(212, 175, 55, 0.14);
+  }
+
+  .public-template-noir-luxe .template-filter-tab-active {
+    border-color: rgba(212, 175, 55, 0.45);
+  }
+
   .public-template-electric-creator {
     --template-feed-bg: radial-gradient(1100px 620px at 10% -8%, rgba(34, 211, 238, 0.18), transparent 56%),
       radial-gradient(980px 640px at 94% 10%, rgba(168, 85, 247, 0.2), transparent 58%),
@@ -1617,6 +1703,31 @@
     --template-button-shadow: rgba(168, 85, 247, 0.6);
     --template-shell-border: rgba(168, 85, 247, 0.25);
     --template-font: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  .public-template-electric-creator .post-card {
+    background: linear-gradient(180deg, rgba(33, 20, 73, 0.94), rgba(27, 17, 64, 0.9));
+    border-color: rgba(168, 85, 247, 0.36);
+    box-shadow: 0 14px 32px rgba(9, 4, 26, 0.56), inset 0 0 24px rgba(34, 211, 238, 0.08);
+  }
+
+  .public-template-electric-creator .post-card:hover {
+    border-color: rgba(34, 211, 238, 0.5);
+    box-shadow: 0 20px 38px rgba(9, 4, 26, 0.68), 0 0 22px rgba(34, 211, 238, 0.18);
+    transform: translateY(-3px) scale(1.005);
+  }
+
+  .public-template-electric-creator .template-accent-btn {
+    animation: electric-glow 3.6s ease-in-out infinite;
+  }
+
+  @keyframes electric-glow {
+    0%, 100% {
+      box-shadow: 0 12px 26px -12px rgba(34, 211, 238, 0.45);
+    }
+    50% {
+      box-shadow: 0 16px 32px -12px rgba(168, 85, 247, 0.6);
+    }
   }
 
   /* Improved card-elevated hover glow */

@@ -440,6 +440,7 @@ const PublicWebsitePreview = () => {
                     <p className="text-xs font-semibold text-foreground">{template.name}</p>
                     <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">{template.description}</p>
                     <p className="mt-2 text-[10px] text-primary/80">{template.bestFor}</p>
+                    <p className="mt-1 text-[10px] text-muted-foreground/80">{template.source}</p>
                   </button>
                 );
               })}
