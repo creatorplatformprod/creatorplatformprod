@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { Heart, Share2, Check, Lock, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Collection } from "@/collections/collectionsData";
-import { getBlurredPostUrl } from "@/utils/linkHelpers";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import { fetchEngagement, registerEngagementShare, registerEngagementView, setEngagementLike } from "@/lib/engagement";
 
@@ -66,8 +65,21 @@ const PostCard = ({ collection }: PostCardProps) => {
     setIsLiked(nextLiked);
   };
 
+  const getBlurredTarget = () => {
+    const isMockCollection = /^mock-collection-\d+$/i.test(collection.id);
+    const params = new URLSearchParams();
+    if (isMockCollection && collection.creatorUsername) {
+      params.set("creator", collection.creatorUsername);
+    }
+    if (collection.previewMode) {
+      params.set("mode", "preview");
+    }
+    const query = params.toString();
+    return query ? `/post-blurred/${collection.id}?${query}` : `/post-blurred/${collection.id}`;
+  };
+
   const handleClick = () => {
-    navigate(`/post-blurred/${collection.id}`);
+    navigate(getBlurredTarget());
   };
 
   const handleLike = (e: React.MouseEvent) => {
@@ -94,7 +106,7 @@ const PostCard = ({ collection }: PostCardProps) => {
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    const blurredUrl = getBlurredPostUrl(collection.id);
+    const blurredUrl = getBlurredTarget();
     const fullUrl = window.location.origin + blurredUrl;
     
     try {
@@ -219,7 +231,7 @@ const PostCard = ({ collection }: PostCardProps) => {
             className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm px-6 py-2 rounded-full font-medium"
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/post-blurred/${collection.id}`);
+              navigate(getBlurredTarget());
             }}
           >
             <Lock className="w-4 h-4 mr-2" />

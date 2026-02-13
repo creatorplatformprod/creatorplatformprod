@@ -203,6 +203,8 @@ const CreatorProfile = () => {
         id: `mock-collection-${index + 1}`,
         title,
         description: `Exclusive ${title.toLowerCase()} set with polished edits and premium frames.`,
+        creatorUsername: username || creatorData?.username || "",
+        previewMode: isPreviewMode,
         images,
         user: {
           name: creatorData?.displayName || "Your Name",
@@ -224,7 +226,7 @@ const CreatorProfile = () => {
         isMockData: true
       };
     });
-  }, [creatorData, mockAvatar, mockPhotos, mockSeed]);
+  }, [creatorData, mockAvatar, mockPhotos, mockSeed, username, isPreviewMode]);
 
   useEffect(() => {
     loadCreatorProfile();
@@ -323,6 +325,8 @@ const CreatorProfile = () => {
       id: col._id || index.toString(),
       title: col.title,
       description: col.description || '',
+      creatorUsername: username || creatorData?.username || "",
+      previewMode: isPreviewMode,
       images: (col.media || []).map((media: any) => ({
         full: media.url,
         thumb: media.thumbnailUrl || media.url
@@ -349,7 +353,7 @@ const CreatorProfile = () => {
           : 'grid grid-cols-2 grid-rows-2 gap-1 h-full'
       }
     }));
-  }, [collections, creatorData]);
+  }, [collections, creatorData, username, isPreviewMode]);
 
   const shouldUseMockData =
     formattedStatusData.length === 0 &&
@@ -711,7 +715,7 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-base sm:text-lg md:text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent hover:from-indigo-300 hover:to-cyan-300 transition-all"
+                className="template-unlock-cta mt-3 sm:mt-5 ml-0 md:ml-auto md:mr-8 lg:mr-10 self-center md:self-center text-base sm:text-lg md:text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent hover:from-indigo-300 hover:to-cyan-300 transition-all"
               >
                 Unlock Everything
               </button>

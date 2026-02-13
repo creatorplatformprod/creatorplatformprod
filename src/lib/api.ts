@@ -9,6 +9,9 @@ const RAW_API_BASE_URL =
 const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '');
 const FAN_GOOGLE_AUTH_PATH =
   (import.meta.env.VITE_FAN_GOOGLE_AUTH_PATH || '/api/fans/auth/google').trim() || '/api/fans/auth/google';
+let myCollectionsInFlight: Promise<any> | null = null;
+let myCollectionsCache: { timestamp: number; value: any } | null = null;
+const MY_COLLECTIONS_CACHE_TTL_MS = 2000;
 
 // Helper to get auth token
 const getToken = (): string | null => {
@@ -280,7 +283,22 @@ export const api = {
    * Get collections for current creator (dashboard)
    */
   getMyCollections: async () => {
-    return apiRequest('/api/collections/mine');
+    const now = Date.now();
+    if (myCollectionsCache && now - myCollectionsCache.timestamp < MY_COLLECTIONS_CACHE_TTL_MS) {
+      return myCollectionsCache.value;
+    }
+    if (myCollectionsInFlight) {
+      return myCollectionsInFlight;
+    }
+    myCollectionsInFlight = apiRequest('/api/collections/mine')
+      .then((result) => {
+        myCollectionsCache = { timestamp: Date.now(), value: result };
+        return result;
+      })
+      .finally(() => {
+        myCollectionsInFlight = null;
+      });
+    return myCollectionsInFlight;
   },
 
   /**

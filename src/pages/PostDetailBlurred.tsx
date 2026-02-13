@@ -1,5 +1,5 @@
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
@@ -71,30 +71,38 @@ const PostDetailBlurred = () => {
   const [canRevealContent, setCanRevealContent] = useState(false);
   const [showFanAuthModal, setShowFanAuthModal] = useState(false);
   const { fan } = useFanAuth();
-  const mockSeed = hashString((creatorParam || 'creator').toLowerCase());
-  const mockPhotos = seededShuffle(PINK_LEMONADE_IMAGE_IDS.map((imgId) => pexelsImageUrl(imgId, 1600)), mockSeed + 77);
-  const mockCollectionCount = Math.min(MOCK_COLLECTION_TITLES.length, Math.floor(mockPhotos.length / 4));
-  const localMockCollections = Array.from({ length: mockCollectionCount }, (_, index) => {
-    const imageStart = index * 4;
-    const images = Array.from({ length: 4 }, (_, offset) => {
-      const full = mockPhotos[imageStart + offset];
-      return { full, thumb: pexelsThumbUrl(full, 560) };
+  const mockSeed = useMemo(
+    () => hashString((creatorParam || 'creator').toLowerCase()),
+    [creatorParam]
+  );
+  const mockPhotos = useMemo(
+    () => seededShuffle(PINK_LEMONADE_IMAGE_IDS.map((imgId) => pexelsImageUrl(imgId, 1600)), mockSeed + 77),
+    [mockSeed]
+  );
+  const localMockCollections = useMemo(() => {
+    const mockCollectionCount = Math.min(MOCK_COLLECTION_TITLES.length, Math.floor(mockPhotos.length / 4));
+    return Array.from({ length: mockCollectionCount }, (_, index) => {
+      const imageStart = index * 4;
+      const images = Array.from({ length: 4 }, (_, offset) => {
+        const full = mockPhotos[imageStart + offset];
+        return { full, thumb: pexelsThumbUrl(full, 560) };
+      });
+      return {
+        id: `mock-collection-${index + 1}`,
+        title: MOCK_COLLECTION_TITLES[index % MOCK_COLLECTION_TITLES.length],
+        description: `Exclusive ${MOCK_COLLECTION_TITLES[index % MOCK_COLLECTION_TITLES.length].toLowerCase()} set with polished edits and premium frames.`,
+        images,
+        user: {
+          name: 'Creator',
+          avatar: pexelsImageUrl(7346629, 420) + "&fit=crop",
+          verified: true
+        },
+        timestamp: index < 3 ? "Today" : `${Math.min(index + 1, 12)} days ago`,
+        price: 6.99 + ((index + mockSeed) % 6),
+        creatorId: ''
+      };
     });
-    return {
-      id: `mock-collection-${index + 1}`,
-      title: MOCK_COLLECTION_TITLES[index % MOCK_COLLECTION_TITLES.length],
-      description: `Exclusive ${MOCK_COLLECTION_TITLES[index % MOCK_COLLECTION_TITLES.length].toLowerCase()} set with polished edits and premium frames.`,
-      images,
-      user: {
-        name: 'Creator',
-        avatar: pexelsImageUrl(7346629, 420) + "&fit=crop",
-        verified: true
-      },
-      timestamp: index < 3 ? "Today" : `${Math.min(index + 1, 12)} days ago`,
-      price: 6.99 + ((index + mockSeed) % 6),
-      creatorId: ''
-    };
-  });
+  }, [mockPhotos, mockSeed]);
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -173,19 +181,17 @@ const PostDetailBlurred = () => {
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   };
 
-  const resolveLocalCollection = (collectionId?: string) => {
-    if (!collectionId) return undefined;
-    const directCollection = localMockCollections.find((collection) => collection.id === collectionId);
+  const localCollection = useMemo(() => {
+    if (!id) return undefined;
+    const directCollection = localMockCollections.find((collection) => collection.id === id);
     if (directCollection) return directCollection;
 
-    const mockMatch = collectionId.match(/^mock-collection-(\d+)$/i);
+    const mockMatch = id.match(/^mock-collection-(\d+)$/i);
     if (!mockMatch) return undefined;
     const parsed = Number.parseInt(mockMatch[1], 10);
     const index = Number.isNaN(parsed) ? 0 : Math.max(parsed - 1, 0) % localMockCollections.length;
     return localMockCollections[index];
-  };
-
-  const localCollection = resolveLocalCollection(id as string);
+  }, [id, localMockCollections]);
   const fallbackMockCollection = localMockCollections[0];
 
   const loadRemoteCollection = async () => {
@@ -300,12 +306,16 @@ const PostDetailBlurred = () => {
 
   useEffect(() => {
     loadRemoteCollection();
-  }, [id]);
+  }, [id, localCollection?.id]);
 
   useEffect(() => {
     const resolveRevealAccess = async () => {
       if (!id) {
         setCanRevealContent(false);
+        return;
+      }
+      if (localCollection) {
+        setCanRevealContent(true);
         return;
       }
       const token = localStorage.getItem('token');
@@ -322,7 +332,7 @@ const PostDetailBlurred = () => {
       }
     };
     resolveRevealAccess();
-  }, [id, localCollection]);
+  }, [id, localCollection?.id]);
 
   const getRevealUrl = () => {
     if (!id) return '#';

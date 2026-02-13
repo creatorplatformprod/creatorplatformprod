@@ -6,6 +6,8 @@ export interface Collection {
   title: string;
   description: string;
   images: Array<{ full: string; thumb: string }>;
+  creatorUsername?: string;
+  previewMode?: boolean;
   user: {
     name: string;
     avatar: string;
