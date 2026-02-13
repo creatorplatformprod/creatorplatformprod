@@ -1,6 +1,6 @@
 // PostDetail.tsx - UPDATED WITH INLINE VIDEO
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
@@ -67,32 +67,42 @@ const PostDetail = () => {
   const [remoteCollection, setRemoteCollection] = useState<any>(null);
   const [remoteLoading, setRemoteLoading] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
-  const mockSeed = hashString((creatorParam || 'creator').toLowerCase());
-  const mockPhotos = seededShuffle(PINK_LEMONADE_IMAGE_IDS.map((imgId) => pexelsImageUrl(imgId, 1600)), mockSeed + 77);
-  const mockCollectionCount = Math.min(MOCK_COLLECTION_TITLES.length, Math.floor(mockPhotos.length / 4));
-  const localMockCollections = Array.from({ length: mockCollectionCount }, (_, index) => {
-    const imageStart = index * 4;
-    const images = Array.from({ length: 4 }, (_, offset) => {
-      const full = mockPhotos[imageStart + offset];
-      return { full, thumb: pexelsThumbUrl(full, 560) };
+  const mockSeed = useMemo(() => hashString((creatorParam || 'creator').toLowerCase()), [creatorParam]);
+  const mockPhotos = useMemo(
+    () => seededShuffle(PINK_LEMONADE_IMAGE_IDS.map((imgId) => pexelsImageUrl(imgId, 1600)), mockSeed + 77),
+    [mockSeed]
+  );
+  const localMockCollections = useMemo(() => {
+    const titles = seededShuffle(MOCK_COLLECTION_TITLES, mockSeed + 911);
+    const statusMediaCount = Math.min(6, mockPhotos.length);
+    const availableForCollections = Math.max(0, mockPhotos.length - statusMediaCount);
+    const maxCollectionCount = Math.floor(availableForCollections / 4);
+    const total = Math.min(Math.max(10, titles.length), maxCollectionCount, titles.length);
+    return Array.from({ length: total }, (_, index) => {
+      const title = titles[index % titles.length];
+      const imageStart = statusMediaCount + (index * 4);
+      const images = Array.from({ length: 4 }, (_, offset) => {
+        const full = mockPhotos[imageStart + offset];
+        return { full, thumb: pexelsThumbUrl(full, 560) };
+      });
+      return {
+        id: `mock-collection-${index + 1}`,
+        title,
+        description: `Exclusive ${title.toLowerCase()} set with polished edits and premium frames.`,
+        images,
+        user: {
+          name: 'Creator',
+          avatar: pexelsImageUrl(7346629, 420) + "&fit=crop",
+          verified: true,
+          twitterUrl: '',
+          instagramUrl: '',
+          domainEmail: 'support@sixsevencreator.com',
+          telegramUsername: ''
+        },
+        timestamp: index < 3 ? "Today" : `${Math.min(index + 1, 12)} days ago`
+      };
     });
-    return {
-      id: `mock-collection-${index + 1}`,
-      title: MOCK_COLLECTION_TITLES[index % MOCK_COLLECTION_TITLES.length],
-      description: `Exclusive ${MOCK_COLLECTION_TITLES[index % MOCK_COLLECTION_TITLES.length].toLowerCase()} set with polished edits and premium frames.`,
-      images,
-      user: {
-        name: 'Creator',
-        avatar: pexelsImageUrl(7346629, 420) + "&fit=crop",
-        verified: true,
-        twitterUrl: '',
-        instagramUrl: '',
-        domainEmail: 'support@sixsevencreator.com',
-        telegramUsername: ''
-      },
-      timestamp: index < 3 ? "Today" : `${Math.min(index + 1, 12)} days ago`
-    };
-  });
+  }, [mockPhotos, mockSeed]);
 
   const imagesPerPage = 12;
 

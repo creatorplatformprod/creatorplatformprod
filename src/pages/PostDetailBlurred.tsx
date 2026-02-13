@@ -80,17 +80,22 @@ const PostDetailBlurred = () => {
     [mockSeed]
   );
   const localMockCollections = useMemo(() => {
-    const mockCollectionCount = Math.min(MOCK_COLLECTION_TITLES.length, Math.floor(mockPhotos.length / 4));
-    return Array.from({ length: mockCollectionCount }, (_, index) => {
-      const imageStart = index * 4;
+    const titles = seededShuffle(MOCK_COLLECTION_TITLES, mockSeed + 911);
+    const statusMediaCount = Math.min(6, mockPhotos.length);
+    const availableForCollections = Math.max(0, mockPhotos.length - statusMediaCount);
+    const maxCollectionCount = Math.floor(availableForCollections / 4);
+    const total = Math.min(Math.max(10, titles.length), maxCollectionCount, titles.length);
+    return Array.from({ length: total }, (_, index) => {
+      const title = titles[index % titles.length];
+      const imageStart = statusMediaCount + (index * 4);
       const images = Array.from({ length: 4 }, (_, offset) => {
         const full = mockPhotos[imageStart + offset];
         return { full, thumb: pexelsThumbUrl(full, 560) };
       });
       return {
         id: `mock-collection-${index + 1}`,
-        title: MOCK_COLLECTION_TITLES[index % MOCK_COLLECTION_TITLES.length],
-        description: `Exclusive ${MOCK_COLLECTION_TITLES[index % MOCK_COLLECTION_TITLES.length].toLowerCase()} set with polished edits and premium frames.`,
+        title,
+        description: `Exclusive ${title.toLowerCase()} set with polished edits and premium frames.`,
         images,
         user: {
           name: 'Creator',
