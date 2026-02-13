@@ -10,6 +10,7 @@ type FanAuthModalProps = {
 
 const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
   const { loginFan, registerFan, setGuestMode } = useFanAuth();
+  const skyUserColor = "#38bdf8";
   const [mode, setMode] = useState<"login" | "register">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -92,7 +93,7 @@ const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
           <label className="mb-2 block text-xs text-muted-foreground">
             Display Name
             <div className="mt-1 flex items-center gap-2 rounded-xl border border-white/[0.1] bg-white/[0.03] px-3 py-2.5">
-              <User className="h-4 w-4 text-muted-foreground" />
+              <User className="h-4 w-4" style={{ color: skyUserColor }} />
               <input
                 className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/60"
                 placeholder="Your name"
@@ -157,4 +158,3 @@ const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
 };
 
 export default FanAuthModal;
-

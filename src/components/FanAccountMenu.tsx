@@ -18,12 +18,13 @@ type FanAccountMenuProps = {
 const FanAccountMenu = ({ onOpenAuth, align = "end" }: FanAccountMenuProps) => {
   const { fan, logoutFan } = useFanAuth();
   const roseColor = "#db2777";
+  const skyUserColor = "#38bdf8";
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-transparent hover:bg-rose-500/10 transition-colors duration-200 text-sm font-medium"
+          className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-rose-500/10 transition-colors duration-200 text-sm font-medium"
           style={{ color: roseColor }}
         >
           {fan?.avatar ? (
@@ -34,11 +35,11 @@ const FanAccountMenu = ({ onOpenAuth, align = "end" }: FanAccountMenuProps) => {
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="h-4 w-4" />
+            <User className="h-4 w-4" style={{ color: skyUserColor }} />
           )}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={align} className="w-56 border-rose-500/20 bg-[#111826]">
+      <DropdownMenuContent align={align} className="w-56 border-white/15 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
         {fan ? (
           <>
             <DropdownMenuLabel className="px-2 py-1.5 text-xs text-muted-foreground">
@@ -65,9 +66,11 @@ const FanAccountMenu = ({ onOpenAuth, align = "end" }: FanAccountMenuProps) => {
             </DropdownMenuItem>
           </>
         ) : (
-          <DropdownMenuItem className="hover:bg-rose-500/10 focus:bg-rose-500/10" onClick={onOpenAuth}>
-            <LogIn className="mr-2 h-4 w-4" />
-            Log in or Register
+          <DropdownMenuItem className="group hover:bg-rose-500/10 focus:bg-rose-500/10" onClick={onOpenAuth}>
+            <LogIn className="mr-2 h-4 w-4 text-rose-400" />
+            <span className="text-foreground/85 transition-colors group-hover:text-rose-300 group-focus:text-rose-300">
+              Log in or Register
+            </span>
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>

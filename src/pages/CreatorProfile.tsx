@@ -661,7 +661,7 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta ml-auto self-start sm:self-center mt-3 sm:mt-5 text-lg sm:text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent hover:from-indigo-300 hover:to-cyan-300 transition-all"
+                className="template-unlock-cta mt-3 sm:mt-5 ml-0 md:ml-auto self-start md:self-center text-xl sm:text-2xl lg:text-[2rem] font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent hover:from-indigo-300 hover:to-cyan-300 transition-all"
               >
                 Unlock Everything
               </button>

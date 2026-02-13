@@ -34,6 +34,7 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
   const previewPath = currentUser?.username
     ? `/preview/${currentUser.username}`
     : "/dashboard";
+  const skyUserColor = "#38bdf8";
 
   const copyPublicLink = async () => {
     if (!currentUser?.username || typeof window === "undefined") return;
@@ -62,7 +63,7 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="w-4 h-4 text-foreground" />
+            <User className="w-4 h-4" style={{ color: skyUserColor }} />
           )}
         </button>
       </DropdownMenuTrigger>
@@ -77,7 +78,7 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
               Dashboard
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => (window.location.href = `${previewPath}`)}>
-              <User className="w-4 h-4 mr-2" />
+              <User className="w-4 h-4 mr-2" style={{ color: skyUserColor }} />
               Preview Mode
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -126,7 +127,7 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
           </>
         ) : (
           <DropdownMenuItem onClick={() => (window.location.href = "/")}>
-            <User className="w-4 h-4 mr-2" />
+            <User className="w-4 h-4 mr-2" style={{ color: skyUserColor }} />
             Creator Login
           </DropdownMenuItem>
         )}

@@ -7,6 +7,16 @@ const RAW_API_BASE_URL =
   import.meta.env.VITE_API_URL ||
   'https://creator-platform-api-production.creatorplatformprod.workers.dev';
 const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '');
+const RAW_FAN_GOOGLE_AUTH_PATHS = import.meta.env.VITE_FAN_GOOGLE_AUTH_PATHS || '';
+
+const FAN_GOOGLE_AUTH_PATHS = [
+  ...RAW_FAN_GOOGLE_AUTH_PATHS
+    .split(',')
+    .map((path) => path.trim())
+    .filter(Boolean),
+  '/api/fans/auth/google',
+  '/api/auth/google',
+].filter((path, index, arr) => arr.indexOf(path) === index);
 
 // Helper to get auth token
 const getToken = (): string | null => {
@@ -175,7 +185,32 @@ export const api = {
 
   fanGoogleAuth: (returnTo?: string) => {
     const query = returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : '';
-    window.location.href = `${API_BASE_URL}/api/fans/auth/google${query}`;
+    const candidateUrls = FAN_GOOGLE_AUTH_PATHS.map((path) => `${API_BASE_URL}${path}${query}`);
+
+    const tryRedirect = async () => {
+      for (const url of candidateUrls) {
+        try {
+          // If CORS allows status inspection, skip known-missing routes.
+          const response = await fetch(url, {
+            method: 'GET',
+            redirect: 'manual',
+          });
+          if (response.status === 404) {
+            continue;
+          }
+          window.location.href = url;
+          return;
+        } catch {
+          // If CORS blocks inspection, direct navigation is still valid.
+          window.location.href = url;
+          return;
+        }
+      }
+
+      window.location.href = candidateUrls[0];
+    };
+
+    void tryRedirect();
   },
 
   // ==================== User Profile ====================
