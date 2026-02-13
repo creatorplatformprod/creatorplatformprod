@@ -23,6 +23,7 @@ type FanAuthContextValue = {
 const FanAuthContext = createContext<FanAuthContextValue | null>(null);
 
 const GUEST_MODE_KEY = "fan_guest_mode";
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const FanAuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [fan, setFan] = useState<FanUser | null>(null);
@@ -46,21 +47,28 @@ export const FanAuthProvider = ({ children }: { children: React.ReactNode }) => 
       return;
     }
 
-    try {
-      const result = await api.getCurrentFan();
-      if (result?.success && result.fan) {
-        setFan(result.fan);
-        localStorage.setItem("fan_email", String(result.fan.email || "").toLowerCase());
-      } else {
-        localStorage.removeItem("fan_token");
-        setFan(null);
+    const maxAttempts = 3;
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      try {
+        const result = await api.getCurrentFan();
+        if (result?.success && result.fan) {
+          setFan(result.fan);
+          localStorage.setItem("fan_email", String(result.fan.email || "").toLowerCase());
+          setLoading(false);
+          return;
+        }
+      } catch {
+        // Retry to tolerate short-lived API/D1 propagation lag right after OAuth callback.
       }
-    } catch {
-      localStorage.removeItem("fan_token");
-      setFan(null);
-    } finally {
-      setLoading(false);
+
+      if (attempt < maxAttempts) {
+        await sleep(350 * attempt);
+      }
     }
+
+    localStorage.removeItem("fan_token");
+    setFan(null);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -120,4 +128,3 @@ export const useFanAuth = () => {
   }
   return context;
 };
-

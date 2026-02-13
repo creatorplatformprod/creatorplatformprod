@@ -4,13 +4,13 @@ import { Loader2 } from "lucide-react";
 const FanAuthCallback = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const fanToken = params.get("fanToken");
+    const fanToken = params.get("fanToken") || params.get("fan_token") || params.get("token");
     const returnTo = params.get("returnTo") || "/";
     if (fanToken) {
       localStorage.setItem("fan_token", fanToken);
       localStorage.removeItem("fan_guest_mode");
     }
-    window.location.href = returnTo.startsWith("/") ? returnTo : "/";
+    window.location.replace(returnTo.startsWith("/") ? returnTo : "/");
   }, []);
 
   return (
@@ -24,4 +24,3 @@ const FanAuthCallback = () => {
 };
 
 export default FanAuthCallback;
-
