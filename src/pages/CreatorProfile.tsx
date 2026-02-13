@@ -11,45 +11,81 @@ import FanAccountMenu from "@/components/FanAccountMenu";
 import FanAuthModal from "@/components/FanAuthModal";
 import { api } from "@/lib/api";
 import { useFanAuth } from "@/contexts/FanAuthContext";
-const MOCK_ASSETS = {
-  avatar: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop",
-  cover: "https://images.pexels.com/photos/3014856/pexels-photo-3014856.jpeg?auto=compress&cs=tinysrgb&w=1600&fit=crop",
-  statusOne: "https://images.pexels.com/photos/265722/pexels-photo-265722.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  statusTwo: "https://images.pexels.com/photos/1758144/pexels-photo-1758144.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  statusThree: "https://images.pexels.com/photos/1468379/pexels-photo-1468379.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  collections: [
-    {
-      title: "After Dark Portraits",
-      description: "Neon-lit portraits and cinematic edits from late-night shoots.",
-      images: [
-        "https://images.pexels.com/photos/1796730/pexels-photo-1796730.jpeg?auto=compress&cs=tinysrgb&w=1200",
-        "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=1200",
-        "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1200",
-        "https://images.pexels.com/photos/1386604/pexels-photo-1386604.jpeg?auto=compress&cs=tinysrgb&w=1200"
-      ]
-    },
-    {
-      title: "Studio Sets",
-      description: "Polished studio content with color-graded premium frames.",
-      images: [
-        "https://images.pexels.com/photos/2116469/pexels-photo-2116469.jpeg?auto=compress&cs=tinysrgb&w=1200",
-        "https://images.pexels.com/photos/1755385/pexels-photo-1755385.jpeg?auto=compress&cs=tinysrgb&w=1200",
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&w=1200",
-        "https://images.pexels.com/photos/1656684/pexels-photo-1656684.jpeg?auto=compress&cs=tinysrgb&w=1200"
-      ]
-    },
-    {
-      title: "Street Sessions",
-      description: "Editorial street looks, candid motion, and urban backdrops.",
-      images: [
-        "https://images.pexels.com/photos/1858175/pexels-photo-1858175.jpeg?auto=compress&cs=tinysrgb&w=1200",
-        "https://images.pexels.com/photos/1832323/pexels-photo-1832323.jpeg?auto=compress&cs=tinysrgb&w=1200",
-        "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=1200",
-        "https://images.pexels.com/photos/1755385/pexels-photo-1755385.jpeg?auto=compress&cs=tinysrgb&w=1200"
-      ]
-    }
-  ]
+type MockSourcePack = {
+  key: string;
+  avatar: string;
+  cover: string;
+  photos: string[];
 };
+
+const MOCK_SOURCE_PACKS: MockSourcePack[] = [
+  {
+    key: "pink-lemonade",
+    avatar: "https://images.pexels.com/photos/7346629/pexels-photo-7346629.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop",
+    cover: "https://images.pexels.com/photos/2526868/pexels-photo-2526868.jpeg?auto=compress&cs=tinysrgb&w=1800&fit=crop",
+    photos: [
+      "https://images.pexels.com/photos/2526868/pexels-photo-2526868.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "https://images.pexels.com/photos/2387882/pexels-photo-2387882.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "https://images.pexels.com/photos/18005884/pexels-photo-18005884.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "https://images.pexels.com/photos/7346629/pexels-photo-7346629.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "https://images.pexels.com/photos/4473482/pexels-photo-4473482.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "https://images.pexels.com/photos/4552361/pexels-photo-4552361.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "https://images.pexels.com/photos/7697303/pexels-photo-7697303.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "https://images.pexels.com/photos/12051817/pexels-photo-12051817.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "https://images.pexels.com/photos/7816356/pexels-photo-7816356.jpeg?auto=compress&cs=tinysrgb&w=1600"
+    ]
+  }
+];
+
+const MOCK_COLLECTION_TITLES = [
+  "Pink Lemonade Mood",
+  "Velvet Sunshine",
+  "Candy Light Sessions",
+  "Rose Quartz Frames",
+  "Pastel Motion",
+  "Soft Focus Diary",
+  "Skyline Bubblegum",
+  "Sweet Hour Drop",
+  "Velvet Portrait Club",
+  "Milkshake Neon",
+  "Sugar Lens",
+  "Cloud Bloom Set"
+];
+
+const MOCK_STATUS_TEXTS = [
+  "Just wrapped a new set and the lighting was unreal.",
+  "Fresh edits are exporting now. Drop goes live soon.",
+  "Sneak peek from this week. Full gallery in the next upload.",
+  "Working on a bigger story set with this color palette.",
+  "Testing a softer look for the next release. Loving it so far.",
+  "Behind the scenes from today's shoot session.",
+  "Thank you for all the support. More content is on the way.",
+  "This set might be my favorite one this month.",
+  "Preview frame from the collection I am finishing now.",
+  "Uploading tomorrow with bonus shots for early supporters.",
+  "Quick update: new content batch is almost ready.",
+  "Color grade came out exactly how I wanted for this drop."
+];
+
+const hashString = (value: string) => {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+};
+
+const seededShuffle = <T,>(items: T[], seed: number) => {
+  const arr = [...items];
+  let state = (seed || 1) >>> 0;
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    const j = state % (i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
+
 const DEFAULT_COVER_OVERLAY = 0.45;
 
 const CreatorProfile = () => {
@@ -68,6 +104,16 @@ const CreatorProfile = () => {
   const [showFanAuthModal, setShowFanAuthModal] = useState(false);
   const { fan, loading: fanLoading, guestMode } = useFanAuth();
   const hasDraftCapablePreview = isPreviewMode;
+  const mockSeed = useMemo(() => hashString((username || "creator").toLowerCase()), [username]);
+  const mockPack = useMemo(
+    () => MOCK_SOURCE_PACKS[mockSeed % MOCK_SOURCE_PACKS.length],
+    [mockSeed]
+  );
+  const mockPhotos = useMemo(
+    () => seededShuffle(mockPack.photos, mockSeed + 77),
+    [mockPack, mockSeed]
+  );
+  const mockAvatar = creatorData?.avatar || mockPack.avatar;
   const getProfileDraft = (targetUsername?: string) => {
     if (!targetUsername) return null;
     try {
@@ -93,89 +139,83 @@ const CreatorProfile = () => {
     return () => window.clearTimeout(timer);
   }, [isPreviewMode, fanLoading, fan, guestMode]);
   
-  // Mock status cards for empty preview -- richer content
-  const mockStatusCards = useMemo(() => [
-    {
-      id: "mock-status-1",
-      user: {
-        name: creatorData?.displayName || "Your Name",
-        avatar: creatorData?.avatar || MOCK_ASSETS.avatar,
-        verified: true
-      },
-      title: "",
-      text: "Just wrapped an incredible shoot! Can't wait to share the full set with you. New collection dropping this week -- stay tuned for something special.",
-      timestamp: "2 hours ago",
-      likes: 1234,
-      comments: 89,
-      media: {
-        type: "image" as const,
-        url: MOCK_ASSETS.statusOne,
-        alt: "Behind the scenes"
-      },
-      isMockData: true
-    },
-    {
-      id: "mock-status-2",
-      user: {
-        name: creatorData?.displayName || "Your Name",
-        avatar: creatorData?.avatar || MOCK_ASSETS.avatar,
-        verified: true
-      },
-      title: "Thank You 💜",
-      text: "We just hit 1,000 supporters! You all mean the world to me. As a thank you, I'm working on something extra special for my next drop.",
-      timestamp: "5 hours ago",
-      likes: 2847,
-      comments: 156,
-      isMockData: true
-    },
-    {
-      id: "mock-status-3",
-      user: {
-        name: creatorData?.displayName || "Your Name",
-        avatar: creatorData?.avatar || MOCK_ASSETS.avatar,
-        verified: true
-      },
-      title: "",
-      text: "Golden hour magic from yesterday's session. This light was unreal.",
-      timestamp: "1 day ago",
-      likes: 943,
-      comments: 67,
-      media: {
-        type: "image" as const,
-        url: MOCK_ASSETS.statusThree,
-        alt: "Golden hour shoot"
-      },
-      isMockData: true
-    }
-  ], [creatorData]);
+  const mockStatusCards = useMemo(() => {
+    const timestamps = [
+      "27 minutes ago",
+      "1 hour ago",
+      "2 hours ago",
+      "4 hours ago",
+      "7 hours ago",
+      "Yesterday",
+      "2 days ago",
+      "3 days ago",
+      "4 days ago",
+      "5 days ago",
+      "6 days ago",
+      "1 week ago"
+    ];
 
-  // Purpose-aligned mock collections with stable image sources.
-  const mockCollections = useMemo(() => {
-    return MOCK_ASSETS.collections.map((collection, index) => ({
-      id: `mock-collection-${index + 1}`,
-      title: collection.title,
-      description: collection.description,
-      images: collection.images.map((url) => ({ full: url, thumb: url })),
+    return MOCK_STATUS_TEXTS.map((text, index) => ({
+      id: `mock-status-${index + 1}`,
       user: {
         name: creatorData?.displayName || "Your Name",
-        avatar: creatorData?.avatar || MOCK_ASSETS.avatar,
+        avatar: mockAvatar,
         verified: true
       },
-      timestamp: 'Recently',
-      likes: 0,
-      comments: 0,
-      type: 'collection' as const,
-      feedType: 'collection' as const,
-      price: 9.99,
-      currency: 'USD',
-      cardLayout: {
-        gridType: 'quad',
-        maxImages: 4,
-        gridClasses: 'grid grid-cols-2 grid-rows-2 gap-1 h-full'
-      },
+      title: "",
+      text,
+      timestamp: timestamps[index % timestamps.length],
+      likes: 250 + ((mockSeed + index * 91) % 3400),
+      comments: 8 + ((mockSeed + index * 17) % 320),
+      ...(index % 2 === 0
+        ? {
+            media: {
+              type: "image" as const,
+              url: mockPhotos[index % mockPhotos.length],
+              alt: `Mock post ${index + 1}`
+            }
+          }
+        : {}),
       isMockData: true
     }));
-  }, [creatorData]);
+  }, [creatorData, mockAvatar, mockPhotos, mockSeed]);
+
+  const mockCollections = useMemo(() => {
+    const titles = seededShuffle(MOCK_COLLECTION_TITLES, mockSeed + 911);
+    const total = Math.max(10, titles.length);
+    return Array.from({ length: total }, (_, index) => {
+      const title = titles[index % titles.length];
+      const images = Array.from({ length: 4 }, (_, offset) => {
+        const photo = mockPhotos[(index * 3 + offset) % mockPhotos.length];
+        return { full: photo, thumb: photo };
+      });
+
+      return {
+        id: `mock-collection-${index + 1}`,
+        title,
+        description: `Exclusive ${title.toLowerCase()} set with polished edits and premium frames.`,
+        images,
+        user: {
+          name: creatorData?.displayName || "Your Name",
+          avatar: mockAvatar,
+          verified: true
+        },
+        timestamp: index < 3 ? "Today" : `${Math.min(index + 1, 12)} days ago`,
+        likes: 120 + ((mockSeed + index * 53) % 1600),
+        comments: 4 + ((mockSeed + index * 13) % 140),
+        type: "collection" as const,
+        feedType: "collection" as const,
+        price: 6.99 + ((index + mockSeed) % 6),
+        currency: "USD",
+        cardLayout: {
+          gridType: "quad",
+          maxImages: 4,
+          gridClasses: "grid grid-cols-2 grid-rows-2 gap-1 h-full"
+        },
+        isMockData: true
+      };
+    });
+  }, [creatorData, mockAvatar, mockPhotos, mockSeed]);
 
   useEffect(() => {
     loadCreatorProfile();
@@ -520,7 +560,7 @@ const CreatorProfile = () => {
     const img = event.currentTarget;
     if (img.dataset.fallbackApplied === '1') return;
     img.dataset.fallbackApplied = '1';
-    img.src = MOCK_ASSETS.avatar;
+    img.src = mockPack.avatar;
   };
 
   const formatSocialUrl = (value?: string) => {
@@ -549,7 +589,7 @@ const CreatorProfile = () => {
   const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
   const creatorCoverImage =
     typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
-  const previewFallbackCover = isPreviewMode && shouldUseMockData ? MOCK_ASSETS.cover : '';
+  const previewFallbackCover = isPreviewMode && shouldUseMockData ? mockPack.cover : '';
   const heroCoverImage = creatorCoverImage || previewFallbackCover;
 
   const renderSocialIcon = (
@@ -634,7 +674,7 @@ const CreatorProfile = () => {
           <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-4">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
-                src={creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400'}
+                src={creatorData?.avatar || mockAvatar}
                 alt={creatorData?.displayName || 'Creator'}
                 className="w-20 h-20 sm:w-24 sm:h-24 object-cover bg-background"
                 onError={handleAvatarImageError}
