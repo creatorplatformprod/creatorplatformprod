@@ -4,11 +4,54 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Preloader from "../components/Preloader";
-import { getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { isCollectionsSecureId } from "@/utils/secureIdMapper";
 import { api } from "@/lib/api";
+
+const MOCK_COLLECTION_TITLES = [
+  "Pink Lemonade Mood",
+  "Velvet Sunshine",
+  "Candy Light Sessions",
+  "Rose Quartz Frames",
+  "Pastel Motion",
+  "Soft Focus Diary",
+  "Skyline Bubblegum",
+  "Sweet Hour Drop",
+  "Velvet Portrait Club",
+  "Milkshake Neon",
+  "Sugar Lens",
+  "Cloud Bloom Set"
+];
+
+const PINK_LEMONADE_IMAGE_IDS = [
+  7346615, 7346619, 7346620, 7346621, 7346623, 7346626, 7346628, 7346629, 7346631, 7346632,
+  7346633, 7346634, 7346635, 7346656, 7346657, 7346658, 7346659, 7346660, 7346661, 7346662,
+  7346663, 7346666, 7346667, 7346668, 7346672, 7346673, 7346674, 7346675, 7346677, 7346678,
+  7346680, 7346681, 7346684, 7346688, 7346689, 7346690, 7346691, 7346692, 7346693, 7346694,
+  7346695, 7346696, 7346697, 7346698, 7346699, 7346701, 7346703
+];
+
+const pexelsImageUrl = (id: number, width = 1600) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
+const pexelsThumbUrl = (url: string, width = 560) => url.replace(/w=\d+/, `w=${width}`);
+const hashString = (value: string) => {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+};
+const seededShuffle = <T,>(items: T[], seed: number) => {
+  const arr = [...items];
+  let state = (seed || 1) >>> 0;
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    const j = state % (i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
 
 const Collections1849929295832448 = () => {
   const navigate = useNavigate();
@@ -179,7 +222,31 @@ const Collections1849929295832448 = () => {
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   };
 
-  const collectionIds = useMemo(() => getAllCollectionIds(), []);
+  const mockSeed = useMemo(() => hashString((creatorParam || 'creator').toLowerCase()), [creatorParam]);
+  const mockPhotos = useMemo(
+    () => seededShuffle(PINK_LEMONADE_IMAGE_IDS.map((id) => pexelsImageUrl(id, 1600)), mockSeed + 77),
+    [mockSeed]
+  );
+  const localMockCollections = useMemo(() => {
+    const titles = seededShuffle(MOCK_COLLECTION_TITLES, mockSeed + 911);
+    const statusMediaCount = Math.min(6, mockPhotos.length);
+    const availableForCollections = Math.max(0, mockPhotos.length - statusMediaCount);
+    const maxCollectionCount = Math.floor(availableForCollections / 4);
+    const total = Math.min(Math.max(10, titles.length), maxCollectionCount, titles.length);
+    return Array.from({ length: total }, (_, index) => {
+      const title = titles[index % titles.length];
+      const imageStart = statusMediaCount + (index * 4);
+      const images = Array.from({ length: 4 }, (_, offset) => {
+        const full = mockPhotos[imageStart + offset];
+        return { full, thumb: pexelsThumbUrl(full, 560) };
+      });
+      return {
+        id: `mock-collection-${index + 1}`,
+        title,
+        images
+      };
+    });
+  }, [mockPhotos, mockSeed]);
 
   const allImages = useMemo(() => {
     const items: any[] = [];
@@ -210,30 +277,23 @@ const Collections1849929295832448 = () => {
       return items;
     }
 
-    // Fallback: use local collectionsData (for demo/legacy)
-    collectionIds.forEach(id => {
-      const collection = getCollection(id);
-      if (collection) {
-        collection.images.forEach((imageData: any, index: number) => {
-          const imageSrc = typeof imageData === 'string' ? imageData : imageData.full;
-          const thumbSrc = typeof imageData === 'string' 
-            ? imageSrc.replace('/collection', '/thumbs/collection')
-            : imageData.thumb;
-          const mediaType = isVideoUrl(imageSrc) ? 'video' : 'image';
-          items.push({
-            src: imageSrc,
-            thumb: thumbSrc,
-            collectionId: id,
-            collectionTitle: collection.title,
-            imageIndex: index,
-            mediaType,
-            ...getRandomDimensions(items.length)
-          });
+    // Fallback: use seeded mock collections aligned with profile/detail routes.
+    localMockCollections.forEach((collection) => {
+      collection.images.forEach((imageData: any, index: number) => {
+        const imageSrc = imageData.full;
+        items.push({
+          src: imageSrc,
+          thumb: imageData.thumb,
+          collectionId: collection.id,
+          collectionTitle: collection.title,
+          imageIndex: index,
+          mediaType: 'image',
+          ...getRandomDimensions(items.length)
         });
-      }
+      });
     });
     return items;
-  }, [remoteCollections, collectionIds]);
+  }, [remoteCollections, localMockCollections]);
 
   function getRandomDimensions(index) {
     const ratios = [
