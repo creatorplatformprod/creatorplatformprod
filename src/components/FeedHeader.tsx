@@ -22,6 +22,7 @@ const FeedHeader = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const isPreviewMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("mode") === "preview";
 
   useEffect(() => {
     const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
@@ -76,7 +77,7 @@ const FeedHeader = ({
   };
 
   return (
-    <header className="sticky top-0 z-50 nav-elevated">
+    <header className={`sticky top-0 z-50 nav-elevated ${isPreviewMode ? "mobile-preview-navbar-offset" : ""}`}>
       <div className="max-w-none mx-auto px-3 sm:px-4 lg:px-6 py-2.5">
         <div className="flex items-center justify-between gap-2 lg:gap-6">
           {/* Left: Logo + Creator Name */}

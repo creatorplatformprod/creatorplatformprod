@@ -164,6 +164,12 @@ const Collections1849929295832448 = () => {
 
     verifyAndLoad();
     document.documentElement.classList.add('dark');
+    document.documentElement.classList.add('no-bounce');
+    document.body.classList.add('no-bounce');
+    return () => {
+      document.documentElement.classList.remove('no-bounce');
+      document.body.classList.remove('no-bounce');
+    };
   }, [secureId, accessToken, creatorParam, isPreviewMode]);
 
   const getProfileFallbackUrl = () => {
@@ -559,8 +565,8 @@ const Collections1849929295832448 = () => {
       {showPreloader && <Preloader isVisible={isPreloading} onComplete={handlePreloaderComplete} />}
       
       {!showPreloader && (
-        <div className="min-h-screen feed-bg">
-          <header className="sticky top-0 z-10 nav-elevated p-3 sm:p-4">
+        <div className="min-h-screen mobile-stable-shell feed-bg">
+          <header className={`sticky top-0 z-10 nav-elevated p-3 sm:p-4 ${isPreviewMode ? 'mobile-preview-navbar-offset' : ''}`}>
             <div className="max-w-6xl mx-auto flex items-center justify-between">
               <Button 
                 onClick={handleBackNavigation} 

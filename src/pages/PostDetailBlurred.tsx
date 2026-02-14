@@ -71,6 +71,7 @@ const PostDetailBlurred = () => {
   const [canRevealContent, setCanRevealContent] = useState(false);
   const [showFanAuthModal, setShowFanAuthModal] = useState(false);
   const { fan } = useFanAuth();
+  const activeFan = isPreviewMode ? null : fan;
   const mockSeed = useMemo(
     () => hashString((creatorParam || 'creator').toLowerCase()),
     [creatorParam]
@@ -164,18 +165,22 @@ const PostDetailBlurred = () => {
 
   useEffect(() => {
     document.body.classList.add('modal-open');
+    document.documentElement.classList.add('no-bounce');
+    document.body.classList.add('no-bounce');
     return () => {
       document.body.classList.remove('modal-open');
+      document.documentElement.classList.remove('no-bounce');
+      document.body.classList.remove('no-bounce');
     };
   }, []);
 
   // Pre-fill email from fan registration
   useEffect(() => {
-    const preferredEmail = fan?.email || localStorage.getItem('fan_email');
+    const preferredEmail = activeFan?.email || (!isPreviewMode ? localStorage.getItem('fan_email') : '');
     if (preferredEmail && !customerEmail) {
       setCustomerEmail(preferredEmail);
     }
-  }, [fan?.email, customerEmail]);
+  }, [activeFan?.email, customerEmail, isPreviewMode]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -462,7 +467,7 @@ const PostDetailBlurred = () => {
   const handleCardPaymentClick = () => {
     if (!collection) return;
 
-    const sanitizedEmail = sanitizeEmail(fan?.email || customerEmail);
+    const sanitizedEmail = sanitizeEmail(activeFan?.email || customerEmail);
 
     if (!sanitizedEmail) {
       setPaymentError('Please enter your email address');
@@ -474,7 +479,7 @@ const PostDetailBlurred = () => {
       return;
     }
 
-    if (!fan?.email) {
+    if (!activeFan?.email && !isPreviewMode) {
       localStorage.setItem('fan_email', sanitizedEmail);
     }
 
@@ -487,7 +492,8 @@ const PostDetailBlurred = () => {
       `&collectionTitle=${encodeURIComponent(collection.title)}` +
       `&itemCount=${collection.images?.length || 0}` +
       `&email=${encodeURIComponent(sanitizedEmail)}` +
-      (collection.creatorId ? `&creatorId=${encodeURIComponent(collection.creatorId)}` : '');
+      (collection.creatorId ? `&creatorId=${encodeURIComponent(collection.creatorId)}` : '') +
+      (isPreviewMode ? '&mode=preview' : '');
 
     window.location.href = checkoutUrl;
   };
@@ -522,14 +528,19 @@ const PostDetailBlurred = () => {
   }
 
   return (
-    <div className="min-h-screen feed-bg">
+    <div className="min-h-screen mobile-stable-shell feed-bg">
       <button
         onClick={() => window.history.back()}
-        className="fixed top-4 left-4 z-[60] w-9 h-9 sm:w-8 sm:h-8 rounded-full bg-secondary/80 backdrop-blur-xl hover:bg-secondary flex items-center justify-center text-foreground transition-all duration-300 shadow-lg"
+        className={`fixed ${isPreviewMode ? 'mobile-fixed-preview-safe' : 'mobile-fixed-safe'} left-4 z-[60] w-9 h-9 sm:w-8 sm:h-8 rounded-full bg-secondary/80 backdrop-blur-xl hover:bg-secondary flex items-center justify-center text-foreground transition-colors duration-200 shadow-lg`}
       >
         <ArrowLeft className="w-5 h-5 sm:w-5 sm:h-5" />
       </button>
-      <div className="fixed top-4 right-4 z-[60] flex items-center gap-2">
+      <div className={`fixed ${isPreviewMode ? 'mobile-fixed-preview-safe' : 'mobile-fixed-safe'} right-4 z-[60] flex items-center gap-2`}>
+        {isPreviewMode && (
+          <span className="h-9 sm:h-8 px-3 rounded-full bg-amber-500/20 border border-amber-400/30 backdrop-blur-xl text-amber-200 text-[11px] font-medium inline-flex items-center shadow-lg">
+            Preview: fan auth disabled
+          </span>
+        )}
         {isPreviewMode && canRevealContent && id && (
           <button
             onClick={() => navigate(getRevealUrl())}
@@ -539,7 +550,9 @@ const PostDetailBlurred = () => {
             Reveal Content
           </button>
         )}
-        <FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} />
+        {!isPreviewMode && (
+          <FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} />
+        )}
       </div>
 
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[60] flex flex-col items-center">
@@ -697,7 +710,8 @@ const PostDetailBlurred = () => {
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             backdropFilter: 'blur(8px)',
             WebkitBackdropFilter: 'blur(8px)',
-            overscrollBehavior: 'contain'
+            overscrollBehavior: 'none',
+            minHeight: '100svh'
           }}
         >
           <div 
@@ -721,10 +735,10 @@ const PostDetailBlurred = () => {
               )}
               
               <div className="mb-3 sm:mb-4">
-                {fan?.email ? (
+                {activeFan?.email ? (
                   <div className="w-full rounded-xl border border-white/[0.1] bg-white/[0.04] px-3 sm:px-4 py-2.5 text-left">
                     <p className="text-[11px] text-muted-foreground">Paying as</p>
-                    <p className="text-xs sm:text-sm font-medium text-foreground">{fan.email}</p>
+                    <p className="text-xs sm:text-sm font-medium text-foreground">{activeFan.email}</p>
                   </div>
                 ) : (
                   <input
@@ -775,10 +789,12 @@ const PostDetailBlurred = () => {
           </div>
         </div>
 
-        <FanAuthModal
-          open={showFanAuthModal}
-          onClose={() => setShowFanAuthModal(false)}
-        />
+        {!isPreviewMode && (
+          <FanAuthModal
+            open={showFanAuthModal}
+            onClose={() => setShowFanAuthModal(false)}
+          />
+        )}
       </main>
     </div>
   );

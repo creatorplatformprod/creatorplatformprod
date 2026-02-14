@@ -129,6 +129,15 @@ const PostDetail = () => {
   }, []);
 
   useEffect(() => {
+    document.documentElement.classList.add('no-bounce');
+    document.body.classList.add('no-bounce');
+    return () => {
+      document.documentElement.classList.remove('no-bounce');
+      document.body.classList.remove('no-bounce');
+    };
+  }, []);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [secureId]);
 
@@ -444,8 +453,8 @@ const PostDetail = () => {
   const totalImagePages = getTotalImagePages();
 
   return (
-    <div className="min-h-screen feed-bg">
-      <header className="sticky top-0 z-10 nav-elevated">
+    <div className="min-h-screen mobile-stable-shell feed-bg">
+      <header className={`sticky top-0 z-10 nav-elevated ${isPreviewMode ? 'mobile-preview-navbar-offset' : ''}`}>
         <div className="max-w-6xl mx-auto p-3 sm:p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button 

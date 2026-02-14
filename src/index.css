@@ -2434,6 +2434,38 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* Mobile viewport stability helpers for fixed overlays/buttons */
+.mobile-stable-shell {
+  min-height: 100svh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
 }
 
+.mobile-fixed-safe {
+  top: max(0.75rem, env(safe-area-inset-top));
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
 
+.no-bounce {
+  overscroll-behavior-y: none;
+}
+
+.mobile-preview-navbar-offset {
+  padding-top: 1.5rem;
+}
+
+.mobile-fixed-preview-safe {
+  top: calc(max(0.75rem, env(safe-area-inset-top)) + 1.5rem);
+}
+
+@media (min-width: 768px) {
+  .mobile-preview-navbar-offset {
+    padding-top: 0;
+  }
+}
+}

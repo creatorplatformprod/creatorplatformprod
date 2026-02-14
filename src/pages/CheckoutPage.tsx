@@ -36,9 +36,11 @@ const CheckoutPage = () => {
   const [redirecting, setRedirecting] = useState(false);
   const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
   const { fan } = useFanAuth();
+  const params = new URLSearchParams(window.location.search);
+  const isPreviewMode = params.get('mode') === 'preview';
+  const activeFanEmail = !isPreviewMode ? fan?.email : '';
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
     const email = params.get('email') || '';
     const accessToken = params.get('access');
     const amount = params.get('amount');
@@ -49,8 +51,8 @@ const CheckoutPage = () => {
     const urlCreator = params.get('creator') || '';
     
     // Use URL param email, or fall back to saved fan email
-    const savedFanEmail = localStorage.getItem('fan_email') || '';
-    setCustomerEmail(email || fan?.email || savedFanEmail);
+    const savedFanEmail = !isPreviewMode ? (localStorage.getItem('fan_email') || '') : '';
+    setCustomerEmail(email || activeFanEmail || savedFanEmail);
     
     // Validate checkout data early
     if (amount && collectionId) {
@@ -97,10 +99,10 @@ const CheckoutPage = () => {
   }, []);
 
   useEffect(() => {
-    if (fan?.email) {
-      setCustomerEmail(fan.email);
+    if (activeFanEmail) {
+      setCustomerEmail(activeFanEmail);
     }
-  }, [fan?.email]);
+  }, [activeFanEmail]);
 
   // Fire purchase analytics event when payment succeeds
   useEffect(() => {
@@ -307,7 +309,7 @@ const CheckoutPage = () => {
   };
 
   const handleProviderSelect = async (provider) => {
-    const effectiveEmail = (fan?.email || customerEmail || "").toLowerCase().trim();
+    const effectiveEmail = ((activeFanEmail || customerEmail || "")).toLowerCase().trim();
     // Enhanced email validation with better error message
     if (!effectiveEmail) {
       setPaymentError('Please enter your email address');
@@ -338,12 +340,12 @@ const CheckoutPage = () => {
     setSelectedProvider(provider.id);
     setIsProcessing(true);
     setPaymentError("");
-    if (!fan?.email) {
+    if (!activeFanEmail && !isPreviewMode) {
       localStorage.setItem('fan_email', effectiveEmail);
     }
 
     try {
-      const fanToken = localStorage.getItem('fan_token');
+      const fanToken = (!isPreviewMode && activeFanEmail) ? localStorage.getItem('fan_token') : null;
       const requestHeaders = {
         'Content-Type': 'application/json',
         ...(fanToken ? { Authorization: `Bearer ${fanToken}` } : {})
@@ -545,6 +547,13 @@ const CheckoutPage = () => {
 
   return (
     <div className="min-h-screen feed-bg">
+      {isPreviewMode && (
+        <div className="fixed top-4 right-4 z-20">
+          <span className="h-8 px-3 rounded-full bg-amber-500/20 border border-amber-400/30 backdrop-blur-xl text-amber-200 text-[11px] font-medium inline-flex items-center shadow-lg">
+            Preview: fan auth disabled
+          </span>
+        </div>
+      )}
       <header className="sticky top-0 z-10 nav-elevated">
         <div className="max-w-5xl mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button 
@@ -653,9 +662,9 @@ const CheckoutPage = () => {
                     <label className="block text-sm font-medium text-foreground mb-2">
                       Email Address *
                     </label>
-                    {fan?.email ? (
+                    {activeFanEmail ? (
                       <div className="w-full rounded-xl border border-white/[0.1] bg-white/[0.03] px-4 py-3">
-                        <p className="text-sm text-foreground font-medium">{fan.email}</p>
+                        <p className="text-sm text-foreground font-medium">{activeFanEmail}</p>
                       </div>
                     ) : (
                       <input
@@ -674,7 +683,7 @@ const CheckoutPage = () => {
                       />
                     )}
                     <p className="text-xs text-muted-foreground mt-1">
-                      {fan?.email ? "Using your logged-in account email." : "We'll send your purchase confirmation here"}
+                      {activeFanEmail ? "Using your logged-in account email." : "We'll send your purchase confirmation here"}
                     </p>
                   </div>
 
@@ -751,7 +760,7 @@ const CheckoutPage = () => {
                       const provider = availableProviders.find((p) => p.id === selectedProvider);
                       if (provider) handleProviderSelect(provider);
                     }}
-                    disabled={isProcessing || !(fan?.email || customerEmail) || !selectedProvider}
+                    disabled={isProcessing || !(activeFanEmail || customerEmail) || !selectedProvider}
                     className="checkout-pay-btn w-full"
                   >
                     {isProcessing ? (

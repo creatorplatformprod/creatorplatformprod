@@ -660,7 +660,15 @@ const CreatorProfile = () => {
         onLogoClick={() => setSidebarOpen(!sidebarOpen)} 
         sidebarOpen={sidebarOpen} 
         title={creatorData?.displayName || creatorData?.username || "Creator"}
-        rightSlot={<FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} />}
+        rightSlot={
+          isPreviewMode ? (
+            <span className="h-8 px-3 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-200 text-[11px] font-medium inline-flex items-center">
+              Preview: fan auth disabled
+            </span>
+          ) : (
+            <FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} />
+          )
+        }
       />
 
       {/* Profile Hero Section */}
@@ -715,7 +723,7 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta mt-3 sm:mt-5 ml-0 md:ml-auto md:mr-8 lg:mr-10 self-center md:self-center text-base sm:text-lg md:text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent hover:from-indigo-300 hover:to-cyan-300 transition-all"
+                className="template-unlock-cta mt-3 sm:mt-5 ml-0 md:ml-auto md:mr-8 lg:mr-10 self-center md:self-center text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent hover:from-indigo-300 hover:to-cyan-300 transition-all"
               >
                 Unlock Everything
               </button>
@@ -1031,10 +1039,12 @@ const CreatorProfile = () => {
         </div>
       </div>
 
-      <FanAuthModal
-        open={showFanAuthModal}
-        onClose={() => setShowFanAuthModal(false)}
-      />
+      {!isPreviewMode && (
+        <FanAuthModal
+          open={showFanAuthModal}
+          onClose={() => setShowFanAuthModal(false)}
+        />
+      )}
     </div>
   );
 };
