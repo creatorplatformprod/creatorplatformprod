@@ -279,6 +279,7 @@ const Collections1849929295832448 = () => {
             collectionTitle: collection.title,
             imageIndex: index,
             mediaType,
+            hasStoredDims: Number.isFinite(parsedWidth) && parsedWidth > 0 && Number.isFinite(parsedHeight) && parsedHeight > 0,
             width: Number.isFinite(parsedWidth) && parsedWidth > 0 ? parsedWidth : fallbackDims.width,
             height: Number.isFinite(parsedHeight) && parsedHeight > 0 ? parsedHeight : fallbackDims.height
           });
@@ -298,6 +299,7 @@ const Collections1849929295832448 = () => {
           collectionTitle: collection.title,
           imageIndex: index,
           mediaType: 'image',
+          hasStoredDims: false,
           ...getRandomDimensions(items.length)
         });
       });
@@ -597,8 +599,9 @@ const Collections1849929295832448 = () => {
                   const globalIndex = startIndex + index;
                   const isMediaLoaded = loadedImages.has(mediaObj.src);
                   const md = measuredDims[mediaObj.src];
-                  const aspectW = md ? md.width : mediaObj.width;
-                  const aspectH = md ? md.height : mediaObj.height;
+                  const shouldUseMeasured = !mediaObj.hasStoredDims && md;
+                  const aspectW = shouldUseMeasured ? md.width : mediaObj.width;
+                  const aspectH = shouldUseMeasured ? md.height : mediaObj.height;
 
                   return (
                     <div 

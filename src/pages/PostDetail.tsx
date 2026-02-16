@@ -322,7 +322,6 @@ const PostDetail = () => {
         const video = document.createElement('video');
         video.preload = 'metadata';
         video.onloadedmetadata = () => {
-          setLoadedImages(prev => new Set([...prev, imageSrc]));
           setMeasuredDims(prev => ({
             ...prev,
             [imageSrc]: { 
@@ -332,7 +331,6 @@ const PostDetail = () => {
           }));
         };
         video.onerror = () => {
-          setLoadedImages(prev => new Set([...prev, imageSrc]));
           // Fallback to 16:9 aspect ratio for videos
           setMeasuredDims(prev => ({
             ...prev,
@@ -346,21 +344,20 @@ const PostDetail = () => {
       if (!loadedImages.has(imageSrc)) {
         const img = new Image();
         img.onload = () => {
-          setLoadedImages(prev => new Set([...prev, imageSrc]));
           setMeasuredDims(prev => ({
             ...prev,
             [imageSrc]: { width: img.naturalWidth, height: img.naturalHeight }
           }));
         };
         img.onerror = () => {
-          setLoadedImages(prev => new Set([...prev, imageSrc]));
           const dimensions = getRandomDimensions(idx);
           setMeasuredDims(prev => ({
             ...prev,
             [imageSrc]: { width: dimensions.width, height: dimensions.height }
           }));
         };
-        img.src = imageSrc.split('?')[0];
+        const thumbCandidate = typeof imageData === 'string' ? imageSrc : (imageData.thumb || imageSrc);
+        img.src = thumbCandidate;
       }
     });
   };
@@ -539,8 +536,8 @@ const PostDetail = () => {
                       Number.isFinite(intrinsicHeight) &&
                       Number(intrinsicWidth) > 0 &&
                       Number(intrinsicHeight) > 0;
-                    const aspectW = md ? md.width : hasIntrinsicDims ? Number(intrinsicWidth) : dimensions.width;
-                    const aspectH = md ? md.height : hasIntrinsicDims ? Number(intrinsicHeight) : dimensions.height;
+                    const aspectW = hasIntrinsicDims ? Number(intrinsicWidth) : md ? md.width : dimensions.width;
+                    const aspectH = hasIntrinsicDims ? Number(intrinsicHeight) : md ? md.height : dimensions.height;
                     
                     return (
                       <div 

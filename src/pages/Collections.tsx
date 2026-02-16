@@ -60,7 +60,6 @@ const Collections = () => {
   const creatorUsername = searchParams.get('creator') || '';
   const isPreviewMode = searchParams.get('mode') === 'preview';
   const [showUnlockModal, setShowUnlockModal] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
   const [loadedImages, setLoadedImages] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [isPreloading, setIsPreloading] = useState(true);
@@ -76,12 +75,12 @@ const Collections = () => {
   const [canRevealContent, setCanRevealContent] = useState(false);
   const [revealStoreUrl, setRevealStoreUrl] = useState('');
   const [showFanAuthModal, setShowFanAuthModal] = useState(false);
-  const [revealedCount, setRevealedCount] = useState(24);
+  const isMobileViewport = typeof window !== 'undefined' && window.innerWidth < 768;
+  const imagesPerPage = isMobileViewport ? 12 : 20;
+  const [revealedCount, setRevealedCount] = useState(imagesPerPage);
   const revealSentinelRef = useRef<HTMLDivElement | null>(null);
   const { fan } = useFanAuth();
   const activeFan = isPreviewMode ? null : fan;
-
-  const imagesPerPage = 24;
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -329,6 +328,7 @@ const Collections = () => {
             collectionTitle: collection.title,
             imageIndex: index,
             mediaType,
+            hasStoredDims: Number.isFinite(parsedWidth) && parsedWidth > 0 && Number.isFinite(parsedHeight) && parsedHeight > 0,
             width: Number.isFinite(parsedWidth) && parsedWidth > 0 ? parsedWidth : fallbackDims.width,
             height: Number.isFinite(parsedHeight) && parsedHeight > 0 ? parsedHeight : fallbackDims.height
           });
@@ -348,6 +348,7 @@ const Collections = () => {
           collectionTitle: collection.title,
           imageIndex: index,
           mediaType: mediaItem.mediaType,
+          hasStoredDims: false,
           ...getRandomDimensions(items.length)
         });
       });
@@ -362,148 +363,73 @@ const Collections = () => {
   const videoCount = allImages.filter((item) => item.mediaType === 'video').length;
   const imageCount = totalItems - videoCount;
 
-  const startIndex = (currentPage - 1) * imagesPerPage;
-  const endIndex = startIndex + imagesPerPage;
-  const currentImages = useMemo(() => allImages.slice(startIndex, endIndex), [allImages, startIndex, endIndex]);
-  const totalPages = Math.ceil(totalItems / imagesPerPage);
   const visibleImages = useMemo(
     () => allImages.slice(0, Math.min(revealedCount, allImages.length)),
     [allImages, revealedCount]
   );
   const hasMoreImages = revealedCount < allImages.length;
 
-  const preloadFirstPageImages = () => {
-    const firstPageImages = currentImages;
-    
-    const preloadPromises = firstPageImages.map((imageObj) => {
-      return new Promise((resolve) => {
-        const srcUrl = imageObj.src;
-        
-        if (imageObj.mediaType === 'video') {
-          const video = document.createElement('video');
-          video.preload = 'metadata';
-          video.onloadedmetadata = () => {
-            setLoadedImages(prev => new Set([...prev, srcUrl]));
-            setMeasuredDims(prev => ({
-              ...prev,
-              [srcUrl]: { 
-                width: video.videoWidth || 1920, 
-                height: video.videoHeight || 1080 
-              }
-            }));
-            resolve(srcUrl);
-          };
-          video.onerror = () => {
-            setLoadedImages(prev => new Set([...prev, srcUrl]));
-            setMeasuredDims(prev => ({
-              ...prev,
-              [srcUrl]: { width: 1920, height: 1080 }
-            }));
-            resolve(srcUrl);
-          };
-          video.src = srcUrl;
-          return;
-        }
-
-        const img = new Image();
-        img.onload = () => {
-          setLoadedImages(prev => new Set([...prev, srcUrl]));
-          setMeasuredDims(prev => ({
-            ...prev,
-            [srcUrl]: { width: img.naturalWidth, height: img.naturalHeight }
-          }));
-          resolve(srcUrl);
-        };
-        img.onerror = () => {
-          setMeasuredDims(prev => ({
-            ...prev,
-            [srcUrl]: { width: imageObj.width, height: imageObj.height }
-          }));
-          setLoadedImages(prev => new Set([...prev, srcUrl]));
-          resolve(srcUrl);
-        };
-        const cleanUrl = srcUrl.split('?')[0];
-        img.src = cleanUrl;
-      });
-    });
-
-    Promise.allSettled(preloadPromises).then(() => {
-      setTimeout(() => {
-        setIsPreloading(false);
-      }, 800);
-    });
-  };
-
   useEffect(() => {
     setLoadedImages(new Set());
     setMeasuredDims({});
     setIsPreloading(true);
     setRevealedCount(imagesPerPage);
-  }, [totalItems]);
+    const firstBatch = allImages.slice(0, Math.min(imagesPerPage, allImages.length));
+    firstBatch.forEach((imageObj: any) => {
+      if (imageObj.mediaType === 'video') {
+        const hasDims = Number.isFinite(Number(imageObj.width)) && Number(imageObj.width) > 0 && Number.isFinite(Number(imageObj.height)) && Number(imageObj.height) > 0;
+        if (hasDims) return;
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        video.onloadedmetadata = () => {
+          setMeasuredDims(prev => ({
+            ...prev,
+            [imageObj.src]: {
+              width: video.videoWidth || imageObj.width || 1920,
+              height: video.videoHeight || imageObj.height || 1080
+            }
+          }));
+        };
+        video.src = imageObj.src;
+        return;
+      }
+      const warmImg = new Image();
+      warmImg.decoding = 'async';
+      warmImg.src = imageObj.thumb || imageObj.src;
+    });
 
-  // Preload current page images once they're ready
-  const [preloadStarted, setPreloadStarted] = useState(false);
-  useEffect(() => {
-    if (currentImages.length === 0) {
-      setIsPreloading(false);
-      return;
-    }
-    if (!preloadStarted) {
-      setPreloadStarted(true);
-      preloadFirstPageImages();
-    }
-  }, [currentImages, preloadStarted]);
+    const timer = window.setTimeout(() => setIsPreloading(false), 260);
+    return () => window.clearTimeout(timer);
+  }, [allImages, imagesPerPage]);
 
   useEffect(() => {
     if (hasMoreImages) {
       const nextBatch = allImages.slice(revealedCount, Math.min(revealedCount + imagesPerPage, allImages.length));
       nextBatch.forEach((imageObj: any) => {
-        const srcUrl = imageObj.src;
-        if (loadedImages.has(srcUrl)) return;
-
         if (imageObj.mediaType === 'video') {
+          const hasDims = Number.isFinite(Number(imageObj.width)) && Number(imageObj.width) > 0 && Number.isFinite(Number(imageObj.height)) && Number(imageObj.height) > 0;
+          if (hasDims) return;
           const video = document.createElement('video');
           video.preload = 'metadata';
           video.onloadedmetadata = () => {
-            setLoadedImages(prev => new Set([...prev, srcUrl]));
             setMeasuredDims(prev => ({
               ...prev,
-              [srcUrl]: {
+              [imageObj.src]: {
                 width: video.videoWidth || 1920,
                 height: video.videoHeight || 1080
               }
             }));
           };
-          video.onerror = () => {
-            setLoadedImages(prev => new Set([...prev, srcUrl]));
-            setMeasuredDims(prev => ({
-              ...prev,
-              [srcUrl]: { width: 1920, height: 1080 }
-            }));
-          };
-          video.src = srcUrl;
+          video.src = imageObj.src;
           return;
         }
 
-        const img = new Image();
-        img.onload = () => {
-          setLoadedImages(prev => new Set([...prev, srcUrl]));
-          setMeasuredDims(prev => ({
-            ...prev,
-            [srcUrl]: { width: img.naturalWidth, height: img.naturalHeight }
-          }));
-        };
-        img.onerror = () => {
-          setLoadedImages(prev => new Set([...prev, srcUrl]));
-          setMeasuredDims(prev => ({
-            ...prev,
-            [srcUrl]: { width: imageObj.width, height: imageObj.height }
-          }));
-        };
-        img.src = srcUrl.split('?')[0];
+        const warmImg = new Image();
+        warmImg.decoding = 'async';
+        warmImg.src = imageObj.thumb || imageObj.src;
       });
     }
-  }, [revealedCount, hasMoreImages, allImages, imagesPerPage, loadedImages]);
+  }, [revealedCount, hasMoreImages, allImages, imagesPerPage]);
 
   useEffect(() => {
     if (!hasMoreImages || !revealSentinelRef.current) return;
@@ -650,8 +576,9 @@ const Collections = () => {
                 {visibleImages.map((mediaObj, index) => {
                   const isMediaLoaded = loadedImages.has(mediaObj.src);
                   const md = measuredDims[mediaObj.src];
-                  const aspectW = md ? md.width : mediaObj.width;
-                  const aspectH = md ? md.height : mediaObj.height;
+                  const shouldUseMeasured = !mediaObj.hasStoredDims && md;
+                  const aspectW = shouldUseMeasured ? md.width : mediaObj.width;
+                  const aspectH = shouldUseMeasured ? md.height : mediaObj.height;
 
                   return (
                     <div 

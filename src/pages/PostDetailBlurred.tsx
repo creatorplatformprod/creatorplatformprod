@@ -396,7 +396,6 @@ const PostDetailBlurred = () => {
         const video = document.createElement('video');
         video.preload = 'metadata';
         video.onloadedmetadata = () => {
-          setLoadedImages(prev => new Set([...prev, imageSrc]));
           setMeasuredDims(prev => ({
             ...prev,
             [imageSrc]: { 
@@ -406,7 +405,6 @@ const PostDetailBlurred = () => {
           }));
         };
         video.onerror = () => {
-          setLoadedImages(prev => new Set([...prev, imageSrc]));
           setMeasuredDims(prev => ({
             ...prev,
             [imageSrc]: { width: 1920, height: 1080 }
@@ -419,21 +417,20 @@ const PostDetailBlurred = () => {
       if (!loadedImages.has(imageSrc)) {
         const img = new Image();
         img.onload = () => {
-          setLoadedImages(prev => new Set([...prev, imageSrc]));
           setMeasuredDims(prev => ({
             ...prev,
             [imageSrc]: { width: img.naturalWidth, height: img.naturalHeight }
           }));
         };
         img.onerror = () => {
-          setLoadedImages(prev => new Set([...prev, imageSrc]));
           const dimensions = getRandomDimensions(idx);
           setMeasuredDims(prev => ({
             ...prev,
             [imageSrc]: { width: dimensions.width, height: dimensions.height }
           }));
         };
-        img.src = imageSrc;
+        const thumbCandidate = typeof imageData === 'string' ? imageSrc : (imageData.thumb || imageSrc);
+        img.src = thumbCandidate;
       }
     });
   };
@@ -625,8 +622,8 @@ const PostDetailBlurred = () => {
                   Number.isFinite(intrinsicHeight) &&
                   Number(intrinsicWidth) > 0 &&
                   Number(intrinsicHeight) > 0;
-                const aspectW = md ? md.width : hasIntrinsicDims ? Number(intrinsicWidth) : dimensions.width;
-                const aspectH = md ? md.height : hasIntrinsicDims ? Number(intrinsicHeight) : dimensions.height;
+                const aspectW = hasIntrinsicDims ? Number(intrinsicWidth) : md ? md.width : dimensions.width;
+                const aspectH = hasIntrinsicDims ? Number(intrinsicHeight) : md ? md.height : dimensions.height;
                 
                 return (
                   <div 
