@@ -547,13 +547,6 @@ const CheckoutPage = () => {
 
   return (
     <div className="min-h-screen feed-bg">
-      {isPreviewMode && (
-        <div className="fixed top-4 right-4 z-20">
-          <span className="h-8 px-3 rounded-full bg-amber-500/20 border border-amber-400/30 backdrop-blur-xl text-amber-200 text-[11px] font-medium inline-flex items-center shadow-lg">
-            Preview: fan auth disabled
-          </span>
-        </div>
-      )}
       <header className="sticky top-0 z-10 nav-elevated">
         <div className="max-w-5xl mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button 

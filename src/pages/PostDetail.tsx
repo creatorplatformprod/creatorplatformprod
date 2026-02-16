@@ -188,7 +188,9 @@ const PostDetail = () => {
                   description: ownCollection.description || '',
                   images: (ownCollection.media || []).map((media: any) => ({
                     full: media.url,
-                    thumb: media.thumbnailUrl || media.url
+                    thumb: media.thumbnailUrl || media.url,
+                    width: Number.isFinite(Number(media.width)) && Number(media.width) > 0 ? Number(media.width) : null,
+                    height: Number.isFinite(Number(media.height)) && Number(media.height) > 0 ? Number(media.height) : null
                   })),
                   user: {
                     name: me.user?.displayName || me.user?.username || 'Creator',
@@ -244,7 +246,9 @@ const PostDetail = () => {
           description: collectionResult.collection.description || '',
           images: (collectionResult.collection.media || []).map((media: any) => ({
             full: media.url,
-            thumb: media.thumbnailUrl || media.url
+            thumb: media.thumbnailUrl || media.url,
+            width: Number.isFinite(Number(media.width)) && Number(media.width) > 0 ? Number(media.width) : null,
+            height: Number.isFinite(Number(media.height)) && Number(media.height) > 0 ? Number(media.height) : null
           })),
           user: {
             name: creatorUser?.displayName || creatorUser?.username || 'Creator',
@@ -528,8 +532,15 @@ const PostDetail = () => {
                     const isMediaLoaded = loadedImages.has(imageSrc);
                     const md = measuredDims[imageSrc];
                     const dimensions = getRandomDimensions(index);
-                    const aspectW = md ? md.width : dimensions.width;
-                    const aspectH = md ? md.height : dimensions.height;
+                    const intrinsicWidth = typeof imageData === 'string' ? null : Number(imageData?.width);
+                    const intrinsicHeight = typeof imageData === 'string' ? null : Number(imageData?.height);
+                    const hasIntrinsicDims =
+                      Number.isFinite(intrinsicWidth) &&
+                      Number.isFinite(intrinsicHeight) &&
+                      Number(intrinsicWidth) > 0 &&
+                      Number(intrinsicHeight) > 0;
+                    const aspectW = md ? md.width : hasIntrinsicDims ? Number(intrinsicWidth) : dimensions.width;
+                    const aspectH = md ? md.height : hasIntrinsicDims ? Number(intrinsicHeight) : dimensions.height;
                     
                     return (
                       <div 

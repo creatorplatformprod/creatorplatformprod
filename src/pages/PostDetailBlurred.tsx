@@ -1,5 +1,5 @@
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
@@ -70,6 +70,8 @@ const PostDetailBlurred = () => {
   const [remoteLoading, setRemoteLoading] = useState(false);
   const [canRevealContent, setCanRevealContent] = useState(false);
   const [showFanAuthModal, setShowFanAuthModal] = useState(false);
+  const [revealedCount, setRevealedCount] = useState(16);
+  const revealSentinelRef = useRef<HTMLDivElement | null>(null);
   const { fan } = useFanAuth();
   const activeFan = isPreviewMode ? null : fan;
   const mockSeed = useMemo(
@@ -225,7 +227,9 @@ const PostDetailBlurred = () => {
           description: collectionResult.collection.description || '',
           images: (collectionResult.collection.media || []).map((media: any) => ({
             full: media.url,
-            thumb: media.thumbnailUrl || media.url
+            thumb: media.thumbnailUrl || media.url,
+            width: Number.isFinite(Number(media.width)) && Number(media.width) > 0 ? Number(media.width) : null,
+            height: Number.isFinite(Number(media.height)) && Number(media.height) > 0 ? Number(media.height) : null
           })),
           user: {
             name: creatorUser?.displayName || creatorUser?.username || 'Creator',
@@ -257,7 +261,9 @@ const PostDetailBlurred = () => {
               description: ownCollection.description || '',
               images: (ownCollection.media || []).map((media: any) => ({
                 full: media.url,
-                thumb: media.thumbnailUrl || media.url
+                thumb: media.thumbnailUrl || media.url,
+                width: Number.isFinite(Number(media.width)) && Number(media.width) > 0 ? Number(media.width) : null,
+                height: Number.isFinite(Number(media.height)) && Number(media.height) > 0 ? Number(media.height) : null
               })),
               user: {
                 name: me.user?.displayName || me.user?.username || 'Creator',
@@ -289,7 +295,9 @@ const PostDetailBlurred = () => {
               description: ownCollection.description || '',
               images: (ownCollection.media || []).map((media: any) => ({
                 full: media.url,
-                thumb: media.thumbnailUrl || media.url
+                thumb: media.thumbnailUrl || media.url,
+                width: Number.isFinite(Number(media.width)) && Number(media.width) > 0 ? Number(media.width) : null,
+                height: Number.isFinite(Number(media.height)) && Number(media.height) > 0 ? Number(media.height) : null
               })),
               user: {
                 name: me?.user?.displayName || me?.user?.username || 'Creator',
@@ -360,6 +368,10 @@ const PostDetailBlurred = () => {
   };
 
   const collection = remoteCollection || localCollection || fallbackMockCollection;
+  const visibleCollectionImages = useMemo(() => {
+    const images = collection?.images || [];
+    return images.slice(0, Math.min(revealedCount, images.length));
+  }, [collection, revealedCount]);
   
   // Get the price for this collection (default to 4.99 if no price set)
   const collectionPrice = collection?.price || 4.99;
@@ -428,9 +440,34 @@ const PostDetailBlurred = () => {
 
   useEffect(() => {
     if (collection) {
-      preloadImages(collection.images);
+      setRevealedCount(16);
+      preloadImages(collection.images.slice(0, 16));
     }
-  }, [collection]);
+  }, [collection?.id]);
+
+  useEffect(() => {
+    if (!collection?.images?.length) return;
+    const nextBatch = collection.images.slice(revealedCount, Math.min(revealedCount + 16, collection.images.length));
+    if (nextBatch.length > 0) {
+      preloadImages(nextBatch);
+    }
+  }, [revealedCount, collection?.id]);
+
+  useEffect(() => {
+    if (!collection?.images?.length || revealedCount >= collection.images.length || !revealSentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setRevealedCount(prev => Math.min(prev + 16, collection.images.length));
+          }
+        });
+      },
+      { rootMargin: '600px', threshold: 0 }
+    );
+    observer.observe(revealSentinelRef.current);
+    return () => observer.disconnect();
+  }, [collection?.id, collection?.images?.length, revealedCount]);
 
   const sanitizeEmail = (email: string): string => {
     if (!email || typeof email !== 'string') return '';
@@ -536,11 +573,6 @@ const PostDetailBlurred = () => {
         <ArrowLeft className="w-5 h-5 sm:w-5 sm:h-5" />
       </button>
       <div className={`fixed ${isPreviewMode ? 'mobile-fixed-preview-safe' : 'mobile-fixed-safe'} right-4 z-[60] flex items-center gap-2`}>
-        {isPreviewMode && (
-          <span className="h-9 sm:h-8 px-3 rounded-full bg-amber-500/20 border border-amber-400/30 backdrop-blur-xl text-amber-200 text-[11px] font-medium inline-flex items-center shadow-lg">
-            Preview: fan auth disabled
-          </span>
-        )}
         {isPreviewMode && canRevealContent && id && (
           <button
             onClick={() => navigate(getRevealUrl())}
@@ -550,9 +582,7 @@ const PostDetailBlurred = () => {
             Reveal Content
           </button>
         )}
-        {!isPreviewMode && (
-          <FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} />
-        )}
+        <FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} previewMode={isPreviewMode} />
       </div>
 
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[60] flex flex-col items-center">
@@ -572,7 +602,7 @@ const PostDetailBlurred = () => {
 
           <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 3, 900: 4}}>
             <Masonry gutter="12px">
-              {collection.images.map((imageData, index) => {
+              {visibleCollectionImages.map((imageData, index) => {
                 const imageSrc = typeof imageData === 'string' ? imageData : imageData.full;
                 let thumbSrc = typeof imageData === 'string' 
                   ? imageSrc.replace('/collection', '/thumbs/collection')
@@ -588,8 +618,15 @@ const PostDetailBlurred = () => {
                 const isMediaLoaded = loadedImages.has(imageSrc);
                 const md = measuredDims[imageSrc];
                 const dimensions = getRandomDimensions(index);
-                const aspectW = md ? md.width : dimensions.width;
-                const aspectH = md ? md.height : dimensions.height;
+                const intrinsicWidth = typeof imageData === 'string' ? null : Number(imageData?.width);
+                const intrinsicHeight = typeof imageData === 'string' ? null : Number(imageData?.height);
+                const hasIntrinsicDims =
+                  Number.isFinite(intrinsicWidth) &&
+                  Number.isFinite(intrinsicHeight) &&
+                  Number(intrinsicWidth) > 0 &&
+                  Number(intrinsicHeight) > 0;
+                const aspectW = md ? md.width : hasIntrinsicDims ? Number(intrinsicWidth) : dimensions.width;
+                const aspectH = md ? md.height : hasIntrinsicDims ? Number(intrinsicHeight) : dimensions.height;
                 
                 return (
                   <div 
@@ -634,6 +671,10 @@ const PostDetailBlurred = () => {
               })}
             </Masonry>
           </ResponsiveMasonry>
+
+          {collection.images.length > visibleCollectionImages.length && (
+            <div ref={revealSentinelRef} className="h-10" />
+          )}
 
           {collection.images && (
             <div className="flex justify-center mt-4">

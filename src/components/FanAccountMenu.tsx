@@ -13,10 +13,12 @@ import { useFanAuth } from "@/contexts/FanAuthContext";
 type FanAccountMenuProps = {
   onOpenAuth: () => void;
   align?: "start" | "end";
+  previewMode?: boolean;
 };
 
-const FanAccountMenu = ({ onOpenAuth, align = "end" }: FanAccountMenuProps) => {
+const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanAccountMenuProps) => {
   const { fan, logoutFan } = useFanAuth();
+  const effectiveFan = previewMode ? null : fan;
   const skyUserColor = "#38bdf8";
 
   return (
@@ -25,11 +27,11 @@ const FanAccountMenu = ({ onOpenAuth, align = "end" }: FanAccountMenuProps) => {
         <button
           className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-sky-500/10 transition-colors duration-200 text-sm font-medium"
         >
-          {fan?.avatar ? (
+          {effectiveFan?.avatar ? (
             <Avatar className="h-5 w-5 border border-sky-400/45">
-              <AvatarImage src={fan.avatar} alt={fan.displayName || fan.email} />
+              <AvatarImage src={effectiveFan.avatar} alt={effectiveFan.displayName || effectiveFan.email} />
               <AvatarFallback className="bg-sky-500/30 text-sky-100">
-                {(fan.displayName || fan.email || "F").slice(0, 1).toUpperCase()}
+                {(effectiveFan.displayName || effectiveFan.email || "F").slice(0, 1).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           ) : (
@@ -38,10 +40,10 @@ const FanAccountMenu = ({ onOpenAuth, align = "end" }: FanAccountMenuProps) => {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align={align} className="w-56 border-white/15 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
-        {fan ? (
+        {effectiveFan ? (
           <>
             <DropdownMenuLabel className="px-2 py-1.5 text-xs text-muted-foreground">
-              {fan.displayName || fan.email}
+              {effectiveFan.displayName || effectiveFan.email}
             </DropdownMenuLabel>
             <DropdownMenuItem className="hover:bg-rose-500/10 focus:bg-rose-500/10" onClick={() => (window.location.href = "/fan/unlocks")}>
               <Unlock className="mr-2 h-4 w-4" />
@@ -64,12 +66,21 @@ const FanAccountMenu = ({ onOpenAuth, align = "end" }: FanAccountMenuProps) => {
             </DropdownMenuItem>
           </>
         ) : (
-          <DropdownMenuItem className="group hover:bg-sky-500/10 focus:bg-sky-500/10" onClick={onOpenAuth}>
-            <LogIn className="mr-2 h-4 w-4 text-sky-400" />
-            <span className="text-foreground/85 transition-colors group-hover:text-sky-300 group-focus:text-sky-300">
-              Log in or Register
-            </span>
-          </DropdownMenuItem>
+          previewMode ? (
+            <DropdownMenuItem className="group hover:bg-sky-500/10 focus:bg-sky-500/10 cursor-default" onSelect={(e) => e.preventDefault()}>
+              <LogIn className="mr-2 h-4 w-4 text-sky-400" />
+              <span className="text-foreground/85">
+                Log in or Register (Demo)
+              </span>
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem className="group hover:bg-sky-500/10 focus:bg-sky-500/10" onClick={onOpenAuth}>
+              <LogIn className="mr-2 h-4 w-4 text-sky-400" />
+              <span className="text-foreground/85 transition-colors group-hover:text-sky-300 group-focus:text-sky-300">
+                Log in or Register
+              </span>
+            </DropdownMenuItem>
+          )
         )}
       </DropdownMenuContent>
     </DropdownMenu>

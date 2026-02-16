@@ -48,6 +48,48 @@ import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
 
 const DEFAULT_COVER_OVERLAY = 0.45;
+const DEFAULT_MEDIA_DIMS = { width: null as number | null, height: null as number | null };
+
+const getFileDimensions = async (file: File): Promise<{ width: number | null; height: number | null }> => {
+  if (!file?.type) {
+    return DEFAULT_MEDIA_DIMS;
+  }
+
+  const objectUrl = URL.createObjectURL(file);
+
+  try {
+    if (file.type.startsWith('image/')) {
+      const image = new Image();
+      await new Promise<void>((resolve, reject) => {
+        image.onload = () => resolve();
+        image.onerror = () => reject(new Error('Failed to load image metadata'));
+        image.src = objectUrl;
+      });
+      const width = Number.isFinite(image.naturalWidth) && image.naturalWidth > 0 ? image.naturalWidth : null;
+      const height = Number.isFinite(image.naturalHeight) && image.naturalHeight > 0 ? image.naturalHeight : null;
+      return { width, height };
+    }
+
+    if (file.type.startsWith('video/')) {
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      await new Promise<void>((resolve, reject) => {
+        video.onloadedmetadata = () => resolve();
+        video.onerror = () => reject(new Error('Failed to load video metadata'));
+        video.src = objectUrl;
+      });
+      const width = Number.isFinite(video.videoWidth) && video.videoWidth > 0 ? video.videoWidth : null;
+      const height = Number.isFinite(video.videoHeight) && video.videoHeight > 0 ? video.videoHeight : null;
+      return { width, height };
+    }
+
+    return DEFAULT_MEDIA_DIMS;
+  } catch {
+    return DEFAULT_MEDIA_DIMS;
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+};
 
 const CreatorDashboard = () => {
   const navigate = useNavigate();
@@ -778,7 +820,8 @@ const CreatorDashboard = () => {
 
       let uploadedCount = 0;
       for (const file of collectionFiles) {
-        const uploadResult = await api.uploadFile(file);
+        const sourceDimensions = await getFileDimensions(file);
+        const uploadResult = await api.uploadFile(file, sourceDimensions);
         if (!uploadResult?.url) {
           throw new Error(`Upload failed for ${file.name}`);
         }
@@ -787,7 +830,9 @@ const CreatorDashboard = () => {
           url: uploadResult.url,
           thumbnailUrl: uploadResult.thumbnailUrl || uploadResult.url,
           mediaType: uploadResult.mediaType,
-          size: uploadResult.size
+          size: uploadResult.size,
+          width: uploadResult.width ?? sourceDimensions.width,
+          height: uploadResult.height ?? sourceDimensions.height
         });
 
         if (!attachResult.success) {
@@ -3050,5 +3095,4 @@ const CreatorDashboard = () => {
 };
 
 export default CreatorDashboard;
-
 

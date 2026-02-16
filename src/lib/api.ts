@@ -61,7 +61,11 @@ const apiRequest = async (
 };
 
 // Helper for file uploads
-const apiUpload = async (endpoint: string, file: File): Promise<any> => {
+const apiUpload = async (
+  endpoint: string,
+  file: File,
+  metadata?: { width?: number | null; height?: number | null }
+): Promise<any> => {
   const token = getToken();
   if (!token) {
     throw new Error('Not authenticated');
@@ -69,6 +73,12 @@ const apiUpload = async (endpoint: string, file: File): Promise<any> => {
 
   const formData = new FormData();
   formData.append('file', file);
+  if (Number.isFinite(Number(metadata?.width)) && Number(metadata?.width) > 0) {
+    formData.append('width', String(Math.round(Number(metadata?.width))));
+  }
+  if (Number.isFinite(Number(metadata?.height)) && Number(metadata?.height) > 0) {
+    formData.append('height', String(Math.round(Number(metadata?.height))));
+  }
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: 'POST',
@@ -333,6 +343,8 @@ export const api = {
     thumbnailUrl?: string;
     mediaType?: string;
     size?: number;
+    width?: number | null;
+    height?: number | null;
   }) => {
     return apiRequest(`/api/collections/${collectionId}/media`, {
       method: 'POST',
@@ -364,14 +376,14 @@ export const api = {
   /**
    * Upload file (image or video)
    */
-  uploadFile: async (file: File) => {
+  uploadFile: async (file: File, metadata?: { width?: number | null; height?: number | null }) => {
     // Check file size (25MB limit)
     const maxSize = 25 * 1024 * 1024;
     if (file.size > maxSize) {
       throw new Error('File size exceeds 25MB limit');
     }
 
-    return apiUpload('/api/upload', file);
+    return apiUpload('/api/upload', file, metadata);
   },
 
   // ==================== Public Profile ====================

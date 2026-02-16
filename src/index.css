@@ -2456,16 +2456,20 @@
 }
 
 .mobile-preview-navbar-offset {
-  padding-top: 1.5rem;
+  padding-top: 2.25rem;
 }
 
 .mobile-fixed-preview-safe {
-  top: calc(max(0.75rem, env(safe-area-inset-top)) + 1.5rem);
+  top: calc(max(0.75rem, env(safe-area-inset-top)) + 2.25rem);
 }
 
 @media (min-width: 768px) {
   .mobile-preview-navbar-offset {
     padding-top: 0;
+  }
+
+  .mobile-fixed-preview-safe {
+    top: max(0.75rem, env(safe-area-inset-top));
   }
 }
 }

@@ -19,7 +19,13 @@ const ProgressiveImage = ({
   const [imgSrc, setImgSrc] = useState(thumbnail);
   const [isLoading, setIsLoading] = useState(true);
   const [isInView, setIsInView] = useState(false);
+  const onLoadCalledRef = useRef(false);
   const imgRef = useRef<HTMLImageElement>(null);
+  const loadedCacheRef = useRef<Set<string>>((globalThis as any).__progressiveImageLoadedCache || new Set<string>());
+
+  if (!(globalThis as any).__progressiveImageLoadedCache) {
+    (globalThis as any).__progressiveImageLoadedCache = loadedCacheRef.current;
+  }
 
   // Intersection Observer for lazy loading
   useEffect(() => {
@@ -33,7 +39,7 @@ const ProgressiveImage = ({
         });
       },
       {
-        rootMargin: '600px', // Start loading 600px before entering viewport
+        rootMargin: '800px', // Start loading earlier to avoid visible tile-by-tile pop-in
         threshold: 0
       }
     );
@@ -52,15 +58,42 @@ const ProgressiveImage = ({
     if (!isInView) return;
 
     const img = new Image();
-    img.src = src;
-    
-    img.onload = () => {
+    let cancelled = false;
+
+    if (loadedCacheRef.current.has(src)) {
       setImgSrc(src);
       setIsLoading(false);
-      if (onLoad) onLoad();
+      if (!onLoadCalledRef.current && onLoad) {
+        onLoadCalledRef.current = true;
+        onLoad();
+      }
+      return;
+    }
+
+    img.src = src;
+    img.decoding = 'async';
+
+    img.onload = async () => {
+      try {
+        if (typeof img.decode === 'function') {
+          await img.decode();
+        }
+      } catch {
+        // decode can fail on some browsers; fallback to onload behavior
+      }
+
+      if (cancelled) return;
+      loadedCacheRef.current.add(src);
+      setImgSrc(src);
+      setIsLoading(false);
+      if (!onLoadCalledRef.current && onLoad) {
+        onLoadCalledRef.current = true;
+        onLoad();
+      }
     };
 
     return () => {
+      cancelled = true;
       img.onload = null;
     };
   }, [src, onLoad, isInView]);
@@ -72,6 +105,7 @@ const ProgressiveImage = ({
       alt={alt}
       className={`${className} ${isLoading ? 'image-loading' : 'image-loaded'}`}
       loading="lazy"
+      decoding="async"
     />
   );
 };

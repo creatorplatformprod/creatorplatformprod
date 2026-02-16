@@ -269,6 +269,9 @@ const Collections1849929295832448 = () => {
           if (mediaType === 'video') {
             thumbSrc = thumbSrc.replace('/collection', '/thumbs/collection').replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
           }
+          const parsedWidth = Number(mediaItem.width);
+          const parsedHeight = Number(mediaItem.height);
+          const fallbackDims = getRandomDimensions(items.length);
           items.push({
             src: imageSrc,
             thumb: thumbSrc,
@@ -276,7 +279,8 @@ const Collections1849929295832448 = () => {
             collectionTitle: collection.title,
             imageIndex: index,
             mediaType,
-            ...getRandomDimensions(items.length)
+            width: Number.isFinite(parsedWidth) && parsedWidth > 0 ? parsedWidth : fallbackDims.width,
+            height: Number.isFinite(parsedHeight) && parsedHeight > 0 ? parsedHeight : fallbackDims.height
           });
         });
       });

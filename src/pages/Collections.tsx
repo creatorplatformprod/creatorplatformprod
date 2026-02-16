@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
@@ -76,6 +76,8 @@ const Collections = () => {
   const [canRevealContent, setCanRevealContent] = useState(false);
   const [revealStoreUrl, setRevealStoreUrl] = useState('');
   const [showFanAuthModal, setShowFanAuthModal] = useState(false);
+  const [revealedCount, setRevealedCount] = useState(24);
+  const revealSentinelRef = useRef<HTMLDivElement | null>(null);
   const { fan } = useFanAuth();
   const activeFan = isPreviewMode ? null : fan;
 
@@ -317,6 +319,9 @@ const Collections = () => {
           if (mediaType === 'video') {
             thumbSrc = thumbSrc.replace('/collection', '/thumbs/collection').replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
           }
+          const parsedWidth = Number(mediaItem.width);
+          const parsedHeight = Number(mediaItem.height);
+          const fallbackDims = getRandomDimensions(items.length);
           items.push({
             src: imageSrc,
             thumb: thumbSrc,
@@ -324,7 +329,8 @@ const Collections = () => {
             collectionTitle: collection.title,
             imageIndex: index,
             mediaType,
-            ...getRandomDimensions(items.length)
+            width: Number.isFinite(parsedWidth) && parsedWidth > 0 ? parsedWidth : fallbackDims.width,
+            height: Number.isFinite(parsedHeight) && parsedHeight > 0 ? parsedHeight : fallbackDims.height
           });
         });
       });
@@ -360,6 +366,11 @@ const Collections = () => {
   const endIndex = startIndex + imagesPerPage;
   const currentImages = useMemo(() => allImages.slice(startIndex, endIndex), [allImages, startIndex, endIndex]);
   const totalPages = Math.ceil(totalItems / imagesPerPage);
+  const visibleImages = useMemo(
+    () => allImages.slice(0, Math.min(revealedCount, allImages.length)),
+    [allImages, revealedCount]
+  );
+  const hasMoreImages = revealedCount < allImages.length;
 
   const preloadFirstPageImages = () => {
     const firstPageImages = currentImages;
@@ -427,6 +438,7 @@ const Collections = () => {
     setLoadedImages(new Set());
     setMeasuredDims({});
     setIsPreloading(true);
+    setRevealedCount(imagesPerPage);
   }, [totalItems]);
 
   // Preload current page images once they're ready
@@ -441,6 +453,73 @@ const Collections = () => {
       preloadFirstPageImages();
     }
   }, [currentImages, preloadStarted]);
+
+  useEffect(() => {
+    if (hasMoreImages) {
+      const nextBatch = allImages.slice(revealedCount, Math.min(revealedCount + imagesPerPage, allImages.length));
+      nextBatch.forEach((imageObj: any) => {
+        const srcUrl = imageObj.src;
+        if (loadedImages.has(srcUrl)) return;
+
+        if (imageObj.mediaType === 'video') {
+          const video = document.createElement('video');
+          video.preload = 'metadata';
+          video.onloadedmetadata = () => {
+            setLoadedImages(prev => new Set([...prev, srcUrl]));
+            setMeasuredDims(prev => ({
+              ...prev,
+              [srcUrl]: {
+                width: video.videoWidth || 1920,
+                height: video.videoHeight || 1080
+              }
+            }));
+          };
+          video.onerror = () => {
+            setLoadedImages(prev => new Set([...prev, srcUrl]));
+            setMeasuredDims(prev => ({
+              ...prev,
+              [srcUrl]: { width: 1920, height: 1080 }
+            }));
+          };
+          video.src = srcUrl;
+          return;
+        }
+
+        const img = new Image();
+        img.onload = () => {
+          setLoadedImages(prev => new Set([...prev, srcUrl]));
+          setMeasuredDims(prev => ({
+            ...prev,
+            [srcUrl]: { width: img.naturalWidth, height: img.naturalHeight }
+          }));
+        };
+        img.onerror = () => {
+          setLoadedImages(prev => new Set([...prev, srcUrl]));
+          setMeasuredDims(prev => ({
+            ...prev,
+            [srcUrl]: { width: imageObj.width, height: imageObj.height }
+          }));
+        };
+        img.src = srcUrl.split('?')[0];
+      });
+    }
+  }, [revealedCount, hasMoreImages, allImages, imagesPerPage, loadedImages]);
+
+  useEffect(() => {
+    if (!hasMoreImages || !revealSentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setRevealedCount(prev => Math.min(prev + imagesPerPage, allImages.length));
+          }
+        });
+      },
+      { rootMargin: '600px', threshold: 0 }
+    );
+    observer.observe(revealSentinelRef.current);
+    return () => observer.disconnect();
+  }, [hasMoreImages, imagesPerPage, allImages.length]);
 
   // Safety timeout: never hang on preloader for more than 5 seconds
   useEffect(() => {
@@ -548,11 +627,6 @@ const Collections = () => {
             <ArrowLeft className="w-5 h-5 sm:w-5 sm:h-5" />
           </button>
           <div className={`fixed ${isPreviewMode ? 'mobile-fixed-preview-safe' : 'mobile-fixed-safe'} right-4 z-[60] flex items-center gap-2`}>
-            {isPreviewMode && (
-              <span className="h-9 sm:h-8 px-3 rounded-full bg-amber-500/20 border border-amber-400/30 backdrop-blur-xl text-amber-200 text-[11px] font-medium inline-flex items-center shadow-lg">
-                Preview: fan auth disabled
-              </span>
-            )}
             {isPreviewMode && canRevealContent && revealStoreUrl && (
               <button
                 onClick={() => window.location.href = revealStoreUrl}
@@ -562,9 +636,7 @@ const Collections = () => {
                 Reveal Content
               </button>
             )}
-            {!isPreviewMode && (
-              <FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} />
-            )}
+            <FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} previewMode={isPreviewMode} />
           </div>
 
           <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[60] flex flex-col items-center">
@@ -575,7 +647,7 @@ const Collections = () => {
               columnsCountBreakPoints={{350: 1, 750: 3, 900: 4}}
             >
               <Masonry gutter="12px">
-                {allImages.map((mediaObj, index) => {
+                {visibleImages.map((mediaObj, index) => {
                   const isMediaLoaded = loadedImages.has(mediaObj.src);
                   const md = measuredDims[mediaObj.src];
                   const aspectW = md ? md.width : mediaObj.width;
@@ -630,6 +702,10 @@ const Collections = () => {
                 })}
               </Masonry>
             </ResponsiveMasonry>
+
+            {hasMoreImages && (
+              <div ref={revealSentinelRef} className="h-10" />
+            )}
 
             <div className="flex justify-center mt-8">
               <div className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-full backdrop-blur-sm">

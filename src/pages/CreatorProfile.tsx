@@ -660,15 +660,7 @@ const CreatorProfile = () => {
         onLogoClick={() => setSidebarOpen(!sidebarOpen)} 
         sidebarOpen={sidebarOpen} 
         title={creatorData?.displayName || creatorData?.username || "Creator"}
-        rightSlot={
-          isPreviewMode ? (
-            <span className="h-8 px-3 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-200 text-[11px] font-medium inline-flex items-center">
-              Preview: fan auth disabled
-            </span>
-          ) : (
-            <FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} />
-          )
-        }
+        rightSlot={<FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} previewMode={isPreviewMode} />}
       />
 
       {/* Profile Hero Section */}
