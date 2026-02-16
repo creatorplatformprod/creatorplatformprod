@@ -42,6 +42,7 @@ export const FanAuthProvider = ({ children }: { children: React.ReactNode }) => 
   const refreshFan = useCallback(async () => {
     const token = localStorage.getItem("fan_token");
     if (!token) {
+      localStorage.removeItem("fan_email");
       setFan(null);
       setLoading(false);
       return;
@@ -53,7 +54,6 @@ export const FanAuthProvider = ({ children }: { children: React.ReactNode }) => 
         const result = await api.getCurrentFan();
         if (result?.success && result.fan) {
           setFan(result.fan);
-          localStorage.setItem("fan_email", String(result.fan.email || "").toLowerCase());
           setLoading(false);
           return;
         }
@@ -81,7 +81,6 @@ export const FanAuthProvider = ({ children }: { children: React.ReactNode }) => 
       throw new Error(result?.error || "Login failed");
     }
     localStorage.setItem("fan_token", result.token);
-    localStorage.setItem("fan_email", String(result.fan.email || "").toLowerCase());
     setFan(result.fan);
     setGuestMode(false);
   }, [setGuestMode]);
@@ -92,13 +91,13 @@ export const FanAuthProvider = ({ children }: { children: React.ReactNode }) => 
       throw new Error(result?.error || "Registration failed");
     }
     localStorage.setItem("fan_token", result.token);
-    localStorage.setItem("fan_email", String(result.fan.email || "").toLowerCase());
     setFan(result.fan);
     setGuestMode(false);
   }, [setGuestMode]);
 
   const logoutFan = useCallback(() => {
     localStorage.removeItem("fan_token");
+    localStorage.removeItem("fan_email");
     setFan(null);
     setGuestMode(false);
   }, [setGuestMode]);

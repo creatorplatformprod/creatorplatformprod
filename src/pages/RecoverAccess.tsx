@@ -9,7 +9,7 @@ const RecoverAccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const creatorUsername = useMemo(() => (searchParams.get("creator") || "").trim(), [searchParams]);
-  const [email, setEmail] = useState(localStorage.getItem("fan_email") || "");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -29,7 +29,6 @@ const RecoverAccess = () => {
         ...(creatorUsername ? { creatorUsername } : {})
       });
       if (result?.success) {
-        localStorage.setItem("fan_email", safeEmail);
         setSuccess(result?.message || "If matching purchases exist, access links were emailed.");
       } else {
         setError(result?.error || "Could not send recovery email.");
@@ -106,4 +105,3 @@ const RecoverAccess = () => {
 };
 
 export default RecoverAccess;
-

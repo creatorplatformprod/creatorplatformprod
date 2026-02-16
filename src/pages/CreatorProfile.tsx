@@ -133,8 +133,7 @@ const CreatorProfile = () => {
   useEffect(() => {
     if (isPreviewMode || fanLoading) return;
     const seen = localStorage.getItem('fan_entry_prompt_seen') === 'true';
-    const hasKnownEmail = !!localStorage.getItem('fan_email');
-    const shouldPrompt = !seen && !fan && !guestMode && !hasKnownEmail;
+    const shouldPrompt = !seen && !fan && !guestMode;
     if (!shouldPrompt) return;
     const timer = window.setTimeout(() => {
       setShowFanAuthModal(true);

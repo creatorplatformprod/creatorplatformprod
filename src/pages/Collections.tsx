@@ -149,11 +149,11 @@ const Collections = () => {
 
   // Pre-fill email from fan registration
   useEffect(() => {
-    const preferredEmail = activeFan?.email || (!isPreviewMode ? localStorage.getItem('fan_email') : '');
+    const preferredEmail = activeFan?.email || '';
     if (preferredEmail && !customerEmail) {
       setCustomerEmail(preferredEmail);
     }
-  }, [activeFan?.email, customerEmail, isPreviewMode]);
+  }, [activeFan?.email, customerEmail]);
 
   const isVideoUrl = (url) => {
     const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
@@ -527,10 +527,6 @@ const Collections = () => {
     if (!isValidEmail(sanitizedEmail)) {
       setPaymentError('Please enter a valid email address (e.g., name@example.com)');
       return;
-    }
-
-    if (!activeFan?.email && !isPreviewMode) {
-      localStorage.setItem('fan_email', sanitizedEmail);
     }
 
     setIsCardPaymentLoading(true);

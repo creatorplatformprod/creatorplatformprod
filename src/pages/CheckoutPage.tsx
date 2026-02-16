@@ -50,9 +50,8 @@ const CheckoutPage = () => {
     const urlCreatorId = params.get('creatorId') || '';
     const urlCreator = params.get('creator') || '';
     
-    // Use URL param email, or fall back to saved fan email
-    const savedFanEmail = !isPreviewMode ? (localStorage.getItem('fan_email') || '') : '';
-    setCustomerEmail(email || activeFanEmail || savedFanEmail);
+    // Use URL param email or active fan email (no persisted browser fallback)
+    setCustomerEmail(email || activeFanEmail || '');
     
     // Validate checkout data early
     if (amount && collectionId) {
@@ -340,10 +339,6 @@ const CheckoutPage = () => {
     setSelectedProvider(provider.id);
     setIsProcessing(true);
     setPaymentError("");
-    if (!activeFanEmail && !isPreviewMode) {
-      localStorage.setItem('fan_email', effectiveEmail);
-    }
-
     try {
       const fanToken = (!isPreviewMode && activeFanEmail) ? localStorage.getItem('fan_token') : null;
       const requestHeaders = {
