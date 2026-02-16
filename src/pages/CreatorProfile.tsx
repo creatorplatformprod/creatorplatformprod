@@ -11,6 +11,7 @@ import FanAccountMenu from "@/components/FanAccountMenu";
 import FanAuthModal from "@/components/FanAuthModal";
 import { api } from "@/lib/api";
 import { useFanAuth } from "@/contexts/FanAuthContext";
+import { useSeo } from "@/hooks/use-seo";
 type MockSourcePack = {
   key: string;
   avatar: string;
@@ -232,10 +233,34 @@ const CreatorProfile = () => {
     loadCreatorProfile();
   }, [username, isPreviewMode]);
 
-  useEffect(() => {
-    const creatorName = creatorData?.displayName || creatorData?.username || "Creator";
-    document.title = `${creatorName} | SixSevenCreator`;
-  }, [creatorData]);
+  const creatorName = creatorData?.displayName || creatorData?.username || username || "Creator";
+  const creatorBio = typeof creatorData?.bio === "string" ? creatorData.bio.trim() : "";
+  useSeo(
+    {
+      title: `${creatorName} | SixSevenCreator`,
+      description:
+        creatorBio ||
+        `Explore premium posts and collections from ${creatorName} on SixSevenCreator.`,
+      canonicalPath: username ? `/${username}` : undefined,
+      noindex: isPreviewMode,
+      image: creatorData?.coverImage || creatorData?.avatar || undefined,
+      type: "profile",
+      jsonLd: username
+        ? {
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            mainEntity: {
+              "@type": "Person",
+              name: creatorName,
+              url: `${window.location.origin}/${username}`,
+              image: creatorData?.avatar || undefined,
+              description: creatorBio || undefined
+            }
+          }
+        : null
+    },
+    [creatorName, creatorBio, username, isPreviewMode, creatorData?.coverImage, creatorData?.avatar]
+  );
 
   const loadCreatorProfile = async () => {
     try {

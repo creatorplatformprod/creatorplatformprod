@@ -10,6 +10,7 @@ import { specialSecureIds } from "@/utils/secureIdMapper";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import FanAccountMenu from "@/components/FanAccountMenu";
 import FanAuthModal from "@/components/FanAuthModal";
+import { useSeo } from "@/hooks/use-seo";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -368,6 +369,20 @@ const Collections = () => {
     [allImages, revealedCount]
   );
   const hasMoreImages = revealedCount < allImages.length;
+
+  useSeo(
+    {
+      title: creatorUsername
+        ? `${creatorUsername} Collections | SixSevenCreator`
+        : "Collections | SixSevenCreator",
+      description: creatorUsername
+        ? `Unlock premium collections from ${creatorUsername} on SixSevenCreator.`
+        : "Unlock premium creator collections on SixSevenCreator.",
+      canonicalPath: creatorUsername ? `/collections?creator=${encodeURIComponent(creatorUsername)}` : "/collections",
+      noindex: isPreviewMode
+    },
+    [creatorUsername, isPreviewMode]
+  );
 
   useEffect(() => {
     setLoadedImages(new Set());

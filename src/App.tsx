@@ -24,6 +24,7 @@ import FanAuthCallback from "./pages/FanAuthCallback";
 import FanAccount from "./pages/FanAccount";
 import FanUnlocks from "./pages/FanUnlocks";
 import { FanAuthProvider } from "./contexts/FanAuthContext";
+import RouteSeoManager from "./components/RouteSeoManager";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
         <Sonner />
         <FanAuthProvider>
           <BrowserRouter>
+            <RouteSeoManager />
             <Routes>
             {/* Landing Page - must be first */}
             <Route path="/" element={<Landing />} />
