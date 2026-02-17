@@ -717,20 +717,30 @@ const Collections = () => {
                       )}
                     </div>
                     
-                    <button 
-                      onClick={handleCardPaymentClick}
-                      disabled={isCardPaymentLoading}
-                      className="w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
-                    >
-                      {isCardPaymentLoading ? (
-                        <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                      ) : (
-                        <>
-                          <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
-                          Unlock All -- ${bundlePrice}
-                        </>
-                      )}
-                    </button>
+                    {isLoading ? (
+                      <div className="w-full h-[46px] rounded-xl skeleton-shimmer" aria-hidden="true" />
+                    ) : (
+                      <button 
+                        onClick={handleCardPaymentClick}
+                        disabled={isCardPaymentLoading}
+                        className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
+                      >
+                        {!isCardPaymentLoading && (
+                          <span
+                            className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/35 to-transparent opacity-70"
+                            style={{ animation: 'shimmer 2.4s ease-in-out infinite' }}
+                          />
+                        )}
+                        {isCardPaymentLoading ? (
+                          <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                        ) : (
+                          <>
+                            <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span className="relative">Unlock All -- ${bundlePrice}</span>
+                          </>
+                        )}
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => {
