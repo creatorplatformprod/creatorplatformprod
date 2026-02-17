@@ -214,7 +214,9 @@ const StatusCardWithMedia = ({
                 src={media.url}
                 thumbnail={media.thumbnail || getThumbnailUrl(media.url)}
                 alt={media.alt || title}
-                className="w-full h-auto max-h-96 object-cover"
+                className={`w-full h-auto max-h-96 object-cover transition-opacity duration-500 ${
+                  isMediaLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
                 onLoad={() => setIsMediaLoaded(true)}
               />
             ) : (

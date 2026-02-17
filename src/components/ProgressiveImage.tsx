@@ -16,7 +16,9 @@ const ProgressiveImage = ({
   className = "",
   onLoad 
 }: ProgressiveImageProps) => {
-  const [imgSrc, setImgSrc] = useState(thumbnail);
+  const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
+  const hasDistinctThumbnail = Boolean(thumbnail && thumbnail !== src);
+  const [imgSrc, setImgSrc] = useState(hasDistinctThumbnail ? thumbnail : BLANK_IMAGE);
   const [isLoading, setIsLoading] = useState(true);
   const [isInView, setIsInView] = useState(false);
   const onLoadCalledRef = useRef(false);
@@ -39,7 +41,7 @@ const ProgressiveImage = ({
         });
       },
       {
-        rootMargin: '800px', // Start loading earlier to avoid visible tile-by-tile pop-in
+        rootMargin: '1200px', // Start loading much earlier to avoid visible pop-in on fast scroll
         threshold: 0
       }
     );
@@ -97,6 +99,12 @@ const ProgressiveImage = ({
       img.onload = null;
     };
   }, [src, onLoad, isInView]);
+
+  useEffect(() => {
+    setImgSrc(hasDistinctThumbnail ? thumbnail : BLANK_IMAGE);
+    setIsLoading(true);
+    onLoadCalledRef.current = false;
+  }, [src, thumbnail, hasDistinctThumbnail]);
 
   return (
     <img

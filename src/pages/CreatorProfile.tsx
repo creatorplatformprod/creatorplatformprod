@@ -12,6 +12,7 @@ import FanAuthModal from "@/components/FanAuthModal";
 import { api } from "@/lib/api";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import { useSeo } from "@/hooks/use-seo";
+import { buildCardLayout, parseLayoutTag } from "@/lib/collectionLayout";
 type MockSourcePack = {
   key: string;
   avatar: string;
@@ -367,15 +368,7 @@ const CreatorProfile = () => {
       feedType: 'collection' as const,
       price: col.price || 0,
       currency: col.currency || 'USD',
-      cardLayout: {
-        gridType: (col.media || []).length === 1 ? 'single' : (col.media || []).length <= 3 ? 'triple' : 'quad',
-        maxImages: Math.min((col.media || []).length, 4),
-        gridClasses: (col.media || []).length === 1 
-          ? 'grid grid-cols-1 h-full'
-          : (col.media || []).length <= 3
-          ? 'grid grid-cols-3 gap-1 h-full'
-          : 'grid grid-cols-2 grid-rows-2 gap-1 h-full'
-      }
+      cardLayout: buildCardLayout((col.media || []).length, parseLayoutTag(col.tags))
     }));
   }, [collections, creatorData, username, isPreviewMode]);
 

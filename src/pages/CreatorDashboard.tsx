@@ -1,9 +1,9 @@
-﻿import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { 
+import {
   LineChart, 
   Line, 
   XAxis, 
@@ -46,9 +46,30 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
+import {
+  COLLECTION_CARD_TEMPLATE_OPTIONS,
+  COLLECTION_CARD_TEMPLATES,
+  buildCardLayout,
+  mergeTagsWithLayout,
+  parseLayoutTag,
+  resolveCollectionLayout,
+  stripLayoutTags,
+  type CollectionCardTemplate
+} from '@/lib/collectionLayout';
 
 const DEFAULT_COVER_OVERLAY = 0.45;
 const DEFAULT_MEDIA_DIMS = { width: null as number | null, height: null as number | null };
+const DEFAULT_COLLECTION_TEMPLATE: CollectionCardTemplate = 'quad';
+const DEFAULT_COLLECTION_PREVIEW_COUNT = 4;
+const createEmptyCollectionForm = () => ({
+  title: '',
+  description: '',
+  price: 0,
+  currency: 'USD',
+  tags: '',
+  cardTemplate: DEFAULT_COLLECTION_TEMPLATE as CollectionCardTemplate,
+  previewImages: DEFAULT_COLLECTION_PREVIEW_COUNT
+});
 
 const getFileDimensions = async (file: File): Promise<{ width: number | null; height: number | null }> => {
   if (!file?.type) {
@@ -182,13 +203,7 @@ const CreatorDashboard = () => {
   });
 
   // Collection form state
-  const [collectionForm, setCollectionForm] = useState({
-    title: '',
-    description: '',
-    price: 0,
-    currency: 'USD',
-    tags: ''
-  });
+  const [collectionForm, setCollectionForm] = useState(createEmptyCollectionForm());
 
   const serializeForDirtyCheck = (value: any) => JSON.stringify(value ?? {});
 
@@ -872,12 +887,16 @@ const CreatorDashboard = () => {
       setError('');
       setSuccess('');
       const tags = collectionForm.tags.split(',').map(t => t.trim()).filter(t => t);
+      const tagsWithLayout = mergeTagsWithLayout(tags, {
+        template: collectionForm.cardTemplate,
+        previewCount: collectionForm.previewImages
+      });
       const result = await api.createCollection({
         title: collectionForm.title,
         description: collectionForm.description || undefined,
         price: Number(collectionForm.price) || 0,
         currency: collectionForm.currency,
-        tags: tags.length > 0 ? tags : undefined,
+        tags: tagsWithLayout.length > 0 ? tagsWithLayout : undefined,
         media: []
       });
       if (!result?.success) {
@@ -926,7 +945,7 @@ const CreatorDashboard = () => {
         markPublicWebsiteDirty();
         setSelectedCollectionId('');
         setSelectedCollection(null);
-        const resetCollection = { title: '', description: '', price: 0, currency: 'USD', tags: '' };
+        const resetCollection = createEmptyCollectionForm();
         setCollectionForm(resetCollection);
         collectionBaselineRef.current = serializeForDirtyCheck(resetCollection);
         setIsCollectionDirty(false);
@@ -960,7 +979,7 @@ const CreatorDashboard = () => {
         if (selectedCollectionId === collectionId) {
           setSelectedCollectionId('');
           setSelectedCollection(null);
-          const resetCollection = { title: '', description: '', price: 0, currency: 'USD', tags: '' };
+          const resetCollection = createEmptyCollectionForm();
           setCollectionForm(resetCollection);
           collectionBaselineRef.current = serializeForDirtyCheck(resetCollection);
           setIsCollectionDirty(false);
@@ -1035,12 +1054,19 @@ const CreatorDashboard = () => {
   };
 
   const handleEditCollection = (collection: any) => {
+    const persistedLayout = parseLayoutTag(collection.tags);
+    const resolvedLayout = resolveCollectionLayout(
+      Array.isArray(collection.media) ? collection.media.length : 0,
+      persistedLayout
+    );
     const nextCollectionForm = {
       title: collection.title || '',
       description: collection.description || '',
       price: Number(collection.price) || 0,
       currency: collection.currency || 'USD',
-      tags: Array.isArray(collection.tags) ? collection.tags.join(', ') : ''
+      tags: Array.isArray(collection.tags) ? stripLayoutTags(collection.tags).join(', ') : '',
+      cardTemplate: resolvedLayout.template,
+      previewImages: resolvedLayout.previewCount
     };
     setCollectionForm(nextCollectionForm);
     collectionBaselineRef.current = serializeForDirtyCheck(nextCollectionForm);
@@ -1061,13 +1087,17 @@ const CreatorDashboard = () => {
       setError('');
       setSuccess('');
       const tags = collectionForm.tags.split(',').map(t => t.trim()).filter(t => t);
+      const tagsWithLayout = mergeTagsWithLayout(tags, {
+        template: collectionForm.cardTemplate,
+        previewCount: collectionForm.previewImages
+      });
       const result = await api.updateCollection(selectedCollectionId, {
         title: collectionForm.title,
         // Allow clearing description/tags by sending empty values instead of undefined.
         description: collectionForm.description,
         price: collectionForm.price,
         currency: collectionForm.currency,
-        tags
+        tags: tagsWithLayout
       });
       if (result.success) {
         setSuccess('Collection updated.');
@@ -1158,6 +1188,48 @@ const CreatorDashboard = () => {
     const url = String(media?.url || '');
     return /\.(mp4|webm|mov|ogg|avi)(\?|#|$)/i.test(url);
   };
+
+  const collectionEditorMedia = useMemo(() => {
+    const uploadedMedia = Array.isArray(selectedCollection?.media)
+      ? selectedCollection.media.map((media: any) => ({
+          url: media?.url || media?.thumbnailUrl || '',
+          thumbnailUrl: media?.thumbnailUrl || media?.url || '',
+          mediaType: media?.mediaType || (isVideoMedia(media) ? 'video' : 'image')
+        }))
+      : [];
+
+    const pendingMedia = collectionPreviews.map((preview) => ({
+      url: preview.url,
+      thumbnailUrl: preview.url,
+      mediaType: preview.file.type.startsWith('video/') ? 'video' : 'image'
+    }));
+
+    return [...uploadedMedia, ...pendingMedia].filter((media) => !!media.url);
+  }, [selectedCollection?.media, collectionPreviews]);
+
+  const templateMeta =
+    COLLECTION_CARD_TEMPLATES[collectionForm.cardTemplate] || COLLECTION_CARD_TEMPLATES[DEFAULT_COLLECTION_TEMPLATE];
+  const maxPreviewCount = Math.max(
+    1,
+    Math.min(templateMeta.maxCount, collectionEditorMedia.length || templateMeta.maxCount)
+  );
+  const effectivePreviewCount = Math.max(
+    1,
+    Math.min(Number(collectionForm.previewImages) || 1, templateMeta.maxCount)
+  );
+  const liveCardLayout = buildCardLayout(collectionEditorMedia.length || effectivePreviewCount, {
+    template: collectionForm.cardTemplate,
+    previewCount: effectivePreviewCount
+  });
+
+  useEffect(() => {
+    if (collectionForm.previewImages > maxPreviewCount) {
+      setCollectionForm((prev) => ({
+        ...prev,
+        previewImages: maxPreviewCount
+      }));
+    }
+  }, [collectionForm.previewImages, maxPreviewCount]);
 
   const buildChartSeries = (summary: any) => {
     if (!summary?.range?.start || !summary?.range?.end) return [];
@@ -2270,7 +2342,7 @@ const CreatorDashboard = () => {
               <Button
                 type="button"
                 onClick={() => {
-                  const resetCollection = { title: '', description: '', price: 0, currency: 'USD', tags: '' };
+                  const resetCollection = createEmptyCollectionForm();
                   setSelectedCollectionId('');
                   setSelectedCollection(null);
                   setCollectionForm(resetCollection);
@@ -2457,6 +2529,95 @@ const CreatorDashboard = () => {
                       placeholder="art, photography, exclusive"
                     />
                   </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="input-label">Card Template</label>
+                      <select
+                        value={collectionForm.cardTemplate}
+                        onChange={(e) => {
+                          const nextTemplate = e.target.value as CollectionCardTemplate;
+                          const templateInfo = COLLECTION_CARD_TEMPLATES[nextTemplate] || COLLECTION_CARD_TEMPLATES[DEFAULT_COLLECTION_TEMPLATE];
+                          setCollectionForm((prev) => ({
+                            ...prev,
+                            cardTemplate: nextTemplate,
+                            previewImages: Math.min(Math.max(1, Number(prev.previewImages) || 1), templateInfo.maxCount)
+                          }));
+                        }}
+                        className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                      >
+                        {COLLECTION_CARD_TEMPLATE_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="input-label">Images On Card</label>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={maxPreviewCount}
+                        value={collectionForm.previewImages}
+                        onChange={(e) => {
+                          const parsed = Number.parseInt(e.target.value || '1', 10);
+                          const safe = Number.isFinite(parsed) ? parsed : 1;
+                          setCollectionForm((prev) => ({
+                            ...prev,
+                            previewImages: Math.max(1, Math.min(safe, maxPreviewCount))
+                          }));
+                        }}
+                      />
+                      <p className="text-[10px] text-muted-foreground mt-1">
+                        Max {maxPreviewCount} for this template and current media.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border border-border rounded-lg p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-medium text-muted-foreground">Live Card Preview</div>
+                  <div className="text-[11px] text-muted-foreground">
+                    Showing {Math.min(effectivePreviewCount, collectionEditorMedia.length || effectivePreviewCount)} of {collectionEditorMedia.length || effectivePreviewCount}
+                  </div>
+                </div>
+                <div className="relative h-44 rounded-md overflow-hidden border border-border bg-muted/20">
+                  {collectionEditorMedia.length === 0 ? (
+                    <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">
+                      Upload media to preview the collection card layout.
+                    </div>
+                  ) : (
+                    <div className={liveCardLayout.gridClasses}>
+                      {collectionEditorMedia
+                        .slice(0, liveCardLayout.maxImages)
+                        .map((media: any, index: number) => {
+                          const spanClasses = liveCardLayout.imageSpans?.[index] || '';
+                          return (
+                            <div key={`${media.url}-${index}`} className={`relative overflow-hidden ${spanClasses}`}>
+                              {String(media.mediaType).includes('video') ? (
+                                <video
+                                  src={media.url}
+                                  className="w-full h-full object-cover"
+                                  muted
+                                  playsInline
+                                  preload="metadata"
+                                />
+                              ) : (
+                                <img
+                                  src={media.thumbnailUrl || media.url}
+                                  alt=""
+                                  className="w-full h-full object-cover"
+                                  loading="lazy"
+                                  decoding="async"
+                                />
+                              )}
+                            </div>
+                          );
+                        })}
+                    </div>
+                  )}
                 </div>
               </div>
 

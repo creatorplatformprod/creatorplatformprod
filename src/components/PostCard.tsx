@@ -193,7 +193,11 @@ const PostCard = ({ collection }: PostCardProps) => {
           <div className="absolute inset-0 skeleton-shimmer z-10" />
         )}
         
-        <div className={cardLayout.gridClasses}>
+        <div
+          className={`${cardLayout.gridClasses} transition-opacity duration-500 ${
+            allImagesLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
           {previewImages.map((image, index) => {
             const spanClasses = cardLayout.imageSpans?.[index] || '';
             
