@@ -374,7 +374,11 @@ const PublicWebsitePreview = () => {
                       <iframe
                         title="Desktop preview"
                         src={previewUrl}
-                        className="absolute inset-0 origin-top-left [transform:scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
+                        className="absolute inset-y-0 left-0 origin-top-left h-[var(--viewport-h)]"
+                        style={{
+                          width: 'calc(var(--viewport-w) + 96px)',
+                          transform: 'translateX(-48px) scale(var(--scale))'
+                        }}
                       />
                     </div>
                   </div>
