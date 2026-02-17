@@ -43,6 +43,7 @@ const StatusCardWithMedia = ({
   const [pending, setPending] = useState(false);
   const [showVideoControls, setShowVideoControls] = useState(false);
   const [isMediaLoaded, setIsMediaLoaded] = useState(false);
+  const [mediaRevealReady, setMediaRevealReady] = useState(false);
   const [displayTime, setDisplayTime] = useState(() => 
     typeof timestamp === 'string' && !timestamp.includes('T') 
       ? timestamp 
@@ -99,6 +100,17 @@ const StatusCardWithMedia = ({
     observer.observe(element);
     return () => observer.disconnect();
   }, [engagementId]);
+
+  useEffect(() => {
+    setIsMediaLoaded(false);
+    setMediaRevealReady(false);
+  }, [media?.url, media?.thumbnail, media?.type]);
+
+  useEffect(() => {
+    if (!isMediaLoaded) return;
+    const timer = window.setTimeout(() => setMediaRevealReady(true), 70);
+    return () => window.clearTimeout(timer);
+  }, [isMediaLoaded]);
 
   const persistEngagement = (nextLikes: number, nextShares: number, nextLiked: boolean) => {
     setCurrentLikes(nextLikes);
@@ -206,16 +218,18 @@ const StatusCardWithMedia = ({
         {media && (
           <div className="mb-4 rounded-lg overflow-hidden relative">
             {/* Single shimmer for media area */}
-            {!isMediaLoaded && (
-              <div className="absolute inset-0 skeleton-shimmer z-10 rounded-lg" />
-            )}
+            <div
+              className={`absolute inset-0 skeleton-shimmer z-10 rounded-lg transition-opacity duration-300 ${
+                mediaRevealReady ? 'opacity-0 pointer-events-none' : 'opacity-100'
+              }`}
+            />
             {media.type === "image" ? (
               <ProgressiveImage
                 src={media.url}
                 thumbnail={media.thumbnail || getThumbnailUrl(media.url)}
                 alt={media.alt || title}
                 className={`w-full h-auto max-h-96 object-cover transition-opacity duration-500 ${
-                  isMediaLoaded ? 'opacity-100' : 'opacity-0'
+                  mediaRevealReady ? 'opacity-100' : 'opacity-0'
                 }`}
                 onLoad={() => setIsMediaLoaded(true)}
               />

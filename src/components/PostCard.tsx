@@ -21,6 +21,7 @@ const PostCard = ({ collection }: PostCardProps) => {
   const [pending, setPending] = useState(false);
   const [allImagesLoaded, setAllImagesLoaded] = useState(false);
   const [loadedCount, setLoadedCount] = useState(0);
+  const [cardRevealReady, setCardRevealReady] = useState(false);
   const navigate = useNavigate();
   const viewRef = useRef<HTMLDivElement | null>(null);
   const viewTrackedRef = useRef(false);
@@ -58,6 +59,18 @@ const PostCard = ({ collection }: PostCardProps) => {
     observer.observe(element);
     return () => observer.disconnect();
   }, [engagementId]);
+
+  useEffect(() => {
+    setAllImagesLoaded(false);
+    setLoadedCount(0);
+    setCardRevealReady(false);
+  }, [collection.id, collection.images.length, collection.cardLayout?.maxImages]);
+
+  useEffect(() => {
+    if (!allImagesLoaded) return;
+    const timer = window.setTimeout(() => setCardRevealReady(true), 70);
+    return () => window.clearTimeout(timer);
+  }, [allImagesLoaded]);
 
   const persistEngagement = (nextLikes: number, nextShares: number, nextLiked: boolean) => {
     setCurrentLikes(nextLikes);
@@ -189,13 +202,15 @@ const PostCard = ({ collection }: PostCardProps) => {
         onClick={handleClick}
       >
         {/* Single shimmer for entire image area */}
-        {!allImagesLoaded && (
-          <div className="absolute inset-0 skeleton-shimmer z-10" />
-        )}
+        <div
+          className={`absolute inset-0 skeleton-shimmer z-10 transition-opacity duration-300 ${
+            cardRevealReady ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }`}
+        />
         
         <div
           className={`${cardLayout.gridClasses} transition-opacity duration-500 ${
-            allImagesLoaded ? 'opacity-100' : 'opacity-0'
+            cardRevealReady ? 'opacity-100' : 'opacity-0'
           }`}
         >
           {previewImages.map((image, index) => {
