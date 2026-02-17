@@ -252,6 +252,14 @@ export const api = {
   createStatusCard: async (data: {
     text: string;
     imageUrl?: string;
+    media?: Array<{
+      url: string;
+      thumbnailUrl?: string;
+      mediaType?: string;
+      size?: number;
+      width?: number;
+      height?: number;
+    }>;
     isLocked?: boolean;
     order?: number;
   }) => {

@@ -24,6 +24,12 @@ interface StatusCardWithMediaProps {
     alt?: string;
     thumbnail?: string;
   };
+  mediaItems?: Array<{
+    type: "image" | "video";
+    url: string;
+    alt?: string;
+    thumbnail?: string;
+  }>;
 }
 
 const StatusCardWithMedia = ({ 
@@ -33,7 +39,8 @@ const StatusCardWithMedia = ({
   text,
   timestamp,
   likes,
-  media
+  media,
+  mediaItems
 }: StatusCardWithMediaProps) => {
   const engagementId = `status:${id}`;
   const [isLiked, setIsLiked] = useState(false);
@@ -44,6 +51,7 @@ const StatusCardWithMedia = ({
   const [showVideoControls, setShowVideoControls] = useState(false);
   const [isMediaLoaded, setIsMediaLoaded] = useState(false);
   const [mediaRevealReady, setMediaRevealReady] = useState(false);
+  const [mediaLoadedCount, setMediaLoadedCount] = useState(0);
   const [displayTime, setDisplayTime] = useState(() => 
     typeof timestamp === 'string' && !timestamp.includes('T') 
       ? timestamp 
@@ -51,6 +59,10 @@ const StatusCardWithMedia = ({
   );
   const viewRef = useRef<HTMLDivElement | null>(null);
   const viewTrackedRef = useRef(false);
+  const resolvedMediaItems = (mediaItems && mediaItems.length > 0)
+    ? mediaItems
+    : (media ? [media] : []);
+  const visibleMediaItems = resolvedMediaItems.slice(0, 4);
 
   // Live update timestamp every minute
   useEffect(() => {
@@ -104,7 +116,8 @@ const StatusCardWithMedia = ({
   useEffect(() => {
     setIsMediaLoaded(false);
     setMediaRevealReady(false);
-  }, [media?.url, media?.thumbnail, media?.type]);
+    setMediaLoadedCount(0);
+  }, [media?.url, media?.thumbnail, media?.type, JSON.stringify(mediaItems || [])]);
 
   useEffect(() => {
     if (!isMediaLoaded) return;
@@ -182,6 +195,16 @@ const StatusCardWithMedia = ({
     setShowVideoControls(true);
   };
 
+  const handleMediaItemLoad = () => {
+    setMediaLoadedCount((prev) => {
+      const next = prev + 1;
+      if (next >= Math.max(1, visibleMediaItems.length)) {
+        setIsMediaLoaded(true);
+      }
+      return next;
+    });
+  };
+
   // Generate thumbnail path from full image URL
   const getThumbnailUrl = (url: string) => {
     return url.replace('/collection', '/thumbs/collection');
@@ -215,7 +238,7 @@ const StatusCardWithMedia = ({
                 
         <p className="text-foreground mb-4">{text}</p>
 
-        {media && (
+        {visibleMediaItems.length > 0 && (
           <div className="mb-4 rounded-lg overflow-hidden relative">
             {/* Single shimmer for media area */}
             <div
@@ -223,11 +246,34 @@ const StatusCardWithMedia = ({
                 mediaRevealReady ? 'opacity-0 pointer-events-none' : 'opacity-100'
               }`}
             />
-            {media.type === "image" ? (
+            {visibleMediaItems.length > 1 ? (
+              <div className="grid grid-cols-2 gap-1">
+                {visibleMediaItems.map((item, idx) => {
+                  const thumbnail = item.thumbnail || (item.type === 'image' ? getThumbnailUrl(item.url) : item.url);
+                  return (
+                    <div key={`${item.url}-${idx}`} className="relative h-40 overflow-hidden rounded-md bg-muted/20">
+                      <img
+                        src={thumbnail}
+                        alt={item.alt || `${title} media ${idx + 1}`}
+                        className={`w-full h-full object-cover transition-opacity duration-500 ${
+                          mediaRevealReady ? 'opacity-100' : 'opacity-0'
+                        }`}
+                        onLoad={handleMediaItemLoad}
+                      />
+                      {item.type === 'video' && (
+                        <div className="absolute inset-0 bg-black/25 flex items-center justify-center pointer-events-none">
+                          <Play className="w-7 h-7 text-white/90" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : visibleMediaItems[0].type === "image" ? (
               <ProgressiveImage
-                src={media.url}
-                thumbnail={media.thumbnail || getThumbnailUrl(media.url)}
-                alt={media.alt || title}
+                src={visibleMediaItems[0].url}
+                thumbnail={visibleMediaItems[0].thumbnail || getThumbnailUrl(visibleMediaItems[0].url)}
+                alt={visibleMediaItems[0].alt || title}
                 className={`w-full h-auto max-h-96 object-cover transition-opacity duration-500 ${
                   mediaRevealReady ? 'opacity-100' : 'opacity-0'
                 }`}
@@ -240,17 +286,17 @@ const StatusCardWithMedia = ({
               >
                 {showVideoControls ? (
                   <video
-                    src={media.url}
+                    src={visibleMediaItems[0].url}
                     controls
                     className="w-full h-auto max-h-96 object-cover"
-                    poster={media.thumbnail}
+                    poster={visibleMediaItems[0].thumbnail}
                     onLoadedData={() => setIsMediaLoaded(true)}
                   />
                 ) : (
                   <div className="relative">
                     <img
-                      src={media.thumbnail || media.url}
-                      alt={media.alt || title}
+                      src={visibleMediaItems[0].thumbnail || visibleMediaItems[0].url}
+                      alt={visibleMediaItems[0].alt || title}
                       className="w-full h-auto max-h-96 object-cover"
                       onLoad={() => setIsMediaLoaded(true)}
                     />

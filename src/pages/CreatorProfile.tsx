@@ -328,26 +328,41 @@ const CreatorProfile = () => {
 
   // Format status cards to match Index.tsx structure
   const formattedStatusData = useMemo(() => {
-    return statusCards.map((card, index) => ({
-      id: card._id || `status-${index}`,
-      user: {
-        name: creatorData?.displayName || creatorData?.username || 'Creator',
-        avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop',
-        verified: creatorData?.isVerified || false
-      },
-      title: "",
-      text: card.text || '',
-      timestamp: card.createdAt ? new Date(card.createdAt).toLocaleDateString() : 'Recently',
-      likes: 0,
-      comments: 0,
-      ...(card.hasImage && card.imageUrl ? {
-        media: {
-          type: "image" as const,
-          url: card.imageUrl,
-          alt: card.text || 'Status image'
-        }
-      } : {})
-    }));
+    return statusCards.map((card, index) => {
+      const mediaItems: Array<any> =
+        Array.isArray(card.media) && card.media.length > 0
+          ? card.media
+              .map((item: any) => ({
+                type: String(item?.mediaType || '').toLowerCase() === 'video' ? 'video' : 'image',
+                url: String(item?.url || '').trim(),
+                thumbnail: String(item?.thumbnailUrl || item?.url || '').trim(),
+                alt: card.text || 'Status media'
+              }))
+              .filter((item: any) => !!item.url)
+          : (card.hasImage && card.imageUrl
+              ? [{
+                  type: "image" as const,
+                  url: card.imageUrl,
+                  thumbnail: card.imageUrl,
+                  alt: card.text || 'Status image'
+                }]
+              : []);
+
+      return {
+        id: card._id || `status-${index}`,
+        user: {
+          name: creatorData?.displayName || creatorData?.username || 'Creator',
+          avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop',
+          verified: creatorData?.isVerified || false
+        },
+        title: "",
+        text: card.text || '',
+        timestamp: card.createdAt ? new Date(card.createdAt).toLocaleDateString() : 'Recently',
+        likes: 0,
+        comments: 0,
+        ...(mediaItems.length > 0 ? { mediaItems, media: mediaItems[0] } : {})
+      };
+    });
   }, [statusCards, creatorData]);
 
   // Format collections to match Index.tsx structure
@@ -559,6 +574,7 @@ const CreatorProfile = () => {
           likes={post.likes}
           comments={post.comments}
           media={post.media}
+          mediaItems={post.mediaItems}
         />
       ) : (
         <StatusCard

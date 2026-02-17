@@ -134,8 +134,9 @@ const CreatorDashboard = () => {
   const collectionUploadInputRef = useRef<HTMLInputElement | null>(null);
   const collectionFormRef = useRef<HTMLDivElement | null>(null);
   const [uploadingCollectionMedia, setUploadingCollectionMedia] = useState(false);
-  const [statusCardFile, setStatusCardFile] = useState<File | null>(null);
-  const [statusCardPreviewUrl, setStatusCardPreviewUrl] = useState<string>('');
+  const [statusCardFiles, setStatusCardFiles] = useState<File[]>([]);
+  const [statusCardPreviews, setStatusCardPreviews] = useState<{ file: File; url: string }[]>([]);
+  const [statusCardMediaInput, setStatusCardMediaInput] = useState('');
   const [selectedPostCardId, setSelectedPostCardId] = useState('');
   const [postCardSearch, setPostCardSearch] = useState('');
   const [uploadingStatusCardMedia, setUploadingStatusCardMedia] = useState(false);
@@ -198,6 +199,7 @@ const CreatorDashboard = () => {
   const [statusCardForm, setStatusCardForm] = useState({
     text: '',
     imageUrl: '',
+    mediaUrls: [] as string[],
     isLocked: false,
     order: 0
   });
@@ -388,14 +390,19 @@ const CreatorDashboard = () => {
   }, [collectionFiles]);
 
   useEffect(() => {
-    if (!statusCardFile) {
-      setStatusCardPreviewUrl('');
+    if (statusCardFiles.length === 0) {
+      setStatusCardPreviews([]);
       return;
     }
-    const url = URL.createObjectURL(statusCardFile);
-    setStatusCardPreviewUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [statusCardFile]);
+    const next = statusCardFiles.map((file) => ({
+      file,
+      url: URL.createObjectURL(file)
+    }));
+    setStatusCardPreviews(next);
+    return () => {
+      next.forEach((preview) => URL.revokeObjectURL(preview.url));
+    };
+  }, [statusCardFiles]);
 
   useEffect(() => {
     if (!selectedCollectionId) {
@@ -474,7 +481,7 @@ const CreatorDashboard = () => {
     isPostCardDirty ||
     isCollectionDirty ||
     collectionFiles.length > 0 ||
-    !!statusCardFile;
+    statusCardFiles.length > 0;
 
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -624,8 +631,27 @@ const CreatorDashboard = () => {
     }
   };
 
+  const normalizeStatusCardMediaItems = (card: any) => {
+    if (Array.isArray(card?.media) && card.media.length > 0) {
+      return card.media
+        .map((item: any) => ({
+          url: String(item?.url || '').trim(),
+          thumbnailUrl: String(item?.thumbnailUrl || item?.url || '').trim(),
+          mediaType: String(item?.mediaType || (isVideoMedia(item) ? 'video' : 'image')).toLowerCase() === 'video' ? 'video' : 'image'
+        }))
+        .filter((item: any) => !!item.url);
+    }
+    const single = String(card?.imageUrl || '').trim();
+    if (!single) return [];
+    return [{
+      url: single,
+      thumbnailUrl: single,
+      mediaType: isVideoMedia({ url: single }) ? 'video' : 'image'
+    }];
+  };
+
   const handleSavePostCard = async () => {
-    if (!statusCardForm.text.trim() && !statusCardForm.imageUrl.trim()) {
+    if (!statusCardForm.text.trim() && statusCardForm.mediaUrls.length === 0) {
       setError('Add text or media before saving');
       return;
     }
@@ -635,8 +661,12 @@ const CreatorDashboard = () => {
       setSuccess('');
       const payload = {
         text: statusCardForm.text,
-        // Keep empty string so editing can intentionally clear existing media.
-        imageUrl: statusCardForm.imageUrl,
+        imageUrl: statusCardForm.mediaUrls[0] || '',
+        media: statusCardForm.mediaUrls.map((url) => ({
+          url,
+          thumbnailUrl: url,
+          mediaType: isVideoMedia({ url }) ? 'video' : 'image'
+        })),
         isLocked: statusCardForm.isLocked,
         order: statusCardForm.order
       };
@@ -646,11 +676,13 @@ const CreatorDashboard = () => {
       if (result.success) {
         setSuccess(selectedPostCardId ? 'Post card updated.' : 'Post card created.');
         markPublicWebsiteDirty();
-        const resetPostCard = { text: '', imageUrl: '', isLocked: false, order: 0 };
+        const resetPostCard = { text: '', imageUrl: '', mediaUrls: [] as string[], isLocked: false, order: 0 };
         setStatusCardForm(resetPostCard);
         postCardBaselineRef.current = serializeForDirtyCheck(resetPostCard);
         setIsPostCardDirty(false);
-        setStatusCardFile(null);
+        setStatusCardFiles([]);
+        setStatusCardPreviews([]);
+        setStatusCardMediaInput('');
         setSelectedPostCardId('');
         await loadUserData();
       } else {
@@ -684,9 +716,11 @@ const CreatorDashboard = () => {
   };
 
   const handleEditPostCard = (card: any) => {
+    const mediaItems = normalizeStatusCardMediaItems(card);
     const nextPostCard = {
       text: card.text || '',
-      imageUrl: card.imageUrl || '',
+      imageUrl: mediaItems[0]?.url || '',
+      mediaUrls: mediaItems.map((item: any) => item.url),
       isLocked: !!card.isLocked,
       order: Number(card.order) || 0
     };
@@ -694,8 +728,9 @@ const CreatorDashboard = () => {
     setStatusCardForm(nextPostCard);
     postCardBaselineRef.current = serializeForDirtyCheck(nextPostCard);
     setIsPostCardDirty(false);
-    setStatusCardFile(null);
-    setStatusCardPreviewUrl('');
+    setStatusCardFiles([]);
+    setStatusCardPreviews([]);
+    setStatusCardMediaInput('');
     setTimeout(() => {
       collectionFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 0);
@@ -713,13 +748,14 @@ const CreatorDashboard = () => {
         setSuccess('Post card deleted.');
         markPublicWebsiteDirty();
         if (selectedPostCardId === cardId) {
-          const resetPostCard = { text: '', imageUrl: '', isLocked: false, order: 0 };
+          const resetPostCard = { text: '', imageUrl: '', mediaUrls: [] as string[], isLocked: false, order: 0 };
           setSelectedPostCardId('');
           setStatusCardForm(resetPostCard);
           postCardBaselineRef.current = serializeForDirtyCheck(resetPostCard);
           setIsPostCardDirty(false);
-          setStatusCardFile(null);
-          setStatusCardPreviewUrl('');
+          setStatusCardFiles([]);
+          setStatusCardPreviews([]);
+          setStatusCardMediaInput('');
         }
         await loadUserData();
       } else {
@@ -796,21 +832,33 @@ const CreatorDashboard = () => {
   };
 
   const handleUploadStatusCardImage = async () => {
-    if (!statusCardFile) {
-      setError('Please select an image or video to upload');
+    if (statusCardFiles.length === 0) {
+      setError('Please select one or more images/videos to upload');
       return;
     }
 
     try {
       setUploadingStatusCardMedia(true);
       setError('');
-      const uploadResult = await api.uploadFile(statusCardFile);
-      if (uploadResult?.url) {
-        setStatusCardForm({ ...statusCardForm, imageUrl: uploadResult.url });
-        setSuccess('Media uploaded. You can now save the post card.');
-      } else {
-        setError('Upload failed');
+      const uploadedUrls: string[] = [];
+      for (const file of statusCardFiles) {
+        const uploadResult = await api.uploadFile(file);
+        if (!uploadResult?.url) {
+          throw new Error(`Upload failed for ${file.name}`);
+        }
+        uploadedUrls.push(uploadResult.url);
       }
+      setStatusCardForm((prev) => {
+        const nextMediaUrls = [...prev.mediaUrls, ...uploadedUrls].filter(Boolean);
+        return {
+          ...prev,
+          imageUrl: nextMediaUrls[0] || '',
+          mediaUrls: nextMediaUrls
+        };
+      });
+      setStatusCardFiles([]);
+      setStatusCardPreviews([]);
+      setSuccess(`Uploaded ${uploadedUrls.length} media item${uploadedUrls.length === 1 ? '' : 's'}. You can now save the post card.`);
     } catch (err: any) {
       setError(err.message || 'Upload failed');
     } finally {
@@ -2041,13 +2089,14 @@ const CreatorDashboard = () => {
                 type="button"
                 className="w-full dash-btn-secondary"
                 onClick={() => {
-                  const resetPostCard = { text: '', imageUrl: '', isLocked: false, order: 0 };
+                  const resetPostCard = { text: '', imageUrl: '', mediaUrls: [] as string[], isLocked: false, order: 0 };
                   setSelectedPostCardId('');
                   setStatusCardForm(resetPostCard);
                   postCardBaselineRef.current = serializeForDirtyCheck(resetPostCard);
                   setIsPostCardDirty(false);
-                  setStatusCardFile(null);
-                  setStatusCardPreviewUrl('');
+                  setStatusCardFiles([]);
+                  setStatusCardPreviews([]);
+                  setStatusCardMediaInput('');
                 }}
               >
                 <Plus className="h-3.5 w-3.5 mr-1.5" />
@@ -2079,8 +2128,10 @@ const CreatorDashboard = () => {
                       const absoluteIndex = orderedCards.findIndex((item) => item._id === card._id);
                       const isFirst = absoluteIndex <= 0;
                       const isLast = absoluteIndex === orderedCards.length - 1;
-                      const cardMediaSources = card.imageUrl ? getMediaSrcCandidates(card.imageUrl) : [];
-                      const cardHasVideo = card.imageUrl ? isVideoMedia({ url: card.imageUrl }) : false;
+                      const cardMediaItems = normalizeStatusCardMediaItems(card);
+                      const firstMedia = cardMediaItems[0];
+                      const firstMediaSources = firstMedia?.url ? getMediaSrcCandidates(firstMedia.url) : [];
+                      const firstMediaIsVideo = firstMedia?.mediaType === 'video';
                       return (
                         <button
                           key={index}
@@ -2096,20 +2147,20 @@ const CreatorDashboard = () => {
                                 {card.text || 'Untitled post card'}
                               </h4>
                               <p className="text-[11px] text-muted-foreground mt-0.5">
-                                {card.imageUrl ? 'Has media' : 'Text only'} {card.isLocked ? '• Locked' : ''} • Order {Number.isFinite(Number(card.order)) ? Number(card.order) : 0}
+                                {cardMediaItems.length > 0 ? `${cardMediaItems.length} media` : 'Text only'} {card.isLocked ? '• Locked' : ''} • Order {Number.isFinite(Number(card.order)) ? Number(card.order) : 0}
                               </p>
-                              {card.imageUrl && (
+                              {firstMedia?.url && (
                                 <div className="mt-2 h-14 w-24 overflow-hidden rounded-md border border-border bg-muted/20">
-                                  {cardHasVideo ? (
+                                  {firstMediaIsVideo ? (
                                     <video
-                                      src={cardMediaSources[0] || card.imageUrl}
+                                      src={firstMediaSources[0] || firstMedia.url}
                                       className="h-full w-full object-cover"
                                       muted
                                       preload="metadata"
                                     />
                                   ) : (
                                     <img
-                                      src={cardMediaSources[0] || card.imageUrl}
+                                      src={firstMediaSources[0] || firstMedia.url}
                                       alt="Post media preview"
                                       className="h-full w-full object-cover"
                                       loading="lazy"
@@ -2208,12 +2259,51 @@ const CreatorDashboard = () => {
                   />
                 </div>
                 <div>
-                  <label className="input-label">Media URL (Optional)</label>
-                  <Input
-                    value={statusCardForm.imageUrl}
-                    onChange={(e) => setStatusCardForm({ ...statusCardForm, imageUrl: e.target.value })}
-                    placeholder="https://..."
-                  />
+                  <label className="input-label">Add Media URL (Optional)</label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={statusCardMediaInput}
+                      onChange={(e) => setStatusCardMediaInput(e.target.value)}
+                      placeholder="https://..."
+                    />
+                    <Button
+                      type="button"
+                      className="dash-btn-secondary px-3"
+                      onClick={() => {
+                        const url = statusCardMediaInput.trim();
+                        if (!url) return;
+                        setStatusCardForm((prev) => {
+                          if (prev.mediaUrls.includes(url)) return prev;
+                          const nextMediaUrls = [...prev.mediaUrls, url];
+                          return { ...prev, imageUrl: nextMediaUrls[0] || '', mediaUrls: nextMediaUrls };
+                        });
+                        setStatusCardMediaInput('');
+                      }}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  {statusCardForm.mediaUrls.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {statusCardForm.mediaUrls.map((url, idx) => (
+                        <button
+                          key={`${url}-${idx}`}
+                          type="button"
+                          className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1 text-[10px] text-muted-foreground hover:text-foreground"
+                          onClick={() => {
+                            setStatusCardForm((prev) => {
+                              const nextMediaUrls = prev.mediaUrls.filter((_: string, mediaIdx: number) => mediaIdx !== idx);
+                              return { ...prev, imageUrl: nextMediaUrls[0] || '', mediaUrls: nextMediaUrls };
+                            });
+                          }}
+                          title="Remove media"
+                        >
+                          {isVideoMedia({ url }) ? 'Video' : 'Image'} {idx + 1}
+                          <X className="h-3 w-3" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <input
@@ -2246,17 +2336,18 @@ const CreatorDashboard = () => {
               <div className="border-t border-border/70 pt-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-semibold text-foreground">Media Manager</h3>
-                  <span className="text-xs text-muted-foreground">Upload one image or video per post card</span>
+                  <span className="text-xs text-muted-foreground">Upload one or more images/videos per post card</span>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                   <div className="space-y-3">
                     <div>
-                      <label className="input-label">Upload image/video (max 25MB)</label>
+                      <label className="input-label">Upload image/video (max 25MB each)</label>
                       <Input
                         ref={statusCardUploadInputRef}
                         type="file"
                         accept="image/*,video/*"
-                        onChange={(e) => setStatusCardFile(e.target.files?.[0] || null)}
+                        multiple
+                        onChange={(e) => setStatusCardFiles(Array.from(e.target.files || []))}
                       />
                       <div className="flex flex-wrap items-center gap-2 mt-2">
                         <Button
@@ -2269,8 +2360,8 @@ const CreatorDashboard = () => {
                         <Button
                           type="button"
                           className="dash-btn-secondary text-[11px] h-7 px-3"
-                          onClick={() => setStatusCardFile(null)}
-                          disabled={!statusCardFile}
+                          onClick={() => setStatusCardFiles([])}
+                          disabled={statusCardFiles.length === 0}
                         >
                           Clear selected media
                         </Button>
@@ -2279,7 +2370,7 @@ const CreatorDashboard = () => {
                     <Button
                       type="button"
                       onClick={handleUploadStatusCardImage}
-                      disabled={uploadingStatusCardMedia || !statusCardFile}
+                      disabled={uploadingStatusCardMedia || statusCardFiles.length === 0}
                       className="w-full dash-btn-primary"
                     >
                       {uploadingStatusCardMedia ? 'Uploading...' : 'Upload Media'}
@@ -2288,31 +2379,39 @@ const CreatorDashboard = () => {
 
                   <div className="space-y-3">
                     <div className="text-xs font-medium text-muted-foreground">Preview</div>
-                    {statusCardPreviewUrl ? (
-                      <div className="relative border border-border rounded-md overflow-hidden bg-muted/20">
-                        {statusCardFile?.type?.startsWith('image/') ? (
-                          <img src={statusCardPreviewUrl} alt="" className="h-28 w-full object-cover" />
-                        ) : (
-                          <video src={statusCardPreviewUrl} className="h-28 w-full object-cover" muted controls preload="metadata" />
-                        )}
+                    {statusCardPreviews.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-2">
+                        {statusCardPreviews.slice(0, 4).map((preview, idx) => (
+                          <div key={`${preview.url}-${idx}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20 h-24">
+                            {preview.file.type.startsWith('image/') ? (
+                              <img src={preview.url} alt="" className="h-full w-full object-cover" />
+                            ) : (
+                              <video src={preview.url} className="h-full w-full object-cover" muted controls preload="metadata" />
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ) : statusCardForm.imageUrl ? (
-                      <div className="relative border border-border rounded-md overflow-hidden bg-muted/20">
-                        {isVideoMedia({ url: statusCardForm.imageUrl }) ? (
-                          <video
-                            src={getMediaSrcCandidates(statusCardForm.imageUrl)[0] || statusCardForm.imageUrl}
-                            className="h-28 w-full object-cover"
-                            muted
-                            controls
-                            preload="metadata"
-                          />
-                        ) : (
-                          <img
-                            src={getMediaSrcCandidates(statusCardForm.imageUrl)[0] || statusCardForm.imageUrl}
-                            alt=""
-                            className="h-28 w-full object-cover"
-                          />
-                        )}
+                    ) : statusCardForm.mediaUrls.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-2">
+                        {statusCardForm.mediaUrls.slice(0, 4).map((url, idx) => (
+                          <div key={`${url}-${idx}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20 h-24">
+                            {isVideoMedia({ url }) ? (
+                              <video
+                                src={getMediaSrcCandidates(url)[0] || url}
+                                className="h-full w-full object-cover"
+                                muted
+                                controls
+                                preload="metadata"
+                              />
+                            ) : (
+                              <img
+                                src={getMediaSrcCandidates(url)[0] || url}
+                                alt=""
+                                className="h-full w-full object-cover"
+                              />
+                            )}
+                          </div>
+                        ))}
                       </div>
                     ) : (
                       <div className="border border-dashed border-border rounded-lg p-4 text-xs text-muted-foreground text-center">
