@@ -10,6 +10,7 @@ import { specialSecureIds } from "@/utils/secureIdMapper";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import FanAccountMenu from "@/components/FanAccountMenu";
 import FanAuthModal from "@/components/FanAuthModal";
+import { useSeo } from "@/hooks/use-seo";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -148,11 +149,11 @@ const Collections = () => {
 
   // Pre-fill email from fan registration
   useEffect(() => {
-    const preferredEmail = activeFan?.email || (!isPreviewMode ? localStorage.getItem('fan_email') : '');
+    const preferredEmail = activeFan?.email || '';
     if (preferredEmail && !customerEmail) {
       setCustomerEmail(preferredEmail);
     }
-  }, [activeFan?.email, customerEmail, isPreviewMode]);
+  }, [activeFan?.email, customerEmail]);
 
   const isVideoUrl = (url) => {
     const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
@@ -369,6 +370,20 @@ const Collections = () => {
   );
   const hasMoreImages = revealedCount < allImages.length;
 
+  useSeo(
+    {
+      title: creatorUsername
+        ? `${creatorUsername} Collections | SixSevenCreator`
+        : "Collections | SixSevenCreator",
+      description: creatorUsername
+        ? `Unlock premium collections from ${creatorUsername} on SixSevenCreator.`
+        : "Unlock premium creator collections on SixSevenCreator.",
+      canonicalPath: creatorUsername ? `/collections?creator=${encodeURIComponent(creatorUsername)}` : "/collections",
+      noindex: isPreviewMode
+    },
+    [creatorUsername, isPreviewMode]
+  );
+
   useEffect(() => {
     setLoadedImages(new Set());
     setMeasuredDims({});
@@ -512,10 +527,6 @@ const Collections = () => {
     if (!isValidEmail(sanitizedEmail)) {
       setPaymentError('Please enter a valid email address (e.g., name@example.com)');
       return;
-    }
-
-    if (!activeFan?.email && !isPreviewMode) {
-      localStorage.setItem('fan_email', sanitizedEmail);
     }
 
     setIsCardPaymentLoading(true);

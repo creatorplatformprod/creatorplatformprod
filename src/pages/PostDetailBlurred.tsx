@@ -10,6 +10,7 @@ import { getSecureId } from "@/utils/secureIdMapper";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import FanAccountMenu from "@/components/FanAccountMenu";
 import FanAuthModal from "@/components/FanAuthModal";
+import { useSeo } from "@/hooks/use-seo";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -178,11 +179,11 @@ const PostDetailBlurred = () => {
 
   // Pre-fill email from fan registration
   useEffect(() => {
-    const preferredEmail = activeFan?.email || (!isPreviewMode ? localStorage.getItem('fan_email') : '');
+    const preferredEmail = activeFan?.email || '';
     if (preferredEmail && !customerEmail) {
       setCustomerEmail(preferredEmail);
     }
-  }, [activeFan?.email, customerEmail, isPreviewMode]);
+  }, [activeFan?.email, customerEmail]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -368,6 +369,21 @@ const PostDetailBlurred = () => {
   };
 
   const collection = remoteCollection || localCollection || fallbackMockCollection;
+  useSeo(
+    {
+      title: collection?.title
+        ? `Unlock "${collection.title}" | SixSevenCreator`
+        : "Unlock Content | SixSevenCreator",
+      description: collection?.description
+        ? String(collection.description).slice(0, 160)
+        : "Unlock premium creator content on SixSevenCreator.",
+      noindex: isPreviewMode,
+      canonicalPath: id ? `/post-blurred/${id}` : undefined,
+      image: collection?.images?.[0]?.thumb || collection?.images?.[0]?.full || undefined,
+      type: "article"
+    },
+    [collection?.title, collection?.description, collection?.images, isPreviewMode, id]
+  );
   const visibleCollectionImages = useMemo(() => {
     const images = collection?.images || [];
     return images.slice(0, Math.min(revealedCount, images.length));
@@ -511,10 +527,6 @@ const PostDetailBlurred = () => {
     if (!isValidEmail(sanitizedEmail)) {
       setPaymentError('Please enter a valid email address (e.g., name@example.com)');
       return;
-    }
-
-    if (!activeFan?.email && !isPreviewMode) {
-      localStorage.setItem('fan_email', sanitizedEmail);
     }
 
     setIsCardPaymentLoading(true);
