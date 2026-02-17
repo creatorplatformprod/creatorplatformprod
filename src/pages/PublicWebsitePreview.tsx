@@ -357,16 +357,16 @@ const PublicWebsitePreview = () => {
                 <div className="bg-gradient-to-b from-[#2d2d2d] to-[#1a1a1a] rounded-[20px] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)]">
                   <div className="bg-white rounded-[14px] overflow-hidden border border-black/10">
                     {/* Browser Chrome */}
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-b from-[#3a3a3a] to-[#2e2e2e] border-b border-black/20">
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-b from-[#f8f8f8] to-[#f0f0f0] border-b border-gray-200">
                       <div className="flex items-center gap-1.5">
                         <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
                         <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
                         <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
                       </div>
                       <div className="flex-1 flex justify-center">
-                        <div className="flex items-center gap-2 px-4 py-1 bg-white/10 rounded-md border border-white/10 max-w-sm w-full">
-                          <svg className="w-3 h-3 text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                          <span className="text-[10px] text-white/50 truncate">sixsevencreator.com/{username}</span>
+                        <div className="flex items-center gap-2 px-4 py-1 bg-white rounded-md border border-gray-200 max-w-sm w-full">
+                          <svg className="w-3 h-3 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                          <span className="text-[10px] text-gray-500 truncate">sixsevencreator.com/{username}</span>
                         </div>
                       </div>
                     </div>
