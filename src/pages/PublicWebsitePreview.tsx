@@ -370,7 +370,7 @@ const PublicWebsitePreview = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="relative mx-auto [--viewport-w:1280px] [--viewport-h:820px] [--scale:0.34] sm:[--viewport-w:1366px] sm:[--viewport-h:860px] sm:[--scale:0.38] md:[--viewport-w:1440px] md:[--viewport-h:900px] md:[--scale:0.55] lg:[--scale:0.68] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                    <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.30] sm:[--scale:0.40] md:[--scale:0.55] lg:[--scale:0.68] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                       <iframe
                         title="Desktop preview"
                         src={previewUrl}
@@ -380,25 +380,25 @@ const PublicWebsitePreview = () => {
                   </div>
                 </div>
                 {/* Laptop base */}
-                <div className="mt-4 hidden sm:flex justify-center">
+                <div className="mt-4 flex justify-center">
                   <div className="w-[88%] h-[18px] bg-gradient-to-b from-[#1b2331] to-[#0f131b] rounded-[999px] shadow-[0_16px_40px_rgba(2,6,23,0.5)]" />
                 </div>
-                <div className="mt-1 hidden sm:flex justify-center">
+                <div className="mt-1 flex justify-center">
                   <div className="w-[72%] h-[10px] bg-gradient-to-b from-[#2f3746] to-[#171c27] rounded-[999px] [transform:perspective(1200px)_rotateX(10deg)] shadow-[0_10px_24px_rgba(2,6,23,0.45)]" />
                 </div>
                 {/* Ambient glow */}
-                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-16 bg-indigo-500/[0.06] rounded-full blur-2xl pointer-events-none hidden sm:block" />
+                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-16 bg-indigo-500/[0.06] rounded-full blur-2xl pointer-events-none" />
               </div>
             </div>
           )}
 
           {/* Mobile Frame */}
           {activeDevice === 'mobile' && (
-            <div className="relative bg-[#0b0f16] rounded-[40px] p-3 shadow-[0_30px_80px_rgba(2,6,23,0.6)] border border-white/10 w-[300px] sm:w-[350px] md:w-[380px]">
-              <div className="bg-black rounded-[32px] overflow-hidden border border-white/5 relative">
+            <div className="relative bg-[#0b0f16] rounded-[44px] p-5 shadow-[0_30px_80px_rgba(2,6,23,0.6)] border border-white/10 w-[300px] sm:w-[350px] md:w-[380px]">
+              <div className="bg-black rounded-[36px] overflow-hidden border border-white/5 relative">
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-[#0f1219] rounded-full border border-white/5 z-10" />
-                <div className="relative mx-auto w-[272px] h-[589px] sm:w-[322px] sm:h-[698px] md:w-[352px] md:h-[763px]">
+                <div className="relative mx-auto w-[258px] h-[559px] sm:w-[310px] sm:h-[671px] md:w-[344px] md:h-[744px]">
                   <iframe
                     title="Mobile preview"
                     src={previewUrl}
@@ -407,6 +407,10 @@ const PublicWebsitePreview = () => {
                     style={{ touchAction: 'pan-y' }}
                   />
                 </div>
+              </div>
+              {/* Home bar */}
+              <div className="mt-3 flex justify-center">
+                <div className="w-24 h-1.5 bg-white/20 rounded-full" />
               </div>
               {/* Ambient glow */}
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-2/3 h-14 bg-violet-500/[0.08] rounded-full blur-2xl pointer-events-none" />
