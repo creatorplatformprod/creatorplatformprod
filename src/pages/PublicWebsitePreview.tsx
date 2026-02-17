@@ -398,13 +398,11 @@ const PublicWebsitePreview = () => {
               <div className="bg-black rounded-[36px] overflow-hidden border border-white/5 relative">
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-[#0f1219] rounded-full border border-white/5 z-10" />
-                <div className="relative mx-auto w-[258px] h-[559px] sm:w-[310px] sm:h-[671px] md:w-[344px] md:h-[744px]">
+                <div className="relative mx-auto [--viewport-w:430px] [--viewport-h:932px] [--scale:0.60] sm:[--scale:0.72] md:[--scale:0.80] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                   <iframe
                     title="Mobile preview"
                     src={previewUrl}
-                    className="absolute inset-0 w-full h-full"
-                    scrolling="yes"
-                    style={{ touchAction: 'pan-y' }}
+                    className="absolute inset-0 origin-top-left [transform:scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
                   />
                 </div>
               </div>
