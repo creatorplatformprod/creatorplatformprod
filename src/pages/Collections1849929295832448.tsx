@@ -8,7 +8,6 @@ import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { isCollectionsSecureId } from "@/utils/secureIdMapper";
 import { api } from "@/lib/api";
-import { useSeo } from "@/hooks/use-seo";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -307,16 +306,6 @@ const Collections1849929295832448 = () => {
     });
     return items;
   }, [remoteCollections, localMockCollections]);
-
-  useSeo(
-    {
-      title: "Exclusive Collections | SixSevenCreator",
-      description: "Browse exclusive creator collection content on SixSevenCreator.",
-      canonicalPath: secureId ? `/collections/${secureId}` : "/collections",
-      noindex: isPreviewMode
-    },
-    [secureId, isPreviewMode]
-  );
 
   function getRandomDimensions(index) {
     const ratios = [

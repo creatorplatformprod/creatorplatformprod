@@ -9,7 +9,6 @@ import { getCollectionId, isValidSecureId } from "@/utils/secureIdMapper";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
-import { useSeo } from "@/hooks/use-seo";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -284,22 +283,6 @@ const PostDetail = () => {
 
   const localCollection = getCollectionFromSecureId();
   const collection = remoteCollection || localCollection;
-
-  useSeo(
-    {
-      title: collection?.title
-        ? `${collection.title} | SixSevenCreator`
-        : "Collection | SixSevenCreator",
-      description: collection?.description
-        ? String(collection.description).slice(0, 160)
-        : "Premium creator collection on SixSevenCreator.",
-      noindex: isPreviewMode,
-      canonicalPath: secureId ? `/post/${secureId}` : undefined,
-      image: collection?.images?.[0]?.thumb || collection?.images?.[0]?.full || undefined,
-      type: "article"
-    },
-    [collection?.title, collection?.description, collection?.images, isPreviewMode, secureId]
-  );
 
   const getProfileFallbackUrl = () => {
     if (!creatorParam) return '/';
