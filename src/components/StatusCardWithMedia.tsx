@@ -270,8 +270,8 @@ const StatusCardWithMedia = ({
                         onError={handleMediaItemLoad}
                       />
                       {item.type === 'video' && (
-                        <div className="absolute inset-0 bg-black/25 flex items-center justify-center pointer-events-none">
-                          <Play className="w-7 h-7 text-white/90" />
+                        <div className="absolute inset-0 bg-black/15 flex items-center justify-center pointer-events-none">
+                          <Play className="w-7 h-7 text-gray-800" />
                         </div>
                       )}
                     </div>
@@ -311,9 +311,9 @@ const StatusCardWithMedia = ({
                       onLoad={() => setIsMediaLoaded(true)}
                       onError={() => setIsMediaLoaded(true)}
                     />
-                    <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center group-hover:bg-opacity-20 transition-all duration-300">
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-opacity-10 transition-all duration-300">
                       <div className="bg-white/90 rounded-full p-4 group-hover:bg-white group-hover:scale-110 transition-all duration-300">
-                        <Play className="w-8 h-8 text-black/80 ml-1" />
+                        <Play className="w-8 h-8 text-gray-700 ml-1" />
                       </div>
                     </div>
                   </div>

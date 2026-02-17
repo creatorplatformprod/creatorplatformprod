@@ -255,18 +255,18 @@ const PostCard = ({ collection }: PostCardProps) => {
           )}
         </div>
 
-        <div className="absolute inset-0 bg-black bg-opacity-10 backdrop-blur-[6px] group-hover:bg-opacity-5 group-hover:backdrop-blur-[4px] transition-all duration-300 z-[5]"></div>
+        <div className="absolute inset-0 bg-black/5 backdrop-blur-[6px] group-hover:bg-opacity-3 group-hover:backdrop-blur-[4px] transition-all duration-300 z-[5]"></div>
 
         {/* Center unlock button */}
         <div className="absolute inset-0 flex items-center justify-center z-[6]">
           {!cardRevealReady ? (
             <div
-              className="skeleton-shimmer h-10 w-[132px] rounded-full border border-white/20 bg-white/10"
+              className="skeleton-shimmer h-10 w-[132px] rounded-full border border-gray-200 bg-gray-100"
               aria-hidden="true"
             />
           ) : (
             <Button
-              className="relative overflow-hidden bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm px-6 py-2 rounded-full font-medium"
+              className="relative overflow-hidden bg-gray-200 hover:bg-gray-300 text-gray-900 border border-gray-300 backdrop-blur-sm px-6 py-2 rounded-full font-medium"
               onClick={(e) => {
                 e.stopPropagation();
                 navigate(getBlurredTarget());

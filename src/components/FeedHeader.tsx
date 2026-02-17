@@ -87,8 +87,8 @@ const FeedHeader = ({
               isDesktop ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
             }`}
           >
-            <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-            <div className="hidden sm:block w-px h-5 bg-white/[0.10]" />
+            <div className="brand-wordmark"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
+            <div className="hidden sm:block w-px h-5 bg-gray-200" />
             <span className="hidden sm:block text-sm font-medium text-foreground/80 tracking-tight">{title}</span>
           </div>
 

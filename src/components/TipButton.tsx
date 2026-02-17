@@ -128,7 +128,7 @@ const TipButton = ({ onTipClick }: TipButtonProps) => {
               to { opacity: 1; transform: translateY(0); }
             }
           `}</style>
-          <div className="bg-background border border-border rounded-xl p-4 w-[300px] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_24px_-4px_rgba(0,0,0,0.4)]">
+          <div className="bg-background border border-border rounded-xl p-4 w-[300px] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.15)]">
             {/* Close Button */}
             <button
               onClick={() => setShowTipModal(false)}

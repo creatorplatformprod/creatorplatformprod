@@ -117,20 +117,20 @@ const FanAccount = () => {
             value={profile.displayName}
             onChange={(e) => setProfile((prev) => ({ ...prev, displayName: e.target.value }))}
             placeholder="Display name"
-            className="w-full rounded-lg border border-white/[0.1] bg-white/[0.03] px-3 py-2 text-sm text-foreground"
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-foreground"
           />
           <input
             value={profile.avatar}
             onChange={(e) => setProfile((prev) => ({ ...prev, avatar: e.target.value }))}
             placeholder="Profile image URL"
-            className="w-full rounded-lg border border-white/[0.1] bg-white/[0.03] px-3 py-2 text-sm text-foreground"
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-foreground"
           />
           <textarea
             value={profile.bio}
             onChange={(e) => setProfile((prev) => ({ ...prev, bio: e.target.value }))}
             placeholder="Bio"
             rows={3}
-            className="w-full rounded-lg border border-white/[0.1] bg-white/[0.03] px-3 py-2 text-sm text-foreground"
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-foreground"
           />
           <button
             onClick={saveProfile}
@@ -154,19 +154,19 @@ const FanAccount = () => {
                 value={passwordData.currentPassword}
                 onChange={(e) => setPasswordData((prev) => ({ ...prev, currentPassword: e.target.value }))}
                 placeholder="Current password"
-                className="w-full rounded-lg border border-white/[0.1] bg-white/[0.03] px-3 py-2 text-sm text-foreground"
+                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-foreground"
               />
               <input
                 type="password"
                 value={passwordData.newPassword}
                 onChange={(e) => setPasswordData((prev) => ({ ...prev, newPassword: e.target.value }))}
                 placeholder="New password"
-                className="w-full rounded-lg border border-white/[0.1] bg-white/[0.03] px-3 py-2 text-sm text-foreground"
+                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-foreground"
               />
               <button
                 onClick={savePassword}
                 disabled={passwordSaving}
-                className="rounded-lg border border-white/[0.1] px-4 py-2 text-sm font-semibold text-foreground disabled:opacity-60"
+                className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-foreground disabled:opacity-60"
               >
                 {passwordSaving ? "Updating..." : "Change Password"}
               </button>
@@ -189,7 +189,7 @@ const FanAccount = () => {
                 <a
                   key={`${item.accessToken}-${index}`}
                   href={item.url}
-                  className="block rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2 hover:bg-white/[0.05]"
+                  className="block rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 hover:bg-gray-100"
                 >
                   <p className="text-sm font-medium text-foreground">{item.title}</p>
                   <p className="text-xs text-muted-foreground">{item.creatorUsername || "creator"}</p>

@@ -266,7 +266,7 @@ const CheckoutPage = () => {
         </div>
       ),
       mastercard: (
-        <div className="w-8 h-5 bg-white/10 border border-white/20 rounded flex items-center justify-center">
+        <div className="w-8 h-5 bg-gray-100 border border-gray-200 rounded flex items-center justify-center">
           <svg className="w-7 h-7" viewBox="0 0 48 48" fill="none">
             <circle cx="15" cy="24" r="12" fill="#EB001B"/>
             <circle cx="33" cy="24" r="12" fill="#FF5F00"/>
@@ -280,8 +280,8 @@ const CheckoutPage = () => {
         </div>
       ),
       bank: (
-        <div className="w-5 h-5 bg-white/10 border border-white/20 rounded flex items-center justify-center">
-          <svg className="w-3 h-3 text-white/70" fill="currentColor" viewBox="0 0 24 24">
+        <div className="w-5 h-5 bg-gray-100 border border-gray-200 rounded flex items-center justify-center">
+          <svg className="w-3 h-3 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 18c-3.86-1.03-7-5.23-7-9V8.3l7-3.89 7 3.89V11c0 3.77-3.14 7.97-7 9z"/>
           </svg>
         </div>
@@ -294,8 +294,8 @@ const CheckoutPage = () => {
         </div>
       ),
       googlepay: (
-        <div className="w-8 h-5 bg-white/10 border border-white/20 rounded flex items-center justify-center">
-          <span className="text-[8px] font-bold text-white/70">GPay</span>
+        <div className="w-8 h-5 bg-gray-100 border border-gray-200 rounded flex items-center justify-center">
+          <span className="text-[8px] font-bold text-gray-600">GPay</span>
         </div>
       ),
       robinhood: (
@@ -551,7 +551,7 @@ const CheckoutPage = () => {
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm">Back</span>
           </button>
-          <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+          <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
         </div>
       </header>
 
@@ -575,9 +575,9 @@ const CheckoutPage = () => {
 
               <div className={`space-y-5 ${showOrderDetails ? 'block' : 'hidden lg:block'}`}>
                 {/* Product Card */}
-                <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500/20 via-violet-500/15 to-cyan-500/20 border border-white/[0.06] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-white/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M3 9h18M9 21V9" /></svg>
+                <div className="flex items-start gap-4 p-4 rounded-2xl bg-gray-50 border border-gray-200">
+                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500/20 via-violet-500/15 to-purple-500/20 border border-gray-200 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M3 9h18M9 21V9" /></svg>
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="font-semibold text-foreground text-sm truncate">{checkoutData.collectionTitle}</h3>
@@ -598,7 +598,7 @@ const CheckoutPage = () => {
                     <span className="text-muted-foreground">Delivery</span>
                     <span className="text-emerald-400">Free</span>
                   </div>
-                  <div className="h-px bg-white/[0.06] my-1" />
+                  <div className="h-px bg-gray-200 my-1" />
                   <div className="flex justify-between items-baseline">
                     <span className="text-foreground font-medium">Total</span>
                     <span className="text-2xl font-bold text-foreground tracking-tight">${checkoutData.amount}</span>
@@ -651,7 +651,7 @@ const CheckoutPage = () => {
                       Email Address *
                     </label>
                     {activeFanEmail ? (
-                      <div className="w-full rounded-xl border border-white/[0.1] bg-white/[0.03] px-4 py-3">
+                      <div className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
                         <p className="text-sm text-foreground font-medium">{activeFanEmail}</p>
                       </div>
                     ) : (

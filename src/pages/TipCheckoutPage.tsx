@@ -180,7 +180,7 @@ const TipCheckoutPage = () => {
         </div>
       ),
       mastercard: (
-        <div className="w-8 h-5 bg-white/10 border border-white/20 rounded flex items-center justify-center">
+        <div className="w-8 h-5 bg-gray-100 border border-gray-200 rounded flex items-center justify-center">
           <svg className="w-7 h-7" viewBox="0 0 48 48" fill="none">
             <circle cx="15" cy="24" r="12" fill="#EB001B"/>
             <circle cx="33" cy="24" r="12" fill="#F79E1B"/>
@@ -201,8 +201,8 @@ const TipCheckoutPage = () => {
         </div>
       ),
       googlepay: (
-        <div className="w-8 h-5 bg-white/10 border border-white/20 rounded flex items-center justify-center">
-          <span className="text-[8px] font-bold text-white/70">GPay</span>
+        <div className="w-8 h-5 bg-gray-100 border border-gray-200 rounded flex items-center justify-center">
+          <span className="text-[8px] font-bold text-gray-600">GPay</span>
         </div>
       ),
       robinhood: (
@@ -402,14 +402,14 @@ const TipCheckoutPage = () => {
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm">Back</span>
           </button>
-          <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+          <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-3 sm:px-4 py-8 sm:py-12">
         <div className="card-elevated rounded-2xl p-5 sm:p-7">
           {/* Centered Tip Amount -- Hero */}
-          <div className="text-center mb-6 pb-6 border-b border-white/[0.06]">
+          <div className="text-center mb-6 pb-6 border-b border-gray-200">
             <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ background: `${ROSE_COLOR}12` }}>
               <Gift className="w-5 h-5" style={{ color: ROSE_COLOR }} />
             </div>

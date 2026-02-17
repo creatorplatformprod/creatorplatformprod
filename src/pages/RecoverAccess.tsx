@@ -85,12 +85,12 @@ const RecoverAccess = () => {
 
           {error && (
             <div className="alert-error">
-              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+              <p className="text-sm text-red-600">{error}</p>
             </div>
           )}
           {success && (
             <div className="alert-success">
-              <p className="text-sm text-green-600 dark:text-green-400">{success}</p>
+              <p className="text-sm text-green-600">{success}</p>
             </div>
           )}
 

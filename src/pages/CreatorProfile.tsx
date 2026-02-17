@@ -713,10 +713,10 @@ const CreatorProfile = () => {
               className="absolute inset-0 w-full h-full object-cover"
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-cyan-600/15" />
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-purple-600/15" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-cyan-600/15" />
-          <div className="absolute inset-0" style={{ backgroundColor: `rgba(2, 6, 23, ${coverOverlay})` }} />
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-purple-600/15" />
+          <div className="absolute inset-0" style={{ backgroundColor: `rgba(0, 0, 0, ${coverOverlay * 0.3})` }} />
           <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
           {/* Subtle pattern overlay */}
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
@@ -754,7 +754,7 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto md:mr-8 lg:mr-10 self-center md:self-center text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent hover:from-indigo-300 hover:to-cyan-300 transition-all"
+                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto md:mr-8 lg:mr-10 self-center md:self-center text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent hover:from-indigo-300 hover:to-purple-300 transition-all"
               >
                 <span
                   className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"
@@ -766,15 +766,15 @@ const CreatorProfile = () => {
           </div>
 
           {/* Content Filter Tabs - Integrated into hero */}
-          <div className={`template-filter-shell template-filter-container mt-4 mx-auto sm:mx-0 flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] w-fit`}>
+          <div className={`template-filter-shell template-filter-container mt-4 mx-auto sm:mx-0 flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
             {(['all', 'collections', 'posts'] as const).map(filter => (
               <button
                 key={filter}
                 onClick={() => setFeedFilter(filter)}
                 className={`template-filter-tab px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
                   feedFilter === filter
-                    ? 'template-filter-tab-active bg-white/[0.10] text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
+                    ? 'template-filter-tab-active bg-gray-100 text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-gray-100'
                 }`}
               >
                 {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
@@ -799,7 +799,7 @@ const CreatorProfile = () => {
               <span className="text-xs font-medium text-foreground/80 uppercase tracking-wider">Collections</span>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="flex items-center justify-center w-7 h-7 rounded-full bg-white/[0.05] hover:bg-white/[0.10] transition-colors cursor-pointer"
+                className="flex items-center justify-center w-7 h-7 rounded-full bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5 text-muted-foreground" />
               </button>
@@ -861,11 +861,11 @@ const CreatorProfile = () => {
             {/* Quick Stats */}
             <div className="px-3 py-3 sidebar-stats">
               <div className="grid grid-cols-2 gap-2">
-                <div className="text-center py-2 rounded-lg bg-white/[0.02]">
+                <div className="text-center py-2 rounded-lg bg-gray-50">
                   <div className="text-base font-bold text-foreground">{allCollections.length}</div>
                   <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Collections</div>
                 </div>
-                <div className="text-center py-2 rounded-lg bg-white/[0.02]">
+                <div className="text-center py-2 rounded-lg bg-gray-50">
                   <div className="text-base font-bold text-foreground">{formattedStatusData.length}</div>
                   <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Posts</div>
                 </div>
@@ -1058,9 +1058,9 @@ const CreatorProfile = () => {
               )}
             </div>
 
-            <footer className="mt-12 border-t border-white/[0.06] pt-6 pb-4">
+            <footer className="mt-12 border-t border-gray-200 pt-6 pb-4">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+                <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
                 <p className="text-xs text-muted-foreground">
                   &copy; {new Date().getFullYear()} {creatorData.displayName || creatorData.username}. All rights reserved.
                 </p>

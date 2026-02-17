@@ -629,7 +629,7 @@ const Index = () => {
           <div className="profile-hero relative">
             {/* Cover Photo Area */}
             <div className="relative h-36 sm:h-44 lg:h-52 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-cyan-600/15" />
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-purple-600/15" />
               <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
               <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
             </div>
@@ -659,7 +659,7 @@ const Index = () => {
                 </div>
                 <button
                   onClick={() => window.location.href = '/collections'}
-                  className="hidden sm:flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 transition-all shadow-lg shadow-indigo-500/20"
+                  className="hidden sm:flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 transition-all shadow-lg shadow-indigo-500/20"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
@@ -670,15 +670,15 @@ const Index = () => {
               </div>
 
               {/* Content Filter Tabs - Integrated into hero */}
-              <div className="mt-4 flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06] w-fit">
+              <div className="mt-4 flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit">
                 {(['all', 'collections', 'posts'] as const).map(filter => (
                   <button
                     key={filter}
                     onClick={() => setFeedFilter(filter)}
                     className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
                       feedFilter === filter
-                        ? 'bg-white/[0.10] text-foreground shadow-sm'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
+                        ? 'bg-gray-100 text-foreground shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-gray-100'
                     }`}
                   >
                     {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
@@ -700,7 +700,7 @@ const Index = () => {
                   <span className="text-xs font-medium text-foreground/80 uppercase tracking-wider">Collections</span>
                   <button
                     onClick={() => setSidebarOpen(false)}
-                    className="flex items-center justify-center w-7 h-7 rounded-full bg-white/[0.05] hover:bg-white/[0.10] transition-colors cursor-pointer"
+                    className="flex items-center justify-center w-7 h-7 rounded-full bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
                   >
                     <ChevronLeft className="w-3.5 h-3.5 text-muted-foreground" />
                   </button>
@@ -744,11 +744,11 @@ const Index = () => {
 
                 <div className="px-3 py-3 sidebar-stats">
                   <div className="grid grid-cols-2 gap-2">
-                    <div className="text-center py-2 rounded-lg bg-white/[0.02]">
+                    <div className="text-center py-2 rounded-lg bg-gray-50">
                       <div className="text-base font-bold text-foreground">{allCollections.length}</div>
                       <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Collections</div>
                     </div>
-                    <div className="text-center py-2 rounded-lg bg-white/[0.02]">
+                    <div className="text-center py-2 rounded-lg bg-gray-50">
                       <div className="text-base font-bold text-foreground">450+</div>
                       <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Photos</div>
                     </div>
@@ -862,9 +862,9 @@ const Index = () => {
                   )}
                 </div>
 
-                <footer className="mt-8 sm:mt-12 border-t border-white/[0.06] pt-6 pb-4">
+                <footer className="mt-8 sm:mt-12 border-t border-gray-200 pt-6 pb-4">
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+                    <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
                     <p className="text-xs text-muted-foreground">
                       &copy; {new Date().getFullYear()} SixSeven Creator. All rights reserved.
                     </p>

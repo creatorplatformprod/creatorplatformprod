@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -1513,8 +1513,8 @@ const CreatorDashboard = () => {
             <div className="flex items-center justify-between h-14">
               {/* Left - Brand */}
               <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-                <div className="hidden sm:block w-px h-6 bg-white/[0.10]" />
+                <div className="brand-wordmark"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
+                <div className="hidden sm:block w-px h-6 bg-gray-200" />
                 <span className="hidden sm:inline text-sm font-semibold text-foreground tracking-tight">Dashboard</span>
               </div>
               
@@ -1547,15 +1547,15 @@ const CreatorDashboard = () => {
 
         <div className="flex min-h-[calc(100vh-52px)]">
         {/* â”€â”€ Left Sidebar Nav â”€â”€ */}
-        <aside className="creator-sidebar hidden lg:flex flex-col w-[220px] flex-shrink-0 border-r border-white/[0.06] bg-[rgba(8,11,20,0.4)]">
+        <aside className="creator-sidebar hidden lg:flex flex-col w-[220px] flex-shrink-0 border-r border-gray-200 bg-white">
           {/* Creator avatar + name */}
-          <div className="px-4 pt-5 pb-4 border-b border-white/[0.06]">
+          <div className="px-4 pt-5 pb-4 border-b border-gray-200">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-full overflow-hidden bg-secondary border border-border flex-shrink-0">
                 {profileData.avatar ? (
                   <img src={profileData.avatar} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs font-bold text-foreground bg-gradient-to-br from-indigo-500 to-cyan-500">
+                  <div className="w-full h-full flex items-center justify-center text-xs font-bold text-foreground bg-gradient-to-br from-indigo-500 to-purple-500">
                     {(profileData.displayName || user?.username || '?')[0]?.toUpperCase()}
                   </div>
                 )}
@@ -1593,13 +1593,13 @@ const CreatorDashboard = () => {
           </nav>
 
           {/* Sidebar stats */}
-          <div className="px-3 py-3 border-t border-white/[0.06]">
+          <div className="px-3 py-3 border-t border-gray-200">
             <div className="grid grid-cols-2 gap-2">
-              <div className="text-center py-2 rounded-lg bg-white/[0.02]">
+              <div className="text-center py-2 rounded-lg bg-gray-50">
                 <div className="text-sm font-bold text-foreground">{collections.length}</div>
                 <div className="text-[9px] text-muted-foreground uppercase tracking-wider">Collections</div>
               </div>
-              <div className="text-center py-2 rounded-lg bg-white/[0.02]">
+              <div className="text-center py-2 rounded-lg bg-gray-50">
                 <div className="text-sm font-bold text-foreground">{statusCards.length}</div>
                 <div className="text-[9px] text-muted-foreground uppercase tracking-wider">Posts</div>
               </div>
@@ -1610,7 +1610,7 @@ const CreatorDashboard = () => {
         {/* â”€â”€ Main Content Area â”€â”€ */}
         <div className="creator-main flex-1 min-w-0">
           {/* Mobile tab bar (horizontal, shown only on < lg) */}
-          <div className="creator-mobile-tabs lg:hidden sticky top-[52px] z-40 bg-[rgba(8,11,20,0.92)] backdrop-blur-xl border-b border-white/[0.06]">
+          <div className="creator-mobile-tabs lg:hidden sticky top-[52px] z-40 bg-white backdrop-blur-xl border-b border-gray-200">
             <div className="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {[
                 { key: 'overview' as const, icon: Home, label: 'Overview' },
@@ -1641,12 +1641,12 @@ const CreatorDashboard = () => {
         {/* Messages */}
         {infoMessage && (
           <div className="mb-4 alert-info">
-            <p className="text-sm text-blue-600 dark:text-blue-400">{infoMessage}</p>
+            <p className="text-sm text-blue-600">{infoMessage}</p>
           </div>
         )}
         {success && (
           <div className="mb-4 alert-success">
-            <p className="text-sm text-green-600 dark:text-green-400">{success}</p>
+            <p className="text-sm text-green-600">{success}</p>
           </div>
         )}
         {error && (
@@ -1713,8 +1713,8 @@ const CreatorDashboard = () => {
                 </div>
                 <div className="card-elevated p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-7 h-7 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                      <TrendingUp className="w-3.5 h-3.5 text-cyan-400" />
+                    <div className="w-7 h-7 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                      <TrendingUp className="w-3.5 h-3.5 text-violet-400" />
                     </div>
                   </div>
                   <p className="text-xl font-bold text-foreground">{analyticsTotals.orders}</p>
@@ -1734,14 +1734,14 @@ const CreatorDashboard = () => {
               <div className="h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={analyticsSeries}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.04)" />
                     <XAxis dataKey="label" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} axisLine={false} tickLine={false} width={50} />
                     <Tooltip
-                      contentStyle={{ background: 'rgba(12,17,25,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', fontSize: '12px' }}
-                      labelStyle={{ color: 'white', marginBottom: '4px' }}
+                      contentStyle={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', fontSize: '12px' }}
+                      labelStyle={{ color: '#1f2937', marginBottom: '4px' }}
                     />
-                    <Line type="monotone" dataKey="revenue" stroke="#0ea5e9" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={2} dot={false} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -1755,7 +1755,7 @@ const CreatorDashboard = () => {
                 <div className="space-y-2">
                   <button
                     onClick={() => requestTabChange('collections')}
-                    className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
+                    className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all group cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center">
@@ -1770,7 +1770,7 @@ const CreatorDashboard = () => {
                   </button>
                   <button
                     onClick={() => requestTabChange('status-cards')}
-                    className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
+                    className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all group cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center">
@@ -1785,11 +1785,11 @@ const CreatorDashboard = () => {
                   </button>
                   <button
                     onClick={handlePreviewPublic}
-                    className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all group cursor-pointer"
+                    className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all group cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center">
-                        <Eye className="w-4 h-4 text-cyan-400" />
+                      <div className="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center">
+                        <Eye className="w-4 h-4 text-violet-400" />
                       </div>
                       <div className="text-left">
                         <p className="text-xs font-semibold text-foreground">Preview Public Site</p>
@@ -1814,7 +1814,7 @@ const CreatorDashboard = () => {
                 </div>
                 {salesList.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <div className="w-10 h-10 rounded-full bg-white/[0.04] flex items-center justify-center mb-3">
+                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center mb-3">
                       <Clock className="w-4 h-4 text-muted-foreground" />
                     </div>
                     <p className="text-xs text-muted-foreground">No sales yet</p>
@@ -1823,9 +1823,9 @@ const CreatorDashboard = () => {
                 ) : (
                   <div className="space-y-2">
                     {salesList.slice(0, 5).map((sale: any, i: number) => (
-                      <div key={i} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
+                      <div key={i} className="flex items-center justify-between py-2 border-b border-gray-200 last:border-0">
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
+                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
                             {(sale.buyerEmail || sale.buyer || '?')[0]?.toUpperCase()}
                           </div>
                           <div className="min-w-0">
@@ -1858,11 +1858,11 @@ const CreatorDashboard = () => {
                     className={`checklist-btn flex items-center gap-3 px-3 py-3 rounded-xl border transition-all cursor-pointer ${
                       step.done
                         ? 'bg-emerald-500/[0.06] border-emerald-500/20'
-                        : 'bg-white/[0.02] border-white/[0.06] hover:border-white/[0.12]'
+                        : 'bg-gray-50 border-gray-200 hover:border-gray-300'
                     }`}
                   >
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      step.done ? 'bg-emerald-500/20' : 'bg-white/[0.06]'
+                      step.done ? 'bg-emerald-500/20' : 'bg-gray-100'
                     }`}>
                       {step.done ? (
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
@@ -1933,7 +1933,7 @@ const CreatorDashboard = () => {
                   {profileData.coverImage ? (
                     <img src={profileData.coverImage} alt="Cover" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-violet-500/10 to-cyan-500/20" />
+                    <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-violet-500/10 to-purple-500/20" />
                   )}
                 </div>
                 <p className="text-[11px] text-muted-foreground mb-3">
@@ -2810,11 +2810,11 @@ const CreatorDashboard = () => {
                             );
                           })}
                       </div>
-                      <div className="absolute inset-0 bg-black/15 backdrop-blur-[6px]" />
+                      <div className="absolute inset-0 bg-black/10 backdrop-blur-[6px]" />
                       <div className="absolute inset-0 flex items-center justify-center">
                         <button
                           type="button"
-                          className="relative overflow-hidden bg-white/20 text-white border border-white/30 backdrop-blur-sm px-5 py-1.5 rounded-full text-xs font-medium pointer-events-none"
+                          className="relative overflow-hidden bg-white/20 text-white border border-gray-300 backdrop-blur-sm px-5 py-1.5 rounded-full text-xs font-medium pointer-events-none"
                         >
                           <span
                             className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"
@@ -2935,7 +2935,7 @@ const CreatorDashboard = () => {
                             <button
                               type="button"
                               onClick={() => handleRemoveSelectedFile(index)}
-                              className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                              className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/60"
                               aria-label={`Remove ${preview.file.name}`}
                             >
                               <X className="h-3 w-3" />
@@ -2978,7 +2978,7 @@ const CreatorDashboard = () => {
                                     <button
                                       type="button"
                                       onClick={() => handleMoveExistingMedia(index, 'up')}
-                                      className="flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 disabled:opacity-40"
+                                      className="flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/60 disabled:opacity-40"
                                       disabled={index === 0}
                                       aria-label="Move media up"
                                     >
@@ -2987,7 +2987,7 @@ const CreatorDashboard = () => {
                                     <button
                                       type="button"
                                       onClick={() => handleMoveExistingMedia(index, 'down')}
-                                      className="flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 disabled:opacity-40"
+                                      className="flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/60 disabled:opacity-40"
                                       disabled={index === selectedCollection.media.length - 1}
                                       aria-label="Move media down"
                                     >
@@ -2997,7 +2997,7 @@ const CreatorDashboard = () => {
                                   <button
                                     type="button"
                                     onClick={() => handleRemoveExistingMedia(index)}
-                                    className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                                    className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/60"
                                     aria-label="Remove existing content"
                                   >
                                     <X className="h-3 w-3" />
@@ -3115,7 +3115,7 @@ const CreatorDashboard = () => {
             {analyticsTotals.orders === 0 && analyticsSeries.length === 0 && (
               <div className="card-elevated p-8">
                 <div className="flex flex-col items-center justify-center text-center py-8 px-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/15 to-teal-500/15 border border-white/[0.06] flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/15 to-teal-500/15 border border-gray-200 flex items-center justify-center mb-4">
                     <svg className="w-5 h-5 text-emerald-400/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
                   </div>
                   <p className="text-sm font-medium text-foreground mb-1">No analytics yet</p>

@@ -56,8 +56,8 @@ const Pricing = () => {
             Back
           </button>
           <div className="flex items-center gap-3">
-            <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
-            <div className="w-px h-5 bg-white/[0.10]" />
+            <div className="brand-wordmark"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
+            <div className="w-px h-5 bg-gray-200" />
             <span className="text-xs font-medium text-muted-foreground">Pricing</span>
           </div>
         </div>
@@ -115,7 +115,7 @@ const Pricing = () => {
           {/* Pro Card */}
           <div className="card-elevated p-6 relative ring-2 ring-primary/20 flex flex-col" style={{ boxShadow: '0 8px 40px -8px rgba(14,165,233,0.12)' }}>
             <div className="absolute -top-3 left-4">
-              <span className="inline-flex items-center gap-1 text-white text-xs font-medium px-3 py-1 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 shadow-sm">
+              <span className="inline-flex items-center gap-1 text-white text-xs font-medium px-3 py-1 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 shadow-sm">
                 <Sparkles className="w-3 h-3" />
                 Recommended
               </span>
@@ -136,7 +136,7 @@ const Pricing = () => {
 
             <Button 
               onClick={handleCheckoutPro}
-              className="w-full mb-6 h-11 rounded-xl font-semibold shadow-sm bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white border-0"
+              className="w-full mb-6 h-11 rounded-xl font-semibold shadow-sm bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white border-0"
             >
               Get Pro
             </Button>

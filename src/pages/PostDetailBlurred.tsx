@@ -599,8 +599,8 @@ const PostDetailBlurred = () => {
       </div>
 
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[60] flex flex-col items-center">
-        <span className="text-xs text-white font-medium drop-shadow-lg">Scroll down to preview</span>
-        <span className="text-lg text-white mt-1 animate-bounce drop-shadow-lg" style={{ animationDuration: '2s' }}>↓</span>
+        <span className="text-xs text-gray-900 font-medium drop-shadow-lg">Scroll down to preview</span>
+        <span className="text-lg text-gray-900 mt-1 animate-bounce drop-shadow-lg" style={{ animationDuration: '2s' }}>↓</span>
       </div>
 
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 relative">
@@ -701,8 +701,8 @@ const PostDetailBlurred = () => {
           <footer className="post-card rounded-xl p-5 sm:p-6 mt-6 sm:mt-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="md:col-span-2">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="brand-wordmark text-lg"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="brand-wordmark text-lg"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
                   <div>
                     <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                       {collection.user.name}
@@ -777,8 +777,8 @@ const PostDetailBlurred = () => {
               </h2>
 
               <div className="flex items-center justify-center gap-1.5 mb-3 sm:mb-4">
-                <Users className="w-3 h-3 text-white/50" />
-                <span className="text-[11px] text-white/50">Join 1,000+ fans who unlocked this content</span>
+                <Users className="w-3 h-3 text-gray-500" />
+                <span className="text-[11px] text-gray-500">Join 1,000+ fans who unlocked this content</span>
               </div>
               
               {paymentError && (
@@ -789,7 +789,7 @@ const PostDetailBlurred = () => {
               
               <div className="mb-3 sm:mb-4">
                 {activeFan?.email ? (
-                  <div className="w-full rounded-xl border border-white/[0.1] bg-white/[0.04] px-3 sm:px-4 py-2.5 text-left">
+                  <div className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 sm:px-4 py-2.5 text-left">
                     <p className="text-[11px] text-muted-foreground">Paying as</p>
                     <p className="text-xs sm:text-sm font-medium text-foreground">{activeFan.email}</p>
                   </div>
@@ -808,7 +808,7 @@ const PostDetailBlurred = () => {
                         handleCardPaymentClick();
                       }
                     }}
-                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     required
                     maxLength={254}
                   />

@@ -61,7 +61,7 @@ const FanUnlocks = () => {
                 <a
                   key={`${item.accessToken}-${index}`}
                   href={item.url}
-                  className="block rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2 hover:bg-white/[0.05]"
+                  className="block rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 hover:bg-gray-100"
                 >
                   <p className="text-sm font-medium text-foreground">{item.title}</p>
                   <p className="text-xs text-muted-foreground">{item.creatorUsername || "creator"}</p>

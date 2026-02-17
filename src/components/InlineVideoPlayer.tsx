@@ -241,8 +241,8 @@ const InlineVideoPlayer = ({
 
       {/* Loading Indicator */}
       {!isVideoLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-5">
-          <div className="w-8 h-8 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+        <div className="absolute inset-0 flex items-center justify-center bg-black/10 z-5">
+          <div className="w-8 h-8 border-3 border-gray-300 border-t-white rounded-full animate-spin" />
         </div>
       )}
 
@@ -268,7 +268,7 @@ const InlineVideoPlayer = ({
       {isFullscreen && (
         <button
           onClick={exitFullscreen}
-          className="absolute top-3 left-2 md:top-5 md:left-4 z-50 bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white px-4 py-2 md:px-6 md:py-3 rounded-full flex items-center gap-2 transition-all duration-300 shadow-lg text-sm md:text-base"
+          className="absolute top-3 left-2 md:top-5 md:left-4 z-50 bg-black/60 backdrop-blur-sm hover:bg-black/60 text-white px-4 py-2 md:px-6 md:py-3 rounded-full flex items-center gap-2 transition-all duration-300 shadow-lg text-sm md:text-base"
         >
           <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -280,11 +280,11 @@ const InlineVideoPlayer = ({
       {/* Center Play Button (when paused) */}
       {!isPlaying && isVideoLoaded && (
         <div 
-          className="absolute inset-0 flex items-center justify-center bg-black/10 hover:bg-black/20 transition-all duration-300 cursor-pointer z-[5]"
+          className="absolute inset-0 flex items-center justify-center bg-black/5 hover:bg-black/10 transition-all duration-300 cursor-pointer z-[5]"
           onClick={handlePlayPause}
         >
           <div className="w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-2xl">
-            <Play className="w-5 h-5 text-black/80 ml-0.5" fill="currentColor" />
+            <Play className="w-5 h-5 text-gray-700 ml-0.5" fill="currentColor" />
           </div>
         </div>
       )}
@@ -299,7 +299,7 @@ const InlineVideoPlayer = ({
         >
           {/* Progress Bar */}
           <div 
-            className="w-full h-1 bg-white/20 rounded-full mb-2.5 cursor-pointer group/bar"
+            className="w-full h-1 bg-gray-200 rounded-full mb-2.5 cursor-pointer group/bar"
             onClick={handleProgressClick}
           >
             <div 
@@ -360,7 +360,7 @@ const InlineVideoPlayer = ({
       {/* Click overlay for blurred content */}
       {isBlurred && onClick && (
         <div 
-          className="absolute inset-0 bg-black/40 cursor-pointer z-5"
+          className="absolute inset-0 bg-black/30 cursor-pointer z-5"
           onClick={onClick}
         />
       )}

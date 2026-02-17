@@ -488,7 +488,7 @@ const PostDetail = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
-            <div className="hidden sm:block brand-wordmark text-sm"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+            <div className="hidden sm:block brand-wordmark text-sm"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[11px] text-muted-foreground tabular-nums">
@@ -502,7 +502,7 @@ const PostDetail = () => {
                   navigator.clipboard.writeText(window.location.href);
                 }
               }}
-              className="p-2 rounded-lg bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] transition-all"
+              className="p-2 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-all"
               title="Share"
             >
               <svg className="w-3.5 h-3.5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
@@ -636,9 +636,9 @@ const PostDetail = () => {
             </>
           )}
 
-          <footer className="mt-12 border-t border-white/[0.06] pt-6 pb-4">
+          <footer className="mt-12 border-t border-gray-200 pt-6 pb-4">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span className="text-white">Seven</span><span className="brand-accent">Creator</span></div>
+              <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
               <p className="text-xs text-muted-foreground">
                 &copy; {new Date().getFullYear()} {collection.user.name}. All rights reserved.
               </p>

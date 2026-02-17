@@ -19,23 +19,23 @@ type FanAccountMenuProps = {
 const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanAccountMenuProps) => {
   const { fan, logoutFan } = useFanAuth();
   const effectiveFan = previewMode ? null : fan;
-  const skyUserColor = "#38bdf8";
+  const skyUserColor = "#8b5cf6";
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-sky-500/10 transition-colors duration-200 text-sm font-medium"
+          className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-violet-500/10 transition-colors duration-200 text-sm font-medium"
         >
           {effectiveFan?.avatar ? (
-            <Avatar className="h-5 w-5 border border-sky-400/45">
+            <Avatar className="h-5 w-5 border border-violet-400/45">
               <AvatarImage src={effectiveFan.avatar} alt={effectiveFan.displayName || effectiveFan.email} />
-              <AvatarFallback className="bg-sky-500/30 text-sky-100">
+              <AvatarFallback className="bg-violet-500/30 text-violet-100">
                 {(effectiveFan.displayName || effectiveFan.email || "F").slice(0, 1).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="h-4 w-4 text-sky-400 transition-colors group-hover:text-sky-300 group-focus:text-sky-300" />
+            <User className="h-4 w-4 text-violet-400 transition-colors group-hover:text-violet-300 group-focus:text-violet-300" />
           )}
         </button>
       </DropdownMenuTrigger>
@@ -67,16 +67,16 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
           </>
         ) : (
           previewMode ? (
-            <DropdownMenuItem className="group hover:bg-sky-500/10 focus:bg-sky-500/10 cursor-default" onSelect={(e) => e.preventDefault()}>
-              <LogIn className="mr-2 h-4 w-4 text-sky-400" />
+            <DropdownMenuItem className="group hover:bg-violet-500/10 focus:bg-violet-500/10 cursor-default" onSelect={(e) => e.preventDefault()}>
+              <LogIn className="mr-2 h-4 w-4 text-violet-400" />
               <span className="text-foreground/85">
                 Log in or Register (Demo)
               </span>
             </DropdownMenuItem>
           ) : (
-            <DropdownMenuItem className="group hover:bg-sky-500/10 focus:bg-sky-500/10" onClick={onOpenAuth}>
-              <LogIn className="mr-2 h-4 w-4 text-sky-400" />
-              <span className="text-foreground/85 transition-colors group-hover:text-sky-300 group-focus:text-sky-300">
+            <DropdownMenuItem className="group hover:bg-violet-500/10 focus:bg-violet-500/10" onClick={onOpenAuth}>
+              <LogIn className="mr-2 h-4 w-4 text-violet-400" />
+              <span className="text-foreground/85 transition-colors group-hover:text-violet-300 group-focus:text-violet-300">
                 Log in or Register
               </span>
             </DropdownMenuItem>
