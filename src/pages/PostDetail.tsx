@@ -75,7 +75,7 @@ const PostDetail = () => {
   );
   const localMockCollections = useMemo(() => {
     const titles = seededShuffle(MOCK_COLLECTION_TITLES, mockSeed + 911);
-    const imageCountPattern = [2, 3, 4, 5, 6, 4, 3, 5, 2, 6];
+    const imageCountPattern = [6, 8, 10, 12, 14, 16, 18, 20, 9, 13];
     const statusMediaCount = Math.min(6, mockPhotos.length);
     const availableForCollections = Math.max(0, mockPhotos.length - statusMediaCount);
     const total = Math.min(10, titles.length);

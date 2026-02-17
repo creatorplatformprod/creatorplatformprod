@@ -26,6 +26,9 @@ export interface Collection {
   };
 }
 
+const MIN_COLLECTION_MOCK_ITEMS = 6;
+const MAX_COLLECTION_MOCK_ITEMS = 20;
+
 // Pexels URL builder for consistent image sizing
 // Using smaller sizes to prevent ERR_INSUFFICIENT_RESOURCES
 const pexelsUrl = (photoId: number, width: number = 640): string =>
@@ -616,6 +619,56 @@ export const collections: Record<string, Collection> = {
     }
   }
 };
+
+const mockCountForCollection = (collectionId: string): number => {
+  const parsed = Number.parseInt(collectionId, 10);
+  if (Number.isNaN(parsed)) return MIN_COLLECTION_MOCK_ITEMS;
+  return MIN_COLLECTION_MOCK_ITEMS + ((parsed * 7) % (MAX_COLLECTION_MOCK_ITEMS - MIN_COLLECTION_MOCK_ITEMS + 1));
+};
+
+const withMockVariant = (url: string, variant: number): string => {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname.includes("pexels.com")) {
+      const width = Number.parseInt(parsed.searchParams.get("w") || "", 10);
+      if (Number.isFinite(width) && width > 0) {
+        const adjustedWidth = Math.max(220, Math.min(1600, width + ((variant % 5) - 2) * 24));
+        parsed.searchParams.set("w", String(adjustedWidth));
+      }
+      parsed.searchParams.set("v", String(variant));
+      return parsed.toString();
+    }
+  } catch {
+    // Keep original URL when parsing fails.
+  }
+  return url;
+};
+
+const ensureMockImageVolume = (
+  collectionId: string,
+  images: Array<{ full: string; thumb: string }>
+): Array<{ full: string; thumb: string }> => {
+  if (!images.length) return images;
+  const targetCount = mockCountForCollection(collectionId);
+  if (images.length >= targetCount) return images.slice(0, targetCount);
+
+  const expanded = [...images];
+  let variant = 1;
+  while (expanded.length < targetCount) {
+    const base = images[(expanded.length - images.length) % images.length];
+    expanded.push({
+      full: withMockVariant(base.full, variant),
+      thumb: withMockVariant(base.thumb, variant)
+    });
+    variant += 1;
+  }
+
+  return expanded;
+};
+
+Object.values(collections).forEach((collection) => {
+  collection.images = ensureMockImageVolume(collection.id, collection.images);
+});
 
 export const getCollection = (id: string): Collection | undefined => {
   return collections[id];
