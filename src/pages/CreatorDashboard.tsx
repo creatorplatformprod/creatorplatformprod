@@ -2781,33 +2781,45 @@ const CreatorDashboard = () => {
                       Upload media to preview the collection card layout.
                     </div>
                   ) : (
-                    <div className={liveCardLayout.gridClasses}>
-                      {collectionEditorMedia
-                        .slice(0, liveCardLayout.maxImages)
-                        .map((media: any, index: number) => {
-                          const spanClasses = liveCardLayout.imageSpans?.[index] || '';
-                          return (
-                            <div key={`${media.url}-${index}`} className={`relative overflow-hidden ${spanClasses}`}>
-                              {String(media.mediaType).includes('video') ? (
-                                <video
-                                  src={media.url}
-                                  className="w-full h-full object-cover"
-                                  muted
-                                  playsInline
-                                  preload="metadata"
-                                />
-                              ) : (
-                                <img
-                                  src={media.thumbnailUrl || media.url}
-                                  alt=""
-                                  className="w-full h-full object-cover"
-                                  loading="lazy"
-                                  decoding="async"
-                                />
-                              )}
-                            </div>
-                          );
-                        })}
+                    <div className="relative h-full">
+                      <div className={liveCardLayout.gridClasses}>
+                        {collectionEditorMedia
+                          .slice(0, liveCardLayout.maxImages)
+                          .map((media: any, index: number) => {
+                            const spanClasses = liveCardLayout.imageSpans?.[index] || '';
+                            return (
+                              <div key={`${media.url}-${index}`} className={`relative overflow-hidden ${spanClasses}`}>
+                                {String(media.mediaType).includes('video') ? (
+                                  <video
+                                    src={media.url}
+                                    className="w-full h-full object-cover"
+                                    muted
+                                    playsInline
+                                    preload="metadata"
+                                  />
+                                ) : (
+                                  <img
+                                    src={media.thumbnailUrl || media.url}
+                                    alt=""
+                                    className="w-full h-full object-cover"
+                                    loading="lazy"
+                                    decoding="async"
+                                  />
+                                )}
+                              </div>
+                            );
+                          })}
+                      </div>
+                      <div className="absolute inset-0 bg-black/15 backdrop-blur-[6px]" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <button
+                          type="button"
+                          className="bg-white/20 text-white border border-white/30 backdrop-blur-sm px-5 py-1.5 rounded-full text-xs font-medium pointer-events-none"
+                        >
+                          <Lock className="inline-block w-3.5 h-3.5 mr-1.5" />
+                          Unlock
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
