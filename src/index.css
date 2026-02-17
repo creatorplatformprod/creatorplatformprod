@@ -178,12 +178,12 @@
 
   /* Landing page "67" brand gradient — purple */
   .btn-67 {
-    background: linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #38bdf8 100%);
     color: white;
     border: none;
   }
   .btn-67:hover {
-    background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #0ea5e9 100%);
     color: white;
   }
   .btn-67:focus-visible {
@@ -886,7 +886,7 @@
   }
 
   .brand-wordmark .brand-accent {
-    background: linear-gradient(135deg, #a78bfa 0%, #6366f1 50%, #0ea5e9 100%);
+    background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 45%, #38bdf8 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -960,17 +960,17 @@
   }
 
   .landing-cta-glow {
-    background: linear-gradient(90deg, #6366f1 0%, #0ea5e9 100%) !important;
+    background: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%) !important;
     color: white !important;
     border: none !important;
-    box-shadow: 0 4px 24px -4px rgba(99,102,241,0.35);
+    box-shadow: 0 4px 24px -4px rgba(139,92,246,0.35);
     transition: box-shadow 0.2s ease, transform 0.15s ease;
   }
 
   .landing-cta-glow:hover {
-    background: linear-gradient(90deg, #4f46e5 0%, #0284c7 100%) !important;
+    background: linear-gradient(90deg, #7c3aed 0%, #0ea5e9 100%) !important;
     color: white !important;
-    box-shadow: 0 6px 32px -4px rgba(99,102,241,0.45);
+    box-shadow: 0 6px 32px -4px rgba(139,92,246,0.45);
     transform: translateY(-1px);
   }
 
@@ -1021,7 +1021,7 @@
     left: 0.5rem;
     right: 0.5rem;
     height: 2.5px;
-    background: linear-gradient(90deg, #6366f1, #6366f1);
+    background: linear-gradient(90deg, #8b5cf6, #38bdf8);
     border-radius: 2px 2px 0 0;
   }
 

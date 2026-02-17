@@ -599,8 +599,8 @@ const PostDetailBlurred = () => {
       </div>
 
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[60] flex flex-col items-center">
-        <span className="text-xs text-gray-900 font-medium drop-shadow-lg">Scroll down to preview</span>
-        <span className="text-lg text-gray-900 mt-1 animate-bounce drop-shadow-lg" style={{ animationDuration: '2s' }}>↓</span>
+        <span className="text-xs text-white font-medium drop-shadow-lg">Scroll down to preview</span>
+        <span className="text-lg text-white mt-1 animate-bounce drop-shadow-lg" style={{ animationDuration: '2s' }}>↓</span>
       </div>
 
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 relative">

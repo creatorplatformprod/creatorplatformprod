@@ -156,7 +156,7 @@ const Landing = () => {
           <div className="text-center mb-12 sm:mb-16">
             <h1 className="landing-heading mx-auto">
               Create content. Get paid.<br />
-              <span className="bg-gradient-to-r from-violet-400 via-indigo-500 to-sky-500 bg-clip-text text-transparent">Card to crypto, instantly.</span>
+              <span className="bg-gradient-to-r from-purple-500 via-violet-500 to-sky-400 bg-clip-text text-transparent">Card to crypto, instantly.</span>
             </h1>
             <p className="landing-subheading mx-auto mt-4 sm:mt-5">
               The creator platform that lets your subscribers pay with card and sends you crypto in real-time. No middlemen, no delays.

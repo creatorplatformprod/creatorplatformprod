@@ -659,7 +659,7 @@ const Index = () => {
                 </div>
                 <button
                   onClick={() => window.location.href = '/collections'}
-                  className="hidden sm:flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-600 hover:to-sky-600 transition-all shadow-lg shadow-indigo-500/20"
+                  className="hidden sm:flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-purple-600 via-indigo-500 to-sky-400 hover:from-purple-500 hover:via-indigo-400 hover:to-sky-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all hover:scale-[1.02]"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
