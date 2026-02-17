@@ -2814,8 +2814,12 @@ const CreatorDashboard = () => {
                       <div className="absolute inset-0 flex items-center justify-center">
                         <button
                           type="button"
-                          className="bg-white/20 text-white border border-white/30 backdrop-blur-sm px-5 py-1.5 rounded-full text-xs font-medium pointer-events-none"
+                          className="relative overflow-hidden bg-white/20 text-white border border-white/30 backdrop-blur-sm px-5 py-1.5 rounded-full text-xs font-medium pointer-events-none"
                         >
+                          <span
+                            className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"
+                            style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
+                          />
                           <Lock className="inline-block w-3.5 h-3.5 mr-1.5" />
                           Unlock
                         </button>
