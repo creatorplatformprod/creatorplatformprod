@@ -411,7 +411,7 @@ const PublicWebsitePreview = () => {
                 <div className="w-24 h-1.5 bg-gray-300 rounded-full" />
               </div>
               {/* Ambient glow */}
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-2/3 h-14 bg-violet-500/[0.08] rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-2/3 h-14 bg-indigo-500/[0.08] rounded-full blur-2xl pointer-events-none" />
             </div>
           )}
         </div>

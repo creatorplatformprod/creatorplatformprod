@@ -10,7 +10,7 @@ type FanAuthModalProps = {
 
 const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
   const { loginFan, registerFan, setGuestMode } = useFanAuth();
-  const skyUserColor = "#8b5cf6";
+  const skyUserColor = "#6366f1";
   const [mode, setMode] = useState<"login" | "register">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -138,7 +138,7 @@ const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+            className="rounded-xl bg-gradient-to-r from-indigo-500 to-sky-500 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
           >
             {loading ? "Please wait..." : mode === "login" ? "Log In" : "Create Account"}
           </button>

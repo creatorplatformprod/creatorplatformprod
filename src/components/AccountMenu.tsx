@@ -34,7 +34,7 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
   const previewPath = currentUser?.username
     ? `/preview/${currentUser.username}`
     : "/dashboard";
-  const skyUserColor = "#8b5cf6";
+  const skyUserColor = "#6366f1";
 
   const copyPublicLink = async () => {
     if (!currentUser?.username || typeof window === "undefined") return;
@@ -49,21 +49,21 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="group w-9 h-9 rounded-full bg-secondary/70 hover:bg-violet-500/10 flex items-center justify-center transition-all duration-200 border border-border hover:border-violet-400/30">
+        <button className="group w-9 h-9 rounded-full bg-secondary/70 hover:bg-indigo-500/10 flex items-center justify-center transition-all duration-200 border border-border hover:border-indigo-400/30">
           {currentUser?.avatar ? (
-            <Avatar className="w-8 h-8 border border-violet-400/45">
+            <Avatar className="w-8 h-8 border border-indigo-400/45">
               <AvatarImage
                 src={currentUser.avatar}
                 alt={currentUser.displayName || currentUser.username || "User"}
               />
-              <AvatarFallback className="bg-violet-500/30 text-violet-100">
+              <AvatarFallback className="bg-indigo-500/30 text-indigo-100">
                 {(currentUser.displayName || currentUser.username || "U")
                   .slice(0, 1)
                   .toUpperCase()}
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="w-4 h-4 text-violet-400 transition-colors group-hover:text-violet-300 group-focus:text-violet-300" />
+            <User className="w-4 h-4 text-indigo-400 transition-colors group-hover:text-indigo-300 group-focus:text-indigo-300" />
           )}
         </button>
       </DropdownMenuTrigger>

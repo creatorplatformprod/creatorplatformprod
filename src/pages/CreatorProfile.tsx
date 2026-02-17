@@ -713,9 +713,9 @@ const CreatorProfile = () => {
               className="absolute inset-0 w-full h-full object-cover"
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-purple-600/15" />
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-purple-600/15" />
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
           <div className="absolute inset-0" style={{ backgroundColor: `rgba(0, 0, 0, ${coverOverlay * 0.3})` }} />
           <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
           {/* Subtle pattern overlay */}
@@ -754,7 +754,7 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto md:mr-8 lg:mr-10 self-center md:self-center text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent hover:from-indigo-300 hover:to-purple-300 transition-all"
+                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto md:mr-8 lg:mr-10 self-center md:self-center text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-500 to-sky-500 bg-clip-text text-transparent hover:from-indigo-400 hover:to-sky-400 transition-all"
               >
                 <span
                   className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"

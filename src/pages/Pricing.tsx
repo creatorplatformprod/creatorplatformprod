@@ -115,7 +115,7 @@ const Pricing = () => {
           {/* Pro Card */}
           <div className="card-elevated p-6 relative ring-2 ring-primary/20 flex flex-col" style={{ boxShadow: '0 8px 40px -8px rgba(14,165,233,0.12)' }}>
             <div className="absolute -top-3 left-4">
-              <span className="inline-flex items-center gap-1 text-white text-xs font-medium px-3 py-1 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 shadow-sm">
+              <span className="inline-flex items-center gap-1 text-white text-xs font-medium px-3 py-1 rounded-full bg-gradient-to-r from-indigo-500 to-sky-500 shadow-sm">
                 <Sparkles className="w-3 h-3" />
                 Recommended
               </span>
@@ -136,7 +136,7 @@ const Pricing = () => {
 
             <Button 
               onClick={handleCheckoutPro}
-              className="w-full mb-6 h-11 rounded-xl font-semibold shadow-sm bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white border-0"
+              className="w-full mb-6 h-11 rounded-xl font-semibold shadow-sm bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-600 hover:to-sky-600 text-white border-0"
             >
               Get Pro
             </Button>

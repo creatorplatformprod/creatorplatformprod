@@ -156,7 +156,7 @@ const Landing = () => {
           <div className="text-center mb-12 sm:mb-16">
             <h1 className="landing-heading mx-auto">
               Create content. Get paid.<br />
-              <span className="bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">Card to crypto, instantly.</span>
+              <span className="bg-gradient-to-r from-violet-400 via-indigo-500 to-sky-500 bg-clip-text text-transparent">Card to crypto, instantly.</span>
             </h1>
             <p className="landing-subheading mx-auto mt-4 sm:mt-5">
               The creator platform that lets your subscribers pay with card and sends you crypto in real-time. No middlemen, no delays.
@@ -183,7 +183,7 @@ const Landing = () => {
                   <div className="flex gap-3 mb-5">
                     {SPOTLIGHTS.map((s) => (
                       <div key={s.name} className="flex flex-col items-center gap-1.5">
-                        <div className="w-12 h-12 rounded-full ring-2 ring-violet-400/40 ring-offset-2 ring-offset-transparent overflow-hidden">
+                        <div className="w-12 h-12 rounded-full ring-2 ring-indigo-400/40 ring-offset-2 ring-offset-transparent overflow-hidden">
                           <img src={s.img} alt={s.name} className="w-full h-full object-cover" />
                         </div>
                         <span className="text-[10px] text-gray-500 font-medium">{s.name}</span>
@@ -199,15 +199,15 @@ const Landing = () => {
                     <AreaChart data={CHART_DATA}>
                       <defs>
                         <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                          <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.0} />
+                          <stop offset="0%" stopColor="#6366f1" stopOpacity={0.3} />
+                          <stop offset="100%" stopColor="#6366f1" stopOpacity={0.0} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid stroke="rgba(0,0,0,0.04)" strokeDasharray="3 3" />
                       <XAxis dataKey="month" tick={{ fill: 'rgba(0,0,0,0.35)', fontSize: 10 }} axisLine={false} tickLine={false} />
                       <YAxis tick={{ fill: 'rgba(0,0,0,0.35)', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v: number) => `$${v >= 1000 ? `${(v/1000).toFixed(1)}k` : v}`} />
                       <Tooltip contentStyle={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} itemStyle={{ color: '#7c3aed' }} labelStyle={{ color: '#6b7280' }} formatter={(v: number) => [`$${v.toLocaleString()}`, 'Avg. Income']} />
-                      <Area type="monotone" dataKey="value" stroke="#8b5cf6" strokeWidth={2} fill="url(#chartGlow)" name="Income" />
+                      <Area type="monotone" dataKey="value" stroke="#6366f1" strokeWidth={2} fill="url(#chartGlow)" name="Income" />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -258,7 +258,7 @@ const Landing = () => {
                   {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Log in'}
                 </button>
                 <p className="text-[11px] text-gray-400 text-center mt-4 leading-relaxed">
-                  By signing up, agree our <span className="text-violet-500/70 hover:text-violet-600 cursor-pointer">Terms of Service</span> & <span className="text-violet-500/70 hover:text-violet-600 cursor-pointer">Privacy Policy</span>
+                  By signing up, agree our <span className="text-indigo-500/70 hover:text-indigo-600 cursor-pointer">Terms of Service</span> & <span className="text-indigo-500/70 hover:text-indigo-600 cursor-pointer">Privacy Policy</span>
                 </p>
               </div>
             </div>
@@ -270,7 +270,7 @@ const Landing = () => {
       <section id="features" className="landing-section">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-xs font-semibold uppercase tracking-widest text-violet-500 mb-3">Why creators choose us</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-3">Why creators choose us</p>
             <h2 className="landing-heading">Everything you need to<br />monetize your content</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -323,7 +323,7 @@ const Landing = () => {
       <section id="pricing" className="landing-section">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-xs font-semibold uppercase tracking-widest text-violet-500 mb-3">Pricing</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-3">Pricing</p>
             <h2 className="landing-heading">Start free, upgrade anytime</h2>
             <p className="landing-subheading mx-auto mt-3">Every plan includes a 1-month free trial. No credit card required.</p>
           </div>
@@ -341,7 +341,7 @@ const Landing = () => {
               <div className="space-y-3 flex-1">
                 {FREE_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
-                    <div className="w-4 h-4 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0"><svg className="w-2.5 h-2.5 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg></div>
+                    <div className="w-4 h-4 rounded-full bg-indigo-500/10 flex items-center justify-center flex-shrink-0"><svg className="w-2.5 h-2.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg></div>
                     <span className="text-sm text-gray-500">{f}</span>
                   </div>
                 ))}
@@ -366,7 +366,7 @@ const Landing = () => {
               <div className="space-y-3 flex-1">
                 {PRO_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
-                    <div className="w-4 h-4 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0"><svg className="w-2.5 h-2.5 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg></div>
+                    <div className="w-4 h-4 rounded-full bg-indigo-500/10 flex items-center justify-center flex-shrink-0"><svg className="w-2.5 h-2.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg></div>
                     <span className="text-sm text-gray-500">{f}</span>
                   </div>
                 ))}
@@ -386,7 +386,7 @@ const Landing = () => {
               <div className="space-y-3 flex-1">
                 {BIZ_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
-                    <div className="w-4 h-4 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0"><svg className="w-2.5 h-2.5 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg></div>
+                    <div className="w-4 h-4 rounded-full bg-indigo-500/10 flex items-center justify-center flex-shrink-0"><svg className="w-2.5 h-2.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg></div>
                     <span className="text-sm text-gray-500">{f}</span>
                   </div>
                 ))}
@@ -400,7 +400,7 @@ const Landing = () => {
       <section className="landing-section">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-semibold uppercase tracking-widest text-violet-500 mb-3">FAQ</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-3">FAQ</p>
             <h2 className="landing-heading">Common questions</h2>
           </div>
           <div>
@@ -441,7 +441,7 @@ const Landing = () => {
       {/* ━━━━━━━━━━ COOKIE POPUP ━━━━━━━━━━ */}
       {!showCookies ? (
         <button onClick={() => setShowCookies(true)} className="fixed bottom-6 left-6 w-11 h-11 rounded-full bg-white border border-gray-200 flex items-center justify-center z-[100] hover:bg-gray-50 transition-colors shadow-md" title="Cookie Settings">
-          <Cookie className="w-4.5 h-4.5 text-violet-500" />
+          <Cookie className="w-4.5 h-4.5 text-indigo-500" />
         </button>
       ) : (
         <div className="fixed bottom-6 left-6 max-w-sm rounded-2xl bg-white/95 backdrop-blur-xl border border-gray-200 p-5 z-[100] shadow-2xl">

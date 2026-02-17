@@ -629,7 +629,7 @@ const Index = () => {
           <div className="profile-hero relative">
             {/* Cover Photo Area */}
             <div className="relative h-36 sm:h-44 lg:h-52 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-purple-600/15" />
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
               <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
               <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
             </div>
@@ -659,7 +659,7 @@ const Index = () => {
                 </div>
                 <button
                   onClick={() => window.location.href = '/collections'}
-                  className="hidden sm:flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 transition-all shadow-lg shadow-indigo-500/20"
+                  className="hidden sm:flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-600 hover:to-sky-600 transition-all shadow-lg shadow-indigo-500/20"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>
