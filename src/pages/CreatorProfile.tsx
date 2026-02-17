@@ -12,7 +12,7 @@ import FanAuthModal from "@/components/FanAuthModal";
 import { api } from "@/lib/api";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import { useSeo } from "@/hooks/use-seo";
-import { buildCardLayout, parseLayoutTag } from "@/lib/collectionLayout";
+import { buildCardLayout, parseLayoutTag, type CollectionCardTemplate } from "@/lib/collectionLayout";
 type MockSourcePack = {
   key: string;
   avatar: string;
@@ -188,16 +188,26 @@ const CreatorProfile = () => {
 
   const mockCollections = useMemo(() => {
     const titles = seededShuffle(MOCK_COLLECTION_TITLES, mockSeed + 911);
+    const mockTemplates: CollectionCardTemplate[] = ['single', 'double', 'triple', 'quad', 'masonry', 'asymmetric'];
+    const imageCountPattern = [2, 3, 4, 5, 6, 4, 3, 5, 2, 6];
     const statusMediaCount = Math.min(6, mockPhotos.length);
     const availableForCollections = Math.max(0, mockPhotos.length - statusMediaCount);
-    const maxCollectionCount = Math.floor(availableForCollections / 4);
-    const total = Math.min(Math.max(10, titles.length), maxCollectionCount, titles.length);
+    const total = Math.min(10, titles.length);
     return Array.from({ length: total }, (_, index) => {
       const title = titles[index % titles.length];
-      const imageStart = statusMediaCount + (index * 4);
-      const images = Array.from({ length: 4 }, (_, offset) => {
-        const photo = mockPhotos[imageStart + offset];
+      const imageCount = imageCountPattern[index % imageCountPattern.length];
+      const safePool = Math.max(1, availableForCollections);
+      const images = Array.from({ length: imageCount }, (_, offset) => {
+        const poolIndex = (index * 5 + offset) % safePool;
+        const photo =
+          mockPhotos[statusMediaCount + poolIndex] ||
+          mockPhotos[(index + offset) % Math.max(1, mockPhotos.length)];
         return { full: photo, thumb: pexelsThumbUrl(photo, 560) };
+      });
+      const template = mockTemplates[index % mockTemplates.length];
+      const cardLayout = buildCardLayout(images.length, {
+        template,
+        previewCount: images.length
       });
 
       return {
@@ -219,11 +229,7 @@ const CreatorProfile = () => {
         feedType: "collection" as const,
         price: 6.99 + ((index + mockSeed) % 6),
         currency: "USD",
-        cardLayout: {
-          gridType: "quad",
-          maxImages: 4,
-          gridClasses: "grid grid-cols-2 grid-rows-2 gap-1 h-full"
-        },
+        cardLayout,
         isMockData: true
       };
     });

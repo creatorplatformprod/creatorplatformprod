@@ -236,15 +236,19 @@ const Collections1849929295832448 = () => {
   );
   const localMockCollections = useMemo(() => {
     const titles = seededShuffle(MOCK_COLLECTION_TITLES, mockSeed + 911);
+    const imageCountPattern = [2, 3, 4, 5, 6, 4, 3, 5, 2, 6];
     const statusMediaCount = Math.min(6, mockPhotos.length);
     const availableForCollections = Math.max(0, mockPhotos.length - statusMediaCount);
-    const maxCollectionCount = Math.floor(availableForCollections / 4);
-    const total = Math.min(Math.max(10, titles.length), maxCollectionCount, titles.length);
+    const total = Math.min(10, titles.length);
     return Array.from({ length: total }, (_, index) => {
       const title = titles[index % titles.length];
-      const imageStart = statusMediaCount + (index * 4);
-      const images = Array.from({ length: 4 }, (_, offset) => {
-        const full = mockPhotos[imageStart + offset];
+      const imageCount = imageCountPattern[index % imageCountPattern.length];
+      const safePool = Math.max(1, availableForCollections);
+      const images = Array.from({ length: imageCount }, (_, offset) => {
+        const poolIndex = (index * 5 + offset) % safePool;
+        const full =
+          mockPhotos[statusMediaCount + poolIndex] ||
+          mockPhotos[(index + offset) % Math.max(1, mockPhotos.length)];
         return { full, thumb: pexelsThumbUrl(full, 560) };
       });
       return {
