@@ -537,15 +537,14 @@ const PostDetail = () => {
                   {currentImages.map((imageData, index) => {
                     const imageSrc = typeof imageData === 'string' ? imageData : imageData.full;
                     let thumbSrc = typeof imageData === 'string' 
-                      ? imageSrc.replace('/collection', '/thumbs/collection')
+                      ? imageSrc
                       : imageData.thumb;
                     
                     const mediaType = isVideoUrl(imageSrc) ? 'video' : 'image';
                     
                     // For videos, try to get a jpg thumbnail instead of the video file
                     if (mediaType === 'video') {
-                      thumbSrc = imageSrc.replace('/collection', '/thumbs/collection')
-                                         .replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
+                      thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
                     }
                     const isMediaLoaded = loadedImages.has(imageSrc);
                     const md = measuredDims[imageSrc];

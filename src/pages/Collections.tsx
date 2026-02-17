@@ -321,7 +321,7 @@ const Collections = () => {
           let thumbSrc = mediaItem.thumbnailUrl || mediaItem.url;
           const mediaType = mediaItem.mediaType || (isVideoUrl(imageSrc) ? 'video' : 'image');
           if (mediaType === 'video') {
-            thumbSrc = thumbSrc.replace('/collection', '/thumbs/collection').replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
+            thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
           }
           const parsedWidth = Number(mediaItem.width);
           const parsedHeight = Number(mediaItem.height);

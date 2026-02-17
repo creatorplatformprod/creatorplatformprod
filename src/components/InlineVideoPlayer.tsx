@@ -40,8 +40,7 @@ const InlineVideoPlayer = ({
     let thumbSrc = thumbnail;
     // For videos, try to get a jpg thumbnail instead of the video file
     if (src.match(/\.(mp4|webm|mov|ogg|avi)$/i)) {
-      thumbSrc = src.replace('/collection', '/thumbs/collection')
-                    .replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
+      thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
     }
     return thumbSrc;
   };

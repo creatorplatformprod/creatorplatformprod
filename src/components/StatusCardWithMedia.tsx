@@ -215,7 +215,7 @@ const StatusCardWithMedia = ({
 
   // Generate thumbnail path from full image URL
   const getThumbnailUrl = (url: string) => {
-    return url.replace('/collection', '/thumbs/collection');
+    return url;
   };
 
   return (
