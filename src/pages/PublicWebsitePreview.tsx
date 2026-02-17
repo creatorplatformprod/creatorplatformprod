@@ -284,19 +284,19 @@ const PublicWebsitePreview = () => {
       <div className="max-w-6xl mx-auto px-4 py-6">
         {/* Status Banners */}
         {hasChanges && (
-          <div className="mb-4 alert-warning w-full max-w-[1060px] mx-auto">
+          <div className="mb-4 alert-warning">
             <p className="text-sm text-amber-600 dark:text-amber-400">
               You have unsaved changes. Click "Save Changes" to publish them.
             </p>
           </div>
         )}
         {publishError && (
-          <div className="mb-4 alert-danger w-full max-w-[1060px] mx-auto">
+          <div className="mb-4 alert-danger">
             <p className="text-sm text-red-600 dark:text-red-400">{publishError}</p>
           </div>
         )}
         {!hasChanges && published && (
-          <div className="mb-4 alert-success w-full max-w-[1060px] mx-auto">
+          <div className="mb-4 alert-success">
             <p className="text-sm text-green-600 dark:text-green-400">
               All changes are published. Your public website is up to date.
             </p>
@@ -304,7 +304,7 @@ const PublicWebsitePreview = () => {
         )}
 
         {/* Controls Bar: Device Switcher + URL + Actions */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between gap-3 mb-5 w-full max-w-[1060px] mx-auto">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5">
           {/* Device Switcher */}
           <div className="flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06]">
             <button
@@ -332,7 +332,7 @@ const PublicWebsitePreview = () => {
           </div>
 
           {/* URL Bar + Copy */}
-          <div className="flex items-center justify-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] rounded-lg border border-white/[0.06]">
               <Link2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
               <span className="text-[11px] text-muted-foreground font-mono">sixsevencreator.com/{username}</span>
@@ -370,7 +370,7 @@ const PublicWebsitePreview = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.26] sm:[--scale:0.36] md:[--scale:0.55] lg:[--scale:0.68] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                    <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.30] sm:[--scale:0.40] md:[--scale:0.55] lg:[--scale:0.68] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                       <iframe
                         title="Desktop preview"
                         src={previewUrl}
@@ -380,14 +380,14 @@ const PublicWebsitePreview = () => {
                   </div>
                 </div>
                 {/* Laptop base */}
-                <div className="mt-4 hidden sm:flex justify-center">
+                <div className="mt-4 flex justify-center">
                   <div className="w-[88%] h-[18px] bg-gradient-to-b from-[#1b2331] to-[#0f131b] rounded-[999px] shadow-[0_16px_40px_rgba(2,6,23,0.5)]" />
                 </div>
-                <div className="mt-1 hidden sm:flex justify-center">
+                <div className="mt-1 flex justify-center">
                   <div className="w-[72%] h-[10px] bg-gradient-to-b from-[#2f3746] to-[#171c27] rounded-[999px] [transform:perspective(1200px)_rotateX(10deg)] shadow-[0_10px_24px_rgba(2,6,23,0.45)]" />
                 </div>
                 {/* Ambient glow */}
-                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-16 bg-indigo-500/[0.06] rounded-full blur-2xl pointer-events-none hidden sm:block" />
+                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-16 bg-indigo-500/[0.06] rounded-full blur-2xl pointer-events-none" />
               </div>
             </div>
           )}
