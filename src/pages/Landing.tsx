@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useReveal } from '@/hooks/useReveal';
 import { Button } from '@/components/ui/button';
 import {
   ArrowRight, X, Cookie, Plus,
@@ -53,6 +54,10 @@ const FAQS = [
 const Landing = () => {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
+  const revealFeatures = useReveal(0.12);
+  const revealSocial = useReveal(0.12);
+  const revealPricing = useReveal(0.12);
+  const revealFaq = useReveal(0.12);
   const [isLogin, setIsLogin] = useState(false);
   const [signupStep, setSignupStep] = useState(1);
   const [error, setError] = useState('');
@@ -131,7 +136,7 @@ const Landing = () => {
 
   /* ─────────────────── Render ─────────────────── */
   return (
-    <div className="landing-universe landing-waves-bg">
+    <div className="landing-universe landing-waves-bg gradient-mesh-bg">
       <div className="landing-wave" />
 
       {/* ━━━━━━━━━━ 1. STICKY NAV ━━━━━━━━━━ */}
@@ -144,13 +149,13 @@ const Landing = () => {
             <button onClick={() => scrollTo('features')} className="text-gray-500 hover:text-gray-900 text-[10px] sm:text-sm font-medium transition-colors px-1.5 sm:px-2 py-1">Features</button>
             <button onClick={() => scrollTo('pricing')} className="text-gray-500 hover:text-gray-900 text-[10px] sm:text-sm font-medium transition-colors px-1.5 sm:px-2 py-1">Pricing</button>
             <button onClick={() => scrollToHero(true)} className="text-gray-500 hover:text-gray-900 text-[10px] sm:text-sm font-medium transition-colors px-1.5 sm:px-2 py-1">Login</button>
-            <button onClick={() => scrollToHero(false)} className="landing-cta-glow h-7 sm:h-8 px-3 sm:px-4 rounded-full text-[10px] sm:text-xs font-semibold ml-0.5 sm:ml-1">Get Started</button>
+            <button onClick={() => scrollToHero(false)} className="landing-cta-glow btn-press h-7 sm:h-8 px-3 sm:px-4 rounded-full text-[10px] sm:text-xs font-semibold ml-0.5 sm:ml-1">Get Started</button>
           </div>
         </div>
       </nav>
 
       {/* ━━━━━━━━━━ 2. HERO ━━━━━━━━━━ */}
-      <section className="relative z-10 pt-28 sm:pt-36 pb-8 sm:pb-12 px-4">
+      <section className="relative z-10 pt-28 sm:pt-36 pb-8 sm:pb-12 px-4 page-enter">
         <div className="max-w-6xl mx-auto">
           {/* Headline */}
           <div className="text-center mb-12 sm:mb-16">
@@ -248,7 +253,7 @@ const Landing = () => {
                     </>
                   ) : renderSignupFields()}
                   <div className="flex-1" />
-                  <Button type="submit" disabled={loading} className="w-full h-12 rounded-full landing-cta-glow font-semibold text-sm mt-2" size="lg">
+                  <Button type="submit" disabled={loading} className="w-full h-12 rounded-full landing-cta-glow btn-press font-semibold text-sm mt-2" size="lg">
                     {loading ? 'Please wait...' : isLogin ? 'Login' : signupStep < 3 ? 'Next Step' : 'Create Account'}
                     {!loading && <ArrowRight className="w-4 h-4 ml-2" />}
                   </Button>
@@ -267,7 +272,7 @@ const Landing = () => {
       </section>
 
       {/* ━━━━━━━━━━ 3. FEATURES ━━━━━━━━━━ */}
-      <section id="features" className="landing-section">
+      <section id="features" ref={revealFeatures} className="landing-section reveal">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-3">Why creators choose us</p>
@@ -288,7 +293,7 @@ const Landing = () => {
       </section>
 
       {/* ━━━━━━━━━━ 4. SOCIAL PROOF ━━━━━━━━━━ */}
-      <section className="landing-section pt-0 sm:pt-0">
+      <section ref={revealSocial} className="landing-section pt-0 sm:pt-0 reveal">
         <div className="max-w-5xl mx-auto">
           <div className="landing-feature-card flex flex-col sm:flex-row items-center gap-8 sm:gap-12 py-8 px-8 sm:px-12">
             {/* Avatar stack */}
@@ -320,7 +325,7 @@ const Landing = () => {
       </section>
 
       {/* ━━━━━━━━━━ 5. PRICING ━━━━━━━━━━ */}
-      <section id="pricing" className="landing-section">
+      <section id="pricing" ref={revealPricing} className="landing-section reveal">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-3">Pricing</p>
@@ -337,7 +342,7 @@ const Landing = () => {
                 <span className="text-4xl font-bold text-gray-900 tracking-tight">$0</span>
                 <span className="text-gray-400 text-sm ml-1">/ 1 month</span>
               </div>
-              <button onClick={() => scrollToHero(false)} className="w-full h-11 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6">Start Free Trial</button>
+              <button onClick={() => scrollToHero(false)} className="w-full h-11 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6 btn-press">Start Free Trial</button>
               <div className="space-y-3 flex-1">
                 {FREE_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
@@ -362,7 +367,7 @@ const Landing = () => {
                 <span className="text-gray-400 text-sm ml-1">/ month</span>
               </div>
               <p className="text-gray-400 text-xs mb-6">After free trial</p>
-              <button onClick={() => window.open('https://checkout.example.com', '_blank')} className="w-full h-11 rounded-xl landing-cta-glow font-semibold text-sm mb-6">Get Pro</button>
+              <button onClick={() => window.open('https://checkout.example.com', '_blank')} className="w-full h-11 rounded-xl landing-cta-glow btn-press font-semibold text-sm mb-6">Get Pro</button>
               <div className="space-y-3 flex-1">
                 {PRO_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
@@ -382,7 +387,7 @@ const Landing = () => {
                 <span className="text-gray-400 text-sm ml-1">/ month</span>
               </div>
               <p className="text-gray-400 text-xs mb-6">12-month commitment</p>
-              <button onClick={() => window.open('https://checkout.example.com/business', '_blank')} className="w-full h-11 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6">Get Business</button>
+              <button onClick={() => window.open('https://checkout.example.com/business', '_blank')} className="w-full h-11 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6 btn-press">Get Business</button>
               <div className="space-y-3 flex-1">
                 {BIZ_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
@@ -397,7 +402,7 @@ const Landing = () => {
       </section>
 
       {/* ━━━━━━━━━━ 6. FAQ ━━━━━━━━━━ */}
-      <section className="landing-section">
+      <section ref={revealFaq} className="landing-section reveal">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-3">FAQ</p>

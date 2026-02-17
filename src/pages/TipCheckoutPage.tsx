@@ -525,7 +525,7 @@ const TipCheckoutPage = () => {
               <button
                 onClick={handlePayment}
                 disabled={isProcessing || !customerEmail || !selectedProvider}
-                className="tip-pay-btn w-full"
+                className="tip-pay-btn btn-press w-full"
                 style={{
                   '--tip-color': ROSE_COLOR,
                 } as React.CSSProperties}

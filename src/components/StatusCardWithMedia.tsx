@@ -223,27 +223,27 @@ const StatusCardWithMedia = ({
       <div className="p-5">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            {user.avatar ? (
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-8 h-8 rounded-full object-cover"
-                crossOrigin="anonymous"
-                referrerPolicy="no-referrer"
-                onError={(e) => {
-                  const img = e.currentTarget;
-                  if (!img.dataset.retried) {
-                    img.dataset.retried = '1';
-                    img.crossOrigin = '';
-                    img.src = user.avatar;
-                  }
-                }}
-              />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-[10px] font-bold text-white">
-                {(user.name || '?')[0]?.toUpperCase()}
-              </div>
-            )}
+            <span className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden avatar-brand-ring">
+              {user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    if (!img.dataset.retried) {
+                      img.dataset.retried = '1';
+                      img.crossOrigin = '';
+                      img.src = user.avatar;
+                    }
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-[10px] font-bold text-white">
+                  {(user.name || '?')[0]?.toUpperCase()}
+                </div>
+              )}
+            </span>
             <div>
               <div className="flex items-center gap-1">
                 <h3 className="text-sm font-semibold text-foreground">{user.name}</h3>
@@ -263,10 +263,10 @@ const StatusCardWithMedia = ({
         <p className="text-foreground mb-4">{text}</p>
 
         {visibleMediaItems.length > 0 && (
-          <div className="mb-4 rounded-lg overflow-hidden relative">
+          <div className="post-card-media mb-4 rounded-[10px] overflow-hidden relative">
             {/* Single shimmer for media area */}
             <div
-              className={`absolute inset-0 skeleton-shimmer z-10 rounded-lg transition-opacity duration-300 ${
+              className={`absolute inset-0 skeleton-shimmer z-10 rounded-[10px] transition-opacity duration-300 ${
                 mediaRevealReady ? 'opacity-0 pointer-events-none' : 'opacity-100'
               }`}
             />
@@ -275,11 +275,11 @@ const StatusCardWithMedia = ({
                 {visibleMediaItems.map((item, idx) => {
                   const thumbnail = item.thumbnail || (item.type === 'image' ? getThumbnailUrl(item.url) : item.url);
                   return (
-                    <div key={`${item.url}-${idx}`} className="relative h-40 overflow-hidden rounded-md bg-muted/20">
+                    <div key={`${item.url}-${idx}`} className="relative h-40 overflow-hidden rounded-[10px] bg-muted/20">
                       <img
                         src={thumbnail}
                         alt={item.alt || `${title} media ${idx + 1}`}
-                        className={`w-full h-full object-cover transition-opacity duration-500 ${
+                        className={`w-full h-full object-cover transition-opacity duration-500 transition-transform duration-300 post-card-media-img ${
                           mediaRevealReady ? 'opacity-100' : 'opacity-0'
                         }`}
                         onLoad={handleMediaItemLoad}
@@ -299,7 +299,7 @@ const StatusCardWithMedia = ({
                 src={visibleMediaItems[0].url}
                 thumbnail={visibleMediaItems[0].thumbnail || getThumbnailUrl(visibleMediaItems[0].url)}
                 alt={visibleMediaItems[0].alt || title}
-                className={`w-full h-auto max-h-96 object-cover transition-opacity duration-500 ${
+                className={`w-full h-auto max-h-96 object-cover transition-opacity duration-500 transition-transform duration-300 post-card-media-img ${
                   mediaRevealReady ? 'opacity-100' : 'opacity-0'
                 }`}
                 onLoad={() => setIsMediaLoaded(true)}
@@ -345,7 +345,7 @@ const StatusCardWithMedia = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handleLike}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-md"
+              className="btn-press flex items-center gap-2 px-3 py-1.5 rounded-md"
             >
               <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground'}`} />
               <span className={isLiked ? 'text-rose-500' : 'text-muted-foreground'}>{formatLikeCount(currentLikes)}</span>
@@ -361,7 +361,7 @@ const StatusCardWithMedia = ({
               variant="ghost"
               size="sm"
               onClick={handleShare}
-              className="text-muted-foreground hover:bg-secondary hover:text-foreground px-3"
+              className="btn-press text-muted-foreground hover:bg-secondary hover:text-foreground px-3"
             >
               <Share2 className="w-4 h-4 mr-2" />
               Share

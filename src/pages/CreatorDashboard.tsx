@@ -1608,7 +1608,7 @@ const CreatorDashboard = () => {
         </aside>
 
         {/* â”€â”€ Main Content Area â”€â”€ */}
-        <div className="creator-main flex-1 min-w-0">
+        <div className="creator-main flex-1 min-w-0 gradient-mesh-bg">
           {/* Mobile tab bar (horizontal, shown only on < lg) */}
           <div className="creator-mobile-tabs lg:hidden sticky top-[52px] z-40 bg-white backdrop-blur-xl border-b border-gray-200">
             <div className="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -1686,6 +1686,11 @@ const CreatorDashboard = () => {
                   </div>
                   <p className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">${analyticsTotals.revenue.toFixed(2)}</p>
                   <p className="text-xs text-muted-foreground mt-1">Last 30 days</p>
+                  <div className="sparkline" aria-hidden="true">
+                    {[40, 55, 48, 72, 65, 88, 82, 95, 90, 85, 78, 100].map((h, i) => (
+                      <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
+                    ))}
+                  </div>
                 </div>
                 {/* Subtle gradient overlay */}
                 <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-emerald-500/[0.05] to-transparent rounded-tl-full pointer-events-none" />
@@ -1701,6 +1706,11 @@ const CreatorDashboard = () => {
                   </div>
                   <p className="text-xl font-bold text-foreground">{collections.length}</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">Collections</p>
+                  <div className="sparkline" aria-hidden="true">
+                    {[60, 70, 55, 80, 75, 90, 85, 88, 92, 78, 95, 100].map((h, i) => (
+                      <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
+                    ))}
+                  </div>
                 </div>
                 <div className="card-elevated p-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -1710,6 +1720,11 @@ const CreatorDashboard = () => {
                   </div>
                   <p className="text-xl font-bold text-foreground">{statusCards.length}</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">Posts</p>
+                  <div className="sparkline" aria-hidden="true">
+                    {[50, 65, 58, 72, 80, 70, 85, 90, 82, 88, 92, 100].map((h, i) => (
+                      <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
+                    ))}
+                  </div>
                 </div>
                 <div className="card-elevated p-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -1719,6 +1734,11 @@ const CreatorDashboard = () => {
                   </div>
                   <p className="text-xl font-bold text-foreground">{analyticsTotals.orders}</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">Orders</p>
+                  <div className="sparkline" aria-hidden="true">
+                    {[45, 62, 70, 65, 78, 85, 80, 92, 88, 95, 90, 100].map((h, i) => (
+                      <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

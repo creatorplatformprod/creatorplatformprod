@@ -97,10 +97,20 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.025em;
+  }
+  h1 { letter-spacing: -0.035em; }
+  p {
+    line-height: 1.7;
   }
 
   input,
@@ -134,13 +144,24 @@
     box-shadow: var(--shadow-post);
     border: 1px solid hsl(var(--border));
     border-radius: 1rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
   }
 
   .post-card:hover {
-    box-shadow: var(--shadow-post-hover);
-    transform: translateY(-2px);
-    border-color: hsl(239 84% 67% / 0.15);
+    box-shadow: var(--shadow-post-hover), 0 12px 28px -8px rgba(139, 92, 246, 0.25);
+    transform: translateY(-4px);
+    border-color: hsl(239 84% 67% / 0.2);
+  }
+  .post-card:hover .post-card-media-img {
+    transform: scale(1.015);
+  }
+  .post-card-media-img {
+    transform: scale(1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .post-card:hover .post-card-media-img {
+      transform: none;
+    }
   }
 
   .blur-overlay {
@@ -199,6 +220,11 @@
     padding: 32px;
     margin-bottom: 24px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(139,92,246,0.04);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .card-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 12px 32px -8px rgba(139,92,246,0.28);
   }
 
   .card-title {
@@ -735,6 +761,108 @@
   .image-loaded {
     opacity: 1;
     transition: opacity 0.35s ease-out;
+  }
+
+  /* ========================================
+     PREMIUM POLISH — Page enter, card hover, buttons, reveal, mesh, sparklines
+     ======================================== */
+  @keyframes page-enter {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .page-enter {
+    animation: page-enter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .page-enter {
+      animation: none;
+      opacity: 1;
+    }
+  }
+
+  .btn-press:active {
+    transform: scale(0.97);
+  }
+  .btn-press {
+    transition: transform 0.15s ease;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal .reveal-stagger-1 { transition-delay: 0.05s; }
+  .reveal .reveal-stagger-2 { transition-delay: 0.1s; }
+  .reveal .reveal-stagger-3 { transition-delay: 0.15s; }
+  .reveal .reveal-stagger-4 { transition-delay: 0.2s; }
+  .reveal .reveal-stagger-5 { transition-delay: 0.25s; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .gradient-mesh-bg {
+    position: relative;
+  }
+  .gradient-mesh-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 20%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(124, 58, 237, 0.04) 0%, transparent 50%),
+      radial-gradient(ellipse 70% 50% at 50% 50%, rgba(167, 139, 250, 0.03) 0%, transparent 55%);
+    animation: gradient-mesh-drift 18s ease-in-out infinite;
+  }
+  @keyframes gradient-mesh-drift {
+    0%, 100% { opacity: 1; transform: translate(0, 0) scale(1); }
+    33% { opacity: 0.95; transform: translate(1%, 1%) scale(1.02); }
+    66% { opacity: 1; transform: translate(-0.5%, -0.5%) scale(0.98); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gradient-mesh-bg::before {
+      animation: none;
+    }
+  }
+
+  .avatar-brand-ring {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px rgba(139, 92, 246, 0.5);
+  }
+
+  .sparkline {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 28px;
+    margin-top: 8px;
+  }
+  .sparkline-bar {
+    flex: 1;
+    min-width: 4px;
+    border-radius: 2px 2px 0 0;
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.5) 0%, rgba(124, 58, 237, 0.35) 100%);
+  }
+
+  .card-elevated {
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .card-elevated:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px -8px rgba(139, 92, 246, 0.22);
   }
 
   /* ========================================

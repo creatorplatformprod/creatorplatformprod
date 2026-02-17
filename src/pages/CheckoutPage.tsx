@@ -750,7 +750,7 @@ const CheckoutPage = () => {
                       if (provider) handleProviderSelect(provider);
                     }}
                     disabled={isProcessing || !(activeFanEmail || customerEmail) || !selectedProvider}
-                    className="checkout-pay-btn w-full"
+                    className="checkout-pay-btn btn-press w-full"
                   >
                     {isProcessing ? (
                       <>
