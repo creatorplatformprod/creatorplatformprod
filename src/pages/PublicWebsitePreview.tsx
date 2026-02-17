@@ -398,6 +398,9 @@ const PublicWebsitePreview = () => {
               <div className="bg-black rounded-[36px] overflow-hidden border border-white/5 relative">
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-[#0f1219] rounded-full border border-white/5 z-10" />
+                {/* Keep left/right inner edges visually symmetric */}
+                <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-[3px] bg-black" />
+                <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-[3px] bg-black" />
                 <div className="relative mx-auto overflow-hidden [--viewport-w:430px] [--viewport-h:932px] [--scale:0.60] sm:[--scale:0.72] md:[--scale:0.80] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                   <iframe
                     title="Mobile preview"
