@@ -284,19 +284,19 @@ const PublicWebsitePreview = () => {
       <div className="max-w-6xl mx-auto px-4 py-6">
         {/* Status Banners */}
         {hasChanges && (
-          <div className="mb-4 alert-warning">
+          <div className="mb-4 alert-warning w-full max-w-[1060px] mx-auto">
             <p className="text-sm text-amber-600 dark:text-amber-400">
               You have unsaved changes. Click "Save Changes" to publish them.
             </p>
           </div>
         )}
         {publishError && (
-          <div className="mb-4 alert-danger">
+          <div className="mb-4 alert-danger w-full max-w-[1060px] mx-auto">
             <p className="text-sm text-red-600 dark:text-red-400">{publishError}</p>
           </div>
         )}
         {!hasChanges && published && (
-          <div className="mb-4 alert-success">
+          <div className="mb-4 alert-success w-full max-w-[1060px] mx-auto">
             <p className="text-sm text-green-600 dark:text-green-400">
               All changes are published. Your public website is up to date.
             </p>
@@ -304,7 +304,7 @@ const PublicWebsitePreview = () => {
         )}
 
         {/* Controls Bar: Device Switcher + URL + Actions */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5">
+        <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between gap-3 mb-5 w-full max-w-[1060px] mx-auto">
           {/* Device Switcher */}
           <div className="flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/[0.06]">
             <button
@@ -332,7 +332,7 @@ const PublicWebsitePreview = () => {
           </div>
 
           {/* URL Bar + Copy */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center gap-2 w-full sm:w-auto">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] rounded-lg border border-white/[0.06]">
               <Link2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
               <span className="text-[11px] text-muted-foreground font-mono">sixsevencreator.com/{username}</span>
@@ -370,7 +370,7 @@ const PublicWebsitePreview = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.30] sm:[--scale:0.40] md:[--scale:0.55] lg:[--scale:0.68] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                    <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.24] sm:[--scale:0.36] md:[--scale:0.55] lg:[--scale:0.68] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                       <iframe
                         title="Desktop preview"
                         src={previewUrl}
@@ -380,30 +380,30 @@ const PublicWebsitePreview = () => {
                   </div>
                 </div>
                 {/* Laptop base */}
-                <div className="mt-4 flex justify-center">
+                <div className="mt-4 hidden sm:flex justify-center">
                   <div className="w-[88%] h-[18px] bg-gradient-to-b from-[#1b2331] to-[#0f131b] rounded-[999px] shadow-[0_16px_40px_rgba(2,6,23,0.5)]" />
                 </div>
-                <div className="mt-1 flex justify-center">
+                <div className="mt-1 hidden sm:flex justify-center">
                   <div className="w-[72%] h-[10px] bg-gradient-to-b from-[#2f3746] to-[#171c27] rounded-[999px] [transform:perspective(1200px)_rotateX(10deg)] shadow-[0_10px_24px_rgba(2,6,23,0.45)]" />
                 </div>
                 {/* Ambient glow */}
-                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-16 bg-indigo-500/[0.06] rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-16 bg-indigo-500/[0.06] rounded-full blur-2xl pointer-events-none hidden sm:block" />
               </div>
             </div>
           )}
 
           {/* Mobile Frame */}
           {activeDevice === 'mobile' && (
-            <div className="relative bg-[#0b0f16] rounded-[44px] p-5 shadow-[0_30px_80px_rgba(2,6,23,0.6)] border border-white/10 w-[300px] sm:w-[350px] md:w-[380px]">
-              <div className="bg-black rounded-[36px] overflow-hidden border border-white/5 relative">
+            <div className="relative bg-[#0b0f16] rounded-[40px] p-3 shadow-[0_30px_80px_rgba(2,6,23,0.6)] border border-white/10 w-[300px] sm:w-[350px] md:w-[380px]">
+              <div className="bg-black rounded-[32px] overflow-hidden border border-white/5 relative">
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-[#0f1219] rounded-full border border-white/5 z-10" />
-                <div className="relative mx-auto w-[258px] h-[559px] sm:w-[310px] sm:h-[671px] md:w-[344px] md:h-[744px]">
+                <div className="relative mx-auto w-[272px] h-[589px] sm:w-[322px] sm:h-[698px] md:w-[352px] md:h-[763px]">
                   <iframe
                     title="Mobile preview"
                     src={previewUrl}
                     className="absolute inset-0 w-full h-full"
-                    scrolling="yes"
+                    scrolling="auto"
                     style={{ touchAction: 'pan-y' }}
                   />
                 </div>
