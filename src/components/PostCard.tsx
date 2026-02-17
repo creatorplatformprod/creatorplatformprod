@@ -72,6 +72,19 @@ const PostCard = ({ collection }: PostCardProps) => {
     return () => window.clearTimeout(timer);
   }, [allImagesLoaded]);
 
+  useEffect(() => {
+    if (allImagesLoaded) return;
+    const totalImages = Math.min(collection.images.length, collection.cardLayout.maxImages);
+    if (totalImages <= 0) {
+      setAllImagesLoaded(true);
+      return;
+    }
+    const timeout = window.setTimeout(() => {
+      setAllImagesLoaded(true);
+    }, 4500);
+    return () => window.clearTimeout(timeout);
+  }, [allImagesLoaded, collection.images.length, collection.cardLayout.maxImages]);
+
   const persistEngagement = (nextLikes: number, nextShares: number, nextLiked: boolean) => {
     setCurrentLikes(nextLikes);
     setCurrentShares(nextShares);
@@ -246,16 +259,27 @@ const PostCard = ({ collection }: PostCardProps) => {
 
         {/* Center unlock button */}
         <div className="absolute inset-0 flex items-center justify-center z-[6]">
-          <Button
-            className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm px-6 py-2 rounded-full font-medium"
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(getBlurredTarget());
-            }}
-          >
-            <Lock className="w-4 h-4 mr-2" />
-            Unlock
-          </Button>
+          {!cardRevealReady ? (
+            <div
+              className="skeleton-shimmer h-10 w-[132px] rounded-full border border-white/20 bg-white/10"
+              aria-hidden="true"
+            />
+          ) : (
+            <Button
+              className="relative overflow-hidden bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm px-6 py-2 rounded-full font-medium"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(getBlurredTarget());
+              }}
+            >
+              <span
+                className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"
+                style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
+              />
+              <Lock className="w-4 h-4 mr-2" />
+              Unlock
+            </Button>
+          )}
         </div>
       </div>
     );

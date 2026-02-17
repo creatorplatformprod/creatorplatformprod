@@ -125,6 +125,14 @@ const StatusCardWithMedia = ({
     return () => window.clearTimeout(timer);
   }, [isMediaLoaded]);
 
+  useEffect(() => {
+    if (visibleMediaItems.length === 0 || isMediaLoaded) return;
+    const timeout = window.setTimeout(() => {
+      setIsMediaLoaded(true);
+    }, 4500);
+    return () => window.clearTimeout(timeout);
+  }, [visibleMediaItems.length, isMediaLoaded]);
+
   const persistEngagement = (nextLikes: number, nextShares: number, nextLiked: boolean) => {
     setCurrentLikes(nextLikes);
     setCurrentShares(nextShares);
@@ -259,6 +267,7 @@ const StatusCardWithMedia = ({
                           mediaRevealReady ? 'opacity-100' : 'opacity-0'
                         }`}
                         onLoad={handleMediaItemLoad}
+                        onError={handleMediaItemLoad}
                       />
                       {item.type === 'video' && (
                         <div className="absolute inset-0 bg-black/25 flex items-center justify-center pointer-events-none">
@@ -291,6 +300,7 @@ const StatusCardWithMedia = ({
                     className="w-full h-auto max-h-96 object-cover"
                     poster={visibleMediaItems[0].thumbnail}
                     onLoadedData={() => setIsMediaLoaded(true)}
+                    onError={() => setIsMediaLoaded(true)}
                   />
                 ) : (
                   <div className="relative">
@@ -299,6 +309,7 @@ const StatusCardWithMedia = ({
                       alt={visibleMediaItems[0].alt || title}
                       className="w-full h-auto max-h-96 object-cover"
                       onLoad={() => setIsMediaLoaded(true)}
+                      onError={() => setIsMediaLoaded(true)}
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center group-hover:bg-opacity-20 transition-all duration-300">
                       <div className="bg-white/90 rounded-full p-4 group-hover:bg-white group-hover:scale-110 transition-all duration-300">
