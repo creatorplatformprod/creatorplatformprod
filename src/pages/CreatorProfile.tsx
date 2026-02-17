@@ -36,7 +36,7 @@ const PINK_LEMONADE_IMAGE_IDS = [
 const MOCK_SOURCE_PACKS: MockSourcePack[] = [
   {
     key: "pink-lemonade",
-    avatar: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200",
+    avatar: pexelsImageUrl(7346629, 420) + "&fit=crop",
     cover: pexelsImageUrl(7346691, 1800) + "&fit=crop",
     photos: PINK_LEMONADE_IMAGE_IDS.map((id) => pexelsImageUrl(id, 1600))
   }

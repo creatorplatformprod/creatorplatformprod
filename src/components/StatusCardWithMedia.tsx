@@ -223,13 +223,27 @@ const StatusCardWithMedia = ({
       <div className="p-5">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <img
-              src={user.avatar}
-              alt={user.name}
-              className="w-8 h-8 rounded-full object-cover"
-              loading="eager"
-              referrerPolicy="no-referrer"
-            />
+            {user.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-8 h-8 rounded-full object-cover"
+                crossOrigin="anonymous"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const img = e.currentTarget;
+                  if (!img.dataset.retried) {
+                    img.dataset.retried = '1';
+                    img.crossOrigin = '';
+                    img.src = user.avatar;
+                  }
+                }}
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-[10px] font-bold text-white">
+                {(user.name || '?')[0]?.toUpperCase()}
+              </div>
+            )}
             <div>
               <div className="flex items-center gap-1">
                 <h3 className="text-sm font-semibold text-foreground">{user.name}</h3>
