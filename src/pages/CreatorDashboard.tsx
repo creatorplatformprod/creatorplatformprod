@@ -871,15 +871,45 @@ const CreatorDashboard = () => {
       setError('Please choose one or more content files to upload');
       return;
     }
-    if (!selectedCollectionId) {
-      setError('Create or select a collection before uploading content');
-      return;
-    }
 
     try {
       setUploadingCollectionMedia(true);
       setError('');
-      const targetCollectionId = selectedCollectionId;
+      let targetCollectionId = selectedCollectionId;
+      if (!targetCollectionId) {
+        if (!collectionForm.title.trim()) {
+          setError('Collection title is required before uploading content');
+          return;
+        }
+        const tags = collectionForm.tags.split(',').map(t => t.trim()).filter(t => t);
+        const tagsWithLayout = mergeTagsWithLayout(tags, {
+          template: collectionForm.cardTemplate,
+          previewCount: collectionForm.previewImages
+        });
+        const createResult = await api.createCollection({
+          title: collectionForm.title,
+          description: collectionForm.description || undefined,
+          price: Number(collectionForm.price) || 0,
+          currency: collectionForm.currency,
+          tags: tagsWithLayout.length > 0 ? tagsWithLayout : undefined,
+          media: []
+        });
+        if (!createResult?.success) {
+          setError(createResult?.error || 'Failed to create collection');
+          return;
+        }
+        targetCollectionId =
+          createResult.collection?._id ||
+          createResult.collection?.id ||
+          createResult.collectionId ||
+          createResult.id ||
+          '';
+        if (!targetCollectionId) {
+          setError('Collection created but no ID was returned');
+          return;
+        }
+        setSelectedCollectionId(targetCollectionId);
+      }
 
       let uploadedCount = 0;
       for (const file of collectionFiles) {
@@ -966,6 +996,30 @@ const CreatorDashboard = () => {
       setSelectedCollectionId(createdId);
       collectionBaselineRef.current = serializeForDirtyCheck(collectionForm);
       setIsCollectionDirty(false);
+      await loadUserData();
+      if (collectionFiles.length > 0) {
+        let uploadedCount = 0;
+        for (const file of collectionFiles) {
+          const sourceDimensions = await getFileDimensions(file);
+          const uploadResult = await api.uploadFile(file, sourceDimensions);
+          if (!uploadResult?.url) {
+            throw new Error(`Upload failed for ${file.name}`);
+          }
+          const attachResult = await api.addCollectionMedia(createdId, {
+            url: uploadResult.url,
+            thumbnailUrl: uploadResult.thumbnailUrl || uploadResult.url,
+            mediaType: uploadResult.mediaType,
+            size: uploadResult.size,
+            width: uploadResult.width ?? sourceDimensions.width,
+            height: uploadResult.height ?? sourceDimensions.height
+          });
+          if (!attachResult.success) {
+            throw new Error(attachResult.error || `Failed to attach ${file.name}`);
+          }
+          uploadedCount += 1;
+        }
+        setSuccess(`Collection created and uploaded ${uploadedCount} item${uploadedCount === 1 ? '' : 's'}.`);
+      }
       setCollectionFiles([]);
       setCollectionPreviews([]);
       await loadUserData();
@@ -1257,6 +1311,16 @@ const CreatorDashboard = () => {
 
   const templateMeta =
     COLLECTION_CARD_TEMPLATES[collectionForm.cardTemplate] || COLLECTION_CARD_TEMPLATES[DEFAULT_COLLECTION_TEMPLATE];
+  const availableTemplateOptions = COLLECTION_CARD_TEMPLATE_OPTIONS.filter((option) => (
+    collectionEditorMedia.length === 0 || option.maxCount <= collectionEditorMedia.length
+  ));
+  const randomPreviewCountForTemplate = (template: CollectionCardTemplate, mediaCount: number) => {
+    const meta = COLLECTION_CARD_TEMPLATES[template] || COLLECTION_CARD_TEMPLATES[DEFAULT_COLLECTION_TEMPLATE];
+    const max = Math.max(1, Math.min(meta.maxCount, mediaCount || meta.maxCount));
+    if (max <= 1) return 1;
+    const min = Math.max(1, max - 2);
+    return min + Math.floor(Math.random() * (max - min + 1));
+  };
   const maxPreviewCount = Math.max(
     1,
     Math.min(templateMeta.maxCount, collectionEditorMedia.length || templateMeta.maxCount)
@@ -1271,13 +1335,34 @@ const CreatorDashboard = () => {
   });
 
   useEffect(() => {
-    if (collectionForm.previewImages > maxPreviewCount) {
+    if (
+      collectionEditorMedia.length > 0 &&
+      availableTemplateOptions.length > 0 &&
+      !availableTemplateOptions.some((option) => option.value === collectionForm.cardTemplate)
+    ) {
       setCollectionForm((prev) => ({
         ...prev,
-        previewImages: maxPreviewCount
+        cardTemplate: availableTemplateOptions[0].value,
+        previewImages: randomPreviewCountForTemplate(availableTemplateOptions[0].value, collectionEditorMedia.length)
+      }));
+      return;
+    }
+    if (
+      collectionForm.previewImages > maxPreviewCount ||
+      collectionForm.previewImages < 1
+    ) {
+      setCollectionForm((prev) => ({
+        ...prev,
+        previewImages: randomPreviewCountForTemplate(prev.cardTemplate, collectionEditorMedia.length)
       }));
     }
-  }, [collectionForm.previewImages, maxPreviewCount]);
+  }, [
+    collectionForm.previewImages,
+    collectionForm.cardTemplate,
+    maxPreviewCount,
+    collectionEditorMedia.length,
+    availableTemplateOptions
+  ]);
 
   const buildChartSeries = (summary: any) => {
     if (!summary?.range?.start || !summary?.range?.end) return [];
@@ -2557,7 +2642,7 @@ const CreatorDashboard = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-foreground">Collection Editor</h3>
                   <p className="text-xs text-muted-foreground">
-                    {selectedCollectionId ? `Editing: ${selectedCollection?.title || collectionForm.title || 'Untitled collection'}` : 'Create a collection first, then upload content.'}
+                    {selectedCollectionId ? `Editing: ${selectedCollection?.title || collectionForm.title || 'Untitled collection'}` : 'Add details and content first, then create the collection.'}
                   </p>
                 </div>
                 {selectedCollectionId && (
@@ -2628,49 +2713,57 @@ const CreatorDashboard = () => {
                       placeholder="art, photography, exclusive"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="input-label">Card Template</label>
-                      <select
-                        value={collectionForm.cardTemplate}
-                        onChange={(e) => {
-                          const nextTemplate = e.target.value as CollectionCardTemplate;
-                          const templateInfo = COLLECTION_CARD_TEMPLATES[nextTemplate] || COLLECTION_CARD_TEMPLATES[DEFAULT_COLLECTION_TEMPLATE];
-                          setCollectionForm((prev) => ({
-                            ...prev,
-                            cardTemplate: nextTemplate,
-                            previewImages: Math.min(Math.max(1, Number(prev.previewImages) || 1), templateInfo.maxCount)
-                          }));
-                        }}
-                        className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
-                      >
-                        {COLLECTION_CARD_TEMPLATE_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
+                  <div>
+                    <label className="input-label">Card Template</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {COLLECTION_CARD_TEMPLATE_OPTIONS.map((option) => {
+                        const isAvailable = collectionEditorMedia.length === 0 || option.maxCount <= collectionEditorMedia.length;
+                        const isActive = collectionForm.cardTemplate === option.value;
+                        const previewLayout = buildCardLayout(option.maxCount, {
+                          template: option.value,
+                          previewCount: option.maxCount
+                        });
+                        const previewSlots = Array.from({ length: Math.min(option.maxCount, 6) }, (_, slotIndex) => slotIndex);
+                        return (
+                          <button
+                            key={option.value}
+                            type="button"
+                            disabled={!isAvailable}
+                            onClick={() => {
+                              if (!isAvailable) return;
+                              setCollectionForm((prev) => ({
+                                ...prev,
+                                cardTemplate: option.value,
+                                previewImages: randomPreviewCountForTemplate(option.value, collectionEditorMedia.length)
+                              }));
+                            }}
+                            className={`rounded-md border p-2 text-left transition-all ${
+                              isActive
+                                ? 'border-primary/60 bg-primary/10'
+                                : isAvailable
+                                ? 'border-border bg-background hover:border-primary/40'
+                                : 'border-border/40 bg-muted/20 opacity-50 cursor-not-allowed'
+                            }`}
+                          >
+                            <div className="text-[11px] font-medium text-foreground">{option.label}</div>
+                            <div className="text-[10px] text-muted-foreground mb-1">Up to {option.maxCount}</div>
+                            <div className="h-14 rounded border border-border/60 overflow-hidden bg-muted/20 p-1">
+                              <div className={previewLayout.gridClasses.replace('h-full', 'h-full')}>
+                                {previewSlots.map((slotIndex) => (
+                                  <div
+                                    key={`${option.value}-${slotIndex}`}
+                                    className={`rounded-[2px] bg-primary/35 ${previewLayout.imageSpans?.[slotIndex] || ''}`}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
-                    <div>
-                      <label className="input-label">Images On Card</label>
-                      <Input
-                        type="number"
-                        min={1}
-                        max={maxPreviewCount}
-                        value={collectionForm.previewImages}
-                        onChange={(e) => {
-                          const parsed = Number.parseInt(e.target.value || '1', 10);
-                          const safe = Number.isFinite(parsed) ? parsed : 1;
-                          setCollectionForm((prev) => ({
-                            ...prev,
-                            previewImages: Math.max(1, Math.min(safe, maxPreviewCount))
-                          }));
-                        }}
-                      />
-                      <p className="text-[10px] text-muted-foreground mt-1">
-                        Max {maxPreviewCount} for this template and current media.
-                      </p>
-                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      Templates are filtered by how many media items you added. Card image count is auto-selected.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -2679,7 +2772,7 @@ const CreatorDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-medium text-muted-foreground">Live Card Preview</div>
                   <div className="text-[11px] text-muted-foreground">
-                    Showing {Math.min(effectivePreviewCount, collectionEditorMedia.length || effectivePreviewCount)} of {collectionEditorMedia.length || effectivePreviewCount}
+                    Showing {Math.min(effectivePreviewCount, collectionEditorMedia.length || effectivePreviewCount)} of {collectionEditorMedia.length || effectivePreviewCount} (auto)
                   </div>
                 </div>
                 <div className="relative h-44 rounded-md overflow-hidden border border-border bg-muted/20">
@@ -2753,16 +2846,10 @@ const CreatorDashboard = () => {
               <div className="border-t border-border/70 pt-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-semibold text-foreground">Media Manager</h3>
-                  <span className="text-xs text-muted-foreground">Step 2 of 2: upload and organize content</span>
+                  <span className="text-xs text-muted-foreground">Add content anytime. Collection will be created automatically when needed.</span>
                 </div>
 
-                {!selectedCollectionId && (
-                  <div className="border border-dashed border-border rounded-lg p-5 text-center text-sm text-muted-foreground">
-                    Create or select a collection from the left panel to enable uploads.
-                  </div>
-                )}
-
-                <div className={`grid grid-cols-1 lg:grid-cols-2 gap-3 ${!selectedCollectionId ? 'opacity-60 pointer-events-none' : ''}`}>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                   <div className="space-y-3">
                     <div>
                       <label className="input-label">Content (image/video, max 25MB each)</label>
@@ -2812,10 +2899,10 @@ const CreatorDashboard = () => {
                     <Button
                       type="button"
                       onClick={handleUploadCollectionMedia}
-                      disabled={uploadingCollectionMedia || !selectedCollectionId}
+                      disabled={uploadingCollectionMedia || collectionFiles.length === 0}
                       className="w-full dash-btn-primary rounded-full h-9 text-xs"
                     >
-                      {uploadingCollectionMedia ? 'Uploading...' : 'Upload to Selected Collection'}
+                      {uploadingCollectionMedia ? 'Uploading...' : (selectedCollectionId ? 'Upload to Collection' : 'Create + Upload')}
                     </Button>
                   </div>
 
