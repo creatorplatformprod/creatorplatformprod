@@ -226,7 +226,17 @@ const StatusCardWithMedia = ({
             <img
               src={user.avatar}
               alt={user.name}
-              className="w-8 h-8 rounded-full object-cover"
+              className="w-8 h-8 rounded-full object-cover bg-secondary"
+              onError={(e) => {
+                const img = e.currentTarget;
+                if (img.dataset.fallbackApplied) return;
+                img.dataset.fallbackApplied = '1';
+                img.style.display = 'none';
+                const fallback = document.createElement('div');
+                fallback.className = 'w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-sky-500 flex items-center justify-center text-[10px] font-bold text-white';
+                fallback.textContent = (user.name || '?')[0]?.toUpperCase();
+                img.parentNode?.insertBefore(fallback, img);
+              }}
             />
             <div>
               <div className="flex items-center gap-1">

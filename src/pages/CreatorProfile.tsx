@@ -748,7 +748,7 @@ const CreatorProfile = () => {
               )}
               <div className="template-stats flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-3">
                 <span className="stat-pill">{allCollections.length} Collections</span>
-                <span className="stat-pill">{formattedStatusData.length} Posts</span>
+                <span className="stat-pill">{(shouldUseMockData ? mockStatusCards.length : formattedStatusData.length)} Posts</span>
               </div>
             </div>
             {allCollections.length > 0 && (
@@ -866,7 +866,7 @@ const CreatorProfile = () => {
                   <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Collections</div>
                 </div>
                 <div className="text-center py-2 rounded-lg bg-gray-50">
-                  <div className="text-base font-bold text-foreground">{formattedStatusData.length}</div>
+                  <div className="text-base font-bold text-foreground">{shouldUseMockData ? mockStatusCards.length : formattedStatusData.length}</div>
                   <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Posts</div>
                 </div>
               </div>
