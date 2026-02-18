@@ -708,7 +708,7 @@ const CreatorProfile = () => {
       {/* Profile Hero Section */}
       <div className="profile-hero template-hero relative">
         {/* Cover Photo Area with gradient overlay */}
-        <div className="template-cover relative h-52 sm:h-64 lg:h-72 overflow-hidden">
+        <div className="template-cover relative h-64 sm:h-80 lg:h-[22rem] overflow-hidden">
           {heroCoverImage ? (
             <img
               src={heroCoverImage}
@@ -726,8 +726,8 @@ const CreatorProfile = () => {
         </div>
 
         {/* Profile Info */}
-        <div className={`template-profile-shell relative max-w-[1400px] mx-auto px-4 -mt-20 sm:-mt-24 pb-4 transition-all duration-300 ${mainOffsetClass}`}>
-          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-4">
+        <div className={`template-profile-shell relative max-w-[1400px] mx-auto px-4 -mt-16 sm:-mt-20 pb-6 sm:pb-8 transition-all duration-300 ${mainOffsetClass}`}>
+          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
                 src={profileAvatarImage}
@@ -747,7 +747,7 @@ const CreatorProfile = () => {
                 </svg>
               </div>
               {creatorData?.bio && (
-                <p className="template-bio text-sm text-muted-foreground mt-1 line-clamp-2">{creatorData.bio}</p>
+                <p className="template-bio text-sm text-muted-foreground mt-1 line-clamp-3 break-words max-w-2xl">{creatorData.bio}</p>
               )}
               <div className="template-stats flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-3">
                 <span className="stat-pill">{allCollections.length} Collections</span>
@@ -769,7 +769,7 @@ const CreatorProfile = () => {
           </div>
 
           {/* Content Filter Tabs - Integrated into hero */}
-          <div className={`template-filter-shell template-filter-container mt-4 mx-auto sm:mx-0 flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
+          <div className={`template-filter-shell template-filter-container mt-5 mx-auto sm:mx-0 flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
             {(['all', 'collections', 'posts'] as const).map(filter => (
               <button
                 key={filter}

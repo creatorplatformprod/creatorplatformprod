@@ -302,6 +302,7 @@ const CreatorDashboard = () => {
   const [profileAutoSaveState, setProfileAutoSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [telegramAlertsEnabled, setTelegramAlertsEnabled] = useState(false);
   const [isEditingTelegramToken, setIsEditingTelegramToken] = useState(false);
+  const [telegramBotTokenConfigured, setTelegramBotTokenConfigured] = useState(false);
   const cachedTelegramTokenRef = useRef('');
   const cachedTelegramChatIdRef = useRef('');
 
@@ -389,6 +390,22 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const serializeForDirtyCheck = (value: any) => JSON.stringify(value ?? {});
 
+  const buildProfileDraftSnapshot = () => {
+    const snapshot: any = {
+      ...profileData,
+      telegramUsername: profileData.telegramUsername.trim().replace(/^@/, '')
+    };
+    if (!telegramAlertsEnabled) {
+      snapshot.telegramBotToken = '';
+      snapshot.telegramChatId = '';
+      return snapshot;
+    }
+    if (telegramBotTokenConfigured && !isEditingTelegramToken && !snapshot.telegramBotToken.trim()) {
+      delete snapshot.telegramBotToken;
+    }
+    return snapshot;
+  };
+
   const profileValidationErrors = useMemo(() => {
     const errors: Record<string, string> = {};
     const telegramUsername = profileData.telegramUsername.trim().replace(/^@/, '');
@@ -410,7 +427,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       errors.domainEmail = 'Use a valid email address.';
     }
     if (telegramAlertsEnabled) {
-      const hasStoredToken = !!profileData.telegramBotToken.trim() && !isEditingTelegramToken;
+      const hasStoredToken = telegramBotTokenConfigured && !isEditingTelegramToken;
       if (!hasStoredToken && !TELEGRAM_BOT_TOKEN_REGEX.test(profileData.telegramBotToken.trim())) {
         errors.telegramBotToken = 'Use a valid BotFather token (e.g., 123456789:ABC...).';
       }
@@ -419,7 +436,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       }
     }
     return errors;
-  }, [profileData, telegramAlertsEnabled, isEditingTelegramToken]);
+  }, [profileData, telegramAlertsEnabled, isEditingTelegramToken, telegramBotTokenConfigured]);
 
   useEffect(() => {
     if (!profileBaselineRef.current) {
@@ -506,6 +523,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       cachedTelegramTokenRef.current = profileData.telegramBotToken;
       cachedTelegramChatIdRef.current = profileData.telegramChatId;
       setIsEditingTelegramToken(false);
+      setTelegramBotTokenConfigured(false);
       setProfileData((prev) => ({
         ...prev,
         telegramBotToken: '',
@@ -513,6 +531,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       }));
       return;
     }
+    setTelegramBotTokenConfigured(
+      !!String(cachedTelegramTokenRef.current || profileData.telegramBotToken).trim()
+    );
     setProfileData((prev) => ({
       ...prev,
       telegramBotToken: prev.telegramBotToken || cachedTelegramTokenRef.current,
@@ -728,9 +749,13 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
           ...(draft ? { ...nextProfileData, ...draft } : nextProfileData),
           coverOverlay: DEFAULT_COVER_OVERLAY
         };
+        const hasTokenConfigured =
+          Boolean((userResult.user as any).hasTelegramBotToken) ||
+          !!String(mergedProfileData.telegramBotToken || '').trim();
         setProfileData(mergedProfileData);
+        setTelegramBotTokenConfigured(hasTokenConfigured);
         setTelegramAlertsEnabled(
-          !!String(mergedProfileData.telegramBotToken || '').trim() ||
+          hasTokenConfigured ||
           !!String(mergedProfileData.telegramChatId || '').trim()
         );
         setIsEditingTelegramToken(false);
@@ -863,10 +888,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       try {
         const key = getProfileDraftKey(user.username);
         if (!key) return;
-        const snapshot = {
-          ...profileData,
-          telegramUsername: profileData.telegramUsername.trim().replace(/^@/, '')
-        };
+        const snapshot = buildProfileDraftSnapshot();
         localStorage.setItem(key, JSON.stringify(snapshot));
         profileBaselineRef.current = serializeForDirtyCheck(profileData);
         setIsProfileDirty(false);
@@ -976,7 +998,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
     if (!user?.username) return;
     const key = getProfileDraftKey(user.username);
     if (!key) return;
-    const snapshot = { ...profileData } as any;
+    const snapshot = buildProfileDraftSnapshot();
     // Preserve the published avatar unless user explicitly replaced it.
     if (
       typeof snapshot.avatar === 'string' &&
@@ -1027,10 +1049,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       if (!user?.username) return;
       const key = getProfileDraftKey(user.username);
       if (!key) return;
-      const snapshot = {
-        ...profileData,
-        telegramUsername: profileData.telegramUsername.trim().replace(/^@/, '')
-      };
+      const snapshot = buildProfileDraftSnapshot();
       localStorage.setItem(key, JSON.stringify(snapshot));
       profileBaselineRef.current = serializeForDirtyCheck(profileData);
       setIsProfileDirty(false);
@@ -1038,6 +1057,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       markPublicWebsiteDirty();
       if (telegramAlertsEnabled && profileData.telegramBotToken.trim()) {
         setIsEditingTelegramToken(false);
+        setTelegramBotTokenConfigured(true);
       }
       toast.success('Draft saved to preview page.', {
         id: 'profile-draft-saved',
@@ -1882,8 +1902,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
     });
   };
 
-  const loadAnalytics = async () => {
+  const loadAnalytics = async (options?: { includeSalesList?: boolean }) => {
     if (!user?.username) return;
+    const includeSalesList = options?.includeSalesList ?? true;
     try {
       setAnalyticsLoading(true);
       setError('');
@@ -1917,23 +1938,25 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
         setAnalyticsSeries([]);
       }
 
-      const listResult = await api.getSalesList({
-        range: analyticsRange,
-        status: analyticsStatus,
-        collectionId: collectionParam,
-        currency: analyticsCurrency !== 'all' ? analyticsCurrency : undefined,
-        limit: salesLimit,
-        offset: salesOffset,
-        sort: salesSort,
-        search: salesSearch || undefined
-      });
+      if (includeSalesList) {
+        const listResult = await api.getSalesList({
+          range: analyticsRange,
+          status: analyticsStatus,
+          collectionId: collectionParam,
+          currency: analyticsCurrency !== 'all' ? analyticsCurrency : undefined,
+          limit: salesLimit,
+          offset: salesOffset,
+          sort: salesSort,
+          search: salesSearch || undefined
+        });
 
-      if (listResult.success) {
-        setSalesList(listResult.sales || []);
-        setSalesTotal(listResult.total || 0);
-      } else {
-        setSalesList([]);
-        setSalesTotal(0);
+        if (listResult.success) {
+          setSalesList(listResult.sales || []);
+          setSalesTotal(listResult.total || 0);
+        } else {
+          setSalesList([]);
+          setSalesTotal(0);
+        }
       }
     } catch (err: any) {
       setError(err.message || 'Failed to load analytics');
@@ -1943,10 +1966,48 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
   };
 
   useEffect(() => {
-    if (activeTab !== 'analytics') return;
-    loadAnalytics();
+    if (activeTab !== 'analytics' && activeTab !== 'overview') return;
+    loadAnalytics({ includeSalesList: activeTab === 'analytics' });
   }, [
     activeTab,
+    analyticsRange,
+    analyticsGroupBy,
+    analyticsMetric,
+    analyticsStatus,
+    analyticsCollectionId,
+    analyticsCurrency,
+    salesOffset,
+    salesLimit,
+    salesSort,
+    salesSearch
+  ]);
+
+  useEffect(() => {
+    if (activeTab !== 'analytics' && activeTab !== 'overview') return;
+
+    const intervalId = window.setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        loadAnalytics({ includeSalesList: activeTab === 'analytics' });
+      }
+    }, 10000);
+
+    const handleFocusRefresh = () => {
+      if (document.visibilityState === 'visible') {
+        loadAnalytics({ includeSalesList: activeTab === 'analytics' });
+      }
+    };
+
+    window.addEventListener('focus', handleFocusRefresh);
+    document.addEventListener('visibilitychange', handleFocusRefresh);
+
+    return () => {
+      window.clearInterval(intervalId);
+      window.removeEventListener('focus', handleFocusRefresh);
+      document.removeEventListener('visibilitychange', handleFocusRefresh);
+    };
+  }, [
+    activeTab,
+    user?.username,
     analyticsRange,
     analyticsGroupBy,
     analyticsMetric,
@@ -2773,7 +2834,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                       <MessageSquare className="w-4 h-4" />
                       Telegram Bot Token
                     </label>
-                    {!isEditingTelegramToken && profileData.telegramBotToken.trim() ? (
+                    {!isEditingTelegramToken && telegramBotTokenConfigured ? (
                       <div className="space-y-2">
                         <Input type="password" value="••••••••••••••••••••" disabled />
                         <Button
@@ -2781,9 +2842,12 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                           size="sm"
                           variant="outline"
                           onClick={() => {
-                            cachedTelegramTokenRef.current = profileData.telegramBotToken;
+                            if (profileData.telegramBotToken.trim()) {
+                              cachedTelegramTokenRef.current = profileData.telegramBotToken;
+                            }
                             setProfileData((prev) => ({ ...prev, telegramBotToken: '' }));
                             setIsEditingTelegramToken(true);
+                            setTelegramBotTokenConfigured(false);
                           }}
                         >
                           <Edit className="w-4 h-4 mr-1" />
@@ -2809,6 +2873,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                             onClick={() => {
                               setProfileData((prev) => ({ ...prev, telegramBotToken: cachedTelegramTokenRef.current }));
                               setIsEditingTelegramToken(false);
+                              setTelegramBotTokenConfigured(true);
                             }}
                           >
                             Cancel
