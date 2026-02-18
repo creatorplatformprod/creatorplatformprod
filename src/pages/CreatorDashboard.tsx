@@ -47,6 +47,7 @@ import {
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
 import { useFeedbackToasts } from '@/hooks/useFeedbackToasts';
+import { toast } from '@/components/ui/sonner';
 import {
   COLLECTION_CARD_TEMPLATE_OPTIONS,
   COLLECTION_CARD_TEMPLATES,
@@ -270,8 +271,6 @@ const CreatorDashboard = () => {
   const [isPostCardDirty, setIsPostCardDirty] = useState(false);
   const [isCollectionDirty, setIsCollectionDirty] = useState(false);
   const [profileAutoSaveState, setProfileAutoSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
-  const [profileSavePopup, setProfileSavePopup] = useState('');
-  const profileSavePopupTimerRef = useRef<number | null>(null);
 
   // Analytics state
   const [analyticsRange, setAnalyticsRange] = useState('30');
@@ -435,14 +434,6 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
   }, [coverImageFile]);
 
   useFeedbackToasts({ success, error, info: infoMessage });
-
-  useEffect(() => {
-    return () => {
-      if (profileSavePopupTimerRef.current) {
-        window.clearTimeout(profileSavePopupTimerRef.current);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     const element = coverEditorRef.current;
@@ -933,13 +924,10 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       setIsProfileDirty(false);
       setProfileAutoSaveState('saved');
       markPublicWebsiteDirty();
-      setProfileSavePopup('Draft saved to preview page.');
-      if (profileSavePopupTimerRef.current) {
-        window.clearTimeout(profileSavePopupTimerRef.current);
-      }
-      profileSavePopupTimerRef.current = window.setTimeout(() => {
-        setProfileSavePopup('');
-      }, 2600);
+      toast.success('Draft saved to preview page.', {
+        id: 'profile-draft-saved',
+        duration: 2600
+      });
     } catch (err: any) {
       setError(err.message || 'Failed to save profile draft');
     }
@@ -2697,13 +2685,6 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
               </div>
             </div>
 
-            {profileSavePopup && (
-              <div className="flex justify-end mb-2">
-                <div className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-700">
-                  {profileSavePopup}
-                </div>
-              </div>
-            )}
             <div className="dashboard-sticky-action-bar flex items-center justify-between gap-3">
               <span className="text-xs text-muted-foreground">
                 {profileAutoSaveState === 'saving'
