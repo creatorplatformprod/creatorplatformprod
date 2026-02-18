@@ -311,7 +311,7 @@ const CreatorDashboard = () => {
     unlockAllPrice: 0,
     unlockAllCurrency: 'USD'
   });
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState('');
   const [avatarDimensions, setAvatarDimensions] = useState<{ width: number; height: number } | null>(null);
   const [avatarEditor, setAvatarEditor] = useState<CropEditorState>(createDefaultCropEditorState());
@@ -327,7 +327,9 @@ const CreatorDashboard = () => {
   const [coverDragging, setCoverDragging] = useState(false);
   const [coverDropActive, setCoverDropActive] = useState(false);
   const coverInputRef = useRef<HTMLInputElement | null>(null);
+  const coverEditorRef = useRef<HTMLDivElement | null>(null);
   const coverDragRef = useRef<{ startX: number; startY: number; startOffsetX: number; startOffsetY: number } | null>(null);
+  const [coverFrameSize, setCoverFrameSize] = useState(COVER_EDITOR_FRAME);
   const [uploadingCoverImage, setUploadingCoverImage] = useState(false);
 
   // Status card form state
@@ -420,6 +422,21 @@ const CreatorDashboard = () => {
       URL.revokeObjectURL(objectUrl);
     };
   }, [coverImageFile]);
+
+  useEffect(() => {
+    const element = coverEditorRef.current;
+    if (!element) return;
+    const updateSize = () => {
+      const rect = element.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        setCoverFrameSize({ width: Math.round(rect.width), height: Math.round(rect.height) });
+      }
+    };
+    updateSize();
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   const applyAvatarFile = (file: File | null) => {
     if (!file || !file.type.startsWith('image/')) {
@@ -521,7 +538,7 @@ const CreatorDashboard = () => {
       const deltaY = event.clientY - coverDragRef.current.startY;
       const nextOffsets = getClampedOffsets(
         coverDimensions,
-        COVER_EDITOR_FRAME,
+        coverFrameSize,
         coverDragRef.current.startOffsetX + deltaX,
         coverDragRef.current.startOffsetY + deltaY
       );
@@ -537,7 +554,7 @@ const CreatorDashboard = () => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
-  }, [coverDragging, coverDimensions]);
+  }, [coverDragging, coverDimensions, coverFrameSize]);
 
   const refreshPublicWebsiteState = (username?: string) => {
     if (!username) return;
@@ -993,7 +1010,7 @@ const CreatorDashboard = () => {
       const editedCover = await createEditedImageFile(
         coverImageFile,
         coverDimensions,
-        COVER_EDITOR_FRAME,
+        coverFrameSize,
         COVER_EXPORT_SIZE,
         coverEditor
       );
@@ -2383,12 +2400,8 @@ const CreatorDashboard = () => {
                   </div>
                   <div className="rounded-xl border border-border bg-background/70 p-3">
                     <div
-                      className="relative overflow-hidden border border-border bg-background/60 mx-auto w-full cursor-grab active:cursor-grabbing"
-                      style={{
-                        width: `${COVER_EDITOR_FRAME.width}px`,
-                        height: `${COVER_EDITOR_FRAME.height}px`,
-                        maxWidth: '100%'
-                      }}
+                      ref={coverEditorRef}
+                      className="relative overflow-hidden border border-border bg-background/60 w-full h-44 sm:h-52 cursor-grab active:cursor-grabbing"
                       onMouseDown={handleCoverMouseDown}
                     >
                       {coverPreviewUrl || profileData.coverImage ? (
@@ -2400,13 +2413,13 @@ const CreatorDashboard = () => {
                             style={(() => {
                               const offsets = getClampedOffsets(
                                 coverDimensions,
-                                COVER_EDITOR_FRAME,
+                                coverFrameSize,
                                 coverEditor.offsetX,
                                 coverEditor.offsetY
                               );
                               const baseScale = Math.max(
-                                COVER_EDITOR_FRAME.width / coverDimensions.width,
-                                COVER_EDITOR_FRAME.height / coverDimensions.height
+                                coverFrameSize.width / coverDimensions.width,
+                                coverFrameSize.height / coverDimensions.height
                               );
                               const drawWidth = coverDimensions.width * baseScale;
                               const drawHeight = coverDimensions.height * baseScale;
@@ -2414,8 +2427,8 @@ const CreatorDashboard = () => {
                                 position: 'absolute' as const,
                                 width: `${drawWidth}px`,
                                 height: `${drawHeight}px`,
-                                left: `${(COVER_EDITOR_FRAME.width - drawWidth) / 2 + offsets.offsetX}px`,
-                                top: `${(COVER_EDITOR_FRAME.height - drawHeight) / 2 + offsets.offsetY}px`,
+                                left: `${(coverFrameSize.width - drawWidth) / 2 + offsets.offsetX}px`,
+                                top: `${(coverFrameSize.height - drawHeight) / 2 + offsets.offsetY}px`,
                                 maxWidth: 'none',
                                 userSelect: 'none' as const
                               };
