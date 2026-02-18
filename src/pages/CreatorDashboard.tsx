@@ -63,9 +63,9 @@ const DEFAULT_COLLECTION_TEMPLATE: CollectionCardTemplate = 'quad';
 const DEFAULT_COLLECTION_PREVIEW_COUNT = 4;
 const AVATAR_EDITOR_FRAME = { width: 220, height: 220 };
 const AVATAR_CROP_DIAMETER = 208;
-const COVER_EDITOR_FRAME = { width: 320, height: 120 };
+const COVER_EDITOR_FRAME = { width: 900, height: 300 };
 const AVATAR_EXPORT_SIZE = { width: 1024, height: 1024 };
-const COVER_EXPORT_SIZE = { width: 1800, height: 675 };
+const COVER_EXPORT_SIZE = { width: 1800, height: 600 };
 const createEmptyCollectionForm = () => ({
   title: '',
   description: '',
@@ -2388,6 +2388,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                 <p className="text-xs text-muted-foreground mb-3">
                   Drop image, then drag inside the frame to orient your cover.
                 </p>
+                <p className="text-[11px] text-muted-foreground mb-3">
+                  Recommended: landscape images around 1800x600 (3:1).
+                </p>
                 <div className="space-y-3">
                   <input
                     ref={coverInputRef}
@@ -2424,7 +2427,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                   <div className="rounded-xl border border-border bg-background/70 p-3">
                     <div
                       ref={coverEditorRef}
-                      className="relative overflow-hidden border border-border bg-background/60 w-full h-44 sm:h-52 cursor-grab active:cursor-grabbing"
+                      className="relative overflow-hidden border border-border bg-background/60 w-full aspect-[3/1] max-h-[300px] cursor-grab active:cursor-grabbing"
                       onMouseDown={handleCoverMouseDown}
                     >
                       {coverPreviewUrl || profileData.coverImage ? (
