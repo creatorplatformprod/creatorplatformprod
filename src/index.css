@@ -5,7 +5,6 @@
 /* Landing page typography */
 .font-fraunces {
   font-family: 'Fraunces', serif;
-}
 
 .font-space-grotesk {
   font-family: 'Space Grotesk', sans-serif;
@@ -1549,9 +1548,9 @@
   }
 
   .public-template .template-cover {
-    aspect-ratio: 3 / 1;
+    width: 100%;
     min-height: 220px;
-    max-height: 420px;
+    height: clamp(220px, 30vw, 360px);
   }
 
   .public-template .template-cover > img {
@@ -1571,8 +1570,44 @@
   @media (max-width: 640px) {
     .public-template .template-cover {
       min-height: 190px;
-      max-height: 250px;
+      height: clamp(190px, 44vw, 250px);
     }
+
+    /* Keep mobile close to the old look: lightweight overlay, not a boxed card */
+    .public-template .template-profile-shell {
+      margin-top: -3.75rem;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+      padding-bottom: 1rem;
+    }
+
+    .public-template .template-profile-panel {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      backdrop-filter: none;
+      overflow: visible;
+    }
+
+    .public-template .template-profile-row {
+      padding: 0;
+      gap: 0.875rem;
+      align-items: center;
+    }
+
+    .public-template .template-filter-strip {
+      border-top: 0;
+      padding-left: 0;
+      padding-right: 0;
+      padding-top: 0.5rem;
+      padding-bottom: 0;
+    }
+
+    .public-template .template-filter-container {
+      background: hsl(var(--background) / 0.9);
+      border-color: hsl(var(--border));
+    }
+  }
   }
 
   .public-template .template-feed-item {
