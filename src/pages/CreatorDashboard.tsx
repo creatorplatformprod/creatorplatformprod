@@ -194,6 +194,7 @@ const CreatorDashboard = () => {
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState('');
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState('');
   const [uploadingCoverImage, setUploadingCoverImage] = useState(false);
 
   // Status card form state
@@ -272,6 +273,20 @@ const CreatorDashboard = () => {
       URL.revokeObjectURL(objectUrl);
     };
   }, [avatarFile]);
+
+  useEffect(() => {
+    if (!coverImageFile) {
+      setCoverPreviewUrl('');
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(coverImageFile);
+    setCoverPreviewUrl(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [coverImageFile]);
 
   const refreshPublicWebsiteState = (username?: string) => {
     if (!username) return;
@@ -1965,8 +1980,8 @@ const CreatorDashboard = () => {
                   Displayed behind your profile header and Unlock Everything button.
                 </p>
                 <div className="rounded-lg overflow-hidden border border-border bg-background/60 mb-3 h-44 sm:h-52">
-                  {profileData.coverImage ? (
-                    <img src={profileData.coverImage} alt="Cover" className="w-full h-full object-cover" />
+                  {coverPreviewUrl || profileData.coverImage ? (
+                    <img src={coverPreviewUrl || profileData.coverImage} alt="Cover" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-indigo-500/10 to-sky-500/20" />
                   )}
