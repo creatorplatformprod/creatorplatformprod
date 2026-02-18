@@ -61,6 +61,10 @@ const DEFAULT_COVER_OVERLAY = 0.45;
 const DEFAULT_MEDIA_DIMS = { width: null as number | null, height: null as number | null };
 const DEFAULT_COLLECTION_TEMPLATE: CollectionCardTemplate = 'quad';
 const DEFAULT_COLLECTION_PREVIEW_COUNT = 4;
+const AVATAR_EDITOR_FRAME = { width: 220, height: 220 };
+const COVER_EDITOR_FRAME = { width: 320, height: 120 };
+const AVATAR_EXPORT_SIZE = { width: 1024, height: 1024 };
+const COVER_EXPORT_SIZE = { width: 1800, height: 675 };
 const createEmptyCollectionForm = () => ({
   title: '',
   description: '',
@@ -70,6 +74,126 @@ const createEmptyCollectionForm = () => ({
   cardTemplate: DEFAULT_COLLECTION_TEMPLATE as CollectionCardTemplate,
   previewImages: DEFAULT_COLLECTION_PREVIEW_COUNT
 });
+
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
+type CropEditorState = {
+  zoom: number;
+  offsetX: number;
+  offsetY: number;
+};
+
+const createDefaultCropEditorState = (): CropEditorState => ({
+  zoom: 1,
+  offsetX: 0,
+  offsetY: 0
+});
+
+const loadImageDimensions = (file: File): Promise<{ width: number; height: number }> => {
+  return new Promise((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const img = new window.Image();
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const width = Number.isFinite(img.naturalWidth) ? img.naturalWidth : 0;
+      const height = Number.isFinite(img.naturalHeight) ? img.naturalHeight : 0;
+      if (width <= 0 || height <= 0) {
+        reject(new Error('Invalid image dimensions'));
+        return;
+      }
+      resolve({ width, height });
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Failed to load image'));
+    };
+    img.src = objectUrl;
+  });
+};
+
+const getClampedOffsets = (
+  dimensions: { width: number; height: number } | null,
+  frame: { width: number; height: number },
+  zoom: number,
+  offsetX: number,
+  offsetY: number
+) => {
+  if (!dimensions?.width || !dimensions?.height) {
+    return { offsetX: 0, offsetY: 0 };
+  }
+  const baseScale = Math.max(frame.width / dimensions.width, frame.height / dimensions.height);
+  const scaledWidth = dimensions.width * baseScale * zoom;
+  const scaledHeight = dimensions.height * baseScale * zoom;
+  const maxOffsetX = Math.max(0, (scaledWidth - frame.width) / 2);
+  const maxOffsetY = Math.max(0, (scaledHeight - frame.height) / 2);
+  return {
+    offsetX: clamp(offsetX, -maxOffsetX, maxOffsetX),
+    offsetY: clamp(offsetY, -maxOffsetY, maxOffsetY)
+  };
+};
+
+const createEditedImageFile = async (
+  file: File,
+  dimensions: { width: number; height: number } | null,
+  frame: { width: number; height: number },
+  output: { width: number; height: number },
+  editor: CropEditorState
+) => {
+  if (!dimensions?.width || !dimensions?.height) {
+    return file;
+  }
+
+  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const image = new window.Image();
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Failed to load selected image'));
+    };
+    image.src = objectUrl;
+  });
+
+  const safeZoom = Number.isFinite(editor.zoom) ? clamp(editor.zoom, 1, 3) : 1;
+  const offsets = getClampedOffsets(dimensions, frame, safeZoom, editor.offsetX, editor.offsetY);
+  const baseScale = Math.max(frame.width / dimensions.width, frame.height / dimensions.height);
+  const drawWidth = dimensions.width * baseScale * safeZoom;
+  const drawHeight = dimensions.height * baseScale * safeZoom;
+  const drawX = (frame.width - drawWidth) / 2 + offsets.offsetX;
+  const drawY = (frame.height - drawHeight) / 2 + offsets.offsetY;
+  const scaleX = output.width / frame.width;
+  const scaleY = output.height / frame.height;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = output.width;
+  canvas.height = output.height;
+  const context = canvas.getContext('2d');
+  if (!context) {
+    return file;
+  }
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = 'high';
+  context.drawImage(
+    img,
+    drawX * scaleX,
+    drawY * scaleY,
+    drawWidth * scaleX,
+    drawHeight * scaleY
+  );
+
+  const blob = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob(resolve, 'image/jpeg', 0.92);
+  });
+  if (!blob) {
+    return file;
+  }
+
+  const baseName = file.name.replace(/\.[^.]+$/, '') || 'image';
+  return new File([blob], `${baseName}-edited.jpg`, { type: 'image/jpeg' });
+};
 
 const getFileDimensions = async (file: File): Promise<{ width: number | null; height: number | null }> => {
   if (!file?.type) {
@@ -192,9 +316,21 @@ const CreatorDashboard = () => {
   });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState('');
+  const [avatarDimensions, setAvatarDimensions] = useState<{ width: number; height: number } | null>(null);
+  const [avatarEditor, setAvatarEditor] = useState<CropEditorState>(createDefaultCropEditorState());
+  const [avatarDragging, setAvatarDragging] = useState(false);
+  const [avatarDropActive, setAvatarDropActive] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement | null>(null);
+  const avatarDragRef = useRef<{ startX: number; startY: number; startOffsetX: number; startOffsetY: number } | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [coverPreviewUrl, setCoverPreviewUrl] = useState('');
+  const [coverDimensions, setCoverDimensions] = useState<{ width: number; height: number } | null>(null);
+  const [coverEditor, setCoverEditor] = useState<CropEditorState>(createDefaultCropEditorState());
+  const [coverDragging, setCoverDragging] = useState(false);
+  const [coverDropActive, setCoverDropActive] = useState(false);
+  const coverInputRef = useRef<HTMLInputElement | null>(null);
+  const coverDragRef = useRef<{ startX: number; startY: number; startOffsetX: number; startOffsetY: number } | null>(null);
   const [uploadingCoverImage, setUploadingCoverImage] = useState(false);
 
   // Status card form state
@@ -287,6 +423,126 @@ const CreatorDashboard = () => {
       URL.revokeObjectURL(objectUrl);
     };
   }, [coverImageFile]);
+
+  const applyAvatarFile = (file: File | null) => {
+    if (!file || !file.type.startsWith('image/')) {
+      setAvatarFile(null);
+      setAvatarDimensions(null);
+      setAvatarEditor(createDefaultCropEditorState());
+      return;
+    }
+    setAvatarFile(file);
+    setAvatarEditor(createDefaultCropEditorState());
+    loadImageDimensions(file)
+      .then((dims) => setAvatarDimensions(dims))
+      .catch(() => setAvatarDimensions(null));
+  };
+
+  const applyCoverFile = (file: File | null) => {
+    if (!file || !file.type.startsWith('image/')) {
+      setCoverImageFile(null);
+      setCoverDimensions(null);
+      setCoverEditor(createDefaultCropEditorState());
+      return;
+    }
+    setCoverImageFile(file);
+    setCoverEditor(createDefaultCropEditorState());
+    loadImageDimensions(file)
+      .then((dims) => setCoverDimensions(dims))
+      .catch(() => setCoverDimensions(null));
+  };
+
+  const handleAvatarDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setAvatarDropActive(false);
+    const file = e.dataTransfer.files?.[0] || null;
+    applyAvatarFile(file);
+  };
+
+  const handleCoverDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setCoverDropActive(false);
+    const file = e.dataTransfer.files?.[0] || null;
+    applyCoverFile(file);
+  };
+
+  const handleAvatarMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!avatarFile) return;
+    e.preventDefault();
+    avatarDragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startOffsetX: avatarEditor.offsetX,
+      startOffsetY: avatarEditor.offsetY
+    };
+    setAvatarDragging(true);
+  };
+
+  const handleCoverMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!coverImageFile) return;
+    e.preventDefault();
+    coverDragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startOffsetX: coverEditor.offsetX,
+      startOffsetY: coverEditor.offsetY
+    };
+    setCoverDragging(true);
+  };
+
+  useEffect(() => {
+    if (!avatarDragging) return;
+    const onMouseMove = (event: MouseEvent) => {
+      if (!avatarDragRef.current) return;
+      const deltaX = event.clientX - avatarDragRef.current.startX;
+      const deltaY = event.clientY - avatarDragRef.current.startY;
+      const nextOffsets = getClampedOffsets(
+        avatarDimensions,
+        AVATAR_EDITOR_FRAME,
+        avatarEditor.zoom,
+        avatarDragRef.current.startOffsetX + deltaX,
+        avatarDragRef.current.startOffsetY + deltaY
+      );
+      setAvatarEditor((prev) => ({ ...prev, ...nextOffsets }));
+    };
+    const onMouseUp = () => {
+      setAvatarDragging(false);
+      avatarDragRef.current = null;
+    };
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [avatarDragging, avatarDimensions, avatarEditor.zoom]);
+
+  useEffect(() => {
+    if (!coverDragging) return;
+    const onMouseMove = (event: MouseEvent) => {
+      if (!coverDragRef.current) return;
+      const deltaX = event.clientX - coverDragRef.current.startX;
+      const deltaY = event.clientY - coverDragRef.current.startY;
+      const nextOffsets = getClampedOffsets(
+        coverDimensions,
+        COVER_EDITOR_FRAME,
+        coverEditor.zoom,
+        coverDragRef.current.startOffsetX + deltaX,
+        coverDragRef.current.startOffsetY + deltaY
+      );
+      setCoverEditor((prev) => ({ ...prev, ...nextOffsets }));
+    };
+    const onMouseUp = () => {
+      setCoverDragging(false);
+      coverDragRef.current = null;
+    };
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [coverDragging, coverDimensions, coverEditor.zoom]);
 
   const refreshPublicWebsiteState = (username?: string) => {
     if (!username) return;
@@ -646,10 +902,19 @@ const CreatorDashboard = () => {
     try {
       setUploadingAvatar(true);
       setError('');
-      const uploadResult = await api.uploadFile(avatarFile);
+      const editedAvatar = await createEditedImageFile(
+        avatarFile,
+        avatarDimensions,
+        AVATAR_EDITOR_FRAME,
+        AVATAR_EXPORT_SIZE,
+        avatarEditor
+      );
+      const uploadResult = await api.uploadFile(editedAvatar);
       if (uploadResult?.url) {
         setProfileData({ ...profileData, avatar: uploadResult.url });
         setAvatarFile(null);
+        setAvatarDimensions(null);
+        setAvatarEditor(createDefaultCropEditorState());
         setSuccess('Avatar uploaded. Profile will auto-save.');
       } else {
         setError('Failed to upload avatar');
@@ -730,10 +995,19 @@ const CreatorDashboard = () => {
     try {
       setUploadingCoverImage(true);
       setError('');
-      const uploadResult = await api.uploadFile(coverImageFile);
+      const editedCover = await createEditedImageFile(
+        coverImageFile,
+        coverDimensions,
+        COVER_EDITOR_FRAME,
+        COVER_EXPORT_SIZE,
+        coverEditor
+      );
+      const uploadResult = await api.uploadFile(editedCover);
       if (uploadResult?.url) {
         setProfileData({ ...profileData, coverImage: uploadResult.url });
         setCoverImageFile(null);
+        setCoverDimensions(null);
+        setCoverEditor(createDefaultCropEditorState());
         setSuccess('Cover image uploaded. Profile draft will auto-save.');
       } else {
         setError('Failed to upload cover image');
@@ -1933,43 +2207,150 @@ const CreatorDashboard = () => {
           <div className="card-elevated p-5 sm:p-7 space-y-6">
             {/* Profile Media Upload */}
             <div className="space-y-4 p-4 bg-secondary/30 rounded-xl">
-              <div className="flex flex-col sm:flex-row items-center gap-4">
-                <div className="relative">
-                  <div className="w-24 h-24 rounded-full overflow-hidden bg-secondary border-2 border-border">
-                    {avatarPreviewUrl || profileData.avatar ? (
-                      <img 
-                        src={avatarPreviewUrl || profileData.avatar} 
-                        alt="Profile" 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Camera className="w-8 h-8 text-muted-foreground" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex-1 text-center sm:text-left">
-                  <h3 className="font-semibold text-foreground mb-1">Profile Picture</h3>
-                  <p className="text-xs text-muted-foreground mb-3">
-                    Shown next to your name on public and preview pages.
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <Input
+              <div>
+                <h3 className="font-semibold text-foreground mb-1">Profile Picture</h3>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Drag and drop, then drag inside the frame to orient your avatar.
+                </p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <input
+                      ref={avatarInputRef}
                       type="file"
                       accept="image/*"
-                      onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
-                      className="text-sm"
+                      onChange={(e) => applyAvatarFile(e.target.files?.[0] || null)}
+                      className="hidden"
                     />
-                    <Button
-                      onClick={handleUploadAvatar}
-                      disabled={!avatarFile || uploadingAvatar}
-                      size="sm"
-                      className="dash-btn-secondary"
+                    <div
+                      className={`rounded-xl border border-dashed p-4 text-center cursor-pointer transition ${
+                        avatarDropActive ? 'border-primary bg-primary/10' : 'border-border bg-background/60 hover:border-primary/50'
+                      }`}
+                      onClick={() => avatarInputRef.current?.click()}
+                      onDragEnter={(e) => {
+                        e.preventDefault();
+                        setAvatarDropActive(true);
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setAvatarDropActive(true);
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        setAvatarDropActive(false);
+                      }}
+                      onDrop={handleAvatarDrop}
                     >
-                      <Upload className="w-4 h-4 mr-1" />
-                      {uploadingAvatar ? 'Uploading...' : 'Upload Avatar'}
-                    </Button>
+                      <p className="text-sm font-medium text-foreground">Drop avatar image here</p>
+                      <p className="text-xs text-muted-foreground mt-1">or click to browse</p>
+                    </div>
+                    <div className="rounded-xl border border-border bg-background/70 p-3">
+                      <div
+                        className="relative mx-auto overflow-hidden border border-border bg-secondary"
+                        style={{ width: AVATAR_EDITOR_FRAME.width, height: AVATAR_EDITOR_FRAME.height }}
+                        onMouseDown={handleAvatarMouseDown}
+                      >
+                        {avatarPreviewUrl || profileData.avatar ? (
+                          avatarFile && avatarDimensions ? (
+                            <img
+                              src={avatarPreviewUrl}
+                              alt="Avatar editor"
+                              draggable={false}
+                              style={(() => {
+                                const offsets = getClampedOffsets(
+                                  avatarDimensions,
+                                  AVATAR_EDITOR_FRAME,
+                                  avatarEditor.zoom,
+                                  avatarEditor.offsetX,
+                                  avatarEditor.offsetY
+                                );
+                                const baseScale = Math.max(
+                                  AVATAR_EDITOR_FRAME.width / avatarDimensions.width,
+                                  AVATAR_EDITOR_FRAME.height / avatarDimensions.height
+                                );
+                                const drawWidth = avatarDimensions.width * baseScale * avatarEditor.zoom;
+                                const drawHeight = avatarDimensions.height * baseScale * avatarEditor.zoom;
+                                return {
+                                  position: 'absolute' as const,
+                                  width: `${drawWidth}px`,
+                                  height: `${drawHeight}px`,
+                                  left: `${(AVATAR_EDITOR_FRAME.width - drawWidth) / 2 + offsets.offsetX}px`,
+                                  top: `${(AVATAR_EDITOR_FRAME.height - drawHeight) / 2 + offsets.offsetY}px`,
+                                  maxWidth: 'none',
+                                  userSelect: 'none' as const
+                                };
+                              })()}
+                            />
+                          ) : (
+                            <img src={avatarPreviewUrl || profileData.avatar} alt="Avatar editor" className="w-full h-full object-cover" />
+                          )
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Camera className="w-8 h-8 text-muted-foreground" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="mt-3">
+                        <label className="text-[11px] text-muted-foreground block mb-1">Zoom</label>
+                        <input
+                          type="range"
+                          min={1}
+                          max={3}
+                          step={0.01}
+                          value={avatarEditor.zoom}
+                          disabled={!avatarFile}
+                          onChange={(e) => {
+                            const nextZoom = clamp(Number(e.target.value) || 1, 1, 3);
+                            setAvatarEditor((prev) => {
+                              const offsets = getClampedOffsets(
+                                avatarDimensions,
+                                AVATAR_EDITOR_FRAME,
+                                nextZoom,
+                                prev.offsetX,
+                                prev.offsetY
+                              );
+                              return { ...prev, zoom: nextZoom, ...offsets };
+                            });
+                          }}
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="rounded-xl border border-border bg-background/70 p-4 flex flex-col items-center justify-center min-h-[280px]">
+                      <p className="text-xs text-muted-foreground mb-3">Live avatar</p>
+                      <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-border bg-secondary">
+                        {avatarPreviewUrl || profileData.avatar ? (
+                          <img src={avatarPreviewUrl || profileData.avatar} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Camera className="w-8 h-8 text-muted-foreground" />
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground mt-3 text-center">
+                        Drag image in the editor panel to reposition.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        onClick={() => setAvatarEditor(createDefaultCropEditorState())}
+                        disabled={!avatarFile}
+                        size="sm"
+                        variant="outline"
+                      >
+                        Reset
+                      </Button>
+                      <Button
+                        onClick={handleUploadAvatar}
+                        disabled={!avatarFile || uploadingAvatar}
+                        size="sm"
+                        className="dash-btn-secondary"
+                      >
+                        <Upload className="w-4 h-4 mr-1" />
+                        {uploadingAvatar ? 'Uploading...' : 'Upload Avatar'}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1977,48 +2358,159 @@ const CreatorDashboard = () => {
               <div className="border-t border-border/60 pt-4">
                 <h3 className="font-semibold text-foreground mb-1">Cover Image</h3>
                 <p className="text-xs text-muted-foreground mb-3">
-                  Displayed behind your profile header and Unlock Everything button.
+                  Drop image, then drag and zoom to orient your cover.
                 </p>
-                <div className="rounded-lg overflow-hidden border border-border bg-background/60 mb-3 h-44 sm:h-52">
-                  {coverPreviewUrl || profileData.coverImage ? (
-                    <img src={coverPreviewUrl || profileData.coverImage} alt="Cover" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-indigo-500/10 to-sky-500/20" />
-                  )}
-                </div>
-                <p className="text-[11px] text-muted-foreground mb-3">
-                  A default cover overlay is applied automatically for readability.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setCoverImageFile(e.target.files?.[0] || null)}
-                    className="text-sm"
-                  />
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={handleUploadCoverImage}
-                      disabled={!coverImageFile || uploadingCoverImage}
-                      size="sm"
-                      className="dash-btn-secondary"
-                    >
-                      <Upload className="w-4 h-4 mr-1" />
-                      {uploadingCoverImage ? 'Uploading...' : 'Upload Cover'}
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setCoverImageFile(null);
-                        setProfileData({ ...profileData, coverImage: '' });
-                        setSuccess('Cover removed. Draft updated.');
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <input
+                      ref={coverInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => applyCoverFile(e.target.files?.[0] || null)}
+                      className="hidden"
+                    />
+                    <div
+                      className={`rounded-xl border border-dashed p-4 text-center cursor-pointer transition ${
+                        coverDropActive ? 'border-primary bg-primary/10' : 'border-border bg-background/60 hover:border-primary/50'
+                      }`}
+                      onClick={() => coverInputRef.current?.click()}
+                      onDragEnter={(e) => {
+                        e.preventDefault();
+                        setCoverDropActive(true);
                       }}
-                      disabled={!profileData.coverImage}
-                      size="sm"
-                      className="btn-collection-danger"
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setCoverDropActive(true);
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        setCoverDropActive(false);
+                      }}
+                      onDrop={handleCoverDrop}
                     >
-                      <Trash2 className="w-4 h-4 mr-1" />
-                      Remove Cover
-                    </Button>
+                      <p className="text-sm font-medium text-foreground">Drop cover image here</p>
+                      <p className="text-xs text-muted-foreground mt-1">or click to browse</p>
+                    </div>
+                    <div className="rounded-xl border border-border bg-background/70 p-3">
+                      <div
+                        className="relative overflow-hidden border border-border bg-background/60 mx-auto w-full"
+                        style={{
+                          width: `${COVER_EDITOR_FRAME.width}px`,
+                          height: `${COVER_EDITOR_FRAME.height}px`,
+                          maxWidth: '100%'
+                        }}
+                        onMouseDown={handleCoverMouseDown}
+                      >
+                        {coverPreviewUrl || profileData.coverImage ? (
+                          coverImageFile && coverDimensions ? (
+                            <img
+                              src={coverPreviewUrl}
+                              alt="Cover editor"
+                              draggable={false}
+                              style={(() => {
+                                const offsets = getClampedOffsets(
+                                  coverDimensions,
+                                  COVER_EDITOR_FRAME,
+                                  coverEditor.zoom,
+                                  coverEditor.offsetX,
+                                  coverEditor.offsetY
+                                );
+                                const baseScale = Math.max(
+                                  COVER_EDITOR_FRAME.width / coverDimensions.width,
+                                  COVER_EDITOR_FRAME.height / coverDimensions.height
+                                );
+                                const drawWidth = coverDimensions.width * baseScale * coverEditor.zoom;
+                                const drawHeight = coverDimensions.height * baseScale * coverEditor.zoom;
+                                return {
+                                  position: 'absolute' as const,
+                                  width: `${drawWidth}px`,
+                                  height: `${drawHeight}px`,
+                                  left: `${(COVER_EDITOR_FRAME.width - drawWidth) / 2 + offsets.offsetX}px`,
+                                  top: `${(COVER_EDITOR_FRAME.height - drawHeight) / 2 + offsets.offsetY}px`,
+                                  maxWidth: 'none',
+                                  userSelect: 'none' as const
+                                };
+                              })()}
+                            />
+                          ) : (
+                            <img src={coverPreviewUrl || profileData.coverImage} alt="Cover" className="w-full h-full object-cover" />
+                          )
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-indigo-500/10 to-sky-500/20" />
+                        )}
+                      </div>
+                      <div className="mt-3">
+                        <label className="text-[11px] text-muted-foreground block mb-1">Zoom</label>
+                        <input
+                          type="range"
+                          min={1}
+                          max={3}
+                          step={0.01}
+                          value={coverEditor.zoom}
+                          disabled={!coverImageFile}
+                          onChange={(e) => {
+                            const nextZoom = clamp(Number(e.target.value) || 1, 1, 3);
+                            setCoverEditor((prev) => {
+                              const offsets = getClampedOffsets(
+                                coverDimensions,
+                                COVER_EDITOR_FRAME,
+                                nextZoom,
+                                prev.offsetX,
+                                prev.offsetY
+                              );
+                              return { ...prev, zoom: nextZoom, ...offsets };
+                            });
+                          }}
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="rounded-xl overflow-hidden border border-border bg-background/60 h-44 sm:h-52">
+                      {coverPreviewUrl || profileData.coverImage ? (
+                        <img src={coverPreviewUrl || profileData.coverImage} alt="Cover preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-indigo-500/10 to-sky-500/20" />
+                      )}
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">
+                      A default cover overlay is applied automatically for readability.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        onClick={() => setCoverEditor(createDefaultCropEditorState())}
+                        disabled={!coverImageFile}
+                        size="sm"
+                        variant="outline"
+                      >
+                        Reset
+                      </Button>
+                      <Button
+                        onClick={handleUploadCoverImage}
+                        disabled={!coverImageFile || uploadingCoverImage}
+                        size="sm"
+                        className="dash-btn-secondary"
+                      >
+                        <Upload className="w-4 h-4 mr-1" />
+                        {uploadingCoverImage ? 'Uploading...' : 'Upload Cover'}
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setCoverImageFile(null);
+                          setCoverDimensions(null);
+                          setCoverEditor(createDefaultCropEditorState());
+                          setProfileData({ ...profileData, coverImage: '' });
+                          setSuccess('Cover removed. Draft updated.');
+                        }}
+                        disabled={!profileData.coverImage}
+                        size="sm"
+                        className="btn-collection-danger"
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        Remove Cover
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
