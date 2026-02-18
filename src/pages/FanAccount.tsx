@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Loader2, Save, Shield, Unlock, User } from "lucide-react";
 import { api } from "@/lib/api";
 import { useFanAuth } from "@/contexts/FanAuthContext";
+import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
 
 const FanAccount = () => {
   const { fan, refreshFan } = useFanAuth();
@@ -13,6 +14,7 @@ const FanAccount = () => {
   const [error, setError] = useState("");
   const [profile, setProfile] = useState({ displayName: "", bio: "", avatar: "" });
   const [passwordData, setPasswordData] = useState({ currentPassword: "", newPassword: "" });
+  useFeedbackToasts({ success: message, error });
 
   useEffect(() => {
     const load = async () => {
@@ -204,4 +206,3 @@ const FanAccount = () => {
 };
 
 export default FanAccount;
-

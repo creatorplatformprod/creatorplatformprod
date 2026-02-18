@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Loader2, Unlock } from "lucide-react";
 import { api } from "@/lib/api";
+import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
 
 const FanUnlocks = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [unlocks, setUnlocks] = useState<any[]>([]);
+  useFeedbackToasts({ error });
 
   useEffect(() => {
     const load = async () => {
@@ -76,4 +78,3 @@ const FanUnlocks = () => {
 };
 
 export default FanUnlocks;
-

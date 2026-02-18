@@ -46,6 +46,7 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
+import { useFeedbackToasts } from '@/hooks/useFeedbackToasts';
 import {
   COLLECTION_CARD_TEMPLATE_OPTIONS,
   COLLECTION_CARD_TEMPLATES,
@@ -430,6 +431,8 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       URL.revokeObjectURL(objectUrl);
     };
   }, [coverImageFile]);
+
+  useFeedbackToasts({ success, error, info: infoMessage });
 
   useEffect(() => {
     const element = coverEditorRef.current;

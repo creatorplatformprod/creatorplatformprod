@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink, Monitor, Smartphone, Copy, Check, Link2 } from "lucide-react";
 import AccountMenu from "@/components/AccountMenu";
 import { api } from "@/lib/api";
+import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
 
 const ONBOARDING_STEPS = [
   {
@@ -40,11 +41,13 @@ const PublicWebsitePreview = () => {
   const [hasChanges, setHasChanges] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishError, setPublishError] = useState("");
+  const [publishSuccess, setPublishSuccess] = useState("");
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [activeDevice, setActiveDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [copied, setCopied] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(-1);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  useFeedbackToasts({ success: publishSuccess, error: publishError });
   
 
   const previewUrl = useMemo(() => {
@@ -173,6 +176,7 @@ const PublicWebsitePreview = () => {
   const handlePublish = async () => {
     if (!username) return;
     setPublishError("");
+    setPublishSuccess("");
     setIsPublishing(true);
     try {
       await publishCollectionsForOwner();
@@ -181,6 +185,7 @@ const PublicWebsitePreview = () => {
       localStorage.setItem(`publicWebsiteDirty:${username}`, "false");
       setPublished(true);
       setHasChanges(false);
+      setPublishSuccess("All changes are published. Your public website is up to date.");
     } catch (error: any) {
       setPublishError(error?.message || "Failed to publish changes.");
     } finally {

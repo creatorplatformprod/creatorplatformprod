@@ -4,6 +4,7 @@ import { ArrowLeft, Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api";
+import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
 
 const RecoverAccess = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const RecoverAccess = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  useFeedbackToasts({ success, error });
 
   const handleSubmit = async () => {
     const safeEmail = email.trim().toLowerCase();

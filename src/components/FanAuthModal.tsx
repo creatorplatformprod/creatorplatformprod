@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { X, Mail, User, Lock, Chrome } from "lucide-react";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import { api } from "@/lib/api";
+import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
 
 type FanAuthModalProps = {
   open: boolean;
@@ -17,6 +18,7 @@ const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  useFeedbackToasts({ error });
 
   const returnTo = useMemo(
     () => `${window.location.pathname}${window.location.search}`,

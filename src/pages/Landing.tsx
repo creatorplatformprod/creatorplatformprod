@@ -7,6 +7,7 @@ import {
   CreditCard, BarChart3, UserCircle, ShieldCheck
 } from 'lucide-react';
 import { api } from '@/lib/api';
+import { useFeedbackToasts } from '@/hooks/useFeedbackToasts';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid
 } from 'recharts';
@@ -66,6 +67,7 @@ const Landing = () => {
   const [showCookies, setShowCookies] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  useFeedbackToasts({ error });
 
   /* Nav scroll detection */
   useEffect(() => {
