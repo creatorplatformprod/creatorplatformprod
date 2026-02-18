@@ -62,6 +62,7 @@ const DEFAULT_MEDIA_DIMS = { width: null as number | null, height: null as numbe
 const DEFAULT_COLLECTION_TEMPLATE: CollectionCardTemplate = 'quad';
 const DEFAULT_COLLECTION_PREVIEW_COUNT = 4;
 const AVATAR_EDITOR_FRAME = { width: 220, height: 220 };
+const AVATAR_CROP_DIAMETER = 208;
 const COVER_EDITOR_FRAME = { width: 320, height: 120 };
 const AVATAR_EXPORT_SIZE = { width: 1024, height: 1024 };
 const COVER_EXPORT_SIZE = { width: 1800, height: 675 };
@@ -2244,34 +2245,66 @@ const CreatorDashboard = () => {
                     >
                       {avatarPreviewUrl || profileData.avatar ? (
                         avatarFile && avatarDimensions ? (
-                          <img
-                            src={avatarPreviewUrl}
-                            alt="Avatar editor"
-                            draggable={false}
-                            style={(() => {
-                              const offsets = getClampedOffsets(
-                                avatarDimensions,
-                                AVATAR_EDITOR_FRAME,
-                                avatarEditor.offsetX,
-                                avatarEditor.offsetY
-                              );
-                              const baseScale = Math.max(
-                                AVATAR_EDITOR_FRAME.width / avatarDimensions.width,
-                                AVATAR_EDITOR_FRAME.height / avatarDimensions.height
-                              );
-                              const drawWidth = avatarDimensions.width * baseScale;
-                              const drawHeight = avatarDimensions.height * baseScale;
-                              return {
-                                position: 'absolute' as const,
-                                width: `${drawWidth}px`,
-                                height: `${drawHeight}px`,
-                                left: `${(AVATAR_EDITOR_FRAME.width - drawWidth) / 2 + offsets.offsetX}px`,
-                                top: `${(AVATAR_EDITOR_FRAME.height - drawHeight) / 2 + offsets.offsetY}px`,
-                                maxWidth: 'none',
-                                userSelect: 'none' as const
-                              };
-                            })()}
-                          />
+                          <>
+                            <img
+                              src={avatarPreviewUrl}
+                              alt="Avatar editor blurred"
+                              draggable={false}
+                              style={(() => {
+                                const offsets = getClampedOffsets(
+                                  avatarDimensions,
+                                  AVATAR_EDITOR_FRAME,
+                                  avatarEditor.offsetX,
+                                  avatarEditor.offsetY
+                                );
+                                const baseScale = Math.max(
+                                  AVATAR_EDITOR_FRAME.width / avatarDimensions.width,
+                                  AVATAR_EDITOR_FRAME.height / avatarDimensions.height
+                                );
+                                const drawWidth = avatarDimensions.width * baseScale;
+                                const drawHeight = avatarDimensions.height * baseScale;
+                                return {
+                                  position: 'absolute' as const,
+                                  width: `${drawWidth}px`,
+                                  height: `${drawHeight}px`,
+                                  left: `${(AVATAR_EDITOR_FRAME.width - drawWidth) / 2 + offsets.offsetX}px`,
+                                  top: `${(AVATAR_EDITOR_FRAME.height - drawHeight) / 2 + offsets.offsetY}px`,
+                                  maxWidth: 'none',
+                                  userSelect: 'none' as const,
+                                  filter: 'blur(3px)'
+                                };
+                              })()}
+                            />
+                            <img
+                              src={avatarPreviewUrl}
+                              alt="Avatar editor focus"
+                              draggable={false}
+                              style={(() => {
+                                const offsets = getClampedOffsets(
+                                  avatarDimensions,
+                                  AVATAR_EDITOR_FRAME,
+                                  avatarEditor.offsetX,
+                                  avatarEditor.offsetY
+                                );
+                                const baseScale = Math.max(
+                                  AVATAR_EDITOR_FRAME.width / avatarDimensions.width,
+                                  AVATAR_EDITOR_FRAME.height / avatarDimensions.height
+                                );
+                                const drawWidth = avatarDimensions.width * baseScale;
+                                const drawHeight = avatarDimensions.height * baseScale;
+                                return {
+                                  position: 'absolute' as const,
+                                  width: `${drawWidth}px`,
+                                  height: `${drawHeight}px`,
+                                  left: `${(AVATAR_EDITOR_FRAME.width - drawWidth) / 2 + offsets.offsetX}px`,
+                                  top: `${(AVATAR_EDITOR_FRAME.height - drawHeight) / 2 + offsets.offsetY}px`,
+                                  maxWidth: 'none',
+                                  userSelect: 'none' as const,
+                                  clipPath: `circle(${AVATAR_CROP_DIAMETER / 2}px at 50% 50%)`
+                                };
+                              })()}
+                            />
+                          </>
                         ) : (
                           <img src={avatarPreviewUrl || profileData.avatar} alt="Avatar editor" className="w-full h-full object-cover" />
                         )
@@ -2281,7 +2314,10 @@ const CreatorDashboard = () => {
                         </div>
                       )}
                       <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                        <div className="w-36 h-36 rounded-full border-2 border-white/90 shadow-[0_0_0_9999px_rgba(0,0,0,0.28)]" />
+                        <div
+                          className="rounded-full border border-gray-400/80"
+                          style={{ width: AVATAR_CROP_DIAMETER, height: AVATAR_CROP_DIAMETER }}
+                        />
                       </div>
                     </div>
                     <p className="text-[11px] text-muted-foreground text-center mt-3">
