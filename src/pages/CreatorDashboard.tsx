@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import {
   LineChart, 
@@ -79,6 +80,34 @@ const createEmptyCollectionForm = () => ({
 });
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const TELEGRAM_USERNAME_REGEX = /^[A-Za-z0-9_]{5,32}$/;
+const TELEGRAM_BOT_TOKEN_REGEX = /^\d{6,}:[A-Za-z0-9_-]{20,}$/;
+const TELEGRAM_CHAT_ID_REGEX = /^-?\d{5,20}$/;
+const ETH_WALLET_REGEX = /^0x[a-fA-F0-9]{40}$/;
+
+const parseUrl = (value: string) => {
+  try {
+    return new URL(value);
+  } catch {
+    return null;
+  }
+};
+
+const validateSocialUrl = (value: string, hosts: string[]) => {
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+  const parsed = parseUrl(trimmed);
+  if (!parsed || !['http:', 'https:'].includes(parsed.protocol)) {
+    return 'Use a valid https URL.';
+  }
+  const hostname = parsed.hostname.toLowerCase();
+  if (!hosts.some((host) => hostname === host || hostname.endsWith(`.${host}`))) {
+    return `Use a ${hosts[0]} URL.`;
+  }
+  return '';
+};
 
 type CropEditorState = {
   offsetX: number;
@@ -271,6 +300,10 @@ const CreatorDashboard = () => {
   const [isPostCardDirty, setIsPostCardDirty] = useState(false);
   const [isCollectionDirty, setIsCollectionDirty] = useState(false);
   const [profileAutoSaveState, setProfileAutoSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [telegramAlertsEnabled, setTelegramAlertsEnabled] = useState(false);
+  const [isEditingTelegramToken, setIsEditingTelegramToken] = useState(false);
+  const cachedTelegramTokenRef = useRef('');
+  const cachedTelegramChatIdRef = useRef('');
 
   // Analytics state
   const [analyticsRange, setAnalyticsRange] = useState('30');
@@ -356,6 +389,38 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const serializeForDirtyCheck = (value: any) => JSON.stringify(value ?? {});
 
+  const profileValidationErrors = useMemo(() => {
+    const errors: Record<string, string> = {};
+    const telegramUsername = profileData.telegramUsername.trim().replace(/^@/, '');
+    if (telegramUsername && !TELEGRAM_USERNAME_REGEX.test(telegramUsername)) {
+      errors.telegramUsername = 'Use 5-32 letters, numbers, or underscore (no @).';
+    }
+    const twitterError = validateSocialUrl(profileData.twitterUrl, ['x.com', 'twitter.com']);
+    if (twitterError) errors.twitterUrl = twitterError;
+    const instagramError = validateSocialUrl(profileData.instagramUrl, ['instagram.com']);
+    if (instagramError) errors.instagramUrl = instagramError;
+    const tiktokError = validateSocialUrl(profileData.tiktokUrl, ['tiktok.com']);
+    if (tiktokError) errors.tiktokUrl = tiktokError;
+    const twitchError = validateSocialUrl(profileData.twitchUrl, ['twitch.tv']);
+    if (twitchError) errors.twitchUrl = twitchError;
+    if (profileData.walletAddress.trim() && !ETH_WALLET_REGEX.test(profileData.walletAddress.trim())) {
+      errors.walletAddress = 'Use a valid EVM wallet address (0x + 40 hex chars).';
+    }
+    if (profileData.domainEmail.trim() && !EMAIL_REGEX.test(profileData.domainEmail.trim())) {
+      errors.domainEmail = 'Use a valid email address.';
+    }
+    if (telegramAlertsEnabled) {
+      const hasStoredToken = !!profileData.telegramBotToken.trim() && !isEditingTelegramToken;
+      if (!hasStoredToken && !TELEGRAM_BOT_TOKEN_REGEX.test(profileData.telegramBotToken.trim())) {
+        errors.telegramBotToken = 'Use a valid BotFather token (e.g., 123456789:ABC...).';
+      }
+      if (!TELEGRAM_CHAT_ID_REGEX.test(profileData.telegramChatId.trim())) {
+        errors.telegramChatId = 'Use a valid Telegram chat ID (numbers, optional leading -).';
+      }
+    }
+    return errors;
+  }, [profileData, telegramAlertsEnabled, isEditingTelegramToken]);
+
   useEffect(() => {
     if (!profileBaselineRef.current) {
       profileBaselineRef.current = serializeForDirtyCheck(profileData);
@@ -434,6 +499,26 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
   }, [coverImageFile]);
 
   useFeedbackToasts({ success, error, info: infoMessage });
+
+  const handleTelegramAlertsToggle = (enabled: boolean) => {
+    setTelegramAlertsEnabled(enabled);
+    if (!enabled) {
+      cachedTelegramTokenRef.current = profileData.telegramBotToken;
+      cachedTelegramChatIdRef.current = profileData.telegramChatId;
+      setIsEditingTelegramToken(false);
+      setProfileData((prev) => ({
+        ...prev,
+        telegramBotToken: '',
+        telegramChatId: ''
+      }));
+      return;
+    }
+    setProfileData((prev) => ({
+      ...prev,
+      telegramBotToken: prev.telegramBotToken || cachedTelegramTokenRef.current,
+      telegramChatId: prev.telegramChatId || cachedTelegramChatIdRef.current
+    }));
+  };
 
   useEffect(() => {
     const element = coverEditorRef.current;
@@ -644,6 +729,11 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
           coverOverlay: DEFAULT_COVER_OVERLAY
         };
         setProfileData(mergedProfileData);
+        setTelegramAlertsEnabled(
+          !!String(mergedProfileData.telegramBotToken || '').trim() ||
+          !!String(mergedProfileData.telegramChatId || '').trim()
+        );
+        setIsEditingTelegramToken(false);
         profileBaselineRef.current = serializeForDirtyCheck(mergedProfileData);
         setIsProfileDirty(false);
       }
@@ -763,13 +853,21 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
   useEffect(() => {
     if (!user?.username) return;
     if (!isProfileDirty) return;
+    if (Object.keys(profileValidationErrors).length > 0) {
+      setProfileAutoSaveState('error');
+      return;
+    }
 
     setProfileAutoSaveState('saving');
     const timer = window.setTimeout(() => {
       try {
         const key = getProfileDraftKey(user.username);
         if (!key) return;
-        localStorage.setItem(key, JSON.stringify(profileData));
+        const snapshot = {
+          ...profileData,
+          telegramUsername: profileData.telegramUsername.trim().replace(/^@/, '')
+        };
+        localStorage.setItem(key, JSON.stringify(snapshot));
         profileBaselineRef.current = serializeForDirtyCheck(profileData);
         setIsProfileDirty(false);
         setProfileAutoSaveState('saved');
@@ -781,7 +879,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
     }, 700);
 
     return () => window.clearTimeout(timer);
-  }, [profileData, isProfileDirty, user?.username]);
+  }, [profileData, isProfileDirty, user?.username, profileValidationErrors]);
 
   useEffect(() => {
     setIsPostCardDirty(
@@ -842,6 +940,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const publishProfileDraft = async () => {
     if (!user?.username) return;
+    if (Object.keys(profileValidationErrors).length > 0) {
+      throw new Error('Fix invalid profile fields before publishing.');
+    }
     const key = getProfileDraftKey(user.username);
     if (!key) return;
     let draft: any = null;
@@ -857,6 +958,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const payload = { ...draft };
     // Template system disabled: do not publish template field.
     delete payload.websiteTemplate;
+    if (typeof payload.telegramUsername === 'string') {
+      payload.telegramUsername = payload.telegramUsername.trim().replace(/^@/, '');
+    }
     // Prevent accidental avatar clearing from stale/partial draft snapshots.
     if (typeof payload.avatar === 'string' && payload.avatar.trim() === '') {
       delete payload.avatar;
@@ -916,14 +1020,25 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
     try {
       setError('');
       setSuccess('');
+      if (Object.keys(profileValidationErrors).length > 0) {
+        setError('Fix invalid profile fields before saving.');
+        return;
+      }
       if (!user?.username) return;
       const key = getProfileDraftKey(user.username);
       if (!key) return;
-      localStorage.setItem(key, JSON.stringify(profileData));
+      const snapshot = {
+        ...profileData,
+        telegramUsername: profileData.telegramUsername.trim().replace(/^@/, '')
+      };
+      localStorage.setItem(key, JSON.stringify(snapshot));
       profileBaselineRef.current = serializeForDirtyCheck(profileData);
       setIsProfileDirty(false);
       setProfileAutoSaveState('saved');
       markPublicWebsiteDirty();
+      if (telegramAlertsEnabled && profileData.telegramBotToken.trim()) {
+        setIsEditingTelegramToken(false);
+      }
       toast.success('Draft saved to preview page.', {
         id: 'profile-draft-saved',
         duration: 2600
@@ -1889,7 +2004,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
         </nav>
 
         <div className="flex min-h-[calc(100vh-52px)]">
-        {/* â”€â”€ Left Sidebar Nav â”€â”€ */}
+        {/* Ã¢â€â‚¬Ã¢â€â‚¬ Left Sidebar Nav Ã¢â€â‚¬Ã¢â€â‚¬ */}
         <aside className="creator-sidebar hidden lg:flex flex-col w-[220px] flex-shrink-0 border-r border-gray-200 bg-white">
           {/* Creator avatar + name */}
           <div className="px-4 pt-5 pb-4 border-b border-gray-200">
@@ -1950,7 +2065,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
           </div>
         </aside>
 
-        {/* â”€â”€ Main Content Area â”€â”€ */}
+        {/* Ã¢â€â‚¬Ã¢â€â‚¬ Main Content Area Ã¢â€â‚¬Ã¢â€â‚¬ */}
         <div className="creator-main flex-1 min-w-0 gradient-mesh-bg">
           {/* Mobile tab bar (horizontal, shown only on < lg) */}
           <div className="creator-mobile-tabs lg:hidden sticky top-[52px] z-40 bg-white backdrop-blur-xl border-b border-gray-200">
@@ -1998,7 +2113,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
           </div>
         )}
 
-        {/* â•â•â•â•â•â•â•â•â•â• Overview Tab â•â•â•â•â•â•â•â•â•â• */}
+        {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â Overview Tab Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
             {/* Welcome header */}
@@ -2520,7 +2635,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
               </div>
             </div>
 
-            {/* â”€â”€ Section: Profile â”€â”€ */}
+            {/* Ã¢â€â‚¬Ã¢â€â‚¬ Section: Profile Ã¢â€â‚¬Ã¢â€â‚¬ */}
             <h3 className="form-section-header">Profile</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -2547,7 +2662,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
               </div>
             </div>
 
-            {/* â”€â”€ Section: Social Links â”€â”€ */}
+            {/* Ã¢â€â‚¬Ã¢â€â‚¬ Section: Social Links Ã¢â€â‚¬Ã¢â€â‚¬ */}
             <h3 className="form-section-header">Social Links</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -2560,6 +2675,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                   onChange={(e) => setProfileData({ ...profileData, telegramUsername: e.target.value })}
                   placeholder="yourusername"
                 />
+                {profileValidationErrors.telegramUsername && (
+                  <p className="text-xs text-red-600 mt-1">{profileValidationErrors.telegramUsername}</p>
+                )}
                 <p className="text-xs text-muted-foreground mt-2">
                   Social links saved here appear on your public website sidebar and footer.
                 </p>
@@ -2575,6 +2693,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                   onChange={(e) => setProfileData({ ...profileData, twitterUrl: e.target.value })}
                   placeholder="https://twitter.com/yourhandle"
                 />
+                {profileValidationErrors.twitterUrl && (
+                  <p className="text-xs text-red-600 mt-1">{profileValidationErrors.twitterUrl}</p>
+                )}
               </div>
 
               <div>
@@ -2587,6 +2708,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                   onChange={(e) => setProfileData({ ...profileData, instagramUrl: e.target.value })}
                   placeholder="https://instagram.com/yourhandle"
                 />
+                {profileValidationErrors.instagramUrl && (
+                  <p className="text-xs text-red-600 mt-1">{profileValidationErrors.instagramUrl}</p>
+                )}
               </div>
 
               <div>
@@ -2603,6 +2727,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                   onChange={(e) => setProfileData({ ...profileData, tiktokUrl: e.target.value })}
                   placeholder="https://tiktok.com/@yourhandle"
                 />
+                {profileValidationErrors.tiktokUrl && (
+                  <p className="text-xs text-red-600 mt-1">{profileValidationErrors.tiktokUrl}</p>
+                )}
               </div>
 
               <div>
@@ -2619,11 +2746,102 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                   onChange={(e) => setProfileData({ ...profileData, twitchUrl: e.target.value })}
                   placeholder="https://twitch.tv/yourhandle"
                 />
+                {profileValidationErrors.twitchUrl && (
+                  <p className="text-xs text-red-600 mt-1">{profileValidationErrors.twitchUrl}</p>
+                )}
               </div>
 
             </div>
 
-            {/* â”€â”€ Section: Advanced â”€â”€ */}
+            {/* Ã¢â€â‚¬Ã¢â€â‚¬ Section: Advanced Ã¢â€â‚¬Ã¢â€â‚¬ */}
+            <h3 className="form-section-header">Telegram Alerts</h3>
+            <div className="rounded-xl border border-border bg-background/50 p-4 space-y-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-medium text-foreground">Enable Telegram Payment Alerts</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Get these tokens from Telegram and you will receive a separate message for every new payment initiation and completed purchase.
+                  </p>
+                </div>
+                <Switch checked={telegramAlertsEnabled} onCheckedChange={handleTelegramAlertsToggle} />
+              </div>
+
+              {telegramAlertsEnabled && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4" />
+                      Telegram Bot Token
+                    </label>
+                    {!isEditingTelegramToken && profileData.telegramBotToken.trim() ? (
+                      <div className="space-y-2">
+                        <Input type="password" value="••••••••••••••••••••" disabled />
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            cachedTelegramTokenRef.current = profileData.telegramBotToken;
+                            setProfileData((prev) => ({ ...prev, telegramBotToken: '' }));
+                            setIsEditingTelegramToken(true);
+                          }}
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          Change Token
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <Input
+                          type="password"
+                          value={profileData.telegramBotToken}
+                          onChange={(e) => setProfileData({ ...profileData, telegramBotToken: e.target.value })}
+                          placeholder="123456789:ABCDEF..."
+                        />
+                        {profileValidationErrors.telegramBotToken && (
+                          <p className="text-xs text-red-600 mt-1">{profileValidationErrors.telegramBotToken}</p>
+                        )}
+                        {cachedTelegramTokenRef.current && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setProfileData((prev) => ({ ...prev, telegramBotToken: cachedTelegramTokenRef.current }));
+                              setIsEditingTelegramToken(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Create your bot via @BotFather and paste the token. It is masked in this dashboard after save.
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4" />
+                      Telegram Chat ID
+                    </label>
+                    <Input
+                      value={profileData.telegramChatId}
+                      onChange={(e) => setProfileData({ ...profileData, telegramChatId: e.target.value })}
+                      placeholder="123456789 or -1001234567890"
+                    />
+                    {profileValidationErrors.telegramChatId && (
+                      <p className="text-xs text-red-600 mt-1">{profileValidationErrors.telegramChatId}</p>
+                    )}
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Add your bot to your chat/channel, then use that chat ID for notification delivery.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <h3 className="form-section-header">Advanced</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -2636,36 +2854,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                   onChange={(e) => setProfileData({ ...profileData, walletAddress: e.target.value })}
                   placeholder="0x..."
                 />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4" />
-                  Telegram Bot Token
-                </label>
-                <Input
-                  value={profileData.telegramBotToken}
-                  onChange={(e) => setProfileData({ ...profileData, telegramBotToken: e.target.value })}
-                  placeholder="123456:ABCDEF..."
-                />
-                <p className="text-xs text-muted-foreground mt-2">
-                  Create a Telegram bot (via BotFather) and paste the token here. Payment events will be sent to your Telegram.
-                </p>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4" />
-                  Telegram Chat ID
-                </label>
-                <Input
-                  value={profileData.telegramChatId}
-                  onChange={(e) => setProfileData({ ...profileData, telegramChatId: e.target.value })}
-                  placeholder="123456789"
-                />
-                <p className="text-xs text-muted-foreground mt-2">
-                  Add your bot to a chat and use that chatâ€™s ID. Youâ€™ll get a message for each payment and completion.
-                </p>
+                {profileValidationErrors.walletAddress && (
+                  <p className="text-xs text-red-600 mt-1">{profileValidationErrors.walletAddress}</p>
+                )}
               </div>
 
               <div className="md:col-span-2">
@@ -2679,6 +2870,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                   onChange={(e) => setProfileData({ ...profileData, domainEmail: e.target.value })}
                   placeholder="alina@yourdomain.com"
                 />
+                {profileValidationErrors.domainEmail && (
+                  <p className="text-xs text-red-600 mt-1">{profileValidationErrors.domainEmail}</p>
+                )}
                 <p className="text-xs text-muted-foreground mt-2">
                   Use a sender address from your domain (for example, alina@yourplatformdomain.com). This is the From email for access links and the business email shown in your public footer.
                 </p>
@@ -2687,7 +2881,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
             <div className="dashboard-sticky-action-bar flex items-center justify-between gap-3">
               <span className="text-xs text-muted-foreground">
-                {profileAutoSaveState === 'saving'
+                {Object.keys(profileValidationErrors).length > 0
+                  ? 'Fix invalid field formats before saving'
+                  : profileAutoSaveState === 'saving'
                   ? 'Saving profile draft...'
                   : profileAutoSaveState === 'error'
                   ? 'Draft auto-save failed. Try editing again.'
@@ -2778,7 +2974,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                                 {card.text || 'Untitled post card'}
                               </h4>
                               <p className="text-[11px] text-muted-foreground mt-0.5">
-                                {cardMediaItems.length > 0 ? `${cardMediaItems.length} media` : 'Text only'} {card.isLocked ? '• Locked' : ''} • Order {Number.isFinite(Number(card.order)) ? Number(card.order) : 0}
+                                {cardMediaItems.length > 0 ? `${cardMediaItems.length} media` : 'Text only'} {card.isLocked ? 'â€¢ Locked' : ''} â€¢ Order {Number.isFinite(Number(card.order)) ? Number(card.order) : 0}
                               </p>
                               {firstMedia?.url && (
                                 <div className="mt-2 h-14 w-24 overflow-hidden rounded-md border border-border bg-muted/20">
@@ -3123,7 +3319,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                             <div className="min-w-0">
                               <h4 className="text-sm font-semibold text-foreground truncate">{collection.title}</h4>
                               <p className="text-[11px] text-muted-foreground mt-0.5">
-                                {(collection.media?.length || 0)} items • ${Number(collection.price || 0).toFixed(2)} {collection.currency || 'USD'}
+                                {(collection.media?.length || 0)} items â€¢ ${Number(collection.price || 0).toFixed(2)} {collection.currency || 'USD'}
                               </p>
                               {showcaseItems.length > 0 && (
                                 <div className="mt-2 flex items-center gap-1.5">
@@ -3882,7 +4078,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                         <div>
                           <p className="text-sm text-muted-foreground">Date</p>
                           <p className="text-sm text-foreground font-medium">
-                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : 'â€”'}
+                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : 'Ã¢â‚¬â€'}
                           </p>
                         </div>
                         <span className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -3910,7 +4106,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <p className="text-sm text-muted-foreground">Buyer</p>
-                          <p className="text-sm text-foreground font-medium">{sale.emailMasked || 'â€”'}</p>
+                          <p className="text-sm text-foreground font-medium">{sale.emailMasked || 'Ã¢â‚¬â€'}</p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">Order</p>
@@ -3946,7 +4142,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                       salesList.map((sale: any) => (
                         <tr key={sale.id} className="border-t border-border">
                           <td className="px-4 py-3 text-foreground">
-                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : 'â€”'}
+                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : 'Ã¢â‚¬â€'}
                           </td>
                           <td className="px-4 py-3 text-foreground">{sale.collectionTitle}</td>
                           <td className="px-4 py-3 text-foreground">
@@ -3956,7 +4152,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                             {formatMoney(sale.creatorAmount, sale.currency)}
                           </td>
                           <td className="px-4 py-3 text-foreground capitalize">{sale.status}</td>
-                          <td className="px-4 py-3 text-foreground">{sale.emailMasked || 'â€”'}</td>
+                          <td className="px-4 py-3 text-foreground">{sale.emailMasked || 'Ã¢â‚¬â€'}</td>
                           <td className="px-4 py-3 text-muted-foreground">{sale.orderId}</td>
                         </tr>
                       ))
@@ -4004,4 +4200,5 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
 };
 
 export default CreatorDashboard;
+
 
