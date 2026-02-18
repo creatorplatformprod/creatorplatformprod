@@ -191,6 +191,7 @@ const CreatorDashboard = () => {
     unlockAllCurrency: 'USD'
   });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState('');
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [uploadingCoverImage, setUploadingCoverImage] = useState(false);
@@ -257,6 +258,20 @@ const CreatorDashboard = () => {
     }
     loadUserData();
   }, []);
+
+  useEffect(() => {
+    if (!avatarFile) {
+      setAvatarPreviewUrl('');
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(avatarFile);
+    setAvatarPreviewUrl(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [avatarFile]);
 
   const refreshPublicWebsiteState = (username?: string) => {
     if (!username) return;
@@ -1906,9 +1921,9 @@ const CreatorDashboard = () => {
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <div className="relative">
                   <div className="w-24 h-24 rounded-full overflow-hidden bg-secondary border-2 border-border">
-                    {profileData.avatar ? (
+                    {avatarPreviewUrl || profileData.avatar ? (
                       <img 
-                        src={profileData.avatar} 
+                        src={avatarPreviewUrl || profileData.avatar} 
                         alt="Profile" 
                         className="w-full h-full object-cover"
                       />
