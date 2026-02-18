@@ -2681,16 +2681,37 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
               </div>
             </div>
 
-            <div className="dashboard-sticky-action-bar flex items-center justify-between gap-3">
-              <span className="text-xs text-muted-foreground">
-                {profileAutoSaveState === 'saving'
-                  ? 'Saving profile draft...'
-                  : profileAutoSaveState === 'error'
-                  ? 'Draft auto-save failed. Try editing again.'
-                  : isProfileDirty
-                  ? 'Unsaved changes'
-                  : 'Draft saved. Publish to make live'}
-              </span>
+            <div className="dashboard-sticky-action-bar flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div
+                className={`inline-flex items-center gap-2 text-xs font-medium ${
+                  profileAutoSaveState === 'error'
+                    ? 'text-red-600'
+                    : profileAutoSaveState === 'saving'
+                    ? 'text-amber-600'
+                    : isProfileDirty
+                    ? 'text-foreground'
+                    : 'text-emerald-600'
+                }`}
+              >
+                {profileAutoSaveState === 'saving' ? (
+                  <Clock className="w-3.5 h-3.5" />
+                ) : profileAutoSaveState === 'error' ? (
+                  <X className="w-3.5 h-3.5" />
+                ) : isProfileDirty ? (
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-foreground/70" />
+                ) : (
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                )}
+                <span>
+                  {profileAutoSaveState === 'saving'
+                    ? 'Saving profile draft...'
+                    : profileAutoSaveState === 'error'
+                    ? 'Draft auto-save failed. Try editing again.'
+                    : isProfileDirty
+                    ? 'Unsaved changes'
+                    : 'Draft saved. Publish to make live'}
+                </span>
+              </div>
               <Button onClick={handleSaveProfile} className="w-full md:w-auto dash-btn-secondary">
                 <Save className="w-4 h-4 mr-2" />
                 Save Draft Now
