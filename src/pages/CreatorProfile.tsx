@@ -643,7 +643,10 @@ const CreatorProfile = () => {
     typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
   const mockFallbackCover = shouldUseMockData ? mockPack.cover : '';
   const heroCoverImage = creatorCoverImage || mockFallbackCover;
-  const profileAvatarImage = shouldUseMockData ? mockPack.avatar : (creatorData?.avatar || mockAvatar);
+  const profileAvatarImage =
+    typeof creatorData?.avatar === 'string' && creatorData.avatar.trim()
+      ? creatorData.avatar.trim()
+      : mockPack.avatar;
 
   const renderSocialIcon = (
     url: string,
