@@ -332,6 +332,14 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [coverFrameSize, setCoverFrameSize] = useState(COVER_EDITOR_FRAME);
   const [uploadingCoverImage, setUploadingCoverImage] = useState(false);
 
+  const getCoverFrameSize = () => {
+    const rect = coverEditorRef.current?.getBoundingClientRect();
+    if (rect && rect.width > 0 && rect.height > 0) {
+      return { width: Math.round(rect.width), height: Math.round(rect.height) };
+    }
+    return coverFrameSize;
+  };
+
   // Status card form state
   const [statusCardForm, setStatusCardForm] = useState({
     text: '',
@@ -457,10 +465,16 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       setCoverImageFile(null);
       setCoverDimensions(null);
       setCoverEditor(createDefaultCropEditorState());
+      if (coverInputRef.current) {
+        coverInputRef.current.value = '';
+      }
       return;
     }
     setCoverImageFile(file);
     setCoverEditor(createDefaultCropEditorState());
+    requestAnimationFrame(() => {
+      setCoverFrameSize(getCoverFrameSize());
+    });
     loadImageDimensions(file)
       .then((dims) => setCoverDimensions(dims))
       .catch(() => setCoverDimensions(null));
@@ -495,6 +509,8 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const handleCoverMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!coverImageFile) return;
     e.preventDefault();
+    const frame = getCoverFrameSize();
+    setCoverFrameSize(frame);
     coverDragRef.current = {
       startX: e.clientX,
       startY: e.clientY,
@@ -534,11 +550,12 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
     if (!coverDragging) return;
     const onMouseMove = (event: MouseEvent) => {
       if (!coverDragRef.current) return;
+      const frame = getCoverFrameSize();
       const deltaX = event.clientX - coverDragRef.current.startX;
       const deltaY = event.clientY - coverDragRef.current.startY;
       const nextOffsets = getClampedOffsets(
         coverDimensions,
-        coverFrameSize,
+        frame,
         coverDragRef.current.startOffsetX + deltaX,
         coverDragRef.current.startOffsetY + deltaY
       );
@@ -1010,7 +1027,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       const editedCover = await createEditedImageFile(
         coverImageFile,
         coverDimensions,
-        coverFrameSize,
+        getCoverFrameSize(),
         COVER_EXPORT_SIZE,
         coverEditor
       );
@@ -1020,6 +1037,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
         setCoverImageFile(null);
         setCoverDimensions(null);
         setCoverEditor(createDefaultCropEditorState());
+        if (coverInputRef.current) {
+          coverInputRef.current.value = '';
+        }
         setSuccess('Cover image uploaded. Profile draft will auto-save.');
       } else {
         setError('Failed to upload cover image');
@@ -2374,6 +2394,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                     type="file"
                     accept="image/*"
                     onChange={(e) => applyCoverFile(e.target.files?.[0] || null)}
+                    onClick={(e) => {
+                      (e.currentTarget as HTMLInputElement).value = '';
+                    }}
                     className="hidden"
                   />
                   <div
@@ -2413,13 +2436,14 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                             style={(() => {
                               const offsets = getClampedOffsets(
                                 coverDimensions,
-                                coverFrameSize,
+                                getCoverFrameSize(),
                                 coverEditor.offsetX,
                                 coverEditor.offsetY
                               );
+                              const liveFrame = getCoverFrameSize();
                               const baseScale = Math.max(
-                                coverFrameSize.width / coverDimensions.width,
-                                coverFrameSize.height / coverDimensions.height
+                                liveFrame.width / coverDimensions.width,
+                                liveFrame.height / coverDimensions.height
                               );
                               const drawWidth = coverDimensions.width * baseScale;
                               const drawHeight = coverDimensions.height * baseScale;
@@ -2427,8 +2451,8 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                                 position: 'absolute' as const,
                                 width: `${drawWidth}px`,
                                 height: `${drawHeight}px`,
-                                left: `${(coverFrameSize.width - drawWidth) / 2 + offsets.offsetX}px`,
-                                top: `${(coverFrameSize.height - drawHeight) / 2 + offsets.offsetY}px`,
+                                left: `${(liveFrame.width - drawWidth) / 2 + offsets.offsetX}px`,
+                                top: `${(liveFrame.height - drawHeight) / 2 + offsets.offsetY}px`,
                                 maxWidth: 'none',
                                 userSelect: 'none' as const
                               };
@@ -2468,6 +2492,9 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                         setCoverImageFile(null);
                         setCoverDimensions(null);
                         setCoverEditor(createDefaultCropEditorState());
+                        if (coverInputRef.current) {
+                          coverInputRef.current.value = '';
+                        }
                         setProfileData({ ...profileData, coverImage: '' });
                         setSuccess('Cover removed. Draft updated.');
                       }}
