@@ -708,7 +708,7 @@ const CreatorProfile = () => {
       {/* Profile Hero Section */}
       <div className="profile-hero template-hero relative">
         {/* Cover Photo Area with gradient overlay */}
-        <div className="template-cover relative h-64 sm:h-80 lg:h-[22rem] overflow-hidden">
+        <div className="template-cover relative overflow-hidden">
           {heroCoverImage ? (
             <img
               src={heroCoverImage}
@@ -716,18 +716,17 @@ const CreatorProfile = () => {
               className="absolute inset-0 w-full h-full object-cover"
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-700/30 via-slate-900/20 to-indigo-700/25" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
+          <div className="absolute inset-0 bg-black/10" />
           <div className="absolute inset-0" style={{ backgroundColor: `rgba(0, 0, 0, ${coverOverlay * 0.3})` }} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
-          {/* Subtle pattern overlay */}
-          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/10 to-black/55" />
         </div>
 
         {/* Profile Info */}
-        <div className={`template-profile-shell relative max-w-[1400px] mx-auto px-4 -mt-16 sm:-mt-20 pb-6 sm:pb-8 transition-all duration-300 ${mainOffsetClass}`}>
-          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5">
+        <div className={`template-profile-shell relative max-w-[1400px] mx-auto px-4 -mt-12 sm:-mt-16 pb-6 sm:pb-8 transition-all duration-300 ${mainOffsetClass}`}>
+          <div className="template-profile-panel rounded-2xl border border-border/70 bg-background/85 backdrop-blur-md shadow-sm overflow-hidden">
+          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 px-4 sm:px-6 pt-4 sm:pt-5 pb-4">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
                 src={profileAvatarImage}
@@ -769,7 +768,8 @@ const CreatorProfile = () => {
           </div>
 
           {/* Content Filter Tabs - Integrated into hero */}
-          <div className={`template-filter-shell template-filter-container mt-5 mx-auto sm:mx-0 flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
+          <div className="template-filter-strip px-4 sm:px-6 pt-2 pb-4">
+          <div className={`template-filter-shell template-filter-container mx-auto sm:mx-0 flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
             {(['all', 'collections', 'posts'] as const).map(filter => (
               <button
                 key={filter}
@@ -783,6 +783,8 @@ const CreatorProfile = () => {
                 {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
               </button>
             ))}
+          </div>
+          </div>
           </div>
         </div>
       </div>
