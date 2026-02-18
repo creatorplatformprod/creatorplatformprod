@@ -5,6 +5,7 @@
 /* Landing page typography */
 .font-fraunces {
   font-family: 'Fraunces', serif;
+}
 
 .font-space-grotesk {
   font-family: 'Space Grotesk', sans-serif;
@@ -1547,69 +1548,6 @@
     transition: max-width 240ms ease, transform 240ms ease;
   }
 
-  .public-template .template-cover {
-    width: 100%;
-    min-height: 220px;
-    height: clamp(220px, 30vw, 360px);
-  }
-
-  .public-template .template-cover > img {
-    object-position: center 34%;
-  }
-
-  .public-template .template-profile-panel {
-    background: color-mix(in srgb, hsl(var(--background)) 86%, transparent);
-    border: 1px solid color-mix(in srgb, hsl(var(--border)) 80%, transparent);
-    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
-  }
-
-  .public-template .template-filter-strip {
-    border-top: 1px solid color-mix(in srgb, hsl(var(--border)) 78%, transparent);
-  }
-
-  @media (max-width: 640px) {
-    .public-template .template-cover {
-      min-height: 190px;
-      height: clamp(190px, 44vw, 250px);
-    }
-
-    /* Keep mobile close to the old look: lightweight overlay, not a boxed card */
-    .public-template .template-profile-shell {
-      margin-top: -3.75rem;
-      padding-left: 0.75rem;
-      padding-right: 0.75rem;
-      padding-bottom: 1rem;
-    }
-
-    .public-template .template-profile-panel {
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      backdrop-filter: none;
-      overflow: visible;
-    }
-
-    .public-template .template-profile-row {
-      padding: 0;
-      gap: 0.875rem;
-      align-items: center;
-    }
-
-    .public-template .template-filter-strip {
-      border-top: 0;
-      padding-left: 0;
-      padding-right: 0;
-      padding-top: 0.5rem;
-      padding-bottom: 0;
-    }
-
-    .public-template .template-filter-container {
-      background: hsl(var(--background) / 0.9);
-      border-color: hsl(var(--border));
-    }
-  }
-  }
-
   .public-template .template-feed-item {
     break-inside: avoid;
     -webkit-column-break-inside: avoid;
@@ -2170,7 +2108,6 @@
   /* Profile hero - transparent to let cover photo show */
   .profile-hero {
     background: transparent;
-    border-bottom: 0;
   }
 
   /* Improved stat-card-glow */
