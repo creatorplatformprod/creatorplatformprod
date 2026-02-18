@@ -270,6 +270,8 @@ const CreatorDashboard = () => {
   const [isPostCardDirty, setIsPostCardDirty] = useState(false);
   const [isCollectionDirty, setIsCollectionDirty] = useState(false);
   const [profileAutoSaveState, setProfileAutoSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [profileSavePopup, setProfileSavePopup] = useState('');
+  const profileSavePopupTimerRef = useRef<number | null>(null);
 
   // Analytics state
   const [analyticsRange, setAnalyticsRange] = useState('30');
@@ -433,6 +435,14 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
   }, [coverImageFile]);
 
   useFeedbackToasts({ success, error, info: infoMessage });
+
+  useEffect(() => {
+    return () => {
+      if (profileSavePopupTimerRef.current) {
+        window.clearTimeout(profileSavePopupTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const element = coverEditorRef.current;
@@ -923,7 +933,13 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       setIsProfileDirty(false);
       setProfileAutoSaveState('saved');
       markPublicWebsiteDirty();
-      setSuccess('Profile draft saved. Publish from Preview to make it live.');
+      setProfileSavePopup('Draft saved to preview page.');
+      if (profileSavePopupTimerRef.current) {
+        window.clearTimeout(profileSavePopupTimerRef.current);
+      }
+      profileSavePopupTimerRef.current = window.setTimeout(() => {
+        setProfileSavePopup('');
+      }, 2600);
     } catch (err: any) {
       setError(err.message || 'Failed to save profile draft');
     }
@@ -2681,37 +2697,23 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
               </div>
             </div>
 
-            <div className="dashboard-sticky-action-bar flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-              <div
-                className={`inline-flex items-center gap-2 text-xs font-medium ${
-                  profileAutoSaveState === 'error'
-                    ? 'text-red-600'
-                    : profileAutoSaveState === 'saving'
-                    ? 'text-amber-600'
-                    : isProfileDirty
-                    ? 'text-foreground'
-                    : 'text-emerald-600'
-                }`}
-              >
-                {profileAutoSaveState === 'saving' ? (
-                  <Clock className="w-3.5 h-3.5" />
-                ) : profileAutoSaveState === 'error' ? (
-                  <X className="w-3.5 h-3.5" />
-                ) : isProfileDirty ? (
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-foreground/70" />
-                ) : (
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                )}
-                <span>
-                  {profileAutoSaveState === 'saving'
-                    ? 'Saving profile draft...'
-                    : profileAutoSaveState === 'error'
-                    ? 'Draft auto-save failed. Try editing again.'
-                    : isProfileDirty
-                    ? 'Unsaved changes'
-                    : 'Draft saved. Publish to make live'}
-                </span>
+            {profileSavePopup && (
+              <div className="flex justify-end mb-2">
+                <div className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-700">
+                  {profileSavePopup}
+                </div>
               </div>
+            )}
+            <div className="dashboard-sticky-action-bar flex items-center justify-between gap-3">
+              <span className="text-xs text-muted-foreground">
+                {profileAutoSaveState === 'saving'
+                  ? 'Saving profile draft...'
+                  : profileAutoSaveState === 'error'
+                  ? 'Draft auto-save failed. Try editing again.'
+                  : isProfileDirty
+                  ? 'Unsaved changes'
+                  : 'Draft saved to preview page'}
+              </span>
               <Button onClick={handleSaveProfile} className="w-full md:w-auto dash-btn-secondary">
                 <Save className="w-4 h-4 mr-2" />
                 Save Draft Now
