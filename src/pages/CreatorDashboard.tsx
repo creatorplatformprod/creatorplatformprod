@@ -78,13 +78,11 @@ const createEmptyCollectionForm = () => ({
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
 type CropEditorState = {
-  zoom: number;
   offsetX: number;
   offsetY: number;
 };
 
 const createDefaultCropEditorState = (): CropEditorState => ({
-  zoom: 1,
   offsetX: 0,
   offsetY: 0
 });
@@ -114,7 +112,6 @@ const loadImageDimensions = (file: File): Promise<{ width: number; height: numbe
 const getClampedOffsets = (
   dimensions: { width: number; height: number } | null,
   frame: { width: number; height: number },
-  zoom: number,
   offsetX: number,
   offsetY: number
 ) => {
@@ -122,8 +119,8 @@ const getClampedOffsets = (
     return { offsetX: 0, offsetY: 0 };
   }
   const baseScale = Math.max(frame.width / dimensions.width, frame.height / dimensions.height);
-  const scaledWidth = dimensions.width * baseScale * zoom;
-  const scaledHeight = dimensions.height * baseScale * zoom;
+  const scaledWidth = dimensions.width * baseScale;
+  const scaledHeight = dimensions.height * baseScale;
   const maxOffsetX = Math.max(0, (scaledWidth - frame.width) / 2);
   const maxOffsetY = Math.max(0, (scaledHeight - frame.height) / 2);
   return {
@@ -157,11 +154,10 @@ const createEditedImageFile = async (
     image.src = objectUrl;
   });
 
-  const safeZoom = Number.isFinite(editor.zoom) ? clamp(editor.zoom, 1, 3) : 1;
-  const offsets = getClampedOffsets(dimensions, frame, safeZoom, editor.offsetX, editor.offsetY);
+  const offsets = getClampedOffsets(dimensions, frame, editor.offsetX, editor.offsetY);
   const baseScale = Math.max(frame.width / dimensions.width, frame.height / dimensions.height);
-  const drawWidth = dimensions.width * baseScale * safeZoom;
-  const drawHeight = dimensions.height * baseScale * safeZoom;
+  const drawWidth = dimensions.width * baseScale;
+  const drawHeight = dimensions.height * baseScale;
   const drawX = (frame.width - drawWidth) / 2 + offsets.offsetX;
   const drawY = (frame.height - drawHeight) / 2 + offsets.offsetY;
   const scaleX = output.width / frame.width;
@@ -499,7 +495,6 @@ const CreatorDashboard = () => {
       const nextOffsets = getClampedOffsets(
         avatarDimensions,
         AVATAR_EDITOR_FRAME,
-        avatarEditor.zoom,
         avatarDragRef.current.startOffsetX + deltaX,
         avatarDragRef.current.startOffsetY + deltaY
       );
@@ -515,7 +510,7 @@ const CreatorDashboard = () => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
-  }, [avatarDragging, avatarDimensions, avatarEditor.zoom]);
+  }, [avatarDragging, avatarDimensions]);
 
   useEffect(() => {
     if (!coverDragging) return;
@@ -526,7 +521,6 @@ const CreatorDashboard = () => {
       const nextOffsets = getClampedOffsets(
         coverDimensions,
         COVER_EDITOR_FRAME,
-        coverEditor.zoom,
         coverDragRef.current.startOffsetX + deltaX,
         coverDragRef.current.startOffsetY + deltaY
       );
@@ -542,7 +536,7 @@ const CreatorDashboard = () => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
-  }, [coverDragging, coverDimensions, coverEditor.zoom]);
+  }, [coverDragging, coverDimensions]);
 
   const refreshPublicWebsiteState = (username?: string) => {
     if (!username) return;
@@ -2212,145 +2206,106 @@ const CreatorDashboard = () => {
                 <p className="text-xs text-muted-foreground mb-3">
                   Drag and drop, then drag inside the frame to orient your avatar.
                 </p>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    <input
-                      ref={avatarInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => applyAvatarFile(e.target.files?.[0] || null)}
-                      className="hidden"
-                    />
+                <div className="space-y-3">
+                  <input
+                    ref={avatarInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => applyAvatarFile(e.target.files?.[0] || null)}
+                    className="hidden"
+                  />
+                  <div
+                    className={`rounded-xl border border-dashed p-4 text-center cursor-pointer transition ${
+                      avatarDropActive ? 'border-primary bg-primary/10' : 'border-border bg-background/60 hover:border-primary/50'
+                    }`}
+                    onClick={() => avatarInputRef.current?.click()}
+                    onDragEnter={(e) => {
+                      e.preventDefault();
+                      setAvatarDropActive(true);
+                    }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setAvatarDropActive(true);
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault();
+                      setAvatarDropActive(false);
+                    }}
+                    onDrop={handleAvatarDrop}
+                  >
+                    <p className="text-sm font-medium text-foreground">Drop avatar image here</p>
+                    <p className="text-xs text-muted-foreground mt-1">or click to browse</p>
+                  </div>
+                  <div className="rounded-xl border border-border bg-background/70 p-3">
                     <div
-                      className={`rounded-xl border border-dashed p-4 text-center cursor-pointer transition ${
-                        avatarDropActive ? 'border-primary bg-primary/10' : 'border-border bg-background/60 hover:border-primary/50'
-                      }`}
-                      onClick={() => avatarInputRef.current?.click()}
-                      onDragEnter={(e) => {
-                        e.preventDefault();
-                        setAvatarDropActive(true);
-                      }}
-                      onDragOver={(e) => {
-                        e.preventDefault();
-                        setAvatarDropActive(true);
-                      }}
-                      onDragLeave={(e) => {
-                        e.preventDefault();
-                        setAvatarDropActive(false);
-                      }}
-                      onDrop={handleAvatarDrop}
+                      className="relative mx-auto overflow-hidden border border-border bg-secondary cursor-grab active:cursor-grabbing"
+                      style={{ width: AVATAR_EDITOR_FRAME.width, height: AVATAR_EDITOR_FRAME.height }}
+                      onMouseDown={handleAvatarMouseDown}
                     >
-                      <p className="text-sm font-medium text-foreground">Drop avatar image here</p>
-                      <p className="text-xs text-muted-foreground mt-1">or click to browse</p>
-                    </div>
-                    <div className="rounded-xl border border-border bg-background/70 p-3">
-                      <div
-                        className="relative mx-auto overflow-hidden border border-border bg-secondary"
-                        style={{ width: AVATAR_EDITOR_FRAME.width, height: AVATAR_EDITOR_FRAME.height }}
-                        onMouseDown={handleAvatarMouseDown}
-                      >
-                        {avatarPreviewUrl || profileData.avatar ? (
-                          avatarFile && avatarDimensions ? (
-                            <img
-                              src={avatarPreviewUrl}
-                              alt="Avatar editor"
-                              draggable={false}
-                              style={(() => {
-                                const offsets = getClampedOffsets(
-                                  avatarDimensions,
-                                  AVATAR_EDITOR_FRAME,
-                                  avatarEditor.zoom,
-                                  avatarEditor.offsetX,
-                                  avatarEditor.offsetY
-                                );
-                                const baseScale = Math.max(
-                                  AVATAR_EDITOR_FRAME.width / avatarDimensions.width,
-                                  AVATAR_EDITOR_FRAME.height / avatarDimensions.height
-                                );
-                                const drawWidth = avatarDimensions.width * baseScale * avatarEditor.zoom;
-                                const drawHeight = avatarDimensions.height * baseScale * avatarEditor.zoom;
-                                return {
-                                  position: 'absolute' as const,
-                                  width: `${drawWidth}px`,
-                                  height: `${drawHeight}px`,
-                                  left: `${(AVATAR_EDITOR_FRAME.width - drawWidth) / 2 + offsets.offsetX}px`,
-                                  top: `${(AVATAR_EDITOR_FRAME.height - drawHeight) / 2 + offsets.offsetY}px`,
-                                  maxWidth: 'none',
-                                  userSelect: 'none' as const
-                                };
-                              })()}
-                            />
-                          ) : (
-                            <img src={avatarPreviewUrl || profileData.avatar} alt="Avatar editor" className="w-full h-full object-cover" />
-                          )
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Camera className="w-8 h-8 text-muted-foreground" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="mt-3">
-                        <label className="text-[11px] text-muted-foreground block mb-1">Zoom</label>
-                        <input
-                          type="range"
-                          min={1}
-                          max={3}
-                          step={0.01}
-                          value={avatarEditor.zoom}
-                          disabled={!avatarFile}
-                          onChange={(e) => {
-                            const nextZoom = clamp(Number(e.target.value) || 1, 1, 3);
-                            setAvatarEditor((prev) => {
+                      {avatarPreviewUrl || profileData.avatar ? (
+                        avatarFile && avatarDimensions ? (
+                          <img
+                            src={avatarPreviewUrl}
+                            alt="Avatar editor"
+                            draggable={false}
+                            style={(() => {
                               const offsets = getClampedOffsets(
                                 avatarDimensions,
                                 AVATAR_EDITOR_FRAME,
-                                nextZoom,
-                                prev.offsetX,
-                                prev.offsetY
+                                avatarEditor.offsetX,
+                                avatarEditor.offsetY
                               );
-                              return { ...prev, zoom: nextZoom, ...offsets };
-                            });
-                          }}
-                          className="w-full"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="rounded-xl border border-border bg-background/70 p-4 flex flex-col items-center justify-center min-h-[280px]">
-                      <p className="text-xs text-muted-foreground mb-3">Live avatar</p>
-                      <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-border bg-secondary">
-                        {avatarPreviewUrl || profileData.avatar ? (
-                          <img src={avatarPreviewUrl || profileData.avatar} alt="Profile" className="w-full h-full object-cover" />
+                              const baseScale = Math.max(
+                                AVATAR_EDITOR_FRAME.width / avatarDimensions.width,
+                                AVATAR_EDITOR_FRAME.height / avatarDimensions.height
+                              );
+                              const drawWidth = avatarDimensions.width * baseScale;
+                              const drawHeight = avatarDimensions.height * baseScale;
+                              return {
+                                position: 'absolute' as const,
+                                width: `${drawWidth}px`,
+                                height: `${drawHeight}px`,
+                                left: `${(AVATAR_EDITOR_FRAME.width - drawWidth) / 2 + offsets.offsetX}px`,
+                                top: `${(AVATAR_EDITOR_FRAME.height - drawHeight) / 2 + offsets.offsetY}px`,
+                                maxWidth: 'none',
+                                userSelect: 'none' as const
+                              };
+                            })()}
+                          />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Camera className="w-8 h-8 text-muted-foreground" />
-                          </div>
-                        )}
+                          <img src={avatarPreviewUrl || profileData.avatar} alt="Avatar editor" className="w-full h-full object-cover" />
+                        )
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Camera className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                        <div className="w-36 h-36 rounded-full border-2 border-white/90 shadow-[0_0_0_9999px_rgba(0,0,0,0.28)]" />
                       </div>
-                      <p className="text-[11px] text-muted-foreground mt-3 text-center">
-                        Drag image in the editor panel to reposition.
-                      </p>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        onClick={() => setAvatarEditor(createDefaultCropEditorState())}
-                        disabled={!avatarFile}
-                        size="sm"
-                        variant="outline"
-                      >
-                        Reset
-                      </Button>
-                      <Button
-                        onClick={handleUploadAvatar}
-                        disabled={!avatarFile || uploadingAvatar}
-                        size="sm"
-                        className="dash-btn-secondary"
-                      >
-                        <Upload className="w-4 h-4 mr-1" />
-                        {uploadingAvatar ? 'Uploading...' : 'Upload Avatar'}
-                      </Button>
-                    </div>
+                    <p className="text-[11px] text-muted-foreground text-center mt-3">
+                      Drag image to reposition. Circle overlay shows your profile crop.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      onClick={() => setAvatarEditor(createDefaultCropEditorState())}
+                      disabled={!avatarFile}
+                      size="sm"
+                      variant="outline"
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      onClick={handleUploadAvatar}
+                      disabled={!avatarFile || uploadingAvatar}
+                      size="sm"
+                      className="dash-btn-secondary"
+                    >
+                      <Upload className="w-4 h-4 mr-1" />
+                      {uploadingAvatar ? 'Uploading...' : 'Upload Avatar'}
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -2358,159 +2313,122 @@ const CreatorDashboard = () => {
               <div className="border-t border-border/60 pt-4">
                 <h3 className="font-semibold text-foreground mb-1">Cover Image</h3>
                 <p className="text-xs text-muted-foreground mb-3">
-                  Drop image, then drag and zoom to orient your cover.
+                  Drop image, then drag inside the frame to orient your cover.
                 </p>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    <input
-                      ref={coverInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => applyCoverFile(e.target.files?.[0] || null)}
-                      className="hidden"
-                    />
+                <div className="space-y-3">
+                  <input
+                    ref={coverInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => applyCoverFile(e.target.files?.[0] || null)}
+                    className="hidden"
+                  />
+                  <div
+                    className={`rounded-xl border border-dashed p-4 text-center cursor-pointer transition ${
+                      coverDropActive ? 'border-primary bg-primary/10' : 'border-border bg-background/60 hover:border-primary/50'
+                    }`}
+                    onClick={() => coverInputRef.current?.click()}
+                    onDragEnter={(e) => {
+                      e.preventDefault();
+                      setCoverDropActive(true);
+                    }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setCoverDropActive(true);
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault();
+                      setCoverDropActive(false);
+                    }}
+                    onDrop={handleCoverDrop}
+                  >
+                    <p className="text-sm font-medium text-foreground">Drop cover image here</p>
+                    <p className="text-xs text-muted-foreground mt-1">or click to browse</p>
+                  </div>
+                  <div className="rounded-xl border border-border bg-background/70 p-3">
                     <div
-                      className={`rounded-xl border border-dashed p-4 text-center cursor-pointer transition ${
-                        coverDropActive ? 'border-primary bg-primary/10' : 'border-border bg-background/60 hover:border-primary/50'
-                      }`}
-                      onClick={() => coverInputRef.current?.click()}
-                      onDragEnter={(e) => {
-                        e.preventDefault();
-                        setCoverDropActive(true);
+                      className="relative overflow-hidden border border-border bg-background/60 mx-auto w-full cursor-grab active:cursor-grabbing"
+                      style={{
+                        width: `${COVER_EDITOR_FRAME.width}px`,
+                        height: `${COVER_EDITOR_FRAME.height}px`,
+                        maxWidth: '100%'
                       }}
-                      onDragOver={(e) => {
-                        e.preventDefault();
-                        setCoverDropActive(true);
-                      }}
-                      onDragLeave={(e) => {
-                        e.preventDefault();
-                        setCoverDropActive(false);
-                      }}
-                      onDrop={handleCoverDrop}
+                      onMouseDown={handleCoverMouseDown}
                     >
-                      <p className="text-sm font-medium text-foreground">Drop cover image here</p>
-                      <p className="text-xs text-muted-foreground mt-1">or click to browse</p>
-                    </div>
-                    <div className="rounded-xl border border-border bg-background/70 p-3">
-                      <div
-                        className="relative overflow-hidden border border-border bg-background/60 mx-auto w-full"
-                        style={{
-                          width: `${COVER_EDITOR_FRAME.width}px`,
-                          height: `${COVER_EDITOR_FRAME.height}px`,
-                          maxWidth: '100%'
-                        }}
-                        onMouseDown={handleCoverMouseDown}
-                      >
-                        {coverPreviewUrl || profileData.coverImage ? (
-                          coverImageFile && coverDimensions ? (
-                            <img
-                              src={coverPreviewUrl}
-                              alt="Cover editor"
-                              draggable={false}
-                              style={(() => {
-                                const offsets = getClampedOffsets(
-                                  coverDimensions,
-                                  COVER_EDITOR_FRAME,
-                                  coverEditor.zoom,
-                                  coverEditor.offsetX,
-                                  coverEditor.offsetY
-                                );
-                                const baseScale = Math.max(
-                                  COVER_EDITOR_FRAME.width / coverDimensions.width,
-                                  COVER_EDITOR_FRAME.height / coverDimensions.height
-                                );
-                                const drawWidth = coverDimensions.width * baseScale * coverEditor.zoom;
-                                const drawHeight = coverDimensions.height * baseScale * coverEditor.zoom;
-                                return {
-                                  position: 'absolute' as const,
-                                  width: `${drawWidth}px`,
-                                  height: `${drawHeight}px`,
-                                  left: `${(COVER_EDITOR_FRAME.width - drawWidth) / 2 + offsets.offsetX}px`,
-                                  top: `${(COVER_EDITOR_FRAME.height - drawHeight) / 2 + offsets.offsetY}px`,
-                                  maxWidth: 'none',
-                                  userSelect: 'none' as const
-                                };
-                              })()}
-                            />
-                          ) : (
-                            <img src={coverPreviewUrl || profileData.coverImage} alt="Cover" className="w-full h-full object-cover" />
-                          )
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-indigo-500/10 to-sky-500/20" />
-                        )}
-                      </div>
-                      <div className="mt-3">
-                        <label className="text-[11px] text-muted-foreground block mb-1">Zoom</label>
-                        <input
-                          type="range"
-                          min={1}
-                          max={3}
-                          step={0.01}
-                          value={coverEditor.zoom}
-                          disabled={!coverImageFile}
-                          onChange={(e) => {
-                            const nextZoom = clamp(Number(e.target.value) || 1, 1, 3);
-                            setCoverEditor((prev) => {
+                      {coverPreviewUrl || profileData.coverImage ? (
+                        coverImageFile && coverDimensions ? (
+                          <img
+                            src={coverPreviewUrl}
+                            alt="Cover editor"
+                            draggable={false}
+                            style={(() => {
                               const offsets = getClampedOffsets(
                                 coverDimensions,
                                 COVER_EDITOR_FRAME,
-                                nextZoom,
-                                prev.offsetX,
-                                prev.offsetY
+                                coverEditor.offsetX,
+                                coverEditor.offsetY
                               );
-                              return { ...prev, zoom: nextZoom, ...offsets };
-                            });
-                          }}
-                          className="w-full"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="rounded-xl overflow-hidden border border-border bg-background/60 h-44 sm:h-52">
-                      {coverPreviewUrl || profileData.coverImage ? (
-                        <img src={coverPreviewUrl || profileData.coverImage} alt="Cover preview" className="w-full h-full object-cover" />
+                              const baseScale = Math.max(
+                                COVER_EDITOR_FRAME.width / coverDimensions.width,
+                                COVER_EDITOR_FRAME.height / coverDimensions.height
+                              );
+                              const drawWidth = coverDimensions.width * baseScale;
+                              const drawHeight = coverDimensions.height * baseScale;
+                              return {
+                                position: 'absolute' as const,
+                                width: `${drawWidth}px`,
+                                height: `${drawHeight}px`,
+                                left: `${(COVER_EDITOR_FRAME.width - drawWidth) / 2 + offsets.offsetX}px`,
+                                top: `${(COVER_EDITOR_FRAME.height - drawHeight) / 2 + offsets.offsetY}px`,
+                                maxWidth: 'none',
+                                userSelect: 'none' as const
+                              };
+                            })()}
+                          />
+                        ) : (
+                          <img src={coverPreviewUrl || profileData.coverImage} alt="Cover" className="w-full h-full object-cover" />
+                        )
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-indigo-500/10 to-sky-500/20" />
                       )}
                     </div>
-                    <p className="text-[11px] text-muted-foreground">
-                      A default cover overlay is applied automatically for readability.
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        onClick={() => setCoverEditor(createDefaultCropEditorState())}
-                        disabled={!coverImageFile}
-                        size="sm"
-                        variant="outline"
-                      >
-                        Reset
-                      </Button>
-                      <Button
-                        onClick={handleUploadCoverImage}
-                        disabled={!coverImageFile || uploadingCoverImage}
-                        size="sm"
-                        className="dash-btn-secondary"
-                      >
-                        <Upload className="w-4 h-4 mr-1" />
-                        {uploadingCoverImage ? 'Uploading...' : 'Upload Cover'}
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setCoverImageFile(null);
-                          setCoverDimensions(null);
-                          setCoverEditor(createDefaultCropEditorState());
-                          setProfileData({ ...profileData, coverImage: '' });
-                          setSuccess('Cover removed. Draft updated.');
-                        }}
-                        disabled={!profileData.coverImage}
-                        size="sm"
-                        className="btn-collection-danger"
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        Remove Cover
-                      </Button>
-                    </div>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    A default cover overlay is applied automatically for readability.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      onClick={() => setCoverEditor(createDefaultCropEditorState())}
+                      disabled={!coverImageFile}
+                      size="sm"
+                      variant="outline"
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      onClick={handleUploadCoverImage}
+                      disabled={!coverImageFile || uploadingCoverImage}
+                      size="sm"
+                      className="dash-btn-secondary"
+                    >
+                      <Upload className="w-4 h-4 mr-1" />
+                      {uploadingCoverImage ? 'Uploading...' : 'Upload Cover'}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setCoverImageFile(null);
+                        setCoverDimensions(null);
+                        setCoverEditor(createDefaultCropEditorState());
+                        setProfileData({ ...profileData, coverImage: '' });
+                        setSuccess('Cover removed. Draft updated.');
+                      }}
+                      disabled={!profileData.coverImage}
+                      size="sm"
+                      className="btn-collection-danger"
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Remove Cover
+                    </Button>
                   </div>
                 </div>
               </div>
