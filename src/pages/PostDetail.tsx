@@ -609,7 +609,7 @@ const PostDetail = () => {
                   <button
                     onClick={loadMoreImages}
                     disabled={isLoadingImages}
-                    className="px-6 py-2.5 sm:px-8 sm:py-3 bg-gradient-to-r from-primary via-primary to-accent text-primary-foreground rounded-xl font-medium hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md hover:scale-105"
+                    className="sky-action-btn px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md hover:scale-105"
                   >
                     {isLoadingImages ? (
                       <>

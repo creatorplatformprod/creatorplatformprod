@@ -679,8 +679,8 @@ const Collections = () => {
                     </h2>
 
                     <div className="flex items-center justify-center gap-1.5 mb-3">
-                      <Users className="w-3 h-3 text-gray-500" />
-                      <span className="text-[11px] text-gray-500">Join 1,000+ fans who unlocked this content</span>
+                      <Users className="w-3 h-3 text-white/85" />
+                      <span className="text-[11px] text-white/85">Join 1,000+ fans who unlocked this content</span>
                     </div>
                     
                     {paymentError && (
@@ -692,8 +692,8 @@ const Collections = () => {
                     <div className="mb-3 sm:mb-4">
                       {activeFan?.email ? (
                         <div className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 sm:px-4 py-2.5 text-left">
-                          <p className="text-[11px] text-muted-foreground">Paying as</p>
-                          <p className="text-xs sm:text-sm font-medium text-foreground">{activeFan.email}</p>
+                          <p className="text-[11px] text-white/85">Paying as</p>
+                          <p className="text-xs sm:text-sm font-medium text-white">{activeFan.email}</p>
                         </div>
                       ) : (
                         <input
@@ -723,7 +723,7 @@ const Collections = () => {
                       <button 
                         onClick={handleCardPaymentClick}
                         disabled={isCardPaymentLoading}
-                        className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
+                        className="sky-action-btn relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:scale-[1.02]"
                       >
                         {!isCardPaymentLoading && (
                           <span
@@ -747,7 +747,7 @@ const Collections = () => {
                         const creatorQuery = creatorUsername ? `?creator=${encodeURIComponent(creatorUsername)}` : '';
                         window.location.href = `/recover-access${creatorQuery}`;
                       }}
-                      className="mt-2 text-[11px] text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2 bg-transparent border-none cursor-pointer"
+                      className="mt-2 text-[11px] text-white underline underline-offset-2 bg-transparent border-none cursor-pointer"
                     >
                       Lost your access link? Recover via email
                     </button>

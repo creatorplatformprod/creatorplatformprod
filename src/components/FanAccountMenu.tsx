@@ -19,13 +19,11 @@ type FanAccountMenuProps = {
 const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanAccountMenuProps) => {
   const { fan, logoutFan } = useFanAuth();
   const effectiveFan = previewMode ? null : fan;
-  const skyUserColor = "#6366f1";
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-indigo-500/10 transition-colors duration-200 text-sm font-medium"
+          className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-transparent transition-none text-sm font-medium"
         >
           {effectiveFan?.avatar ? (
             <Avatar className="h-5 w-5 border border-indigo-400/45">
@@ -35,7 +33,7 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="h-4 w-4 text-indigo-400 transition-colors group-hover:text-indigo-300 group-focus:text-indigo-300" />
+            <User className="h-4 w-4 text-sky-500" />
           )}
         </button>
       </DropdownMenuTrigger>
