@@ -657,7 +657,8 @@ const CreatorProfile = () => {
     return () => window.removeEventListener('message', handler);
   }, [THEME_KEY]);
 
-  const templateStyleClass = useClassicTheme ? "midnight-glass" : "";
+  const templateStyleClass = useClassicTheme ? "" : "";
+  const classicDarkClass = useClassicTheme ? "theme-classic-dark" : "";
   const useMasonryFlow = false;
   const showSidebar = true;
   const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
@@ -716,7 +717,7 @@ const CreatorProfile = () => {
   }
 
   return (
-    <div className={`min-h-screen feed-bg public-template${templateStyleClass ? ` public-template-${templateStyleClass} template-layout template-layout-${templateStyleClass}` : ''} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
+    <div className={`min-h-screen feed-bg public-template${templateStyleClass ? ` public-template-${templateStyleClass} template-layout template-layout-${templateStyleClass}` : ''} ${classicDarkClass} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
       {/* Full Width Navbar - Always on top */}
       <FeedHeader 
         onSearch={handleSearch} 
@@ -741,7 +742,7 @@ const CreatorProfile = () => {
           )}
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
           <div className="absolute inset-0" style={{ backgroundColor: `rgba(0, 0, 0, ${coverOverlay * 0.3})` }} />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--feed-bg))] via-transparent to-transparent" />
         </div>
 
         {/* Profile Info */}

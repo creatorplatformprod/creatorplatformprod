@@ -89,6 +89,51 @@
     color-scheme: light;
   }
 
+  /* Classic Dark Theme — old blue/cyan dark mode, scoped to public website toggle */
+  .theme-classic-dark {
+    color-scheme: dark;
+    --background: 215 35% 8%;
+    --foreground: 210 40% 98%;
+    --card: 215 30% 12%;
+    --card-foreground: 210 40% 98%;
+    --popover: 215 30% 12%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 200 100% 60%;
+    --primary-foreground: 215 35% 8%;
+    --primary-light: 200 100% 75%;
+    --primary-dark: 200 100% 45%;
+    --secondary: 215 25% 14%;
+    --secondary-foreground: 210 30% 90%;
+    --muted: 215 25% 15%;
+    --muted-foreground: 215 15% 65%;
+    --accent: 220 90% 70%;
+    --accent-foreground: 215 35% 8%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 215 20% 18%;
+    --input: 215 25% 15%;
+    --ring: 200 100% 60%;
+    --feed-bg: 215 40% 6%;
+    --post-bg: 215 30% 12%;
+    --post-hover: 215 28% 14%;
+    --blur-overlay: 200 80% 50%;
+    --like-color: 340 82% 52%;
+    --gradient-sky: linear-gradient(135deg, hsl(215 30% 14%), hsl(215 35% 10%));
+    --gradient-post: linear-gradient(145deg, hsl(215 30% 12%), hsl(215 40% 8%));
+    --gradient-blur: linear-gradient(45deg, hsla(200 100% 60% / 0.25), hsla(220 90% 70% / 0.25));
+    --shadow-post: 0 1px 3px hsl(215 40% 4% / 0.3), 0 4px 16px hsl(215 40% 4% / 0.2);
+    --shadow-post-hover: 0 4px 12px hsl(200 80% 50% / 0.15), 0 12px 36px hsl(200 80% 50% / 0.1);
+    --shadow-blur: 0 8px 32px -8px hsl(200 100% 60% / 0.3);
+    --sidebar-background: 215 30% 10%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 200 100% 60%;
+    --sidebar-primary-foreground: 215 35% 8%;
+    --sidebar-accent: 215 25% 14%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 215 20% 18%;
+    --sidebar-ring: 200 100% 60%;
+  }
+
   * {
     border-color: hsl(var(--border));
   }
@@ -1575,6 +1620,194 @@
     break-inside: avoid;
     -webkit-column-break-inside: avoid;
     margin-bottom: 0;
+  }
+
+  /* ══════════════════════════════════════════════════
+     Classic Dark Theme — old navy/cyan dark mode
+     Toggled on public website + preview frames
+     ══════════════════════════════════════════════════ */
+
+  /* Page background */
+  .theme-classic-dark.feed-bg {
+    background: hsl(215 40% 6%);
+  }
+  .theme-classic-dark.feed-bg::before {
+    background-image:
+      linear-gradient(45deg, hsl(200 100% 50% / 0.025) 1px, transparent 1px),
+      linear-gradient(-45deg, hsl(220 90% 60% / 0.025) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  /* Navbar */
+  .theme-classic-dark .nav-elevated {
+    background: hsl(215 35% 8%) !important;
+    backdrop-filter: none;
+    border-bottom: 1px solid hsl(215 20% 16%);
+  }
+  .theme-classic-dark .nav-elevated::after {
+    background: linear-gradient(90deg, transparent, hsl(200 100% 50% / 0.25) 30%, hsl(300 80% 60% / 0.15) 70%, transparent);
+  }
+  .theme-classic-dark .nav-elevated input,
+  .theme-classic-dark .nav-elevated [role="search"],
+  .theme-classic-dark .nav-elevated .relative input {
+    background: hsl(215 25% 12%) !important;
+    border-color: hsl(215 20% 18%) !important;
+    color: hsl(210 40% 90%) !important;
+  }
+  .theme-classic-dark .nav-elevated input::placeholder {
+    color: hsl(215 15% 50%) !important;
+  }
+
+  /* Brand text */
+  .theme-classic-dark .brand-wordmark {
+    color: hsl(210 40% 90%);
+  }
+  .theme-classic-dark .brand-wordmark .brand-accent {
+    background: linear-gradient(135deg, hsl(200 100% 70%) 0%, hsl(200 100% 50%) 45%, hsl(280 80% 65%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Hero / Cover */
+  .theme-classic-dark .profile-hero {
+    background: transparent;
+    border-bottom: none;
+  }
+  .theme-classic-dark .profile-hero::before {
+    display: none;
+  }
+  .theme-classic-dark .template-cover {
+    border-bottom: 1px solid hsl(215 20% 16%) !important;
+  }
+  .theme-classic-dark .template-cover .bg-gradient-to-t {
+    background: linear-gradient(to top, hsl(215 40% 6%), transparent) !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+  }
+  .theme-classic-dark .template-cover .bg-gradient-to-br {
+    background: linear-gradient(to bottom right, hsl(200 100% 50% / 0.08), hsl(260 80% 60% / 0.06), transparent) !important;
+  }
+
+  /* Profile shell */
+  .theme-classic-dark .template-profile-shell {
+    background: transparent !important;
+  }
+  .theme-classic-dark .profile-avatar-ring {
+    background: linear-gradient(135deg, hsl(200 100% 55%), hsl(280 80% 60%));
+  }
+  .theme-classic-dark .stat-pill {
+    background: hsl(215 25% 12%);
+    border-color: hsl(200 80% 50% / 0.25);
+    color: hsl(210 40% 90%);
+  }
+
+  /* Unlock Everything CTA */
+  .theme-classic-dark .unlock-cta-brand-gradient,
+  .theme-classic-dark .template-unlock-cta {
+    background: linear-gradient(135deg, hsl(200 100% 65%) 0%, hsl(280 80% 65%) 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+  }
+
+  /* Filter tabs */
+  .theme-classic-dark .template-filter-shell,
+  .theme-classic-dark .template-filter-container {
+    background: hsl(215 30% 10%) !important;
+    border-color: hsl(215 20% 18%) !important;
+  }
+  .theme-classic-dark .template-filter-tab {
+    color: hsl(215 15% 55%);
+  }
+  .theme-classic-dark .template-filter-tab:hover {
+    color: hsl(210 40% 90%);
+    background: hsl(215 25% 14%);
+  }
+  .theme-classic-dark .template-filter-tab-active {
+    background: hsl(200 100% 55% / 0.12) !important;
+    color: hsl(200 100% 70%) !important;
+    border-color: hsl(200 80% 50% / 0.3) !important;
+  }
+
+  /* Post cards */
+  .theme-classic-dark .post-card {
+    background: hsl(215 30% 11%);
+    border-color: hsl(215 20% 17%);
+    color: hsl(210 40% 95%);
+  }
+  .theme-classic-dark .post-card:hover {
+    border-color: hsl(200 60% 40%);
+    box-shadow: 0 8px 28px hsl(200 80% 50% / 0.08);
+  }
+  .theme-classic-dark .post-card .text-muted-foreground {
+    color: hsl(215 15% 55%);
+  }
+  .theme-classic-dark .post-card .text-foreground {
+    color: hsl(210 40% 95%);
+  }
+
+  /* Sidebar */
+  .theme-classic-dark .sidebar-glass {
+    background: hsl(215 35% 8% / 0.97) !important;
+    backdrop-filter: none;
+    border-right: 1px solid hsl(215 20% 16%);
+  }
+  .theme-classic-dark .collection-item {
+    color: hsl(210 30% 80%);
+  }
+  .theme-classic-dark .collection-item:hover {
+    background: hsl(215 25% 13%);
+    box-shadow: none;
+  }
+  .theme-classic-dark .collection-item.active {
+    background: hsl(200 100% 60% / 0.06);
+    border-left-color: hsl(200 100% 55%);
+  }
+  .theme-classic-dark .sidebar-stats::before {
+    background: linear-gradient(90deg, transparent, hsl(215 20% 18%), transparent);
+  }
+  .theme-classic-dark .sidebar-stats .rounded-lg {
+    background: hsl(215 25% 12%);
+  }
+  .theme-classic-dark .sidebar-stats .text-foreground {
+    color: hsl(210 40% 90%);
+  }
+
+  /* Footer */
+  .theme-classic-dark footer {
+    border-color: hsl(215 20% 16%);
+  }
+
+  /* Toggle button itself should stay light for contrast */
+  .theme-classic-dark .fixed.bottom-5.right-5 {
+    background: hsl(215 30% 12% / 0.95) !important;
+    border-color: hsl(215 20% 20%) !important;
+    color: hsl(210 40% 80%);
+  }
+  .theme-classic-dark .fixed.bottom-5.right-5:hover {
+    background: hsl(215 30% 15% / 0.95) !important;
+    border-color: hsl(200 80% 50% / 0.3) !important;
+  }
+
+  /* Verified badge */
+  .theme-classic-dark .text-primary {
+    color: hsl(200 100% 60%);
+  }
+
+  /* Scrollbar in dark mode */
+  .theme-classic-dark ::-webkit-scrollbar {
+    width: 6px;
+  }
+  .theme-classic-dark ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .theme-classic-dark ::-webkit-scrollbar-thumb {
+    background: hsl(215 20% 20%);
+    border-radius: 3px;
+  }
+  .theme-classic-dark ::-webkit-scrollbar-thumb:hover {
+    background: hsl(215 20% 28%);
   }
 
   /* ── Template Variants ── */
