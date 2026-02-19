@@ -641,7 +641,9 @@ const CreatorProfile = () => {
   const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
   const creatorCoverImage =
     typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
-  const mockFallbackCover = shouldUseMockData ? mockPack.cover : '';
+  const hasExplicitCoverImage =
+    !!creatorData && Object.prototype.hasOwnProperty.call(creatorData, 'coverImage');
+  const mockFallbackCover = !hasExplicitCoverImage && shouldUseMockData ? mockPack.cover : '';
   const heroCoverImage = creatorCoverImage || mockFallbackCover;
   const profileAvatarImage =
     typeof creatorData?.avatar === 'string' && creatorData.avatar.trim()
