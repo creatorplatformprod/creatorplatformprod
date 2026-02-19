@@ -33,7 +33,7 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="h-4 w-4 text-sky-500" />
+            <User className="h-4 w-4 text-indigo-500" />
           )}
         </button>
       </DropdownMenuTrigger>
