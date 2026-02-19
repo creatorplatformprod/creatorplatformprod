@@ -641,10 +641,7 @@ const CreatorProfile = () => {
   const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
   const creatorCoverImage =
     typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
-  const hasExplicitCoverImage =
-    !!creatorData && Object.prototype.hasOwnProperty.call(creatorData, 'coverImage');
-  const mockFallbackCover = !hasExplicitCoverImage && shouldUseMockData ? mockPack.cover : '';
-  const heroCoverImage = creatorCoverImage || mockFallbackCover;
+  const heroCoverImage = creatorCoverImage || mockPack.cover;
   const profileAvatarImage =
     typeof creatorData?.avatar === 'string' && creatorData.avatar.trim()
       ? creatorData.avatar.trim()
@@ -727,7 +724,7 @@ const CreatorProfile = () => {
 
         {/* Profile Info */}
         <div className={`template-profile-shell relative max-w-[1400px] mx-auto px-4 -mt-10 sm:-mt-14 pb-6 sm:pb-8 transition-all duration-300 ${mainOffsetClass}`}>
-          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background/80 lg:backdrop-blur-sm lg:px-5 lg:py-4">
+          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background lg:px-5 lg:py-4">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
                 src={profileAvatarImage}
