@@ -1548,13 +1548,17 @@
     transition: max-width 240ms ease, transform 240ms ease;
   }
 
-  /* Desktop only: clear cover edge + content block so tabs sit below the line */
+  /* Desktop: clear cover edge + content block (tabs sit in page, not on cover line) */
   @media (min-width: 1024px) {
+    .public-template .profile-hero::before {
+      display: none;
+    }
     .public-template .template-cover {
       border-bottom: 1px solid hsl(var(--border));
     }
     .public-template .template-profile-shell {
-      background: linear-gradient(to bottom, transparent 0, transparent 5rem, hsl(var(--background)) 5rem);
+      /* Transparent over overlap zone, then feed background so it blends with the page */
+      background: linear-gradient(to bottom, transparent 0, transparent 5rem, var(--template-feed-bg) 5rem);
     }
   }
 

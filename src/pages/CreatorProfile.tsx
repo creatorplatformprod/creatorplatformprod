@@ -718,11 +718,12 @@ const CreatorProfile = () => {
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
+          {!heroCoverImage && (
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
+          )}
           <div className="absolute inset-0" style={{ backgroundColor: `rgba(0, 0, 0, ${coverOverlay * 0.3})` }} />
-          {/* White fade: hidden on desktop (lg) for clean cover edge; kept on mobile */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent lg:opacity-0 lg:pointer-events-none" aria-hidden />
-          {/* Subtle pattern overlay */}
+          {/* White fade: hidden from md up for clean cover edge (mobile only keeps it) */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent md:opacity-0 md:pointer-events-none" aria-hidden />
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
         </div>
 
