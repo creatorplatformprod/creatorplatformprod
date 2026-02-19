@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Moon, Search, Sun } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import TipButton from "@/components/TipButton";
@@ -12,6 +12,9 @@ interface FeedHeaderProps {
   rightSlot?: JSX.Element;
 }
 
+type FeedTheme = "light" | "dark";
+const FEED_THEME_STORAGE_KEY = "sixseven-feed-theme";
+
 const FeedHeader = ({
   onSearch,
   onLogoClick,
@@ -22,6 +25,15 @@ const FeedHeader = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [feedTheme, setFeedTheme] = useState<FeedTheme>(() => {
+    if (typeof window === "undefined") return "light";
+    const queryTheme = new URLSearchParams(window.location.search).get("theme");
+    if (queryTheme === "dark" || queryTheme === "light") {
+      return queryTheme;
+    }
+    const storedTheme = window.localStorage.getItem(FEED_THEME_STORAGE_KEY);
+    return storedTheme === "dark" ? "dark" : "light";
+  });
   const isPreviewMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("mode") === "preview";
 
   useEffect(() => {
@@ -29,6 +41,43 @@ const FeedHeader = ({
     checkDesktop();
     window.addEventListener('resize', checkDesktop);
     return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const root = document.documentElement;
+    const isDark = feedTheme === "dark";
+    root.classList.toggle("dark", isDark);
+    root.style.colorScheme = isDark ? "dark" : "light";
+    window.localStorage.setItem(FEED_THEME_STORAGE_KEY, feedTheme);
+
+    const params = new URLSearchParams(window.location.search);
+    if (isDark) {
+      params.set("theme", "dark");
+    } else {
+      params.delete("theme");
+    }
+    const nextQuery = params.toString();
+    const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}${window.location.hash}`;
+    window.history.replaceState({}, "", nextUrl);
+  }, [feedTheme]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncTheme = (event: StorageEvent) => {
+      if (event.key !== FEED_THEME_STORAGE_KEY) return;
+      setFeedTheme(event.newValue === "dark" ? "dark" : "light");
+    };
+    window.addEventListener("storage", syncTheme);
+    return () => window.removeEventListener("storage", syncTheme);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      const root = document.documentElement;
+      root.classList.remove("dark");
+      root.style.colorScheme = "light";
+    };
   }, []);
 
 
@@ -123,6 +172,15 @@ const FeedHeader = ({
 
           {/* Right: Actions */}
           <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+            <button
+              onClick={() => setFeedTheme((current) => (current === "dark" ? "light" : "dark"))}
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary/60 border border-border text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={feedTheme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+              title={feedTheme === "dark" ? "Light mode" : "Dark mode"}
+            >
+              {feedTheme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+
             {/* Mobile search toggle */}
             {!isPreviewMode && (
               <button

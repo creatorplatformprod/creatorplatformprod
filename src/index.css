@@ -85,8 +85,68 @@
     --sidebar-ring: 239 84% 67%;
   }
 
+  .dark {
+    /* Dark universe palette restored from pre-white-theme baseline */
+    --background: 222 47% 5%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 30% 9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 30% 9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 200 100% 60%;
+    --primary-foreground: 222 47% 5%;
+    --primary-light: 200 100% 75%;
+    --primary-dark: 200 100% 45%;
+
+    --secondary: 222 25% 12%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 222 20% 12%;
+    --muted-foreground: 215 15% 65%;
+
+    --accent: 220 90% 70%;
+    --accent-foreground: 222 47% 5%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 222 20% 14%;
+    --input: 222 25% 12%;
+    --ring: 200 100% 60%;
+
+    --feed-bg: 222 47% 5%;
+    --post-bg: 222 30% 9%;
+    --post-hover: 222 25% 12%;
+    --blur-overlay: 200 50% 40%;
+    --like-color: 340 82% 62%;
+
+    --gradient-sky: linear-gradient(135deg, hsl(200 100% 25%), hsl(220 90% 35%));
+    --gradient-post: linear-gradient(145deg, hsl(222 30% 9%), hsl(222 25% 12%));
+    --gradient-blur: linear-gradient(45deg, hsla(200 100% 60% / 0.4), hsla(220 90% 70% / 0.4));
+
+    --shadow-post: 0 2px 16px -4px hsl(0 0% 0% / 0.4);
+    --shadow-post-hover: 0 8px 32px -8px hsl(0 0% 0% / 0.5);
+    --shadow-blur: 0 8px 32px -8px hsl(200 100% 60% / 0.3);
+
+    --sidebar-background: 222 35% 7%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 20% 12%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 20% 14%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
   :root {
     color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
   }
 
   * {
@@ -132,6 +192,26 @@
   textarea::placeholder {
     color: hsl(240 4% 46% / 0.7);
   }
+
+  .dark input,
+  .dark textarea,
+  .dark select {
+    background-color: rgba(255,255,255,0.04) !important;
+    border-color: rgba(255,255,255,0.10) !important;
+    color: hsl(var(--foreground));
+  }
+
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    background-color: rgba(255,255,255,0.06) !important;
+    border-color: rgba(139,92,246,0.4) !important;
+  }
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: rgba(255,255,255,0.35);
+  }
 }
 
 @layer components {
@@ -154,6 +234,19 @@
   }
   .post-card:hover .post-card-media-img {
     transform: scale(1.015);
+  }
+
+  .dark .post-card {
+    background: rgba(255,255,255,0.025);
+    backdrop-filter: blur(12px) saturate(130%);
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 2px 12px -4px rgba(0,0,0,0.3);
+  }
+
+  .dark .post-card:hover {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.12);
+    box-shadow: 0 8px 24px -8px rgba(0,0,0,0.4);
   }
   .post-card-media-img {
     transform: scale(1);
@@ -187,6 +280,12 @@
     background-size: 32px 32px;
     mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, black 0%, transparent 75%);
     -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, black 0%, transparent 75%);
+  }
+
+  .dark .feed-bg::before {
+    background-image:
+      linear-gradient(45deg, rgba(139,92,246,0.06) 1px, transparent 1px),
+      linear-gradient(-45deg, rgba(99,102,241,0.06) 1px, transparent 1px);
   }
 
   .post-bg {
@@ -1493,6 +1592,16 @@
     font-family: var(--template-font);
   }
 
+  .dark .public-template {
+    --template-feed-bg: radial-gradient(1200px 640px at 20% -10%, rgba(100, 116, 139, 0.05), transparent 60%),
+      linear-gradient(180deg, #080b14 0%, #0b1020 100%);
+    --template-grid-color: rgba(148, 163, 184, 0.05);
+    --template-nav-line: linear-gradient(90deg, transparent, rgba(100, 116, 139, 0.2) 30%, rgba(148, 163, 184, 0.18) 70%, transparent);
+    --template-pill-bg: rgba(100, 116, 139, 0.18);
+    --template-pill-border: rgba(148, 163, 184, 0.28);
+    --template-shell-border: rgba(148, 163, 184, 0.25);
+  }
+
   .public-template.feed-bg {
     background: var(--template-feed-bg);
   }
@@ -1553,6 +1662,17 @@
 
   .public-template .post-card:hover {
     transform: translateY(-2px);
+  }
+
+  .dark .public-template .post-card {
+    background: rgba(15, 23, 42, 0.72);
+    border-color: rgba(148, 163, 184, 0.22);
+    box-shadow: 0 12px 36px -18px rgba(0, 0, 0, 0.65);
+  }
+
+  .dark .public-template .post-card:hover {
+    border-color: rgba(148, 163, 184, 0.34);
+    box-shadow: 0 18px 42px -18px rgba(0, 0, 0, 0.72);
   }
 
   .public-template .template-filter-tab {
