@@ -34,7 +34,8 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
   const previewPath = currentUser?.username
     ? `/preview/${currentUser.username}`
     : "/dashboard";
-  const skyUserColor = "#6366f1";
+  const menuFocusClass =
+    "focus:bg-gradient-to-r focus:from-indigo-500 focus:to-sky-500 focus:text-white data-[highlighted]:bg-gradient-to-r data-[highlighted]:from-indigo-500 data-[highlighted]:to-sky-500 data-[highlighted]:text-white";
 
   const copyPublicLink = async () => {
     if (!currentUser?.username || typeof window === "undefined") return;
@@ -73,15 +74,16 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
             <DropdownMenuLabel className="text-xs text-muted-foreground px-2 py-1.5">
               {currentUser.displayName || currentUser.username}
             </DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => (window.location.href = "/dashboard")}>
+            <DropdownMenuItem className={menuFocusClass} onClick={() => (window.location.href = "/dashboard")}>
               <LayoutDashboard className="w-4 h-4 mr-2" />
               Dashboard
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => (window.location.href = `${previewPath}`)}>
+            <DropdownMenuItem className={menuFocusClass} onClick={() => (window.location.href = `${previewPath}`)}>
               <User className="w-4 h-4 mr-2" />
               Preview Mode
             </DropdownMenuItem>
             <DropdownMenuItem
+              className={menuFocusClass}
               onClick={() =>
                 (window.location.href = publicPath)
               }
@@ -89,33 +91,34 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
               <Globe className="w-4 h-4 mr-2" />
               Public Website
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={copyPublicLink}>
+            <DropdownMenuItem className={menuFocusClass} onClick={copyPublicLink}>
               <Copy className="w-4 h-4 mr-2" />
               Copy Public Link
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => (window.location.href = "/dashboard?tab=collections")}>
+            <DropdownMenuItem className={menuFocusClass} onClick={() => (window.location.href = "/dashboard?tab=collections")}>
               <Image className="w-4 h-4 mr-2" />
               Collections
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => (window.location.href = "/dashboard?tab=status-cards")}>
+            <DropdownMenuItem className={menuFocusClass} onClick={() => (window.location.href = "/dashboard?tab=status-cards")}>
               <MessageSquare className="w-4 h-4 mr-2" />
               Post Cards
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => (window.location.href = "/dashboard?tab=unlock")}>
+            <DropdownMenuItem className={menuFocusClass} onClick={() => (window.location.href = "/dashboard?tab=unlock")}>
               <Lock className="w-4 h-4 mr-2" />
               Unlock Everything
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => (window.location.href = "/dashboard?tab=analytics")}>
+            <DropdownMenuItem className={menuFocusClass} onClick={() => (window.location.href = "/dashboard?tab=analytics")}>
               <BarChart3 className="w-4 h-4 mr-2" />
               Analytics
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => (window.location.href = "/dashboard?tab=profile")}>
+            <DropdownMenuItem className={menuFocusClass} onClick={() => (window.location.href = "/dashboard?tab=profile")}>
               <Settings className="w-4 h-4 mr-2" />
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              className={menuFocusClass}
               onClick={() => {
                 localStorage.removeItem("token");
                 window.location.href = "/";
@@ -126,7 +129,7 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
             </DropdownMenuItem>
           </>
         ) : (
-          <DropdownMenuItem onClick={() => (window.location.href = "/")}>
+          <DropdownMenuItem className={menuFocusClass} onClick={() => (window.location.href = "/")}>
             <User className="w-4 h-4 mr-2" />
             Creator Login
           </DropdownMenuItem>
