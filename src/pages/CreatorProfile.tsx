@@ -1105,14 +1105,14 @@ const CreatorProfile = () => {
         />
       )}
 
-      {/* Theme toggle FAB */}
+      {/* Theme toggle FAB — visible on public website and inside preview frames */}
       <button
         onClick={() => setUseClassicTheme(prev => {
           const next = !prev;
           localStorage.setItem(THEME_KEY, next ? 'classic' : 'modern');
           return next;
         })}
-        className="fixed bottom-5 right-5 z-50 hidden lg:flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-200 group cursor-pointer"
+        className="fixed bottom-5 right-5 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 backdrop-blur-sm border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-200 group cursor-pointer"
         title={useClassicTheme ? 'Switch to Modern theme' : 'Switch to Classic theme'}
       >
         <SwatchBook className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
