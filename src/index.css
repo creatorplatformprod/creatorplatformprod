@@ -1548,29 +1548,6 @@
     transition: max-width 240ms ease, transform 240ms ease;
   }
 
-  .public-template .template-unlock-cta {
-    background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 45%, #38bdf8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .public-template .template-unlock-cta:hover {
-    filter: brightness(1.08);
-  }
-
-  @media (min-width: 1024px) {
-    .public-template .template-cover {
-      width: 100%;
-      min-height: 300px;
-      height: clamp(300px, 32vw, 420px);
-    }
-
-    .public-template .template-cover > img {
-      object-position: center 34%;
-    }
-  }
-
   .public-template .template-feed-item {
     break-inside: avoid;
     -webkit-column-break-inside: avoid;
