@@ -1020,6 +1020,13 @@
     background-clip: text;
   }
 
+  .unlock-cta-brand-gradient {
+    background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 45%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
   /* ── Brand mark: nav logo ── */
   .brand-67 {
     display: inline-flex;
@@ -1546,36 +1553,6 @@
 
   .public-template .template-profile-shell {
     transition: max-width 240ms ease, transform 240ms ease;
-  }
-
-  /* Desktop: clear cover edge + content block (tabs sit in page, not on cover line) */
-  @media (min-width: 1024px) {
-    .public-template .profile-hero::before {
-      display: none;
-    }
-    .public-template .template-cover {
-      border-bottom: 1px solid hsl(var(--border));
-    }
-    .public-template .template-profile-shell {
-      /* Transparent over overlap zone, then feed background so it blends with the page */
-      background: linear-gradient(to bottom, transparent 0, transparent 5rem, var(--template-feed-bg) 5rem);
-    }
-  }
-
-  /* Unlock Everything — same gradient as brand (Six / Creator) */
-  .template-unlock-cta.unlock-cta-brand-gradient,
-  .unlock-cta-brand-gradient {
-    background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 45%, #38bdf8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .template-unlock-cta.unlock-cta-brand-gradient:hover,
-  .unlock-cta-brand-gradient:hover {
-    background: linear-gradient(135deg, #d8b4fe 0%, #a78bfa 45%, #7dd3fc 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
 
   .public-template .template-feed-item {

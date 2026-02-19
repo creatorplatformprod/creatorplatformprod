@@ -708,7 +708,7 @@ const CreatorProfile = () => {
       {/* Profile Hero Section */}
       <div className="profile-hero template-hero relative">
         {/* Cover Photo Area with gradient overlay */}
-        <div className="template-cover relative h-64 sm:h-80 lg:h-[22rem] overflow-hidden">
+        <div className="template-cover relative h-72 sm:h-96 lg:h-[26rem] overflow-hidden">
           {heroCoverImage ? (
             <img
               src={heroCoverImage}
@@ -718,13 +718,9 @@ const CreatorProfile = () => {
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
           )}
-          {!heroCoverImage && (
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
-          )}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
           <div className="absolute inset-0" style={{ backgroundColor: `rgba(0, 0, 0, ${coverOverlay * 0.3})` }} />
-          {/* White fade: hidden from md up for clean cover edge (mobile only keeps it) */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent md:opacity-0 md:pointer-events-none" aria-hidden />
-          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
         </div>
 
         {/* Profile Info */}
