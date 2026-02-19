@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, type SyntheticEvent } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
-import { Heart, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Flame, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather, Info } from "lucide-react";
+import { Heart, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Flame, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather, Info, SwatchBook } from "lucide-react";
 import FeedHeader from "@/components/FeedHeader";
 import PostCard from "@/components/PostCard";
 import StatusCard from "@/components/StatusCard";
@@ -634,8 +634,30 @@ const CreatorProfile = () => {
     : null;
   const showHelp = isPreviewMode && pageMode !== 'clean';
   const coverOverlay = DEFAULT_COVER_OVERLAY;
-  // Template switching is intentionally disabled for now.
-  const templateStyleClass = "midnight-glass";
+
+  const THEME_KEY = `siteTheme:${username}`;
+  const [useClassicTheme, setUseClassicTheme] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved !== null) return saved === 'classic';
+    return true;
+  });
+
+  useEffect(() => {
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === 'TOGGLE_THEME') {
+        setUseClassicTheme(prev => {
+          const next = !prev;
+          localStorage.setItem(THEME_KEY, next ? 'classic' : 'modern');
+          return next;
+        });
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [THEME_KEY]);
+
+  const templateStyleClass = useClassicTheme ? "midnight-glass" : "";
   const useMasonryFlow = false;
   const showSidebar = true;
   const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
@@ -694,7 +716,7 @@ const CreatorProfile = () => {
   }
 
   return (
-    <div className={`min-h-screen feed-bg public-template public-template-${templateStyleClass} template-layout template-layout-${templateStyleClass} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
+    <div className={`min-h-screen feed-bg public-template${templateStyleClass ? ` public-template-${templateStyleClass} template-layout template-layout-${templateStyleClass}` : ''} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
       {/* Full Width Navbar - Always on top */}
       <FeedHeader 
         onSearch={handleSearch} 
@@ -1082,6 +1104,22 @@ const CreatorProfile = () => {
           onClose={() => setShowFanAuthModal(false)}
         />
       )}
+
+      {/* Theme toggle FAB */}
+      <button
+        onClick={() => setUseClassicTheme(prev => {
+          const next = !prev;
+          localStorage.setItem(THEME_KEY, next ? 'classic' : 'modern');
+          return next;
+        })}
+        className="fixed bottom-5 right-5 z-50 hidden lg:flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-200 group cursor-pointer"
+        title={useClassicTheme ? 'Switch to Modern theme' : 'Switch to Classic theme'}
+      >
+        <SwatchBook className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+        <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+          {useClassicTheme ? 'Modern' : 'Classic'}
+        </span>
+      </button>
     </div>
   );
 };
