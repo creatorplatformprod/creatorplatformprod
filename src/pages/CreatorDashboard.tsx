@@ -889,6 +889,12 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
         const key = getProfileDraftKey(user.username);
         if (!key) return;
         const snapshot = buildProfileDraftSnapshot();
+        if (typeof snapshot.avatar === 'string' && snapshot.avatar.trim() === '' && user?.avatar) {
+          snapshot.avatar = user.avatar;
+        }
+        if (typeof snapshot.coverImage === 'string' && snapshot.coverImage.trim() === '' && user?.coverImage) {
+          snapshot.coverImage = user.coverImage;
+        }
         localStorage.setItem(key, JSON.stringify(snapshot));
         profileBaselineRef.current = serializeForDirtyCheck(profileData);
         setIsProfileDirty(false);
@@ -983,9 +989,11 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
     if (typeof payload.telegramUsername === 'string') {
       payload.telegramUsername = payload.telegramUsername.trim().replace(/^@/, '');
     }
-    // Prevent accidental avatar clearing from stale/partial draft snapshots.
     if (typeof payload.avatar === 'string' && payload.avatar.trim() === '') {
       delete payload.avatar;
+    }
+    if (typeof payload.coverImage === 'string' && payload.coverImage.trim() === '') {
+      delete payload.coverImage;
     }
     const result = await api.updateProfile(payload);
     if (!result?.success) {
@@ -999,14 +1007,11 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const key = getProfileDraftKey(user.username);
     if (!key) return;
     const snapshot = buildProfileDraftSnapshot();
-    // Preserve the published avatar unless user explicitly replaced it.
-    if (
-      typeof snapshot.avatar === 'string' &&
-      snapshot.avatar.trim() === '' &&
-      typeof user?.avatar === 'string' &&
-      user.avatar.trim() !== ''
-    ) {
+    if (typeof snapshot.avatar === 'string' && snapshot.avatar.trim() === '' && user?.avatar) {
       snapshot.avatar = user.avatar;
+    }
+    if (typeof snapshot.coverImage === 'string' && snapshot.coverImage.trim() === '' && user?.coverImage) {
+      snapshot.coverImage = user.coverImage;
     }
     localStorage.setItem(key, JSON.stringify(snapshot));
     profileBaselineRef.current = serializeForDirtyCheck(profileData);
