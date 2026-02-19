@@ -1032,17 +1032,6 @@
 
   .template-unlock-cta {
     position: relative;
-    padding-left: 1.25rem;
-  }
-
-  .template-unlock-divider {
-    position: absolute;
-    left: 0;
-    top: 10%;
-    width: 1px;
-    height: 80%;
-    background: hsl(var(--border));
-    opacity: 0.9;
   }
 
   /* ── Brand mark: nav logo ── */
@@ -1524,6 +1513,7 @@
 
   .public-template .profile-hero {
     background: transparent;
+    border-bottom: 0;
   }
 
   .public-template .profile-hero::before {
