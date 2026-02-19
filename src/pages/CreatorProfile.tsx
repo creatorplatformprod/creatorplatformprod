@@ -724,8 +724,8 @@ const CreatorProfile = () => {
         </div>
 
         {/* Profile Info */}
-        <div className={`template-profile-shell relative max-w-[1400px] mx-auto px-4 -mt-16 sm:-mt-20 pb-6 sm:pb-8 transition-all duration-300 ${mainOffsetClass}`}>
-          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5">
+        <div className={`template-profile-shell relative max-w-[1400px] mx-auto px-4 -mt-10 sm:-mt-14 pb-6 sm:pb-8 transition-all duration-300 ${mainOffsetClass}`}>
+          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background/80 lg:backdrop-blur-sm lg:px-5 lg:py-4">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
                 src={profileAvatarImage}
@@ -755,13 +755,13 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta unlock-cta-brand-gradient relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto md:mr-8 lg:mr-10 self-center md:self-center text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight transition-all"
+                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto md:mr-8 lg:mr-10 self-center md:self-center text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-foreground transition-all"
               >
                 <span
                   className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"
                   style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
                 />
-                <span className="relative">Unlock Everything</span>
+                <span className="relative unlock-cta-brand-gradient">Unlock Everything</span>
               </button>
             )}
           </div>
