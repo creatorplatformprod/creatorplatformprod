@@ -767,7 +767,7 @@ const CreatorProfile = () => {
 
           {/* Content Filter Tabs - Integrated into hero */}
           <div className="max-w-4xl mx-auto">
-            <div className={`template-filter-shell template-filter-container mt-5 mx-0 flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
+            <div className={`template-filter-shell template-filter-container mt-5 mx-auto flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
               {(['all', 'collections', 'posts'] as const).map(filter => (
                 <button
                   key={filter}
