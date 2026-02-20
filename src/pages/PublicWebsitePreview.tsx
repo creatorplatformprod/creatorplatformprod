@@ -366,7 +366,7 @@ const PublicWebsitePreview = () => {
             <div className="w-full max-w-[1060px]">
               <div className="relative">
                 <div className="bg-gradient-to-b from-[#2d2d2d] to-[#1a1a1a] rounded-[20px] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)]">
-                  <div className="bg-white rounded-[14px] overflow-hidden border border-black/10">
+                  <div className="rounded-[14px] overflow-hidden">
                     {/* Browser Chrome */}
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-b from-[#f8f8f8] to-[#f0f0f0] border-b border-gray-200">
                       <div className="flex items-center gap-1.5">
@@ -381,7 +381,7 @@ const PublicWebsitePreview = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.29] sm:[--scale:0.40] md:[--scale:0.60] lg:[--scale:0.72] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                    <div className="relative mx-auto pr-2 [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.29] sm:[--scale:0.40] md:[--scale:0.60] lg:[--scale:0.72] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                       <iframe
                         title="Desktop preview"
                         src={previewUrl}
@@ -406,10 +406,10 @@ const PublicWebsitePreview = () => {
           {/* Mobile Frame */}
           {activeDevice === 'mobile' && (
             <div className="relative bg-gradient-to-b from-[#2d2d2d] to-[#1a1a1a] rounded-[44px] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.08)] w-[300px] sm:w-[350px] md:w-[380px]">
-              <div className="bg-white rounded-[36px] overflow-hidden border border-black/10 relative">
+              <div className="rounded-[36px] overflow-hidden relative">
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-10" />
-                <div className="relative mx-auto overflow-hidden [--viewport-w:430px] [--viewport-h:932px] [--scale:0.64] sm:[--scale:0.76] md:[--scale:0.86] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                <div className="relative mx-auto pr-2 overflow-hidden [--viewport-w:430px] [--viewport-h:932px] [--scale:0.64] sm:[--scale:0.76] md:[--scale:0.86] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                   <iframe
                     title="Mobile preview"
                     src={previewUrl}
