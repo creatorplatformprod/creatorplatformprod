@@ -888,6 +888,17 @@
     box-shadow: 0 0 0 2px white, 0 0 0 4px rgba(139, 92, 246, 0.5);
   }
 
+  .template-sidebar-toggle-btn {
+    background: hsl(240 100% 98%);
+    border: 1px solid hsl(240 6% 90%);
+    color: hsl(240 4% 46%);
+  }
+  .template-sidebar-toggle-btn:hover {
+    background: hsl(240 100% 96%);
+    border-color: hsl(240 6% 85%);
+    color: hsl(240 10% 15%);
+  }
+
   .sparkline {
     display: flex;
     align-items: flex-end;
@@ -1696,6 +1707,9 @@
   .theme-classic-dark .profile-avatar-ring {
     background: linear-gradient(135deg, hsl(200 100% 55%), hsl(280 80% 60%));
   }
+  .theme-classic-dark .avatar-brand-ring {
+    box-shadow: 0 0 0 2px hsl(215 30% 11%), 0 0 0 4px hsl(200 100% 55% / 0.75);
+  }
   .theme-classic-dark .stat-pill {
     background: hsl(215 25% 12%);
     border-color: hsl(200 80% 50% / 0.25);
@@ -1763,6 +1777,16 @@
   .theme-classic-dark .collection-item.active {
     background: hsl(200 100% 60% / 0.06);
     border-left-color: hsl(200 100% 55%);
+  }
+  .theme-classic-dark .template-sidebar-toggle-btn {
+    background: hsl(215 25% 12%);
+    border-color: hsl(215 20% 18%);
+    color: hsl(200 100% 65%);
+  }
+  .theme-classic-dark .template-sidebar-toggle-btn:hover {
+    background: hsl(215 25% 14%);
+    border-color: hsl(200 80% 50% / 0.35);
+    color: hsl(200 100% 72%);
   }
   .theme-classic-dark .sidebar-stats::before {
     background: linear-gradient(90deg, transparent, hsl(215 20% 18%), transparent);

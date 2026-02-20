@@ -858,7 +858,7 @@ const CreatorProfile = () => {
               <span className="text-xs font-medium text-foreground/80 uppercase tracking-wider">Collections</span>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="flex items-center justify-center w-7 h-7 rounded-full bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+                className="template-sidebar-toggle-btn flex items-center justify-center w-7 h-7 rounded-full transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5 text-muted-foreground" />
               </button>
@@ -1015,7 +1015,7 @@ const CreatorProfile = () => {
         {!sidebarOpen && showSidebar && (
           <button
             onClick={() => setSidebarOpen(true)}
-            className="hidden lg:flex fixed left-4 top-1/2 transform -translate-y-1/2 z-30 bg-background border border-border rounded-full w-10 h-10 items-center justify-center"
+            className="template-sidebar-toggle-btn hidden lg:flex fixed left-4 top-1/2 transform -translate-y-1/2 z-30 rounded-full w-10 h-10 items-center justify-center"
             style={{ top: '50%' }}
           >
             <ChevronRight className="w-4 h-4 text-foreground" />

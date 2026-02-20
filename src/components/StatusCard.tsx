@@ -164,7 +164,7 @@ const StatusCard = ({
             <img
               src={user.avatar}
               alt={user.name}
-              className="w-8 h-8 rounded-full object-cover"
+              className="w-8 h-8 rounded-full object-cover avatar-brand-ring"
             />
             <div>
               <div className="flex items-center gap-1">

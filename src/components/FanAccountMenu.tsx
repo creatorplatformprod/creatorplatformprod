@@ -26,14 +26,14 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
           className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-transparent transition-none text-sm font-medium"
         >
           {effectiveFan?.avatar ? (
-            <Avatar className="h-5 w-5 border border-indigo-400/45">
+            <Avatar className="h-5 w-5 border border-sky-400/50">
               <AvatarImage src={effectiveFan.avatar} alt={effectiveFan.displayName || effectiveFan.email} />
-              <AvatarFallback className="bg-indigo-500/30 text-indigo-100">
+              <AvatarFallback className="bg-sky-500/25 text-sky-100">
                 {(effectiveFan.displayName || effectiveFan.email || "F").slice(0, 1).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="h-4 w-4 text-indigo-500" />
+            <User className="h-4 w-4 text-sky-400" />
           )}
         </button>
       </DropdownMenuTrigger>
