@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, type SyntheticEvent } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
-import { Heart, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Flame, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather, Info, SwatchBook } from "lucide-react";
+import { Heart, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Flame, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather, Info } from "lucide-react";
 import FeedHeader from "@/components/FeedHeader";
 import PostCard from "@/components/PostCard";
 import StatusCard from "@/components/StatusCard";
@@ -743,6 +743,40 @@ const CreatorProfile = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
           <div className="absolute inset-0" style={{ backgroundColor: `rgba(0, 0, 0, ${coverOverlay * 0.3})` }} />
           <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--feed-bg))] via-transparent to-transparent" />
+          <div className="absolute top-4 right-4 z-20">
+            <div className="flex flex-col gap-1 rounded-full bg-background/90 backdrop-blur-sm border border-border shadow-sm p-1">
+              <button
+                onClick={() => {
+                  setUseClassicTheme(false);
+                  localStorage.setItem(THEME_KEY, 'modern');
+                }}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
+                  !useClassicTheme
+                    ? 'bg-primary/15 text-primary'
+                    : 'text-muted-foreground hover:bg-background'
+                }`}
+                title="Use Modern theme"
+                aria-label="Use Modern theme"
+              >
+                <Sun className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => {
+                  setUseClassicTheme(true);
+                  localStorage.setItem(THEME_KEY, 'classic');
+                }}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
+                  useClassicTheme
+                    ? 'bg-primary/15 text-primary'
+                    : 'text-muted-foreground hover:bg-background'
+                }`}
+                title="Use Classic theme"
+                aria-label="Use Classic theme"
+              >
+                <Moon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Profile Info */}
@@ -1105,22 +1139,6 @@ const CreatorProfile = () => {
           onClose={() => setShowFanAuthModal(false)}
         />
       )}
-
-      {/* Theme toggle FAB — visible on public website and inside preview frames */}
-      <button
-        onClick={() => setUseClassicTheme(prev => {
-          const next = !prev;
-          localStorage.setItem(THEME_KEY, next ? 'classic' : 'modern');
-          return next;
-        })}
-        className="fixed bottom-5 right-5 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 backdrop-blur-sm border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-200 group cursor-pointer"
-        title={useClassicTheme ? 'Switch to Modern theme' : 'Switch to Classic theme'}
-      >
-        <SwatchBook className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-        <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-          {useClassicTheme ? 'Modern' : 'Classic'}
-        </span>
-      </button>
     </div>
   );
 };

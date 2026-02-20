@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Monitor, Smartphone, Copy, Check, Link2, SwatchBook } from "lucide-react";
+import { ExternalLink, Monitor, Smartphone, Copy, Check, Link2 } from "lucide-react";
 import AccountMenu from "@/components/AccountMenu";
 import { api } from "@/lib/api";
 import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
@@ -47,11 +47,6 @@ const PublicWebsitePreview = () => {
   const [copied, setCopied] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(-1);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [themeLabel, setThemeLabel] = useState<'Classic' | 'Modern'>(() => {
-    if (!username) return 'Classic';
-    const saved = localStorage.getItem(`siteTheme:${username}`);
-    return saved === 'modern' ? 'Modern' : 'Classic';
-  });
   useFeedbackToasts({ success: publishSuccess, error: publishError });
   
 
@@ -241,18 +236,6 @@ const PublicWebsitePreview = () => {
     });
   };
 
-  const handleToggleTheme = () => {
-    const iframes = document.querySelectorAll('iframe');
-    iframes.forEach(iframe => {
-      iframe.contentWindow?.postMessage({ type: 'TOGGLE_THEME' }, '*');
-    });
-    setThemeLabel(prev => {
-      const next = prev === 'Classic' ? 'Modern' : 'Classic';
-      if (username) localStorage.setItem(`siteTheme:${username}`, next.toLowerCase());
-      return next;
-    });
-  };
-
   return (
     <div className="min-h-screen feed-bg">
       {/* Top Navbar */}
@@ -359,16 +342,6 @@ const PublicWebsitePreview = () => {
             </button>
           </div>
 
-          {/* Theme Toggle */}
-          <button
-            onClick={handleToggleTheme}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-all duration-150 text-muted-foreground hover:text-foreground cursor-pointer"
-            title={`Switch to ${themeLabel === 'Classic' ? 'Modern' : 'Classic'} theme`}
-          >
-            <SwatchBook className="w-3.5 h-3.5" />
-            <span>{themeLabel === 'Classic' ? 'Modern' : 'Classic'}</span>
-          </button>
-
           {/* URL Bar + Copy */}
           <div className="flex items-center justify-center gap-2 w-full sm:w-auto">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-200">
@@ -408,11 +381,11 @@ const PublicWebsitePreview = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="relative w-full aspect-[16/10] overflow-hidden">
+                    <div className="relative mx-auto [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.26] sm:[--scale:0.36] md:[--scale:0.55] lg:[--scale:0.68] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                       <iframe
                         title="Desktop preview"
                         src={previewUrl}
-                        className="absolute inset-0 w-full h-full border-0"
+                        className="absolute inset-0 origin-top-left [transform:scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
                       />
                     </div>
                   </div>
@@ -436,11 +409,11 @@ const PublicWebsitePreview = () => {
               <div className="bg-white rounded-[36px] overflow-hidden border border-black/10 relative">
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-10" />
-                <div className="relative w-full aspect-[430/932] overflow-hidden">
+                <div className="relative mx-auto overflow-hidden [--viewport-w:430px] [--viewport-h:932px] [--scale:0.60] sm:[--scale:0.72] md:[--scale:0.80] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
                   <iframe
                     title="Mobile preview"
                     src={previewUrl}
-                    className="absolute inset-0 w-full h-full border-0"
+                    className="absolute inset-0 origin-top-left [transform:scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
                   />
                 </div>
               </div>
