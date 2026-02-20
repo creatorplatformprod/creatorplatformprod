@@ -791,19 +791,19 @@ const CreatorProfile = () => {
           {/* Content Filter Tabs - Integrated into hero */}
           <div className="max-w-4xl mx-auto">
             <div className={`template-filter-shell template-filter-container mt-5 mx-auto flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
-              {(['all', 'collections', 'posts'] as const).map(filter => (
-                <button
-                  key={filter}
-                  onClick={() => setFeedFilter(filter)}
-                  className={`template-filter-tab px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
-                    feedFilter === filter
+            {(['all', 'collections', 'posts'] as const).map(filter => (
+              <button
+                key={filter}
+                onClick={() => setFeedFilter(filter)}
+                className={`template-filter-tab px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+                  feedFilter === filter
                       ? 'template-filter-tab-active bg-gray-100 text-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground hover:bg-gray-100'
-                  }`}
-                >
-                  {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
-                </button>
-              ))}
+                }`}
+              >
+                {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
+              </button>
+            ))}
             </div>
           </div>
         </div>

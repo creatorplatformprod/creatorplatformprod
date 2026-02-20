@@ -11,6 +11,7 @@ import { useFanAuth } from "@/contexts/FanAuthContext";
 import FanAccountMenu from "@/components/FanAccountMenu";
 import FanAuthModal from "@/components/FanAuthModal";
 import { useSeo } from "@/hooks/use-seo";
+import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -75,6 +76,7 @@ const PostDetailBlurred = () => {
   const revealSentinelRef = useRef<HTMLDivElement | null>(null);
   const { fan } = useFanAuth();
   const activeFan = isPreviewMode ? null : fan;
+  const themeClass = usePublicWebsiteTheme(creatorParam || undefined);
   const mockSeed = useMemo(
     () => hashString((creatorParam || 'creator').toLowerCase()),
     [creatorParam]
@@ -554,7 +556,7 @@ const PostDetailBlurred = () => {
 
   if (remoteLoading && !collection) {
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center">
+      <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
         <div className="text-center">
           <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Loading collection...</p>
@@ -565,7 +567,7 @@ const PostDetailBlurred = () => {
 
   if (!collection) {
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center">
+      <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Collection not found</h1>
           <Button onClick={() => navigate("/")} variant="outline">
@@ -578,7 +580,7 @@ const PostDetailBlurred = () => {
   }
 
   return (
-    <div className="min-h-screen mobile-stable-shell feed-bg">
+    <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
       <button
         onClick={() => window.history.back()}
         className={`fixed ${isPreviewMode ? 'mobile-fixed-preview-safe' : 'mobile-fixed-safe'} left-4 z-[60] w-9 h-9 sm:w-8 sm:h-8 rounded-full bg-secondary/80 backdrop-blur-xl hover:bg-secondary flex items-center justify-center text-foreground transition-colors duration-200 shadow-lg`}

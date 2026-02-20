@@ -347,7 +347,7 @@ const CreatorDashboard = () => {
     unlockAllPrice: 0,
     unlockAllCurrency: 'USD'
   });
-const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState('');
   const [avatarDimensions, setAvatarDimensions] = useState<{ width: number; height: number } | null>(null);
   const [avatarEditor, setAvatarEditor] = useState<CropEditorState>(createDefaultCropEditorState());
@@ -1944,23 +1944,23 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
       }
 
       if (includeSalesList) {
-        const listResult = await api.getSalesList({
-          range: analyticsRange,
-          status: analyticsStatus,
-          collectionId: collectionParam,
-          currency: analyticsCurrency !== 'all' ? analyticsCurrency : undefined,
-          limit: salesLimit,
-          offset: salesOffset,
-          sort: salesSort,
-          search: salesSearch || undefined
-        });
+      const listResult = await api.getSalesList({
+        range: analyticsRange,
+        status: analyticsStatus,
+        collectionId: collectionParam,
+        currency: analyticsCurrency !== 'all' ? analyticsCurrency : undefined,
+        limit: salesLimit,
+        offset: salesOffset,
+        sort: salesSort,
+        search: salesSearch || undefined
+      });
 
-        if (listResult.success) {
-          setSalesList(listResult.sales || []);
-          setSalesTotal(listResult.total || 0);
-        } else {
-          setSalesList([]);
-          setSalesTotal(0);
+      if (listResult.success) {
+        setSalesList(listResult.sales || []);
+        setSalesTotal(listResult.total || 0);
+      } else {
+        setSalesList([]);
+        setSalesTotal(0);
         }
       }
     } catch (err: any) {
@@ -2471,7 +2471,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                       {avatarPreviewUrl || profileData.avatar ? (
                         avatarFile && avatarDimensions ? (
                           <>
-                            <img
+                      <img 
                               src={avatarPreviewUrl}
                               alt="Avatar editor blurred"
                               draggable={false}
@@ -2533,21 +2533,21 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                         ) : (
                           <img src={avatarPreviewUrl || profileData.avatar} alt="Avatar editor" className="w-full h-full object-cover" />
                         )
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Camera className="w-8 h-8 text-muted-foreground" />
-                        </div>
-                      )}
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Camera className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                    )}
                       <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
                         <div
                           className="rounded-full border border-gray-400/80"
                           style={{ width: AVATAR_CROP_DIAMETER, height: AVATAR_CROP_DIAMETER }}
                         />
-                      </div>
-                    </div>
+                  </div>
+                </div>
                     <p className="text-[11px] text-muted-foreground text-center mt-3">
                       Drag image to reposition. Circle overlay shows your profile crop.
-                    </p>
+                  </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Button
@@ -2823,7 +2823,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
             <h3 className="form-section-header">Telegram Alerts</h3>
             <div className="rounded-xl border border-border bg-background/50 p-4 space-y-4">
               <div className="flex items-center justify-between gap-4">
-                <div>
+              <div>
                   <p className="text-sm font-medium text-foreground">Enable Telegram Payment Alerts</p>
                   <p className="text-xs text-muted-foreground mt-1">
                     Get these tokens from Telegram and you will receive a separate message for every new payment initiation and completed purchase.
@@ -2834,11 +2834,11 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
               {telegramAlertsEnabled && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
-                      <MessageSquare className="w-4 h-4" />
-                      Telegram Bot Token
-                    </label>
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4" />
+                  Telegram Bot Token
+                </label>
                     {!isEditingTelegramToken && telegramBotTokenConfigured ? (
                       <div className="space-y-2">
                         <Input type="password" value="••••••••••••••••••••" disabled />
@@ -2861,12 +2861,12 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        <Input
+                <Input
                           type="password"
-                          value={profileData.telegramBotToken}
-                          onChange={(e) => setProfileData({ ...profileData, telegramBotToken: e.target.value })}
+                  value={profileData.telegramBotToken}
+                  onChange={(e) => setProfileData({ ...profileData, telegramBotToken: e.target.value })}
                           placeholder="123456789:ABCDEF..."
-                        />
+                />
                         {profileValidationErrors.telegramBotToken && (
                           <p className="text-xs text-red-600 mt-1">{profileValidationErrors.telegramBotToken}</p>
                         )}
@@ -2886,25 +2886,25 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
                         )}
                       </div>
                     )}
-                    <p className="text-xs text-muted-foreground mt-2">
+                <p className="text-xs text-muted-foreground mt-2">
                       Create your bot via @BotFather and paste the token. It is masked in this dashboard after save.
-                    </p>
-                  </div>
+                </p>
+              </div>
 
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
-                      <MessageSquare className="w-4 h-4" />
-                      Telegram Chat ID
-                    </label>
-                    <Input
-                      value={profileData.telegramChatId}
-                      onChange={(e) => setProfileData({ ...profileData, telegramChatId: e.target.value })}
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4" />
+                  Telegram Chat ID
+                </label>
+                <Input
+                  value={profileData.telegramChatId}
+                  onChange={(e) => setProfileData({ ...profileData, telegramChatId: e.target.value })}
                       placeholder="123456789 or -1001234567890"
-                    />
+                />
                     {profileValidationErrors.telegramChatId && (
                       <p className="text-xs text-red-600 mt-1">{profileValidationErrors.telegramChatId}</p>
                     )}
-                    <p className="text-xs text-muted-foreground mt-2">
+                <p className="text-xs text-muted-foreground mt-2">
                       Add your bot to your chat/channel, then use that chat ID for notification delivery.
                     </p>
                   </div>

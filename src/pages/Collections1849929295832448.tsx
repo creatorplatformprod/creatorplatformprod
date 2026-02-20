@@ -9,6 +9,7 @@ import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { isCollectionsSecureId } from "@/utils/secureIdMapper";
 import { api } from "@/lib/api";
 import { useSeo } from "@/hooks/use-seo";
+import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -71,6 +72,7 @@ const Collections1849929295832448 = () => {
   const [accessDenied, setAccessDenied] = useState(false);
   const [remoteCollections, setRemoteCollections] = useState<any[]>([]);
   const [verifying, setVerifying] = useState(true);
+  const themeClass = usePublicWebsiteTheme(creatorParam || undefined);
 
   useEffect(() => {
     const verifyAndLoad = async () => {
@@ -555,7 +557,7 @@ const Collections1849929295832448 = () => {
   // Show verifying state
   if (verifying) {
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center">
+      <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">Verifying access...</p>
@@ -567,7 +569,7 @@ const Collections1849929295832448 = () => {
   // Show access denied state
   if (accessDenied) {
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center p-4">
+      <div className={`min-h-screen feed-bg flex items-center justify-center p-4 ${themeClass}`}>
         <div className="text-center max-w-sm">
           <h2 className="text-xl font-bold text-foreground mb-2">Access Required</h2>
           <p className="text-sm text-muted-foreground mb-4">
@@ -586,7 +588,7 @@ const Collections1849929295832448 = () => {
       {showPreloader && <Preloader isVisible={isPreloading} onComplete={handlePreloaderComplete} />}
       
       {!showPreloader && (
-        <div className="min-h-screen mobile-stable-shell feed-bg">
+        <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
           <header className={`sticky top-0 z-10 nav-elevated p-3 sm:p-4 ${isPreviewMode ? 'mobile-preview-navbar-offset' : ''}`}>
             <div className="max-w-6xl mx-auto flex items-center justify-between">
               <Button 

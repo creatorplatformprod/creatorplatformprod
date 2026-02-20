@@ -64,12 +64,12 @@
     --post-hover: 250 30% 98%;
     --blur-overlay: 262 60% 55%;
     --like-color: 340 82% 52%;
-
+    
     /* Gradients */
     --gradient-sky: linear-gradient(135deg, hsl(262 83% 96%), hsl(258 70% 94%));
     --gradient-post: linear-gradient(145deg, hsl(0 0% 100%), hsl(250 30% 99%));
     --gradient-blur: linear-gradient(45deg, hsla(239 84% 67% / 0.25), hsla(258 90% 66% / 0.25));
-
+    
     /* Shadows */
     --shadow-post: 0 1px 3px hsl(240 10% 50% / 0.06), 0 4px 16px hsl(240 10% 50% / 0.04);
     --shadow-post-hover: 0 4px 12px hsl(262 50% 50% / 0.08), 0 12px 36px hsl(262 50% 50% / 0.06);
@@ -183,7 +183,7 @@
   .feed-gradient {
     background: var(--gradient-sky);
   }
-
+  
   .post-card {
     background: hsl(var(--post-bg));
     box-shadow: var(--shadow-post);
@@ -191,7 +191,7 @@
     border-radius: 1rem;
     transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
   }
-
+  
   .post-card:hover {
     box-shadow: var(--shadow-post-hover), 0 12px 28px -8px rgba(139, 92, 246, 0.25);
     transform: translateY(-4px);
@@ -208,13 +208,13 @@
       transform: none;
     }
   }
-
+  
   .blur-overlay {
     background: var(--gradient-blur);
     backdrop-filter: blur(20px);
     box-shadow: var(--shadow-blur);
   }
-
+  
   .feed-bg {
     background-color: hsl(var(--feed-bg));
     position: relative;
@@ -233,11 +233,11 @@
     mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, black 0%, transparent 75%);
     -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, black 0%, transparent 75%);
   }
-
+  
   .post-bg {
     background-color: hsl(var(--post-bg));
   }
-
+  
   .like-color {
     color: hsl(var(--like-color));
   }
@@ -741,7 +741,7 @@
       font-size: 0.9375rem;
     }
   }
-
+  
   @media (min-width: 768px) {
     .dashboard-input input,
     .dashboard-input textarea,

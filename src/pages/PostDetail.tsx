@@ -10,6 +10,7 @@ import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
 import { useSeo } from "@/hooks/use-seo";
+import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -68,6 +69,7 @@ const PostDetail = () => {
   const [remoteCollection, setRemoteCollection] = useState<any>(null);
   const [remoteLoading, setRemoteLoading] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
+  const themeClass = usePublicWebsiteTheme(creatorParam || undefined);
   const mockSeed = useMemo(() => hashString((creatorParam || 'creator').toLowerCase()), [creatorParam]);
   const mockPhotos = useMemo(
     () => seededShuffle(PINK_LEMONADE_IMAGE_IDS.map((imgId) => pexelsImageUrl(imgId, 1600)), mockSeed + 77),
@@ -434,7 +436,7 @@ const PostDetail = () => {
       ? `?creator=${encodeURIComponent(creatorParam)}${isPreviewMode ? '&mode=preview' : ''}`
       : (isPreviewMode ? '?mode=preview' : '');
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center">
+      <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
         <div className="text-center max-w-md">
           <h1 className="text-2xl font-bold text-foreground mb-4">Access Required</h1>
           <p className="text-muted-foreground mb-6">Purchase this collection to unlock full access.</p>
@@ -448,7 +450,7 @@ const PostDetail = () => {
 
   if (remoteLoading && !collection) {
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center">
+      <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p className="text-muted-foreground">Loading collection...</p>
@@ -459,7 +461,7 @@ const PostDetail = () => {
 
   if (!collection) {
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center">
+      <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Collection not found</h1>
           <Button onClick={handleBackNavigation} variant="outline">
@@ -475,7 +477,7 @@ const PostDetail = () => {
   const totalImagePages = getTotalImagePages();
 
   return (
-    <div className="min-h-screen mobile-stable-shell feed-bg">
+    <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
       <header className={`sticky top-0 z-10 nav-elevated ${isPreviewMode ? 'mobile-preview-navbar-offset' : ''}`}>
         <div className="max-w-6xl mx-auto p-3 sm:p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">

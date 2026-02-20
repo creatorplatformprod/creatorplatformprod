@@ -11,6 +11,7 @@ import { useFanAuth } from "@/contexts/FanAuthContext";
 import FanAccountMenu from "@/components/FanAccountMenu";
 import FanAuthModal from "@/components/FanAuthModal";
 import { useSeo } from "@/hooks/use-seo";
+import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -82,6 +83,7 @@ const Collections = () => {
   const revealSentinelRef = useRef<HTMLDivElement | null>(null);
   const { fan } = useFanAuth();
   const activeFan = isPreviewMode ? null : fan;
+  const themeClass = usePublicWebsiteTheme(creatorUsername || undefined);
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -559,7 +561,7 @@ const Collections = () => {
       <Preloader isVisible={isPreloading} onComplete={handlePreloaderComplete} />
       
       {!showPreloader && (
-        <div className="min-h-screen mobile-stable-shell feed-bg">
+        <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
           <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 relative">
           <button
             onClick={() => window.history.back()}
