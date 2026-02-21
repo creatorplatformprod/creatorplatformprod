@@ -1157,6 +1157,10 @@
     box-shadow: 0 0 0 3px hsl(239 84% 67% / 0.1);
   }
 
+  .landing-input-white.landing-input-clear {
+    background: transparent;
+  }
+
   .landing-cta-glow {
     background: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%) !important;
     color: white !important;

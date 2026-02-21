@@ -114,9 +114,9 @@ const Landing = () => {
     switch (signupStep) {
       case 1: return (
         <>
-          <input type="text" placeholder="Username" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white text-sm" />
-          <input type="text" placeholder="Display Name" value={formData.displayName} onChange={(e) => setFormData({ ...formData, displayName: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white text-sm" />
-          <input type="email" placeholder="Email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white text-sm" />
+          <input type="text" placeholder="Username" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white landing-input-clear text-sm" />
+          <input type="text" placeholder="Display Name" value={formData.displayName} onChange={(e) => setFormData({ ...formData, displayName: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white landing-input-clear text-sm" />
+          <input type="email" placeholder="Email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white landing-input-clear text-sm" />
         </>
       );
       case 2: return (
