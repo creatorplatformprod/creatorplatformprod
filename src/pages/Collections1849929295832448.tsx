@@ -6,7 +6,6 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Preloader from "../components/Preloader";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
-import { isCollectionsSecureId } from "@/utils/secureIdMapper";
 import { api } from "@/lib/api";
 import { useSeo } from "@/hooks/use-seo";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
@@ -93,16 +92,16 @@ const Collections1849929295832448 = () => {
         return;
       }
 
-      // If it's the legacy hardcoded secure ID, allow (backward compat)
-      if (secureId && isCollectionsSecureId(secureId) && !accessToken) {
-        setAccessVerified(true);
-        setVerifying(false);
-        return;
-      }
-
       // For dynamic access: verify the access token
       if (!accessToken) {
-        // Owner preview bypass: allow logged-in creator to preview unlocked bundle.
+        // Owner preview bypass: only allow in explicit preview mode.
+        if (!isPreviewMode) {
+          setAccessDenied(true);
+          setVerifying(false);
+          return;
+        }
+
+        // In preview mode, allow logged-in creator to preview unlocked bundle.
         const token = localStorage.getItem('token');
         if (token) {
           try {

@@ -178,6 +178,11 @@ const PostDetail = () => {
       const accessToken = params.get('access');
 
       if (!accessToken) {
+        if (!isPreviewMode) {
+          setAccessDenied(true);
+          return;
+        }
+
         // Owner preview bypass: allow creator to open unlocked view without payment token.
         const token = localStorage.getItem('token');
         if (token) {
@@ -286,7 +291,7 @@ const PostDetail = () => {
 
   useEffect(() => {
     loadRemoteCollection();
-  }, [secureId]);
+  }, [secureId, isPreviewMode]);
 
   const localCollection = getCollectionFromSecureId();
   const collection = remoteCollection || localCollection;
