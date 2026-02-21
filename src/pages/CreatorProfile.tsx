@@ -752,8 +752,8 @@ const CreatorProfile = () => {
                 }}
                 className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
                   !useClassicTheme
-                    ? 'bg-primary/15 text-primary'
-                    : 'text-muted-foreground hover:bg-background'
+                    ? 'bg-blue-500/15 text-blue-500'
+                    : 'text-muted-foreground hover:bg-background hover:text-blue-500'
                 }`}
                 title="Use Modern theme"
                 aria-label="Use Modern theme"
@@ -767,8 +767,8 @@ const CreatorProfile = () => {
                 }}
                 className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
                   useClassicTheme
-                    ? 'bg-primary/15 text-primary'
-                    : 'text-muted-foreground hover:bg-background'
+                    ? 'bg-blue-500/15 text-blue-500'
+                    : 'text-muted-foreground hover:bg-background hover:text-blue-500'
                 }`}
                 title="Use Classic theme"
                 aria-label="Use Classic theme"
