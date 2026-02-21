@@ -33,7 +33,7 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="h-4 w-4 text-primary transition-colors group-hover:text-accent group-focus-visible:text-accent" />
+            <User className="h-4 w-4 text-sky-400 transition-colors group-hover:text-cyan-300 group-focus-visible:text-cyan-300" />
           )}
         </button>
       </DropdownMenuTrigger>
@@ -66,21 +66,21 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
         ) : (
           previewMode ? (
             <DropdownMenuItem
-              className="group cursor-default text-primary hover:bg-primary/10 focus:bg-primary/10 data-[highlighted]:bg-primary/10 data-[highlighted]:text-accent"
+              className="group cursor-default hover:bg-sky-500/10 focus:bg-sky-500/10 data-[highlighted]:bg-sky-500/10"
               onSelect={(e) => e.preventDefault()}
             >
-              <LogIn className="mr-2 h-4 w-4 text-current" />
-              <span className="text-current">
+              <LogIn className="mr-2 h-4 w-4 text-sky-400 transition-colors group-hover:text-cyan-300 group-focus:text-cyan-300 group-data-[highlighted]:text-cyan-300" />
+              <span className="bg-gradient-to-r from-sky-400 to-cyan-400 bg-clip-text text-transparent transition-all group-hover:from-sky-300 group-hover:to-cyan-300 group-focus:from-sky-300 group-focus:to-cyan-300 group-data-[highlighted]:from-sky-300 group-data-[highlighted]:to-cyan-300">
                 Log in or Register (Demo)
               </span>
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
-              className="group text-primary hover:bg-primary/10 focus:bg-primary/10 data-[highlighted]:bg-primary/10 data-[highlighted]:text-accent"
+              className="group hover:bg-sky-500/10 focus:bg-sky-500/10 data-[highlighted]:bg-sky-500/10"
               onClick={onOpenAuth}
             >
-              <LogIn className="mr-2 h-4 w-4 text-current" />
-              <span className="text-current">
+              <LogIn className="mr-2 h-4 w-4 text-sky-400 transition-colors group-hover:text-cyan-300 group-focus:text-cyan-300 group-data-[highlighted]:text-cyan-300" />
+              <span className="bg-gradient-to-r from-sky-400 to-cyan-400 bg-clip-text text-transparent transition-all group-hover:from-sky-300 group-hover:to-cyan-300 group-focus:from-sky-300 group-focus:to-cyan-300 group-data-[highlighted]:from-sky-300 group-data-[highlighted]:to-cyan-300">
                 Log in or Register
               </span>
             </DropdownMenuItem>
