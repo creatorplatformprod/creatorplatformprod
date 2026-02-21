@@ -256,7 +256,7 @@ const PostDetailBlurred = () => {
 
       // Owner preview fallback for unpublished/private content.
       const token = localStorage.getItem('token');
-      if (token) {
+      if (isPreviewMode && token) {
         const me = await api.getCurrentUser();
         if (me?.success) {
           const mine = await api.getMyCollections();
@@ -291,7 +291,7 @@ const PostDetailBlurred = () => {
       console.error('Failed to load collection:', error);
       try {
         const token = localStorage.getItem('token');
-        if (token) {
+        if (isPreviewMode && token) {
           const me = await api.getCurrentUser();
           const mine = await api.getMyCollections();
           const ownCollection = (mine?.collections || []).find((c: any) => c?._id === id);
@@ -331,7 +331,7 @@ const PostDetailBlurred = () => {
 
   useEffect(() => {
     loadRemoteCollection();
-  }, [id, localCollection?.id]);
+  }, [id, localCollection?.id, isPreviewMode]);
 
   useEffect(() => {
     const resolveRevealAccess = async () => {

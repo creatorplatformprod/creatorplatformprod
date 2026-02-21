@@ -84,6 +84,7 @@ const Collections = () => {
   const { fan } = useFanAuth();
   const activeFan = isPreviewMode ? null : fan;
   const themeClass = usePublicWebsiteTheme(creatorUsername || undefined);
+  const shouldUseMockCollections = !creatorUsername;
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -167,11 +168,10 @@ const Collections = () => {
     const loadCollections = async () => {
       setIsLoading(true);
       try {
-        // If viewing a creator page and this is the same logged-in creator,
-        // use private collections so owner can preview hidden/unpublished content.
+        // Owner preview path: only in explicit preview mode should private data load.
         if (creatorUsername) {
           const token = localStorage.getItem('token');
-          if (token) {
+          if (token && isPreviewMode) {
             try {
               const me = await api.getCurrentUser();
               const isOwner =
@@ -194,15 +194,18 @@ const Collections = () => {
 
           // Public visitor path: only published collections.
           const result = await api.getCollections(creatorUsername);
-          if (result?.success && result.collections?.length > 0) {
-            setCollectionsData(result.collections);
+          if (result?.success) {
+            const publicCollections = result.collections || [];
+            setCollectionsData(publicCollections);
             // Store creatorId from the first collection for checkout
-            const firstCreatorId = result.collections[0]?.creatorId;
+            const firstCreatorId = publicCollections[0]?.creatorId;
             if (firstCreatorId) setCreatorId(firstCreatorId);
             if (result.bundle?.price) setBundlePrice(result.bundle.price);
             if (result.bundle?.currency) setBundleCurrency(result.bundle.currency);
             // If creator has unlockAllPrice on their profile, use that
             if (result.unlockAllPrice) setBundlePrice(result.unlockAllPrice);
+          } else {
+            setCollectionsData([]);
           }
         } else {
           // Fallback: authenticated creator viewing own collections
@@ -223,7 +226,7 @@ const Collections = () => {
       }
     };
     loadCollections();
-  }, [creatorUsername]);
+  }, [creatorUsername, isPreviewMode]);
 
   useEffect(() => {
     const resolveRevealAccess = async () => {
@@ -305,7 +308,7 @@ const Collections = () => {
       };
     });
   }, [mockPhotos, mockSeed]);
-  const mockCollectionCount = localMockCollections.length;
+  const mockCollectionCount = shouldUseMockCollections ? localMockCollections.length : 0;
 
   const allImages = useMemo(() => {
     const visibleApiCollections = (collectionsData || []).filter(
@@ -344,7 +347,12 @@ const Collections = () => {
       return items;
     }
 
-    // Fallback: use same seeded pink mock universe as CreatorProfile.
+    // Fallback: mock content is only for non-creator generic collections route.
+    if (!shouldUseMockCollections) {
+      return [];
+    }
+
+    // Generic route fallback: use same seeded pink mock universe as CreatorProfile.
     const items: any[] = [];
     localMockCollections.forEach((collection) => {
       collection.images.forEach((mediaItem, index) => {
@@ -361,7 +369,7 @@ const Collections = () => {
       });
     });
     return items;
-  }, [collectionsData, localMockCollections]);
+  }, [collectionsData, localMockCollections, shouldUseMockCollections]);
 
   const collectionCount = collectionsData.length > 0
     ? collectionsData.filter((col: any) => col && col._id !== 'all' && !col.isBundle).length
@@ -477,12 +485,6 @@ const Collections = () => {
     }, 5000);
     return () => clearTimeout(timeout);
   }, [isPreloading]);
-
-  useEffect(() => {
-    if (collectionCount === 0) {
-      setShowUnlockModal(false);
-    }
-  }, [collectionCount]);
 
   const handleUnlockClick = () => {
     setShowUnlockModal(true);

@@ -23,7 +23,7 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-transparent transition-none text-sm font-medium"
+          className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-transparent transition-none text-sm font-medium outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           {effectiveFan?.avatar ? (
             <Avatar className="h-5 w-5 border border-sky-400/50">
@@ -33,7 +33,7 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="h-4 w-4 text-blue-500 transition-colors group-hover:text-blue-400 group-focus-visible:text-blue-400" />
+            <User className="h-4 w-4 text-sky-500 transition-colors group-hover:text-sky-400 group-focus-visible:text-sky-400" />
           )}
         </button>
       </DropdownMenuTrigger>
@@ -66,21 +66,21 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
         ) : (
           previewMode ? (
             <DropdownMenuItem
-              className="group cursor-default hover:bg-blue-500/10 focus:bg-blue-500/10 data-[highlighted]:bg-blue-500/10"
+              className="group cursor-default hover:bg-sky-500/10 focus:bg-sky-500/10 data-[highlighted]:bg-sky-500/10"
               onSelect={(e) => e.preventDefault()}
             >
-              <LogIn className="mr-2 h-4 w-4 text-blue-500 transition-colors group-hover:text-blue-400 group-focus:text-blue-400 group-data-[highlighted]:text-blue-400" />
-              <span className="bg-gradient-to-r from-blue-500 to-sky-400 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-sky-300 group-focus:from-blue-400 group-focus:to-sky-300 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-sky-300">
+              <LogIn className="mr-2 h-4 w-4 text-sky-500 transition-colors group-hover:text-sky-400 group-focus:text-sky-400 group-data-[highlighted]:text-sky-400" />
+              <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-cyan-300 group-focus:from-blue-400 group-focus:to-cyan-300 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-cyan-300">
                 Log in or Register (Demo)
               </span>
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
-              className="group hover:bg-blue-500/10 focus:bg-blue-500/10 data-[highlighted]:bg-blue-500/10"
+              className="group hover:bg-sky-500/10 focus:bg-sky-500/10 data-[highlighted]:bg-sky-500/10"
               onClick={onOpenAuth}
             >
-              <LogIn className="mr-2 h-4 w-4 text-blue-500 transition-colors group-hover:text-blue-400 group-focus:text-blue-400 group-data-[highlighted]:text-blue-400" />
-              <span className="bg-gradient-to-r from-blue-500 to-sky-400 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-sky-300 group-focus:from-blue-400 group-focus:to-sky-300 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-sky-300">
+              <LogIn className="mr-2 h-4 w-4 text-sky-500 transition-colors group-hover:text-sky-400 group-focus:text-sky-400 group-data-[highlighted]:text-sky-400" />
+              <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-cyan-300 group-focus:from-blue-400 group-focus:to-cyan-300 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-cyan-300">
                 Log in or Register
               </span>
             </DropdownMenuItem>
