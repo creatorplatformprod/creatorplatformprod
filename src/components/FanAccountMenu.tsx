@@ -33,7 +33,7 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="h-4 w-4 text-sky-400" />
+            <User className="h-4 w-4 text-primary transition-colors group-hover:text-accent group-focus-visible:text-accent" />
           )}
         </button>
       </DropdownMenuTrigger>
@@ -65,16 +65,22 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
           </>
         ) : (
           previewMode ? (
-            <DropdownMenuItem className="group hover:bg-indigo-500/10 focus:bg-indigo-500/10 cursor-default" onSelect={(e) => e.preventDefault()}>
-              <LogIn className="mr-2 h-4 w-4 text-indigo-400" />
-              <span className="text-foreground/85">
+            <DropdownMenuItem
+              className="group cursor-default text-primary hover:bg-primary/10 focus:bg-primary/10 data-[highlighted]:bg-primary/10 data-[highlighted]:text-accent"
+              onSelect={(e) => e.preventDefault()}
+            >
+              <LogIn className="mr-2 h-4 w-4 text-current" />
+              <span className="text-current">
                 Log in or Register (Demo)
               </span>
             </DropdownMenuItem>
           ) : (
-            <DropdownMenuItem className="group hover:bg-indigo-500/10 focus:bg-indigo-500/10" onClick={onOpenAuth}>
-              <LogIn className="mr-2 h-4 w-4 text-indigo-400" />
-              <span className="text-foreground/85 transition-colors group-hover:text-indigo-300 group-focus:text-indigo-300">
+            <DropdownMenuItem
+              className="group text-primary hover:bg-primary/10 focus:bg-primary/10 data-[highlighted]:bg-primary/10 data-[highlighted]:text-accent"
+              onClick={onOpenAuth}
+            >
+              <LogIn className="mr-2 h-4 w-4 text-current" />
+              <span className="text-current">
                 Log in or Register
               </span>
             </DropdownMenuItem>
