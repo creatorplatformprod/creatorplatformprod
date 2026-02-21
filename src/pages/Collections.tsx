@@ -554,7 +554,7 @@ const Collections = () => {
 
   return (
     <>
-      <Preloader isVisible={isPreloading} onComplete={handlePreloaderComplete} />
+      <Preloader isVisible={isPreloading} onComplete={handlePreloaderComplete} themeClass={themeClass} />
       
       {!showPreloader && (
         <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
@@ -689,9 +689,9 @@ const Collections = () => {
                     
                     <div className="mb-3 sm:mb-4">
                       {activeFan?.email ? (
-                        <div className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 sm:px-4 py-2.5 text-left">
-                          <p className="text-[11px] text-white/85">Paying as</p>
-                          <p className="text-xs sm:text-sm font-medium text-white">{activeFan.email}</p>
+                        <div className="w-full rounded-xl border border-border bg-secondary/35 px-3 sm:px-4 py-2.5 text-left">
+                          <p className="text-[11px] text-muted-foreground">Paying as</p>
+                          <p className="text-xs sm:text-sm font-medium text-foreground">{activeFan.email}</p>
                         </div>
                       ) : (
                         <input
@@ -708,7 +708,7 @@ const Collections = () => {
                               handleCardPaymentClick();
                             }
                           }}
-                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                           required
                           maxLength={254}
                         />

@@ -545,6 +545,7 @@ const PostDetailBlurred = () => {
       `&itemCount=${collection.images?.length || 0}` +
       `&email=${encodeURIComponent(sanitizedEmail)}` +
       (collection.creatorId ? `&creatorId=${encodeURIComponent(collection.creatorId)}` : '') +
+      (creatorParam ? `&creator=${encodeURIComponent(creatorParam)}` : '') +
       (isPreviewMode ? '&mode=preview' : '');
 
     window.location.href = checkoutUrl;
@@ -791,9 +792,9 @@ const PostDetailBlurred = () => {
               
               <div className="mb-3 sm:mb-4">
                 {activeFan?.email ? (
-                  <div className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 sm:px-4 py-2.5 text-left">
-                    <p className="text-[11px] text-white/85">Paying as</p>
-                    <p className="text-xs sm:text-sm font-medium text-white">{activeFan.email}</p>
+                  <div className="w-full rounded-xl border border-border bg-secondary/35 px-3 sm:px-4 py-2.5 text-left">
+                    <p className="text-[11px] text-muted-foreground">Paying as</p>
+                    <p className="text-xs sm:text-sm font-medium text-foreground">{activeFan.email}</p>
                   </div>
                 ) : (
                   <input
@@ -810,7 +811,7 @@ const PostDetailBlurred = () => {
                         handleCardPaymentClick();
                       }
                     }}
-                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     required
                     maxLength={254}
                   />
@@ -844,7 +845,8 @@ const PostDetailBlurred = () => {
               <button
                 type="button"
                 onClick={() => {
-                  window.location.href = '/recover-access';
+                  const creatorQuery = creatorParam ? `?creator=${encodeURIComponent(creatorParam)}` : '';
+                  window.location.href = `/recover-access${creatorQuery}`;
                 }}
                 className="mt-2 text-[11px] text-white underline underline-offset-2 bg-transparent border-none cursor-pointer"
               >

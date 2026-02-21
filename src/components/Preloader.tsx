@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 // Brand preloader
 
-const Preloader = ({ isVisible, onComplete }) => {
+type PreloaderProps = {
+  isVisible: boolean;
+  onComplete: () => void;
+  themeClass?: string;
+};
+
+const Preloader = ({ isVisible, onComplete, themeClass = "" }: PreloaderProps) => {
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
@@ -18,7 +24,7 @@ const Preloader = ({ isVisible, onComplete }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center feed-bg transition-opacity duration-500 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center feed-bg ${themeClass} transition-opacity duration-500 ${
         fadeOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >

@@ -1817,6 +1817,113 @@ const CreatorDashboard = () => {
     previewCount: effectivePreviewCount
   });
 
+  const normalizeSparklineHeights = (
+    values: number[],
+    options?: { minHeight?: number; maxHeight?: number; points?: number }
+  ) => {
+    const points = options?.points ?? 12;
+    const minHeight = options?.minHeight ?? 18;
+    const maxHeight = options?.maxHeight ?? 100;
+    const cleaned = values
+      .map((value) => (Number.isFinite(value) ? Math.max(0, Number(value)) : 0))
+      .slice(-points);
+
+    if (cleaned.length === 0) {
+      return Array.from({ length: points }, () => minHeight);
+    }
+
+    while (cleaned.length < points) {
+      cleaned.unshift(cleaned[0]);
+    }
+
+    const minValue = Math.min(...cleaned);
+    const maxValue = Math.max(...cleaned);
+    if (Math.abs(maxValue - minValue) < 1e-9) {
+      return cleaned.map(() => (minValue > 0 ? Math.round((minHeight + maxHeight) / 2) : minHeight));
+    }
+
+    return cleaned.map((value) => Math.round(
+      minHeight + ((value - minValue) / (maxValue - minValue)) * (maxHeight - minHeight)
+    ));
+  };
+
+  const buildCumulativeSparklineFromItems = (items: any[]) => {
+    const timestamps = items
+      .map((item) => {
+        const raw = item?.createdAt || item?.updatedAt || item?.publishedAt || item?.date;
+        const parsed = raw ? new Date(raw).getTime() : NaN;
+        return Number.isFinite(parsed) ? parsed : NaN;
+      })
+      .filter((ts: number) => Number.isFinite(ts) && ts > 0)
+      .sort((a: number, b: number) => a - b);
+
+    if (timestamps.length === 0) {
+      return normalizeSparklineHeights([], { minHeight: 18 });
+    }
+
+    const bucketCount = 12;
+    const start = timestamps[0];
+    const end = Math.max(Date.now(), timestamps[timestamps.length - 1]);
+    const bucketSize = Math.max((end - start) / bucketCount, 1);
+    const cumulative: number[] = [];
+    let pointer = 0;
+
+    for (let i = 0; i < bucketCount; i += 1) {
+      const threshold = start + bucketSize * (i + 1);
+      while (pointer < timestamps.length && timestamps[pointer] <= threshold) {
+        pointer += 1;
+      }
+      cumulative.push(pointer);
+    }
+
+    return normalizeSparklineHeights(cumulative, { minHeight: 20 });
+  };
+
+  const revenueSparklineHeights = useMemo(
+    () => normalizeSparklineHeights(analyticsSeries.map((row) => Number(row?.revenue) || 0)),
+    [analyticsSeries]
+  );
+
+  const ordersSparklineHeights = useMemo(
+    () => normalizeSparklineHeights(analyticsSeries.map((row) => Number(row?.orders) || 0)),
+    [analyticsSeries]
+  );
+
+  const collectionsSparklineHeights = useMemo(
+    () => buildCumulativeSparklineFromItems(collections),
+    [collections]
+  );
+
+  const postsSparklineHeights = useMemo(
+    () => buildCumulativeSparklineFromItems(statusCards),
+    [statusCards]
+  );
+
+  const revenueTrend = useMemo(() => {
+    const values = analyticsSeries
+      .map((row) => Number(row?.revenue) || 0)
+      .filter((value) => Number.isFinite(value));
+    const windowed = values.slice(-12);
+    if (windowed.length < 2) {
+      return { label: '0.0%', direction: 'flat' as const };
+    }
+
+    const splitIndex = Math.floor(windowed.length / 2);
+    const previous = windowed.slice(0, splitIndex).reduce((sum, value) => sum + value, 0);
+    const current = windowed.slice(splitIndex).reduce((sum, value) => sum + value, 0);
+
+    let percentChange = 0;
+    if (previous > 0) {
+      percentChange = ((current - previous) / previous) * 100;
+    } else if (current > 0) {
+      percentChange = 100;
+    }
+
+    const direction = percentChange > 0.1 ? 'up' : percentChange < -0.1 ? 'down' : 'flat';
+    const signed = percentChange > 0 ? `+${percentChange.toFixed(1)}` : percentChange.toFixed(1);
+    return { label: `${signed}%`, direction };
+  }, [analyticsSeries]);
+
   useEffect(() => {
     if (
       collectionEditorMedia.length > 0 &&
@@ -2203,15 +2310,27 @@ const CreatorDashboard = () => {
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Revenue</span>
-                    <div className="flex items-center gap-1 text-emerald-400">
-                      <TrendingUp className="w-3 h-3" />
-                      <span className="text-[10px] font-semibold">+12.5%</span>
+                    <div
+                      className={`flex items-center gap-1 ${
+                        revenueTrend.direction === 'down'
+                          ? 'text-rose-400'
+                          : revenueTrend.direction === 'up'
+                            ? 'text-emerald-400'
+                            : 'text-muted-foreground'
+                      }`}
+                    >
+                      {revenueTrend.direction === 'down' ? (
+                        <ChevronDown className="w-3 h-3" />
+                      ) : (
+                        <ChevronUp className="w-3 h-3" />
+                      )}
+                      <span className="text-[10px] font-semibold">{revenueTrend.label}</span>
                     </div>
                   </div>
                   <p className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">${analyticsTotals.revenue.toFixed(2)}</p>
                   <p className="text-xs text-muted-foreground mt-1">Last 30 days</p>
                   <div className="sparkline" aria-hidden="true">
-                    {[40, 55, 48, 72, 65, 88, 82, 95, 90, 85, 78, 100].map((h, i) => (
+                    {revenueSparklineHeights.map((h, i) => (
                       <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
                     ))}
                   </div>
@@ -2231,7 +2350,7 @@ const CreatorDashboard = () => {
                   <p className="text-xl font-bold text-foreground">{collections.length}</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">Collections</p>
                   <div className="sparkline" aria-hidden="true">
-                    {[60, 70, 55, 80, 75, 90, 85, 88, 92, 78, 95, 100].map((h, i) => (
+                    {collectionsSparklineHeights.map((h, i) => (
                       <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
                     ))}
                   </div>
@@ -2245,7 +2364,7 @@ const CreatorDashboard = () => {
                   <p className="text-xl font-bold text-foreground">{statusCards.length}</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">Posts</p>
                   <div className="sparkline" aria-hidden="true">
-                    {[50, 65, 58, 72, 80, 70, 85, 90, 82, 88, 92, 100].map((h, i) => (
+                    {postsSparklineHeights.map((h, i) => (
                       <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
                     ))}
                   </div>
@@ -2259,7 +2378,7 @@ const CreatorDashboard = () => {
                   <p className="text-xl font-bold text-foreground">{analyticsTotals.orders}</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">Orders</p>
                   <div className="sparkline" aria-hidden="true">
-                    {[45, 62, 70, 65, 78, 85, 80, 92, 88, 95, 90, 100].map((h, i) => (
+                    {ordersSparklineHeights.map((h, i) => (
                       <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
                     ))}
                   </div>
@@ -4270,4 +4389,3 @@ const CreatorDashboard = () => {
 };
 
 export default CreatorDashboard;
-

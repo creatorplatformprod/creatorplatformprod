@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Loader2, CheckCircle2, Lock, ChevronDown, ChevronUp, Clock, AlertCircle, CreditCard } from "lucide-react";
 import { useFanAuth } from "@/contexts/FanAuthContext";
+import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
 
 const RAW_API_URL =
   import.meta.env.VITE_API_URL ||
@@ -37,6 +38,8 @@ const CheckoutPage = () => {
   const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
   const { fan } = useFanAuth();
   const params = new URLSearchParams(window.location.search);
+  const creatorUsername = params.get('creator') || undefined;
+  const themeClass = usePublicWebsiteTheme(creatorUsername);
   const isPreviewMode = params.get('mode') === 'preview';
   const activeFanEmail = !isPreviewMode ? fan?.email : '';
 
@@ -401,7 +404,7 @@ const CheckoutPage = () => {
   // Success screen (shown when redirected with access token)
   if (paymentSuccess) {
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center p-4">
+      <div className={`min-h-screen feed-bg flex items-center justify-center p-4 ${themeClass}`}>
         <div className="p-3 max-w-xs w-full text-center">
           <style>{`
             @keyframes scale-in {
@@ -485,7 +488,7 @@ const CheckoutPage = () => {
   // Session expired screen
   if (sessionExpired || (!checkoutData && !isLoading)) {
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center p-4">
+      <div className={`min-h-screen feed-bg flex items-center justify-center p-4 ${themeClass}`}>
         <div className="post-card rounded-2xl p-8 max-w-md w-full text-center space-y-6">
           <div className="w-20 h-20 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto">
             <Clock className="w-10 h-10 text-yellow-500" />
@@ -532,7 +535,7 @@ const CheckoutPage = () => {
   // Loading state while fetching checkout data
   if (isLoading && !checkoutData) {
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center">
+      <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
         <div className="text-center">
           <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Loading checkout...</p>
@@ -542,7 +545,7 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className="min-h-screen feed-bg">
+    <div className={`min-h-screen feed-bg ${themeClass}`}>
       <header className="sticky top-0 z-10 nav-elevated">
         <div className="max-w-5xl mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button 
@@ -576,8 +579,8 @@ const CheckoutPage = () => {
 
               <div className={`space-y-5 ${showOrderDetails ? 'block' : 'hidden lg:block'}`}>
                 {/* Product Card */}
-                <div className="flex items-start gap-4 p-4 rounded-2xl bg-gray-50 border border-gray-200">
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500/20 via-indigo-500/15 to-sky-500/20 border border-gray-200 flex items-center justify-center flex-shrink-0">
+                <div className="flex items-start gap-4 p-4 rounded-2xl bg-secondary/35 border border-border">
+                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500/20 via-indigo-500/15 to-sky-500/20 border border-border flex items-center justify-center flex-shrink-0">
                     <svg className="w-6 h-6 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M3 9h18M9 21V9" /></svg>
                   </div>
                   <div className="min-w-0 flex-1">
@@ -599,7 +602,7 @@ const CheckoutPage = () => {
                     <span className="text-muted-foreground">Delivery</span>
                     <span className="text-emerald-400">Free</span>
                   </div>
-                  <div className="h-px bg-gray-200 my-1" />
+                  <div className="h-px bg-border my-1" />
                   <div className="flex justify-between items-baseline">
                     <span className="text-foreground font-medium">Total</span>
                     <span className="text-2xl font-bold text-foreground tracking-tight">${checkoutData.amount}</span>
@@ -652,7 +655,7 @@ const CheckoutPage = () => {
                       Email Address *
                     </label>
                     {activeFanEmail ? (
-                      <div className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+                      <div className="w-full rounded-xl border border-border bg-secondary/35 px-4 py-3">
                         <p className="text-sm text-foreground font-medium">{activeFanEmail}</p>
                       </div>
                     ) : (

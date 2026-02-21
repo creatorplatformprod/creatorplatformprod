@@ -702,7 +702,7 @@ const CreatorProfile = () => {
   };
 
   if (isLoading || showPreloader) {
-    return <Preloader isVisible={true} onComplete={handlePreloaderComplete} />;
+    return <Preloader isVisible={true} onComplete={handlePreloaderComplete} themeClass={classicDarkClass} />;
   }
 
   if (!creatorData) {

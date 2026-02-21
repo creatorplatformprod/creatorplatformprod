@@ -584,7 +584,7 @@ const Collections1849929295832448 = () => {
 
   return (
     <>
-      {showPreloader && <Preloader isVisible={isPreloading} onComplete={handlePreloaderComplete} />}
+      {showPreloader && <Preloader isVisible={isPreloading} onComplete={handlePreloaderComplete} themeClass={themeClass} />}
       
       {!showPreloader && (
         <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>

@@ -170,12 +170,25 @@
   textarea:focus,
   select:focus {
     background-color: hsl(0 0% 100%) !important;
-    border-color: hsl(239 84% 67% / 0.5) !important;
+    border-color: hsl(var(--ring) / 0.5) !important;
   }
 
   input::placeholder,
   textarea::placeholder {
-    color: hsl(240 4% 46% / 0.7);
+    color: hsl(var(--muted-foreground) / 0.72);
+  }
+
+  .theme-classic-dark input:focus,
+  .theme-classic-dark textarea:focus,
+  .theme-classic-dark select:focus {
+    background-color: hsl(var(--input)) !important;
+    color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--ring) / 0.55) !important;
+  }
+
+  .theme-classic-dark input::placeholder,
+  .theme-classic-dark textarea::placeholder {
+    color: hsl(var(--muted-foreground) / 0.9);
   }
 }
 
