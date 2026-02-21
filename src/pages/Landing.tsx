@@ -121,7 +121,7 @@ const Landing = () => {
       );
       case 2: return (
         <>
-          <input type="password" placeholder="Create password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white text-sm" />
+          <input type="password" placeholder="Create password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white landing-input-clear text-sm" />
           <p className="text-xs text-gray-400">Must be 8+ characters with upper, lower, and a number.</p>
         </>
       );
