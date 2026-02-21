@@ -114,14 +114,14 @@ const Landing = () => {
     switch (signupStep) {
       case 1: return (
         <>
-          <input type="text" placeholder="Username" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white landing-input-clear text-sm" />
-          <input type="text" placeholder="Display Name" value={formData.displayName} onChange={(e) => setFormData({ ...formData, displayName: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white landing-input-clear text-sm" />
-          <input type="email" placeholder="Email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white landing-input-clear text-sm" />
+          <input type="text" placeholder="Username" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white landing-input-translucent text-sm" />
+          <input type="text" placeholder="Display Name" value={formData.displayName} onChange={(e) => setFormData({ ...formData, displayName: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white landing-input-translucent text-sm" />
+          <input type="email" placeholder="Email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white landing-input-translucent text-sm" />
         </>
       );
       case 2: return (
         <>
-          <input type="password" placeholder="Create password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white landing-input-clear text-sm" />
+          <input type="password" placeholder="Create password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required disabled={loading} className="w-full h-12 px-4 landing-input-white landing-input-translucent text-sm" />
           <p className="text-xs text-gray-400">Must be 8+ characters with upper, lower, and a number.</p>
         </>
       );
@@ -144,7 +144,7 @@ const Landing = () => {
       {/* ━━━━━━━━━━ 1. STICKY NAV ━━━━━━━━━━ */}
       <nav className={`landing-nav ${navScrolled ? 'scrolled' : ''}`}>
         <div className="w-full max-w-6xl mx-auto flex items-center justify-between">
-          <div className="brand-wordmark text-[0.98rem] sm:text-[1.08rem]">
+          <div className="brand-wordmark">
             <span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span>
           </div>
           <div className="flex items-center gap-0.5 sm:gap-4">
