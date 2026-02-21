@@ -1158,13 +1158,13 @@
   }
 
   .landing-input-white.landing-input-translucent {
-    background: rgba(255,255,255,0.75) !important;
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    background: rgba(255,255,255,0.34) !important;
+    backdrop-filter: blur(10px) saturate(130%);
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
   }
 
   .landing-input-white.landing-input-translucent:focus {
-    background: rgba(255,255,255,0.75) !important;
+    background: rgba(255,255,255,0.40) !important;
   }
 
   .landing-cta-glow {
