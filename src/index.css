@@ -1210,7 +1210,7 @@
   }
 
   .card-elevated {
-    background: white;
+    background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
     border-radius: 16px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(139,92,246,0.04);
@@ -1783,6 +1783,18 @@
   }
   .theme-classic-dark .post-card .text-foreground {
     color: hsl(210 40% 95%);
+  }
+
+  .theme-classic-dark .card-elevated {
+    background: hsl(215 30% 11%);
+    border-color: hsl(215 20% 17%);
+    color: hsl(210 40% 95%);
+    box-shadow: 0 6px 20px hsl(215 40% 4% / 0.25);
+  }
+
+  .theme-classic-dark .card-elevated:hover {
+    border-color: hsl(200 60% 40%);
+    box-shadow: 0 10px 28px hsl(200 80% 50% / 0.10);
   }
 
   /* Sidebar */
