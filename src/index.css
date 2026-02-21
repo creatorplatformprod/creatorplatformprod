@@ -1157,8 +1157,14 @@
     box-shadow: 0 0 0 3px hsl(239 84% 67% / 0.1);
   }
 
-  .landing-input-white.landing-input-clear {
-    background: transparent;
+  .landing-input-white.landing-input-translucent {
+    background: rgba(255,255,255,0.75) !important;
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+  }
+
+  .landing-input-white.landing-input-translucent:focus {
+    background: rgba(255,255,255,0.75) !important;
   }
 
   .landing-cta-glow {
