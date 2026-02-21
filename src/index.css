@@ -979,7 +979,7 @@
 
   .landing-67-surface {
     position: relative;
-    transform: rotateX(8deg) translateY(-4%);
+    transform: rotateX(8deg) translateX(-5%) translateY(-4%);
     transform-style: preserve-3d;
   }
 
