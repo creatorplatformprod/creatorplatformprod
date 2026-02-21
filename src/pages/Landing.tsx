@@ -144,7 +144,7 @@ const Landing = () => {
       {/* ━━━━━━━━━━ 1. STICKY NAV ━━━━━━━━━━ */}
       <nav className={`landing-nav ${navScrolled ? 'scrolled' : ''}`}>
         <div className="w-full max-w-6xl mx-auto flex items-center justify-between">
-          <div className="brand-wordmark">
+          <div className="brand-wordmark text-[1.02rem] sm:text-[1.14rem]">
             <span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span>
           </div>
           <div className="flex items-center gap-0.5 sm:gap-4">
