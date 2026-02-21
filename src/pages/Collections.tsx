@@ -84,7 +84,6 @@ const Collections = () => {
   const { fan } = useFanAuth();
   const activeFan = isPreviewMode ? null : fan;
   const themeClass = usePublicWebsiteTheme(creatorUsername || undefined);
-  const shouldUseMockCollections = !creatorUsername;
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -308,7 +307,7 @@ const Collections = () => {
       };
     });
   }, [mockPhotos, mockSeed]);
-  const mockCollectionCount = shouldUseMockCollections ? localMockCollections.length : 0;
+  const mockCollectionCount = localMockCollections.length;
 
   const allImages = useMemo(() => {
     const visibleApiCollections = (collectionsData || []).filter(
@@ -347,12 +346,7 @@ const Collections = () => {
       return items;
     }
 
-    // Fallback: mock content is only for non-creator generic collections route.
-    if (!shouldUseMockCollections) {
-      return [];
-    }
-
-    // Generic route fallback: use same seeded pink mock universe as CreatorProfile.
+    // Fallback: use same seeded pink mock universe as CreatorProfile.
     const items: any[] = [];
     localMockCollections.forEach((collection) => {
       collection.images.forEach((mediaItem, index) => {
@@ -369,7 +363,7 @@ const Collections = () => {
       });
     });
     return items;
-  }, [collectionsData, localMockCollections, shouldUseMockCollections]);
+  }, [collectionsData, localMockCollections]);
 
   const collectionCount = collectionsData.length > 0
     ? collectionsData.filter((col: any) => col && col._id !== 'all' && !col.isBundle).length
