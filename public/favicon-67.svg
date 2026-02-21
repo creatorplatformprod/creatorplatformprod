@@ -6,7 +6,7 @@
     </linearGradient>
   </defs>
 
-  <circle cx="32" cy="32" r="31" fill="#FFFFFF" stroke="#8B5CF6" stroke-width="2" />
+  <circle cx="32" cy="32" r="29" fill="#FFFFFF" stroke="url(#sixtySeven)" stroke-width="6" />
   <text
     x="30"
     y="35"
