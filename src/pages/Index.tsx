@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Flame, ChevronRight, ChevronLeft, Sun, Moon, Sparkles, Image, Camera, Heart, Flower2, Zap, Star, Droplet, CloudRain, Music, Palette, Briefcase, BookOpen, Gem, Crown, Target, Coffee, Feather, Eye } from "lucide-react";
 import FeedHeader from "@/components/FeedHeader";
 import PostCard from "@/components/PostCard";
@@ -173,6 +174,7 @@ const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string 
 };
 
 const Index = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showPreloader, setShowPreloader] = useState(true);
@@ -658,7 +660,7 @@ const Index = () => {
                   </div>
                 </div>
                 <button
-                  onClick={() => window.location.href = '/collections'}
+                  onClick={() => navigate('/collections')}
                   className="hidden sm:flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-purple-600 via-indigo-500 to-sky-400 hover:from-purple-500 hover:via-indigo-400 hover:to-sky-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all hover:scale-[1.02]"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -870,7 +872,7 @@ const Index = () => {
                     </p>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                       <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Gallery</button>
-                      <button onClick={() => window.location.href = '/collections'} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Collections</button>
+                      <button onClick={() => navigate('/collections')} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Collections</button>
                       <button className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Privacy</button>
                       <button className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Terms</button>
                     </div>

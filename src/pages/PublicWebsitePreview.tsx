@@ -290,7 +290,7 @@ const PublicWebsitePreview = () => {
   };
 
   return (
-    <div className={`min-h-screen feed-bg ${themeClass}`}>
+    <div className="min-h-screen feed-bg">
       {/* Top Navbar */}
       <nav className="sticky top-0 z-50 nav-elevated">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">

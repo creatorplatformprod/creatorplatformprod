@@ -20,6 +20,15 @@ type FanAccountMenuProps = {
 const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false, darkTheme = false }: FanAccountMenuProps) => {
   const { fan, logoutFan } = useFanAuth();
   const effectiveFan = previewMode ? null : fan;
+  const authIconClass = darkTheme
+    ? "text-blue-500 group-hover:text-blue-400 group-focus-visible:text-blue-400"
+    : "text-blue-500 group-hover:text-blue-400 group-focus-visible:text-blue-400";
+  const authItemIconClass = darkTheme
+    ? "text-blue-500 group-hover:text-blue-400 group-focus:text-blue-400 group-data-[highlighted]:text-blue-400"
+    : "text-blue-500 group-hover:text-blue-400 group-focus:text-blue-400 group-data-[highlighted]:text-blue-400";
+  const authTextClass = darkTheme
+    ? "bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-blue-400 group-focus:from-blue-400 group-focus:to-blue-400 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-blue-400"
+    : "bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-blue-400 group-focus:from-blue-400 group-focus:to-blue-400 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-blue-400";
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -34,7 +43,7 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false, darkTh
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User className="h-4 w-4 text-sky-500 transition-colors group-hover:text-sky-400 group-focus-visible:text-sky-400" />
+            <User className={`h-4 w-4 transition-colors ${authIconClass}`} />
           )}
         </button>
       </DropdownMenuTrigger>
@@ -81,8 +90,8 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false, darkTh
               }
               onSelect={(e) => e.preventDefault()}
             >
-              <LogIn className={`mr-2 h-4 w-4 transition-colors ${darkTheme ? 'text-sky-300 group-hover:text-sky-200 group-focus:text-sky-200 group-data-[highlighted]:text-sky-200' : 'text-sky-500 group-hover:text-sky-400 group-focus:text-sky-400 group-data-[highlighted]:text-sky-400'}`} />
-              <span className={darkTheme ? "text-sky-200 transition-colors group-hover:text-sky-100 group-focus:text-sky-100 group-data-[highlighted]:text-sky-100" : "bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-cyan-300 group-focus:from-blue-400 group-focus:to-cyan-300 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-cyan-300"}>
+              <LogIn className={`mr-2 h-4 w-4 transition-colors ${authItemIconClass}`} />
+              <span className={authTextClass}>
                 Log in or Register (Demo)
               </span>
             </DropdownMenuItem>
@@ -95,8 +104,8 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false, darkTh
               }
               onClick={onOpenAuth}
             >
-              <LogIn className={`mr-2 h-4 w-4 transition-colors ${darkTheme ? 'text-sky-300 group-hover:text-sky-200 group-focus:text-sky-200 group-data-[highlighted]:text-sky-200' : 'text-sky-500 group-hover:text-sky-400 group-focus:text-sky-400 group-data-[highlighted]:text-sky-400'}`} />
-              <span className={darkTheme ? "text-sky-200 transition-colors group-hover:text-sky-100 group-focus:text-sky-100 group-data-[highlighted]:text-sky-100" : "bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-cyan-300 group-focus:from-blue-400 group-focus:to-cyan-300 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-cyan-300"}>
+              <LogIn className={`mr-2 h-4 w-4 transition-colors ${authItemIconClass}`} />
+              <span className={authTextClass}>
                 Log in or Register
               </span>
             </DropdownMenuItem>

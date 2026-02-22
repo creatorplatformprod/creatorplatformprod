@@ -250,6 +250,10 @@
   .post-bg {
     background-color: hsl(var(--post-bg));
   }
+
+  .scrollbar-gutter-balanced {
+    scrollbar-gutter: stable both-edges;
+  }
   
   .like-color {
     color: hsl(var(--like-color));

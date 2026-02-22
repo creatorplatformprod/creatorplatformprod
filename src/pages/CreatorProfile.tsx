@@ -717,7 +717,7 @@ const CreatorProfile = () => {
   }
 
   return (
-    <div className={`min-h-screen feed-bg public-template${templateStyleClass ? ` public-template-${templateStyleClass} template-layout template-layout-${templateStyleClass}` : ''} ${classicDarkClass} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
+    <div className={`min-h-screen feed-bg scrollbar-gutter-balanced public-template${templateStyleClass ? ` public-template-${templateStyleClass} template-layout template-layout-${templateStyleClass}` : ''} ${classicDarkClass} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
       {/* Full Width Navbar - Always on top */}
       <FeedHeader 
         onSearch={handleSearch} 
@@ -819,10 +819,12 @@ const CreatorProfile = () => {
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
                 className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto md:mr-8 lg:mr-10 self-center md:self-center text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-foreground transition-all"
               >
-                <span
-                  className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"
-                  style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
-                />
+                {!useClassicTheme && (
+                  <span
+                    className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"
+                    style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
+                  />
+                )}
                 <span className="relative unlock-cta-brand-gradient">Unlock Everything</span>
               </button>
             )}
@@ -1131,7 +1133,7 @@ const CreatorProfile = () => {
                 </p>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
                   <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Gallery</button>
-                  <button onClick={() => window.location.href = `/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Collections</button>
+                  <button onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)} className="hover:text-foreground transition-colors bg-transparent border-none cursor-pointer">Collections</button>
                 </div>
               </div>
             </footer>
