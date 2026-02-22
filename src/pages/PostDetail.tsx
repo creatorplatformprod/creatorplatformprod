@@ -70,6 +70,7 @@ const PostDetail = () => {
   const [remoteLoading, setRemoteLoading] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
   const themeClass = usePublicWebsiteTheme(creatorParam || undefined);
+  const isDarkTheme = themeClass === 'theme-classic-dark';
   const mockSeed = useMemo(() => hashString((creatorParam || 'creator').toLowerCase()), [creatorParam]);
   const mockPhotos = useMemo(
     () => seededShuffle(PINK_LEMONADE_IMAGE_IDS.map((imgId) => pexelsImageUrl(imgId, 1600)), mockSeed + 77),
@@ -490,7 +491,11 @@ const PostDetail = () => {
               onClick={handleBackNavigation} 
               variant="ghost" 
               size="sm"
-              className="hover:bg-secondary"
+              className={
+                isDarkTheme
+                  ? "text-foreground border border-border bg-secondary/55 hover:bg-secondary/80"
+                  : "hover:bg-secondary"
+              }
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
@@ -509,7 +514,11 @@ const PostDetail = () => {
                   navigator.clipboard.writeText(window.location.href);
                 }
               }}
-              className="p-2 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-all"
+              className={
+                isDarkTheme
+                  ? "p-2 rounded-lg bg-secondary/55 border border-border hover:bg-secondary/80 transition-all"
+                  : "p-2 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-all"
+              }
               title="Share"
             >
               <svg className="w-3.5 h-3.5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>

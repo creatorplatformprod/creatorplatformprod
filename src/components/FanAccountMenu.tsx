@@ -14,9 +14,10 @@ type FanAccountMenuProps = {
   onOpenAuth: () => void;
   align?: "start" | "end";
   previewMode?: boolean;
+  darkTheme?: boolean;
 };
 
-const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanAccountMenuProps) => {
+const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false, darkTheme = false }: FanAccountMenuProps) => {
   const { fan, logoutFan } = useFanAuth();
   const effectiveFan = previewMode ? null : fan;
   return (
@@ -37,7 +38,14 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
           )}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={align} className="w-56 border-white/15 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
+      <DropdownMenuContent
+        align={align}
+        className={
+          darkTheme
+            ? "w-56 border-slate-700/70 bg-slate-950/95 text-slate-100 backdrop-blur supports-[backdrop-filter]:bg-slate-950/85"
+            : "w-56 border-white/15 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85"
+        }
+      >
         {effectiveFan ? (
           <>
             <DropdownMenuLabel className="px-2 py-1.5 text-xs text-muted-foreground">
@@ -66,21 +74,29 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false }: FanA
         ) : (
           previewMode ? (
             <DropdownMenuItem
-              className="group cursor-default hover:bg-sky-500/10 focus:bg-sky-500/10 data-[highlighted]:bg-sky-500/10"
+              className={
+                darkTheme
+                  ? "group cursor-default bg-transparent text-slate-200 hover:bg-sky-500/15 focus:bg-sky-500/15 data-[highlighted]:bg-sky-500/15"
+                  : "group cursor-default hover:bg-sky-500/10 focus:bg-sky-500/10 data-[highlighted]:bg-sky-500/10"
+              }
               onSelect={(e) => e.preventDefault()}
             >
-              <LogIn className="mr-2 h-4 w-4 text-sky-500 transition-colors group-hover:text-sky-400 group-focus:text-sky-400 group-data-[highlighted]:text-sky-400" />
-              <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-cyan-300 group-focus:from-blue-400 group-focus:to-cyan-300 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-cyan-300">
+              <LogIn className={`mr-2 h-4 w-4 transition-colors ${darkTheme ? 'text-sky-300 group-hover:text-sky-200 group-focus:text-sky-200 group-data-[highlighted]:text-sky-200' : 'text-sky-500 group-hover:text-sky-400 group-focus:text-sky-400 group-data-[highlighted]:text-sky-400'}`} />
+              <span className={darkTheme ? "text-sky-200 transition-colors group-hover:text-sky-100 group-focus:text-sky-100 group-data-[highlighted]:text-sky-100" : "bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-cyan-300 group-focus:from-blue-400 group-focus:to-cyan-300 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-cyan-300"}>
                 Log in or Register (Demo)
               </span>
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
-              className="group hover:bg-sky-500/10 focus:bg-sky-500/10 data-[highlighted]:bg-sky-500/10"
+              className={
+                darkTheme
+                  ? "group bg-transparent text-slate-200 hover:bg-sky-500/15 focus:bg-sky-500/15 data-[highlighted]:bg-sky-500/15"
+                  : "group hover:bg-sky-500/10 focus:bg-sky-500/10 data-[highlighted]:bg-sky-500/10"
+              }
               onClick={onOpenAuth}
             >
-              <LogIn className="mr-2 h-4 w-4 text-sky-500 transition-colors group-hover:text-sky-400 group-focus:text-sky-400 group-data-[highlighted]:text-sky-400" />
-              <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-cyan-300 group-focus:from-blue-400 group-focus:to-cyan-300 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-cyan-300">
+              <LogIn className={`mr-2 h-4 w-4 transition-colors ${darkTheme ? 'text-sky-300 group-hover:text-sky-200 group-focus:text-sky-200 group-data-[highlighted]:text-sky-200' : 'text-sky-500 group-hover:text-sky-400 group-focus:text-sky-400 group-data-[highlighted]:text-sky-400'}`} />
+              <span className={darkTheme ? "text-sky-200 transition-colors group-hover:text-sky-100 group-focus:text-sky-100 group-data-[highlighted]:text-sky-100" : "bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-cyan-300 group-focus:from-blue-400 group-focus:to-cyan-300 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-cyan-300"}>
                 Log in or Register
               </span>
             </DropdownMenuItem>

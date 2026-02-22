@@ -588,7 +588,11 @@ const Collections = () => {
                 Reveal Content
               </button>
             )}
-            <FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} previewMode={isPreviewMode} />
+            <FanAccountMenu
+              onOpenAuth={() => setShowFanAuthModal(true)}
+              previewMode={isPreviewMode}
+              darkTheme={themeClass === 'theme-classic-dark'}
+            />
           </div>
 
           <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[60] flex flex-col items-center">
@@ -829,6 +833,7 @@ const Collections = () => {
               <FanAuthModal
                 open={showFanAuthModal}
                 onClose={() => setShowFanAuthModal(false)}
+                darkTheme={themeClass === 'theme-classic-dark'}
               />
             )}
           </main>

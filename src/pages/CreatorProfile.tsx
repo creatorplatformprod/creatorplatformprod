@@ -724,7 +724,13 @@ const CreatorProfile = () => {
         onLogoClick={() => setSidebarOpen(!sidebarOpen)} 
         sidebarOpen={sidebarOpen} 
         title={creatorData?.displayName || creatorData?.username || "Creator"}
-        rightSlot={<FanAccountMenu onOpenAuth={() => setShowFanAuthModal(true)} previewMode={isPreviewMode} />}
+        rightSlot={
+          <FanAccountMenu
+            onOpenAuth={() => setShowFanAuthModal(true)}
+            previewMode={isPreviewMode}
+            darkTheme={useClassicTheme}
+          />
+        }
       />
 
       {/* Profile Hero Section */}
@@ -1137,6 +1143,7 @@ const CreatorProfile = () => {
         <FanAuthModal
           open={showFanAuthModal}
           onClose={() => setShowFanAuthModal(false)}
+          darkTheme={useClassicTheme}
         />
       )}
     </div>

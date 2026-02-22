@@ -165,10 +165,12 @@ const Collections1849929295832448 = () => {
     };
 
     verifyAndLoad();
-    document.documentElement.classList.add('dark');
+    // Keep white theme as default; never force global dark mode from this page.
+    document.documentElement.classList.remove('dark');
     document.documentElement.classList.add('no-bounce');
     document.body.classList.add('no-bounce');
     return () => {
+      document.documentElement.classList.remove('dark');
       document.documentElement.classList.remove('no-bounce');
       document.body.classList.remove('no-bounce');
     };

@@ -7,9 +7,10 @@ import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
 type FanAuthModalProps = {
   open: boolean;
   onClose: () => void;
+  darkTheme?: boolean;
 };
 
-const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
+const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) => {
   const { loginFan, registerFan, setGuestMode } = useFanAuth();
   const skyUserColor = "#6366f1";
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -45,13 +46,19 @@ const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[120] bg-black/30 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[120] bg-black/35 backdrop-blur-sm">
       <button
         onClick={onClose}
         className="absolute inset-0 w-full h-full cursor-default"
         aria-label="Close auth modal background"
       />
-      <div className="absolute bottom-0 left-0 right-0 mx-auto w-full max-w-2xl rounded-t-3xl border border-gray-200 bg-white p-5 sm:p-6 shadow-2xl">
+      <div
+        className={`absolute bottom-0 left-0 right-0 mx-auto w-full max-w-2xl rounded-t-3xl p-5 sm:p-6 shadow-2xl ${
+          darkTheme
+            ? "border-slate-700 bg-slate-950 text-slate-100"
+            : "border-gray-200 bg-white"
+        }`}
+      >
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
             <p className="text-sm font-semibold text-foreground">Welcome</p>
@@ -61,23 +68,25 @@ const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
           </div>
           <button
             onClick={onClose}
-            className="rounded-full p-1.5 text-muted-foreground hover:bg-gray-100 hover:text-foreground"
+            className={`rounded-full p-1.5 text-muted-foreground hover:text-foreground ${
+              darkTheme ? "hover:bg-slate-800" : "hover:bg-gray-100"
+            }`}
             aria-label="Close auth modal"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="mb-3 grid grid-cols-2 rounded-xl bg-gray-50 p-1">
+        <div className={`mb-3 grid grid-cols-2 rounded-xl p-1 ${darkTheme ? "bg-slate-900 border border-slate-800" : "bg-gray-50"}`}>
           <button
             onClick={() => setMode("login")}
-            className={`rounded-lg px-3 py-2 text-xs font-medium ${mode === "login" ? "bg-gray-100 text-foreground" : "text-muted-foreground"}`}
+            className={`rounded-lg px-3 py-2 text-xs font-medium ${mode === "login" ? (darkTheme ? "bg-slate-800 text-foreground" : "bg-gray-100 text-foreground") : "text-muted-foreground"}`}
           >
             Log In
           </button>
           <button
             onClick={() => setMode("register")}
-            className={`rounded-lg px-3 py-2 text-xs font-medium ${mode === "register" ? "bg-gray-100 text-foreground" : "text-muted-foreground"}`}
+            className={`rounded-lg px-3 py-2 text-xs font-medium ${mode === "register" ? (darkTheme ? "bg-slate-800 text-foreground" : "bg-gray-100 text-foreground") : "text-muted-foreground"}`}
           >
             Register
           </button>
@@ -85,7 +94,11 @@ const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
 
         <button
           onClick={() => api.fanGoogleAuth(returnTo)}
-          className="mb-4 flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-gray-100"
+          className={`mb-4 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-foreground ${
+            darkTheme
+              ? "border border-slate-700 bg-slate-900 hover:bg-slate-800"
+              : "border border-gray-200 bg-gray-50 hover:bg-gray-100"
+          }`}
         >
           <Chrome className="h-4 w-4" />
           Continue With Google
@@ -94,10 +107,10 @@ const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
         {mode === "register" && (
           <label className="mb-2 block text-xs text-muted-foreground">
             Display Name
-            <div className="mt-1 flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5">
+            <div className={`mt-1 flex items-center gap-2 rounded-xl px-3 py-2.5 ${darkTheme ? "border border-slate-700 bg-slate-900" : "border border-gray-200 bg-gray-50"}`}>
               <User className="h-4 w-4" style={{ color: skyUserColor }} />
               <input
-                className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-gray-400"
+                className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
                 placeholder="Your name"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
@@ -108,11 +121,11 @@ const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
 
         <label className="mb-2 block text-xs text-muted-foreground">
           Email
-          <div className="mt-1 flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5">
+          <div className={`mt-1 flex items-center gap-2 rounded-xl px-3 py-2.5 ${darkTheme ? "border border-slate-700 bg-slate-900" : "border border-gray-200 bg-gray-50"}`}>
             <Mail className="h-4 w-4 text-muted-foreground" />
             <input
               type="email"
-              className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-gray-400"
+              className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
               placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -122,11 +135,11 @@ const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
 
         <label className="mb-3 block text-xs text-muted-foreground">
           Password
-          <div className="mt-1 flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5">
+          <div className={`mt-1 flex items-center gap-2 rounded-xl px-3 py-2.5 ${darkTheme ? "border border-slate-700 bg-slate-900" : "border border-gray-200 bg-gray-50"}`}>
             <Lock className="h-4 w-4 text-muted-foreground" />
             <input
               type="password"
-              className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-gray-400"
+              className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
               placeholder="At least 8 chars"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -149,7 +162,11 @@ const FanAuthModal = ({ open, onClose }: FanAuthModalProps) => {
               setGuestMode(true);
               onClose();
             }}
-            className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-gray-100"
+            className={`rounded-xl px-4 py-2.5 text-sm font-semibold text-foreground ${
+              darkTheme
+                ? "border border-slate-700 bg-slate-900 hover:bg-slate-800"
+                : "border border-gray-200 bg-gray-50 hover:bg-gray-100"
+            }`}
           >
             Continue As Guest
           </button>

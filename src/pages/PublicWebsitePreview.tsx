@@ -50,6 +50,7 @@ const PublicWebsitePreview = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
   useFeedbackToasts({ success: publishSuccess, error: publishError });
   const themeClass = usePublicWebsiteTheme(username || undefined);
+  const isDarkPreviewTheme = themeClass === 'theme-classic-dark';
   const desktopIframeRef = useRef<HTMLIFrameElement | null>(null);
   const mobileIframeRef = useRef<HTMLIFrameElement | null>(null);
   const desktopTouchYRef = useRef<number | null>(null);
@@ -420,16 +421,16 @@ const PublicWebsitePreview = () => {
                 <div className="bg-gradient-to-b from-[#2d2d2d] to-[#1a1a1a] rounded-[20px] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)]">
                   <div className="rounded-[14px] overflow-hidden">
                     {/* Browser Chrome */}
-                    <div className="browser-chrome">
+                    <div className={`browser-chrome ${isDarkPreviewTheme ? 'bg-black border-slate-800' : ''}`}>
                       <div className="browser-dots">
                         <div className="browser-dot bg-[#ff5f57]" />
                         <div className="browser-dot bg-[#febc2e]" />
                         <div className="browser-dot bg-[#28c840]" />
                       </div>
                       <div className="flex-1 flex justify-center">
-                        <div className="browser-url-bar max-w-sm">
+                        <div className={`browser-url-bar max-w-sm ${isDarkPreviewTheme ? 'bg-slate-900 border-slate-700' : ''}`}>
                           <svg className="w-3 h-3 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                          <span className="text-[10px] text-muted-foreground truncate">sixsevencreator.com/{username}</span>
+                          <span className={`text-[10px] truncate ${isDarkPreviewTheme ? 'text-slate-300' : 'text-muted-foreground'}`}>sixsevencreator.com/{username}</span>
                         </div>
                       </div>
                     </div>
