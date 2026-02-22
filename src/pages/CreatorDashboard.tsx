@@ -2201,12 +2201,12 @@ const CreatorDashboard = () => {
           {/* Nav items */}
           <nav className="flex-1 px-2 py-3 space-y-0.5">
             {[
+              { key: 'overview' as const, icon: Home, label: 'Overview' },
               { key: 'profile' as const, icon: Settings, label: 'Profile Data' },
               { key: 'unlock' as const, icon: Unlock, label: 'Unlock Everything' },
               { key: 'collections' as const, icon: Image, label: 'Collections' },
               { key: 'status-cards' as const, icon: MessageSquare, label: 'Post Cards' },
               { key: 'analytics' as const, icon: BarChart3, label: 'Analytics' },
-              { key: 'overview' as const, icon: Home, label: 'Overview' },
             ].map(item => (
               <button
                 key={item.key}
@@ -2244,12 +2244,12 @@ const CreatorDashboard = () => {
           <div className="creator-mobile-tabs lg:hidden sticky top-[52px] z-40 bg-white backdrop-blur-xl border-b border-gray-200">
             <div className="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {[
+                { key: 'overview' as const, icon: Home, label: 'Overview' },
                 { key: 'profile' as const, icon: Settings, label: 'Profile Data' },
                 { key: 'unlock' as const, icon: Unlock, label: 'Unlock' },
                 { key: 'collections' as const, icon: Image, label: 'Collections' },
                 { key: 'status-cards' as const, icon: MessageSquare, label: 'Post Cards' },
                 { key: 'analytics' as const, icon: BarChart3, label: 'Analytics' },
-                { key: 'overview' as const, icon: Home, label: 'Overview' },
               ].map(item => (
                 <button
                   key={item.key}
