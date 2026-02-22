@@ -637,10 +637,10 @@ const CreatorProfile = () => {
 
   const THEME_KEY = `siteTheme:${username}`;
   const [useClassicTheme, setUseClassicTheme] = useState(() => {
-    if (typeof window === 'undefined') return true;
+    if (typeof window === 'undefined') return false;
     const saved = localStorage.getItem(THEME_KEY);
     if (saved !== null) return saved === 'classic';
-    return true;
+    return false;
   });
 
   useEffect(() => {
