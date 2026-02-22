@@ -246,7 +246,7 @@ const PostDetailBlurred = () => {
           timestamp: collectionResult.collection.createdAt
             ? new Date(collectionResult.collection.createdAt).toLocaleDateString()
             : 'Recently',
-          price: collectionResult.collection.price || 4.99,
+          price: collectionResult.collection.price ?? 4.99,
           creatorId: creatorId || ''
         };
 
@@ -280,7 +280,7 @@ const PostDetailBlurred = () => {
               timestamp: ownCollection.createdAt
                 ? new Date(ownCollection.createdAt).toLocaleDateString()
                 : 'Recently',
-              price: ownCollection.price || 4.99,
+              price: ownCollection.price ?? 4.99,
               creatorId: ownCollection.creatorId || me.user?._id || ''
             });
             return;
@@ -314,7 +314,7 @@ const PostDetailBlurred = () => {
               timestamp: ownCollection.createdAt
                 ? new Date(ownCollection.createdAt).toLocaleDateString()
                 : 'Recently',
-              price: ownCollection.price || 4.99,
+              price: ownCollection.price ?? 4.99,
               creatorId: ownCollection.creatorId || me?.user?._id || ''
             });
             return;
@@ -395,8 +395,9 @@ const PostDetailBlurred = () => {
     return images.slice(0, Math.min(revealedCount, images.length));
   }, [collection, revealedCount]);
   
-  // Get the price for this collection (default to 4.99 if no price set)
-  const collectionPrice = collection?.price || 4.99;
+  // Preserve explicit 0 pricing; only fall back when price is missing/invalid.
+  const parsedCollectionPrice = Number(collection?.price);
+  const collectionPrice = Number.isFinite(parsedCollectionPrice) ? parsedCollectionPrice : 4.99;
   const formattedPrice = `$${collectionPrice.toFixed(2)}`;
 
   const getRandomDimensions = (index: number) => {
@@ -548,7 +549,7 @@ const PostDetailBlurred = () => {
       (creatorParam ? `&creator=${encodeURIComponent(creatorParam)}` : '') +
       (isPreviewMode ? '&mode=preview' : '');
 
-    window.location.href = checkoutUrl;
+    navigate(checkoutUrl);
   };
 
   const handleUnlockClick = () => {
@@ -726,8 +727,8 @@ const PostDetailBlurred = () => {
                 <div>
                   <h3 className="font-semibold text-foreground mb-4">Explore</h3>
                   <ul className="space-y-2 text-sm">
-                    <li onClick={() => window.location.href = '/'}><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Gallery</a></li>
-                    <li onClick={() => window.location.href = '/collections'}><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Collections</a></li>
+                    <li onClick={() => navigate(creatorParam ? `/public/${creatorParam}${isPreviewMode ? '?mode=preview' : ''}` : '/')}><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Gallery</a></li>
+                    <li onClick={() => navigate(creatorParam ? `/collections?creator=${encodeURIComponent(creatorParam)}${isPreviewMode ? '&mode=preview' : ''}` : '/collections')}><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Collections</a></li>
                   </ul>
                 </div>
 
@@ -849,7 +850,7 @@ const PostDetailBlurred = () => {
                 type="button"
                 onClick={() => {
                   const creatorQuery = creatorParam ? `?creator=${encodeURIComponent(creatorParam)}` : '';
-                  window.location.href = `/recover-access${creatorQuery}`;
+                  navigate(`/recover-access${creatorQuery}`);
                 }}
                 className="mt-2 text-[11px] text-white underline underline-offset-2 bg-transparent border-none cursor-pointer"
               >

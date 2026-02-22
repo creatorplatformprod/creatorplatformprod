@@ -78,6 +78,13 @@ const createEmptyCollectionForm = () => ({
   cardTemplate: DEFAULT_COLLECTION_TEMPLATE as CollectionCardTemplate,
   previewImages: DEFAULT_COLLECTION_PREVIEW_COUNT
 });
+const createEmptyPostCardForm = () => ({
+  text: '',
+  imageUrl: '',
+  mediaUrls: [] as string[],
+  isLocked: false,
+  order: 0
+});
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
@@ -377,13 +384,7 @@ const CreatorDashboard = () => {
   };
 
   // Status card form state
-  const [statusCardForm, setStatusCardForm] = useState({
-    text: '',
-    imageUrl: '',
-    mediaUrls: [] as string[],
-    isLocked: false,
-    order: 0
-  });
+  const [statusCardForm, setStatusCardForm] = useState(createEmptyPostCardForm());
 
   // Collection form state
   const [collectionForm, setCollectionForm] = useState(createEmptyCollectionForm());
@@ -1020,6 +1021,33 @@ const CreatorDashboard = () => {
     markPublicWebsiteDirty();
   };
 
+  const persistProfileDraftSnapshotFrom = (nextProfileData: typeof profileData) => {
+    if (!user?.username) return;
+    const key = getProfileDraftKey(user.username);
+    if (!key) return;
+    const snapshot: any = {
+      ...nextProfileData,
+      telegramUsername: String(nextProfileData.telegramUsername || '').trim().replace(/^@/, '')
+    };
+    if (!telegramAlertsEnabled) {
+      snapshot.telegramBotToken = '';
+      snapshot.telegramChatId = '';
+    } else if (telegramBotTokenConfigured && !isEditingTelegramToken && !String(snapshot.telegramBotToken || '').trim()) {
+      delete snapshot.telegramBotToken;
+    }
+    if (typeof snapshot.avatar === 'string' && snapshot.avatar.trim() === '' && user?.avatar) {
+      snapshot.avatar = user.avatar;
+    }
+    if (typeof snapshot.coverImage === 'string' && snapshot.coverImage.trim() === '' && user?.coverImage) {
+      snapshot.coverImage = user.coverImage;
+    }
+    localStorage.setItem(key, JSON.stringify(snapshot));
+    profileBaselineRef.current = serializeForDirtyCheck(nextProfileData);
+    setIsProfileDirty(false);
+    setProfileAutoSaveState('saved');
+    markPublicWebsiteDirty();
+  };
+
   const handleUpdateWebsite = async () => {
     if (!user?.username) return false;
     setLoading(true);
@@ -1087,7 +1115,9 @@ const CreatorDashboard = () => {
       );
       const uploadResult = await api.uploadFile(editedAvatar);
       if (uploadResult?.url) {
-        setProfileData({ ...profileData, avatar: uploadResult.url });
+        const nextProfileData = { ...profileData, avatar: uploadResult.url };
+        setProfileData(nextProfileData);
+        persistProfileDraftSnapshotFrom(nextProfileData);
         setAvatarFile(null);
         setAvatarDimensions(null);
         setAvatarEditor(createDefaultCropEditorState());
@@ -1121,6 +1151,25 @@ const CreatorDashboard = () => {
     }];
   };
 
+  const buildStatusCardPayload = (form = statusCardForm) => ({
+    text: String(form.text || ''),
+    imageUrl: form.mediaUrls[0] || '',
+    media: (form.mediaUrls || []).map((url: string) => ({
+      url,
+      thumbnailUrl: url,
+      mediaType: isVideoMedia({ url }) ? 'video' : 'image'
+    })),
+    isLocked: !!form.isLocked,
+    order: Number.isFinite(Number(form.order)) ? Number(form.order) : 0
+  });
+
+  const extractStatusCardId = (result: any) =>
+    result?.statusCard?._id ||
+    result?.statusCard?.id ||
+    result?.id ||
+    result?.statusCardId ||
+    '';
+
   const handleSavePostCard = async () => {
     if (!statusCardForm.text.trim() && statusCardForm.mediaUrls.length === 0) {
       setError('Add text or media before saving');
@@ -1130,31 +1179,22 @@ const CreatorDashboard = () => {
       setLoading(true);
       setError('');
       setSuccess('');
-      const payload = {
-        text: statusCardForm.text,
-        imageUrl: statusCardForm.mediaUrls[0] || '',
-        media: statusCardForm.mediaUrls.map((url) => ({
-          url,
-          thumbnailUrl: url,
-          mediaType: isVideoMedia({ url }) ? 'video' : 'image'
-        })),
-        isLocked: statusCardForm.isLocked,
-        order: statusCardForm.order
-      };
+      const payload = buildStatusCardPayload(statusCardForm);
       const result = selectedPostCardId
         ? await api.updateStatusCard(selectedPostCardId, payload)
         : await api.createStatusCard(payload);
       if (result.success) {
+        const persistedId = selectedPostCardId || extractStatusCardId(result);
         setSuccess(selectedPostCardId ? 'Post card updated.' : 'Post card created.');
         markPublicWebsiteDirty();
-        const resetPostCard = { text: '', imageUrl: '', mediaUrls: [] as string[], isLocked: false, order: 0 };
-        setStatusCardForm(resetPostCard);
-        postCardBaselineRef.current = serializeForDirtyCheck(resetPostCard);
+        postCardBaselineRef.current = serializeForDirtyCheck(statusCardForm);
         setIsPostCardDirty(false);
         setStatusCardFiles([]);
         setStatusCardPreviews([]);
         setStatusCardMediaInput('');
-        setSelectedPostCardId('');
+        if (persistedId) {
+          setSelectedPostCardId(persistedId);
+        }
         await loadUserData();
       } else {
         setError(result.error || 'Failed to save post card');
@@ -1180,7 +1220,9 @@ const CreatorDashboard = () => {
       );
       const uploadResult = await api.uploadFile(editedCover);
       if (uploadResult?.url) {
-        setProfileData({ ...profileData, coverImage: uploadResult.url });
+        const nextProfileData = { ...profileData, coverImage: uploadResult.url };
+        setProfileData(nextProfileData);
+        persistProfileDraftSnapshotFrom(nextProfileData);
         setCoverImageFile(null);
         setCoverDimensions(null);
         setCoverEditor(createDefaultCropEditorState());
@@ -1231,7 +1273,7 @@ const CreatorDashboard = () => {
         setSuccess('Post card deleted.');
         markPublicWebsiteDirty();
         if (selectedPostCardId === cardId) {
-          const resetPostCard = { text: '', imageUrl: '', mediaUrls: [] as string[], isLocked: false, order: 0 };
+          const resetPostCard = createEmptyPostCardForm();
           setSelectedPostCardId('');
           setStatusCardForm(resetPostCard);
           postCardBaselineRef.current = serializeForDirtyCheck(resetPostCard);
@@ -1331,17 +1373,44 @@ const CreatorDashboard = () => {
         }
         uploadedUrls.push(uploadResult.url);
       }
-      setStatusCardForm((prev) => {
-        const nextMediaUrls = [...prev.mediaUrls, ...uploadedUrls].filter(Boolean);
-        return {
-          ...prev,
-          imageUrl: nextMediaUrls[0] || '',
-          mediaUrls: nextMediaUrls
-        };
-      });
+      const nextForm = {
+        ...statusCardForm,
+        mediaUrls: [...statusCardForm.mediaUrls, ...uploadedUrls].filter(Boolean)
+      };
+      nextForm.imageUrl = nextForm.mediaUrls[0] || '';
+
+      // Collections-like workflow: Upload Media persists immediately (create/update) instead of waiting for a separate save.
+      const shouldCreate = !selectedPostCardId;
+      const payload = buildStatusCardPayload(nextForm);
+      const nextOrder = statusCards.length;
+      if (shouldCreate) {
+        payload.order = Number.isFinite(Number(statusCardForm.order)) && Number(statusCardForm.order) > 0
+          ? Number(statusCardForm.order)
+          : nextOrder;
+      }
+
+      const persistResult = shouldCreate
+        ? await api.createStatusCard(payload)
+        : await api.updateStatusCard(selectedPostCardId, payload);
+
+      if (!persistResult?.success) {
+        throw new Error(persistResult?.error || 'Failed to save post card after upload');
+      }
+
+      const persistedId = shouldCreate ? extractStatusCardId(persistResult) : selectedPostCardId;
+      setStatusCardForm(nextForm);
+      postCardBaselineRef.current = serializeForDirtyCheck(nextForm);
+      setIsPostCardDirty(false);
+      if (persistedId) setSelectedPostCardId(persistedId);
       setStatusCardFiles([]);
       setStatusCardPreviews([]);
-      setSuccess(`Uploaded ${uploadedUrls.length} media item${uploadedUrls.length === 1 ? '' : 's'}. You can now save the post card.`);
+      setSuccess(
+        shouldCreate
+          ? `Created post card and uploaded ${uploadedUrls.length} media item${uploadedUrls.length === 1 ? '' : 's'}.`
+          : `Uploaded ${uploadedUrls.length} media item${uploadedUrls.length === 1 ? '' : 's'} and saved post card.`
+      );
+      markPublicWebsiteDirty();
+      await loadUserData();
     } catch (err: any) {
       setError(err.message || 'Upload failed');
     } finally {
@@ -1791,6 +1860,28 @@ const CreatorDashboard = () => {
 
     return [...uploadedMedia, ...pendingMedia].filter((media) => !!media.url);
   }, [selectedCollection?.media, collectionPreviews]);
+
+  const postCardEditorMedia = useMemo(() => {
+    const formMedia = (statusCardForm.mediaUrls || []).map((url) => ({
+      url,
+      thumbnailUrl: url,
+      mediaType: isVideoMedia({ url }) ? 'video' : 'image'
+    }));
+
+    const pendingMedia = statusCardPreviews.map((preview) => ({
+      url: preview.url,
+      thumbnailUrl: preview.url,
+      mediaType: preview.file.type.startsWith('video/') ? 'video' : 'image'
+    }));
+
+    const deduped = [...formMedia, ...pendingMedia].filter((media) => !!media.url);
+    const seen = new Set<string>();
+    return deduped.filter((media) => {
+      if (seen.has(media.url)) return false;
+      seen.add(media.url);
+      return true;
+    });
+  }, [statusCardForm.mediaUrls, statusCardPreviews]);
 
   const templateMeta =
     COLLECTION_CARD_TEMPLATES[collectionForm.cardTemplate] || COLLECTION_CARD_TEMPLATES[DEFAULT_COLLECTION_TEMPLATE];
@@ -3105,7 +3196,7 @@ const CreatorDashboard = () => {
                 type="button"
                 className="w-full dash-btn-secondary"
                 onClick={() => {
-                  const resetPostCard = { text: '', imageUrl: '', mediaUrls: [] as string[], isLocked: false, order: 0 };
+                  const resetPostCard = createEmptyPostCardForm();
                   setSelectedPostCardId('');
                   setStatusCardForm(resetPostCard);
                   postCardBaselineRef.current = serializeForDirtyCheck(resetPostCard);
@@ -3163,7 +3254,11 @@ const CreatorDashboard = () => {
                                 {card.text || 'Untitled post card'}
                               </h4>
                               <p className="text-[11px] text-muted-foreground mt-0.5">
-                                {cardMediaItems.length > 0 ? `${cardMediaItems.length} media` : 'Text only'} {card.isLocked ? 'â€¢ Locked' : ''} â€¢ Order {Number.isFinite(Number(card.order)) ? Number(card.order) : 0}
+                                {[
+                                  cardMediaItems.length > 0 ? `${cardMediaItems.length} media` : 'Text only',
+                                  card.isLocked ? 'Locked' : null,
+                                  `Order ${Number.isFinite(Number(card.order)) ? Number(card.order) : 0}`
+                                ].filter(Boolean).join(' - ')}
                               </p>
                               {firstMedia?.url && (
                                 <div className="mt-2 h-14 w-24 overflow-hidden rounded-md border border-border bg-muted/20">
@@ -3336,6 +3431,66 @@ const CreatorDashboard = () => {
                 </div>
               </div>
 
+              <div className="border border-border rounded-lg p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-medium text-muted-foreground">Live Post Card Preview</div>
+                  <div className="text-[11px] text-muted-foreground">
+                    {postCardEditorMedia.length} media {postCardEditorMedia.length === 1 ? 'item' : 'items'}
+                  </div>
+                </div>
+                <div className="post-card rounded-xl overflow-hidden bg-post-bg border border-border">
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-semibold text-primary">
+                          {(profileData.displayName || user?.username || 'C').slice(0, 1).toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold text-foreground truncate">
+                            {profileData.displayName || user?.username || 'Your Name'}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {selectedPostCardId ? 'Previewing selected card' : 'Draft preview'}
+                          </div>
+                        </div>
+                      </div>
+                      {statusCardForm.isLocked && (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary/70 px-2 py-1 text-[10px] text-muted-foreground">
+                          <Lock className="w-3 h-3" />
+                          Locked
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="text-sm text-foreground whitespace-pre-wrap break-words min-h-[2.5rem]">
+                      {statusCardForm.text?.trim() || 'Your post text will appear here...'}
+                    </p>
+
+                    {postCardEditorMedia.length > 0 && (
+                      <div className="mt-3 grid grid-cols-2 gap-2">
+                        {postCardEditorMedia.slice(0, 4).map((media: any, idx: number) => {
+                          const src = getMediaSrcCandidates(media.thumbnailUrl || media.url)[0] || media.url;
+                          const isVideo = String(media.mediaType).includes('video');
+                          return (
+                            <div key={`${media.url}-${idx}`} className="relative h-24 rounded-md overflow-hidden border border-border bg-muted/20">
+                              {isVideo ? (
+                                <video src={src} className="h-full w-full object-cover" muted preload="metadata" />
+                              ) : (
+                                <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3 border-t border-border bg-post-bg flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{statusCardForm.isLocked ? 'Premium post card' : 'Public post card'}</span>
+                    <span>Order {Number.isFinite(Number(statusCardForm.order)) ? Number(statusCardForm.order) : 0}</span>
+                  </div>
+                </div>
+              </div>
+
               <div className="dashboard-sticky-action-bar flex flex-wrap items-center gap-2">
                 <Button onClick={handleSavePostCard} className="dash-btn-primary">
                   <Save className="w-4 h-4 mr-2" />
@@ -3389,7 +3544,7 @@ const CreatorDashboard = () => {
                       disabled={uploadingStatusCardMedia || statusCardFiles.length === 0}
                       className="w-full dash-btn-primary"
                     >
-                      {uploadingStatusCardMedia ? 'Uploading...' : 'Upload Media'}
+                      {uploadingStatusCardMedia ? 'Uploading...' : (selectedPostCardId ? 'Upload + Save' : 'Create + Upload')}
                     </Button>
                   </div>
 
@@ -3508,7 +3663,7 @@ const CreatorDashboard = () => {
                             <div className="min-w-0">
                               <h4 className="text-sm font-semibold text-foreground truncate">{collection.title}</h4>
                               <p className="text-[11px] text-muted-foreground mt-0.5">
-                                {(collection.media?.length || 0)} items â€¢ ${Number(collection.price || 0).toFixed(2)} {collection.currency || 'USD'}
+                                {(collection.media?.length || 0)} items - ${Number(collection.price || 0).toFixed(2)} {collection.currency || 'USD'}
                               </p>
                               {showcaseItems.length > 0 && (
                                 <div className="mt-2 flex items-center gap-1.5">
@@ -4267,7 +4422,7 @@ const CreatorDashboard = () => {
                         <div>
                           <p className="text-sm text-muted-foreground">Date</p>
                           <p className="text-sm text-foreground font-medium">
-                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : 'Ã¢â‚¬â€'}
+                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : '-'}
                           </p>
                         </div>
                         <span className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -4295,7 +4450,7 @@ const CreatorDashboard = () => {
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <p className="text-sm text-muted-foreground">Buyer</p>
-                          <p className="text-sm text-foreground font-medium">{sale.emailMasked || 'Ã¢â‚¬â€'}</p>
+                          <p className="text-sm text-foreground font-medium">{sale.emailMasked || '-'}</p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">Order</p>
@@ -4331,7 +4486,7 @@ const CreatorDashboard = () => {
                       salesList.map((sale: any) => (
                         <tr key={sale.id} className="border-t border-border">
                           <td className="px-4 py-3 text-foreground">
-                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : 'Ã¢â‚¬â€'}
+                            {sale.createdAt ? format(parseISO(sale.createdAt), 'MMM d, yyyy') : '-'}
                           </td>
                           <td className="px-4 py-3 text-foreground">{sale.collectionTitle}</td>
                           <td className="px-4 py-3 text-foreground">
@@ -4341,7 +4496,7 @@ const CreatorDashboard = () => {
                             {formatMoney(sale.creatorAmount, sale.currency)}
                           </td>
                           <td className="px-4 py-3 text-foreground capitalize">{sale.status}</td>
-                          <td className="px-4 py-3 text-foreground">{sale.emailMasked || 'Ã¢â‚¬â€'}</td>
+                          <td className="px-4 py-3 text-foreground">{sale.emailMasked || '-'}</td>
                           <td className="px-4 py-3 text-muted-foreground">{sale.orderId}</td>
                         </tr>
                       ))
@@ -4389,3 +4544,4 @@ const CreatorDashboard = () => {
 };
 
 export default CreatorDashboard;
+

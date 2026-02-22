@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Preloader from "../components/Preloader";
@@ -58,6 +58,7 @@ const seededShuffle = (items, seed) => {
 };
 
 const Collections = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const creatorUsername = searchParams.get('creator') || '';
   const isPreviewMode = searchParams.get('mode') === 'preview';
@@ -558,7 +559,7 @@ const Collections = () => {
         (creatorUsername ? `&creator=${encodeURIComponent(creatorUsername)}` : '') +
         (isPreviewMode ? '&mode=preview' : '');
 
-    window.location.href = checkoutUrl;
+    navigate(checkoutUrl);
   };
 
   const handlePreloaderComplete = () => {
@@ -581,7 +582,7 @@ const Collections = () => {
           <div className={`fixed ${isPreviewMode ? 'mobile-fixed-preview-safe' : 'mobile-fixed-safe'} right-4 z-[60] flex items-center gap-2`}>
             {isPreviewMode && canRevealContent && revealStoreUrl && (
               <button
-                onClick={() => window.location.href = revealStoreUrl}
+                onClick={() => navigate(revealStoreUrl)}
                 className="h-9 sm:h-8 px-3 rounded-full bg-emerald-500/20 border border-emerald-400/30 backdrop-blur-xl hover:bg-emerald-500/30 text-emerald-300 transition-all duration-300 shadow-lg text-xs font-medium inline-flex items-center gap-1.5"
               >
                 <Eye className="w-3.5 h-3.5" />
@@ -760,7 +761,7 @@ const Collections = () => {
                       type="button"
                       onClick={() => {
                         const creatorQuery = creatorUsername ? `?creator=${encodeURIComponent(creatorUsername)}` : '';
-                        window.location.href = `/recover-access${creatorQuery}`;
+                        navigate(`/recover-access${creatorQuery}`);
                       }}
                       className="mt-2 text-[11px] text-white underline underline-offset-2 bg-transparent border-none cursor-pointer"
                     >
@@ -794,7 +795,7 @@ const Collections = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-4">Explore</h3>
                     <ul className="space-y-2 text-sm">
-                      <li onClick={() => window.location.href = '/'}><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Gallery</a></li>
+                      <li onClick={() => navigate(creatorUsername ? `/public/${creatorUsername}${isPreviewMode ? '?mode=preview' : ''}` : '/')}><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Gallery</a></li>
                       <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Collections</a></li>
                     </ul>
                   </div>

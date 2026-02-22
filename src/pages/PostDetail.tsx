@@ -149,6 +149,49 @@ const PostDetail = () => {
     window.scrollTo(0, 0);
   }, [secureId]);
 
+  useEffect(() => {
+    if (!isPreviewMode) return;
+    let lastTouchY: number | null = null;
+
+    const isInteractiveTarget = (target: EventTarget | null) => {
+      if (!(target instanceof Element)) return false;
+      return !!target.closest('button, a, input, textarea, select, video, [role="button"]');
+    };
+
+    const handleTouchStart = (event: TouchEvent) => {
+      if (event.touches.length !== 1 || isInteractiveTarget(event.target)) {
+        lastTouchY = null;
+        return;
+      }
+      lastTouchY = event.touches[0].clientY;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (event.touches.length !== 1 || lastTouchY === null || isInteractiveTarget(event.target)) return;
+      const currentY = event.touches[0].clientY;
+      const deltaY = lastTouchY - currentY;
+      if (Math.abs(deltaY) < 0.5) return;
+      event.preventDefault();
+      window.scrollBy({ top: deltaY, behavior: 'auto' });
+      lastTouchY = currentY;
+    };
+
+    const resetTouch = () => {
+      lastTouchY = null;
+    };
+
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', resetTouch, { passive: true });
+    document.addEventListener('touchcancel', resetTouch, { passive: true });
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', resetTouch);
+      document.removeEventListener('touchcancel', resetTouch);
+    };
+  }, [isPreviewMode]);
+
   const isVideoUrl = (url: string): boolean => {
     const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
@@ -491,9 +534,9 @@ const PostDetail = () => {
               onClick={handleBackNavigation} 
               variant="ghost" 
               size="sm"
-              className={
+                className={
                 isDarkTheme
-                  ? "text-foreground border border-border bg-secondary/55 hover:bg-secondary/80"
+                  ? "!text-white hover:!text-white border border-border bg-secondary/55 hover:bg-secondary/80"
                   : "hover:bg-secondary"
               }
             >
