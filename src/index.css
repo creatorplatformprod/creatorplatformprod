@@ -2561,6 +2561,16 @@
     width: 100%;
   }
 
+  .theme-classic-dark .browser-chrome {
+    background: linear-gradient(to bottom, hsl(215 28% 15%), hsl(215 28% 12%));
+    border-bottom: 1px solid hsl(215 20% 18%);
+  }
+
+  .theme-classic-dark .browser-url-bar {
+    background: hsl(215 24% 16%);
+    border-color: hsl(215 20% 22%);
+  }
+
   /* Quick action card hover glow */
   .quick-action {
     position: relative;

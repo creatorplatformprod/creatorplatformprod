@@ -645,7 +645,7 @@ const PostDetail = () => {
 
           <footer className="mt-12 border-t border-gray-200 pt-6 pb-4">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
+              <div className="text-sm font-semibold text-foreground">{collection.user.name}</div>
               <p className="text-xs text-muted-foreground">
                 &copy; {new Date().getFullYear()} {collection.user.name}. All rights reserved.
               </p>

@@ -313,6 +313,20 @@ const Collections1849929295832448 = () => {
     return items;
   }, [remoteCollections, localMockCollections]);
 
+  const footerCreatorName = useMemo(() => {
+    const firstCollection = (remoteCollections || [])[0] as any;
+    const rawName =
+      firstCollection?.creatorDisplayName ||
+      firstCollection?.creatorName ||
+      firstCollection?.creator?.displayName ||
+      firstCollection?.creator?.username ||
+      firstCollection?.creatorUsername ||
+      firstCollection?.username ||
+      creatorParam;
+    const safeName = String(rawName || '').trim();
+    return safeName || 'Creator';
+  }, [remoteCollections, creatorParam]);
+
   useSeo(
     {
       title: "Exclusive Collections | SixSevenCreator",
@@ -601,7 +615,6 @@ const Collections1849929295832448 = () => {
               </Button>
               <div className="flex items-center gap-3">
                 <div className="brand-wordmark"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
-                <div className="w-px h-5 bg-gray-200"></div>
               </div>
             </div>
           </header>
@@ -710,17 +723,16 @@ const Collections1849929295832448 = () => {
             <footer className="post-card rounded-xl p-5 sm:p-6 mt-6 sm:mt-8">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="md:col-span-2">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="brand-wordmark text-lg"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
+                  <div className="flex items-center gap-3 mb-4">
                     <div>
-                      <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                        SixSeven Creator
+                      <h2 className="text-xl font-bold text-foreground">
+                        {footerCreatorName}
                       </h2>
                       <p className="text-sm text-muted-foreground">Build Your Content Platform</p>
                     </div>
                   </div>
                   <p className="text-muted-foreground text-sm">
-                    Create your exclusive content platform with SixSeven Creator.
+                    Create your exclusive content platform with {footerCreatorName}.
                     Build, preview, and publish premium collections with card-to-crypto payments.
                   </p>
                 </div>
@@ -755,7 +767,7 @@ const Collections1849929295832448 = () => {
 
               <div className="border-t border-border mt-8 pt-6 text-center">
                 <p className="text-xs text-muted-foreground">
-                  © {new Date().getFullYear()} SixSeven Creator. All rights reserved. 
+                  © {new Date().getFullYear()} {footerCreatorName}. All rights reserved. 
                   <span className="mx-2">|</span>
                   <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
                   <span className="mx-2">|</span>

@@ -705,9 +705,8 @@ const PostDetailBlurred = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="md:col-span-2">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="brand-wordmark text-lg"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
                   <div>
-                    <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    <h2 className="text-xl font-bold text-foreground">
                       {collection.user.name}
                     </h2>
                     <p className="text-sm text-muted-foreground">Exclusive Content</p>

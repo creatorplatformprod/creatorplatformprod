@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type TouchEvent, type WheelEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Monitor, Smartphone, Copy, Check, Link2 } from "lucide-react";
 import AccountMenu from "@/components/AccountMenu";
 import { api } from "@/lib/api";
 import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
+import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
 
 const ONBOARDING_STEPS = [
   {
@@ -48,6 +49,57 @@ const PublicWebsitePreview = () => {
   const [onboardingStep, setOnboardingStep] = useState(-1);
   const [showOnboarding, setShowOnboarding] = useState(false);
   useFeedbackToasts({ success: publishSuccess, error: publishError });
+  const themeClass = usePublicWebsiteTheme(username || undefined);
+  const desktopIframeRef = useRef<HTMLIFrameElement | null>(null);
+  const mobileIframeRef = useRef<HTMLIFrameElement | null>(null);
+  const desktopTouchYRef = useRef<number | null>(null);
+  const mobileTouchYRef = useRef<number | null>(null);
+
+  const scrollIframeBy = (iframe: HTMLIFrameElement | null, deltaY: number) => {
+    if (!iframe?.contentWindow || !Number.isFinite(deltaY) || deltaY === 0) return;
+    iframe.contentWindow.scrollBy({ top: deltaY, behavior: "auto" });
+  };
+
+  const handlePreviewWheel = (e: WheelEvent<HTMLDivElement>, device: 'desktop' | 'mobile') => {
+    e.preventDefault();
+    const iframe = device === 'desktop' ? desktopIframeRef.current : mobileIframeRef.current;
+    scrollIframeBy(iframe, e.deltaY);
+  };
+
+  const handlePreviewTouchStart = (e: TouchEvent<HTMLDivElement>, device: 'desktop' | 'mobile') => {
+    const y = e.touches?.[0]?.clientY;
+    if (typeof y !== 'number') return;
+    if (device === 'desktop') {
+      desktopTouchYRef.current = y;
+    } else {
+      mobileTouchYRef.current = y;
+    }
+  };
+
+  const handlePreviewTouchMove = (e: TouchEvent<HTMLDivElement>, device: 'desktop' | 'mobile') => {
+    const y = e.touches?.[0]?.clientY;
+    if (typeof y !== 'number') return;
+    const touchRef = device === 'desktop' ? desktopTouchYRef : mobileTouchYRef;
+    const previousY = touchRef.current;
+    if (typeof previousY !== 'number') {
+      touchRef.current = y;
+      return;
+    }
+    const deltaY = previousY - y;
+    if (Math.abs(deltaY) < 0.5) return;
+    e.preventDefault();
+    const iframe = device === 'desktop' ? desktopIframeRef.current : mobileIframeRef.current;
+    scrollIframeBy(iframe, deltaY);
+    touchRef.current = y;
+  };
+
+  const handlePreviewTouchEnd = (device: 'desktop' | 'mobile') => {
+    if (device === 'desktop') {
+      desktopTouchYRef.current = null;
+    } else {
+      mobileTouchYRef.current = null;
+    }
+  };
   
 
   const previewUrl = useMemo(() => {
@@ -237,7 +289,7 @@ const PublicWebsitePreview = () => {
   };
 
   return (
-    <div className="min-h-screen feed-bg">
+    <div className={`min-h-screen feed-bg ${themeClass}`}>
       {/* Top Navbar */}
       <nav className="sticky top-0 z-50 nav-elevated">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -368,21 +420,28 @@ const PublicWebsitePreview = () => {
                 <div className="bg-gradient-to-b from-[#2d2d2d] to-[#1a1a1a] rounded-[20px] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)]">
                   <div className="rounded-[14px] overflow-hidden">
                     {/* Browser Chrome */}
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-b from-[#f8f8f8] to-[#f0f0f0] border-b border-gray-200">
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+                    <div className="browser-chrome">
+                      <div className="browser-dots">
+                        <div className="browser-dot bg-[#ff5f57]" />
+                        <div className="browser-dot bg-[#febc2e]" />
+                        <div className="browser-dot bg-[#28c840]" />
                       </div>
                       <div className="flex-1 flex justify-center">
-                        <div className="flex items-center gap-2 px-4 py-1 bg-white rounded-md border border-gray-200 max-w-sm w-full">
+                        <div className="browser-url-bar max-w-sm">
                           <svg className="w-3 h-3 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                          <span className="text-[10px] text-gray-500 truncate">sixsevencreator.com/{username}</span>
+                          <span className="text-[10px] text-muted-foreground truncate">sixsevencreator.com/{username}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="relative mx-auto pr-2 [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.29] sm:[--scale:0.40] md:[--scale:0.60] lg:[--scale:0.72] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                    <div
+                      className="relative mx-auto pr-2 [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.29] sm:[--scale:0.40] md:[--scale:0.60] lg:[--scale:0.72] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]"
+                      onWheel={(e) => handlePreviewWheel(e, 'desktop')}
+                      onTouchStart={(e) => handlePreviewTouchStart(e, 'desktop')}
+                      onTouchMove={(e) => handlePreviewTouchMove(e, 'desktop')}
+                      onTouchEnd={() => handlePreviewTouchEnd('desktop')}
+                    >
                       <iframe
+                        ref={desktopIframeRef}
                         title="Desktop preview"
                         src={previewUrl}
                         className="absolute inset-0 origin-top-left [transform:scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
@@ -409,8 +468,15 @@ const PublicWebsitePreview = () => {
               <div className="rounded-[36px] overflow-hidden relative">
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-10" />
-                <div className="relative mx-auto pr-2 overflow-hidden [--viewport-w:430px] [--viewport-h:932px] [--scale:0.64] sm:[--scale:0.76] md:[--scale:0.86] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]">
+                <div
+                  className="relative mx-auto pr-2 overflow-hidden [--viewport-w:430px] [--viewport-h:932px] [--scale:0.64] sm:[--scale:0.76] md:[--scale:0.86] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]"
+                  onWheel={(e) => handlePreviewWheel(e, 'mobile')}
+                  onTouchStart={(e) => handlePreviewTouchStart(e, 'mobile')}
+                  onTouchMove={(e) => handlePreviewTouchMove(e, 'mobile')}
+                  onTouchEnd={() => handlePreviewTouchEnd('mobile')}
+                >
                   <iframe
+                    ref={mobileIframeRef}
                     title="Mobile preview"
                     src={previewUrl}
                     className="absolute inset-0 origin-top-left [transform:scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"

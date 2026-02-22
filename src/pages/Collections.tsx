@@ -368,6 +368,19 @@ const Collections = () => {
   const collectionCount = collectionsData.length > 0
     ? collectionsData.filter((col: any) => col && col._id !== 'all' && !col.isBundle).length
     : mockCollectionCount;
+  const footerCreatorName = useMemo(() => {
+    const firstCollection = (collectionsData || []).find((col: any) => col && col._id !== 'all' && !col.isBundle) as any;
+    const rawName =
+      firstCollection?.creatorDisplayName ||
+      firstCollection?.creatorName ||
+      firstCollection?.creator?.displayName ||
+      firstCollection?.creator?.username ||
+      firstCollection?.creatorUsername ||
+      firstCollection?.username ||
+      creatorUsername;
+    const safeName = String(rawName || '').trim();
+    return safeName || 'Creator';
+  }, [collectionsData, creatorUsername]);
   const totalItems = allImages.length;
   const videoCount = allImages.filter((item) => item.mediaType === 'video').length;
   const imageCount = totalItems - videoCount;
@@ -758,10 +771,9 @@ const Collections = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="md:col-span-2">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="brand-wordmark text-lg"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
                     <div>
-                      <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                        SixSeven Creator
+                      <h2 className="text-xl font-bold text-foreground">
+                        {footerCreatorName}
                       </h2>
                       <p className="text-sm text-muted-foreground">
                         {collectionCount} Exclusive Collections
@@ -769,7 +781,7 @@ const Collections = () => {
                     </div>
                   </div>
                   <p className="text-muted-foreground text-sm">
-                    Create your exclusive content platform with SixSeven Creator.
+                    Create your exclusive content platform with {footerCreatorName}.
                     Build, preview, and publish premium collections with card-to-crypto payments.
                   </p>
                 </div>
@@ -804,7 +816,7 @@ const Collections = () => {
 
               <div className="border-t border-border mt-8 pt-6 text-center">
                 <p className="text-xs text-muted-foreground">
-                  © {new Date().getFullYear()} SixSeven Creator. All rights reserved. 
+                  © {new Date().getFullYear()} {footerCreatorName}. All rights reserved. 
                   <span className="mx-2">|</span>
                   <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
                   <span className="mx-2">|</span>
