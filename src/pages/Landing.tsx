@@ -184,7 +184,7 @@ const Landing = () => {
 
             <div className="relative z-10 landing-glass rounded-[24px] overflow-hidden flex flex-col md:flex-row">
               {/* Left: Creator Spotlight */}
-              <div className="md:w-[48%] p-7 sm:p-9 flex flex-col justify-between border-b md:border-b-0 md:border-r border-gray-200/60">
+              <div className="md:w-[48%] p-7 sm:p-9 flex flex-col justify-between">
                 <div>
                   <h2 className="text-gray-900 text-lg font-semibold tracking-tight mb-5">Creator Spotlight</h2>
                   <div className="flex gap-3 mb-5">
