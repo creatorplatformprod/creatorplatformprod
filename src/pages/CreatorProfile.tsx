@@ -92,6 +92,11 @@ const seededShuffle = <T,>(items: T[], seed: number) => {
 };
 
 const DEFAULT_COVER_OVERLAY = 0.45;
+const toDisplayNameFromUsername = (value?: string) => {
+  const raw = (value || "").trim();
+  if (!raw) return "Creator";
+  return raw.replace(/[._-]+/g, " ").replace(/\s+/g, " ").trim();
+};
 
 const CreatorProfile = () => {
   const { username } = useParams();
@@ -118,6 +123,21 @@ const CreatorProfile = () => {
     () => seededShuffle(mockPack.photos, mockSeed + 77),
     [mockPack, mockSeed]
   );
+  const mockProfileDefaults = useMemo(
+    () => ({
+      username: username || "creator",
+      displayName: toDisplayNameFromUsername(username),
+      bio: "Welcome to my page. New collections and post updates will appear here.",
+      avatar: mockPack.avatar,
+      coverImage: mockPack.cover,
+      isVerified: false
+    }),
+    [username, mockPack]
+  );
+  const withMockProfileDefaults = (profile?: any) => ({
+    ...mockProfileDefaults,
+    ...(profile && typeof profile === "object" ? profile : {})
+  });
   const mockAvatar = creatorData?.avatar || mockPack.avatar;
   const getProfileDraft = (targetUsername?: string) => {
     if (!targetUsername) return null;
@@ -249,7 +269,7 @@ const CreatorProfile = () => {
       try {
         const parsed = JSON.parse(event.newValue);
         if (!parsed || typeof parsed !== 'object') return;
-        setCreatorData((prev: any) => ({ ...(prev || {}), ...parsed }));
+        setCreatorData((prev: any) => withMockProfileDefaults({ ...(prev || {}), ...parsed }));
       } catch {
         // Ignore invalid draft payloads.
       }
@@ -257,7 +277,7 @@ const CreatorProfile = () => {
 
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
-  }, [isPreviewMode, username]);
+  }, [isPreviewMode, username, mockProfileDefaults]);
 
   const creatorName = creatorData?.displayName || creatorData?.username || username || "Creator";
   const creatorBio = typeof creatorData?.bio === "string" ? creatorData.bio.trim() : "";
@@ -315,7 +335,9 @@ const CreatorProfile = () => {
               : authUserResult.user;
             const profileDraft = getProfileDraft(safeUsername);
             setCreatorData(
-              profileDraft ? { ...baseUser, ...profileDraft } : baseUser
+              withMockProfileDefaults(
+                profileDraft ? { ...baseUser, ...profileDraft } : baseUser
+              )
             );
             setCollections(privateCollectionsResult?.success ? (privateCollectionsResult.collections || []) : []);
             setStatusCards(statusCardsResult?.success ? (statusCardsResult.statusCards || []) : []);
@@ -328,12 +350,19 @@ const CreatorProfile = () => {
 
       const data = await api.getCreatorProfile(safeUsername);
       if (data.success) {
-        setCreatorData(data.user);
+        setCreatorData(withMockProfileDefaults(data.user));
         setCollections(data.collections || []);
         setStatusCards(data.statusCards || []);
+      } else {
+        setCreatorData(withMockProfileDefaults());
+        setCollections([]);
+        setStatusCards([]);
       }
     } catch (error) {
       console.error('Error loading creator profile:', error);
+      setCreatorData(withMockProfileDefaults());
+      setCollections([]);
+      setStatusCards([]);
     } finally {
       setIsLoading(false);
       setTimeout(() => {
