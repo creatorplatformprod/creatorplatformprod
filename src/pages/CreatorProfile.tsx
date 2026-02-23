@@ -36,7 +36,7 @@ const PINK_LEMONADE_IMAGE_IDS = [
 const MOCK_SOURCE_PACKS: MockSourcePack[] = [
   {
     key: "pink-lemonade",
-    avatar: pexelsImageUrl(7346629, 420) + "&fit=crop",
+    avatar: pexelsImageUrl(7346629, 800),
     cover: pexelsImageUrl(7346691, 1800) + "&fit=crop",
     photos: PINK_LEMONADE_IMAGE_IDS.map((id) => pexelsImageUrl(id, 1600))
   }
@@ -92,6 +92,11 @@ const seededShuffle = <T,>(items: T[], seed: number) => {
 };
 
 const DEFAULT_COVER_OVERLAY = 0.45;
+const isBlankLike = (value: unknown) => {
+  if (typeof value !== "string") return false;
+  const normalized = value.trim().toLowerCase();
+  return normalized === "" || normalized === "null" || normalized === "undefined";
+};
 const toDisplayNameFromUsername = (value?: string) => {
   const raw = (value || "").trim();
   if (!raw) return "Creator";
@@ -139,16 +144,16 @@ const CreatorProfile = () => {
       ...mockProfileDefaults,
       ...(profile && typeof profile === "object" ? profile : {})
     } as any;
-    if (typeof merged.avatar === "string" && merged.avatar.trim() === "") {
+    if (isBlankLike(merged.avatar)) {
       merged.avatar = mockProfileDefaults.avatar;
     }
-    if (typeof merged.coverImage === "string" && merged.coverImage.trim() === "") {
+    if (isBlankLike(merged.coverImage)) {
       merged.coverImage = mockProfileDefaults.coverImage;
     }
-    if (typeof merged.displayName === "string" && merged.displayName.trim() === "") {
+    if (isBlankLike(merged.displayName)) {
       merged.displayName = mockProfileDefaults.displayName;
     }
-    if (typeof merged.bio === "string" && merged.bio.trim() === "") {
+    if (isBlankLike(merged.bio)) {
       merged.bio = mockProfileDefaults.bio;
     }
     return merged;
@@ -730,7 +735,7 @@ const CreatorProfile = () => {
     typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
   const heroCoverImage = creatorCoverImage || mockPack.cover;
   const profileAvatarImage =
-    typeof creatorData?.avatar === 'string' && creatorData.avatar.trim()
+    typeof creatorData?.avatar === 'string' && !isBlankLike(creatorData.avatar)
       ? creatorData.avatar.trim()
       : mockPack.avatar;
 
