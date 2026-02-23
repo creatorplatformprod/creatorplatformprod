@@ -133,11 +133,11 @@ const CreatorProfile = () => {
       username: username || "creator",
       displayName: toDisplayNameFromUsername(username),
       bio: "Welcome to my page. New collections and post updates will appear here.",
-      avatar: mockPack.avatar,
+      avatar: mockPhotos[0] || mockPack.avatar,
       coverImage: mockPack.cover,
       isVerified: false
     }),
-    [username, mockPack]
+    [username, mockPack, mockPhotos]
   );
   const withMockProfileDefaults = (profile?: any) => {
     const merged = {
@@ -158,7 +158,7 @@ const CreatorProfile = () => {
     }
     return merged;
   };
-  const mockAvatar = creatorData?.avatar || mockPack.avatar;
+  const mockAvatar = creatorData?.avatar || mockPhotos[0] || mockPack.avatar;
   const getProfileDraft = (targetUsername?: string) => {
     if (!targetUsername) return null;
     try {
@@ -280,12 +280,16 @@ const CreatorProfile = () => {
   }, [username, isPreviewMode]);
 
   useEffect(() => {
-    if (!isPreviewMode || !username) return;
+    if (!username) return;
     const draftKey = `publicWebsiteProfileDraft:${username}`;
 
     const handleStorage = (event: StorageEvent) => {
       if (event.key !== draftKey) return;
-      if (!event.newValue) return;
+      if (!event.newValue) {
+        // Draft was cleared (e.g. publish). Reload profile source state.
+        loadCreatorProfile();
+        return;
+      }
       try {
         const parsed = JSON.parse(event.newValue);
         if (!parsed || typeof parsed !== 'object') return;
@@ -297,7 +301,7 @@ const CreatorProfile = () => {
 
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
-  }, [isPreviewMode, username, mockProfileDefaults]);
+  }, [username, mockProfileDefaults]);
 
   const creatorName = creatorData?.displayName || creatorData?.username || username || "Creator";
   const creatorBio = typeof creatorData?.bio === "string" ? creatorData.bio.trim() : "";
@@ -370,17 +374,20 @@ const CreatorProfile = () => {
 
       const data = await api.getCreatorProfile(safeUsername);
       if (data.success) {
-        setCreatorData(withMockProfileDefaults(data.user));
+        const profileDraft = getProfileDraft(safeUsername);
+        setCreatorData(withMockProfileDefaults(profileDraft ? { ...data.user, ...profileDraft } : data.user));
         setCollections(data.collections || []);
         setStatusCards(data.statusCards || []);
       } else {
-        setCreatorData(withMockProfileDefaults());
+        const profileDraft = getProfileDraft(safeUsername);
+        setCreatorData(withMockProfileDefaults(profileDraft || undefined));
         setCollections([]);
         setStatusCards([]);
       }
     } catch (error) {
       console.error('Error loading creator profile:', error);
-      setCreatorData(withMockProfileDefaults());
+      const profileDraft = getProfileDraft(username || '');
+      setCreatorData(withMockProfileDefaults(profileDraft || undefined));
       setCollections([]);
       setStatusCards([]);
     } finally {
@@ -681,7 +688,7 @@ const CreatorProfile = () => {
     const img = event.currentTarget;
     if (img.dataset.fallbackApplied === '1') return;
     img.dataset.fallbackApplied = '1';
-    img.src = mockPack.avatar;
+    img.src = mockPhotos[0] || mockPack.avatar;
   };
 
   const formatSocialUrl = (value?: string) => {
@@ -737,7 +744,7 @@ const CreatorProfile = () => {
   const profileAvatarImage =
     typeof creatorData?.avatar === 'string' && !isBlankLike(creatorData.avatar)
       ? creatorData.avatar.trim()
-      : mockPack.avatar;
+      : (mockPhotos[0] || mockPack.avatar);
 
   const renderSocialIcon = (
     url: string,

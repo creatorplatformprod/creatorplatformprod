@@ -876,6 +876,27 @@ const CreatorDashboard = () => {
     );
   }, [profileData]);
 
+  // Live-sync profile draft so preview/public pages update immediately while editing.
+  useEffect(() => {
+    if (!user?.username) return;
+    if (!isProfileDirty) return;
+    try {
+      const key = getProfileDraftKey(user.username);
+      if (!key) return;
+      const snapshot = buildProfileDraftSnapshot();
+      if (typeof snapshot.avatar === 'string' && snapshot.avatar.trim() === '' && user?.avatar) {
+        snapshot.avatar = user.avatar;
+      }
+      if (typeof snapshot.coverImage === 'string' && snapshot.coverImage.trim() === '' && user?.coverImage) {
+        snapshot.coverImage = user.coverImage;
+      }
+      localStorage.setItem(key, JSON.stringify(snapshot));
+      markPublicWebsiteDirty();
+    } catch {
+      // Keep autosave handling as the source of truth for surfaced save errors.
+    }
+  }, [profileData, isProfileDirty, user?.username, telegramAlertsEnabled, telegramBotTokenConfigured, isEditingTelegramToken]);
+
   useEffect(() => {
     if (!user?.username) return;
     if (!isProfileDirty) return;
@@ -2705,8 +2726,7 @@ const CreatorDashboard = () => {
                                   left: `${(AVATAR_EDITOR_FRAME.width - drawWidth) / 2 + offsets.offsetX}px`,
                                   top: `${(AVATAR_EDITOR_FRAME.height - drawHeight) / 2 + offsets.offsetY}px`,
                                   maxWidth: 'none',
-                                  userSelect: 'none' as const,
-                                  filter: 'blur(3px)'
+                                  userSelect: 'none' as const
                                 };
                               })()}
                             />
