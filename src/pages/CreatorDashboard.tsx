@@ -2773,6 +2773,26 @@ const CreatorDashboard = () => {
                       <Upload className="w-4 h-4 mr-1" />
                       {uploadingAvatar ? 'Uploading...' : 'Upload Avatar'}
                     </Button>
+                    <Button
+                      onClick={() => {
+                        setAvatarFile(null);
+                        setAvatarDimensions(null);
+                        setAvatarEditor(createDefaultCropEditorState());
+                        if (avatarInputRef.current) {
+                          avatarInputRef.current.value = '';
+                        }
+                        const nextProfileData = { ...profileData, avatar: '' };
+                        setProfileData(nextProfileData);
+                        persistProfileDraftSnapshotFrom(nextProfileData);
+                        setSuccess('Avatar removed. Draft updated.');
+                      }}
+                      disabled={!profileData.avatar}
+                      size="sm"
+                      className="btn-collection-danger"
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Remove Avatar
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -2892,7 +2912,9 @@ const CreatorDashboard = () => {
                         if (coverInputRef.current) {
                           coverInputRef.current.value = '';
                         }
-                        setProfileData({ ...profileData, coverImage: '' });
+                        const nextProfileData = { ...profileData, coverImage: '' };
+                        setProfileData(nextProfileData);
+                        persistProfileDraftSnapshotFrom(nextProfileData);
                         setSuccess('Cover removed. Draft updated.');
                       }}
                       disabled={!profileData.coverImage}

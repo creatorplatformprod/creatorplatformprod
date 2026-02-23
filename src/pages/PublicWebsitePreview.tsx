@@ -220,10 +220,10 @@ const PublicWebsitePreview = () => {
     delete draft.websiteTemplate;
 
     if (typeof draft.avatar === 'string' && draft.avatar.trim() === '') {
-      delete draft.avatar;
+      draft.avatar = '';
     }
     if (typeof draft.coverImage === 'string' && draft.coverImage.trim() === '') {
-      delete draft.coverImage;
+      draft.coverImage = '';
     }
 
     const result = await api.updateProfile(draft);

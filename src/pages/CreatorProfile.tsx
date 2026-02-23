@@ -168,6 +168,11 @@ const CreatorProfile = () => {
     (typeof creatorData?.avatar === "string" && !isBlankLike(creatorData.avatar) && !isGeneratedPlaceholderAvatar(creatorData.avatar)
       ? creatorData.avatar
       : null) || mockPhotos[0] || mockPack.avatar;
+  const resolvedCreatorCoverImage =
+    (typeof creatorData?.coverImage === "string" && !isBlankLike(creatorData.coverImage)
+      ? creatorData.coverImage.trim()
+      : "") || mockPack.cover;
+  const resolvedCreatorAvatarImage = mockAvatar;
   const getProfileDraft = (targetUsername?: string) => {
     if (!targetUsername) return null;
     try {
@@ -322,7 +327,7 @@ const CreatorProfile = () => {
         `Explore premium posts and collections from ${creatorName} on SixSevenCreator.`,
       canonicalPath: username ? `/${username}` : undefined,
       noindex: isPreviewMode,
-      image: creatorData?.coverImage || creatorData?.avatar || undefined,
+      image: resolvedCreatorCoverImage || resolvedCreatorAvatarImage || undefined,
       type: "profile",
       jsonLd: username
         ? {
@@ -332,13 +337,13 @@ const CreatorProfile = () => {
               "@type": "Person",
               name: creatorName,
               url: `${window.location.origin}/${username}`,
-              image: creatorData?.avatar || undefined,
+              image: resolvedCreatorAvatarImage || undefined,
               description: creatorBio || undefined
             }
           }
         : null
     },
-    [creatorName, creatorBio, username, isPreviewMode, creatorData?.coverImage, creatorData?.avatar]
+    [creatorName, creatorBio, username, isPreviewMode, resolvedCreatorCoverImage, resolvedCreatorAvatarImage]
   );
 
   const loadCreatorProfile = async () => {
@@ -437,7 +442,7 @@ const CreatorProfile = () => {
         id: card._id || `status-${index}`,
         user: {
           name: creatorData?.displayName || creatorData?.username || 'Creator',
-          avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop',
+          avatar: resolvedCreatorAvatarImage,
           verified: creatorData?.isVerified || false
         },
         title: "",
@@ -448,7 +453,7 @@ const CreatorProfile = () => {
         ...(mediaItems.length > 0 ? { mediaItems, media: mediaItems[0] } : {})
       };
     });
-  }, [statusCards, creatorData]);
+  }, [statusCards, creatorData, resolvedCreatorAvatarImage]);
 
   // Format collections to match Index.tsx structure
   const formattedCollections = useMemo(() => {
@@ -464,7 +469,7 @@ const CreatorProfile = () => {
       })),
       user: {
         name: creatorData?.displayName || creatorData?.username || 'Creator',
-        avatar: creatorData?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop',
+        avatar: resolvedCreatorAvatarImage,
         verified: creatorData?.isVerified || false
       },
       timestamp: col.createdAt ? new Date(col.createdAt).toLocaleDateString() : 'Recently',
@@ -476,7 +481,7 @@ const CreatorProfile = () => {
       currency: col.currency || 'USD',
       cardLayout: buildCardLayout((col.media || []).length, parseLayoutTag(col.tags))
     }));
-  }, [collections, creatorData, username, isPreviewMode]);
+  }, [collections, creatorData, username, isPreviewMode, resolvedCreatorAvatarImage]);
 
   const shouldUseMockData =
     formattedStatusData.length === 0 &&
@@ -700,6 +705,13 @@ const CreatorProfile = () => {
     img.src = mockPhotos[0] || mockPack.avatar;
   };
 
+  const handleCoverImageError = (event: SyntheticEvent<HTMLImageElement>) => {
+    const img = event.currentTarget;
+    if (img.dataset.fallbackApplied === '1') return;
+    img.dataset.fallbackApplied = '1';
+    img.src = mockPack.cover;
+  };
+
   const formatSocialUrl = (value?: string) => {
     if (!value) return '';
     const trimmed = value.trim();
@@ -747,15 +759,8 @@ const CreatorProfile = () => {
   const useMasonryFlow = false;
   const showSidebar = true;
   const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
-  const creatorCoverImage =
-    typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
-  const heroCoverImage = creatorCoverImage || mockPack.cover;
-  const profileAvatarImage =
-    typeof creatorData?.avatar === 'string' &&
-    !isBlankLike(creatorData.avatar) &&
-    !isGeneratedPlaceholderAvatar(creatorData.avatar)
-      ? creatorData.avatar.trim()
-      : (mockPhotos[0] || mockPack.avatar);
+  const heroCoverImage = resolvedCreatorCoverImage;
+  const profileAvatarImage = resolvedCreatorAvatarImage;
 
   const renderSocialIcon = (
     url: string,
@@ -829,6 +834,7 @@ const CreatorProfile = () => {
               src={heroCoverImage}
               alt="Profile cover"
               className="absolute inset-0 w-full h-full object-cover"
+              onError={handleCoverImageError}
             />
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
