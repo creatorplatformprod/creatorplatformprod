@@ -239,6 +239,26 @@ const CreatorProfile = () => {
     loadCreatorProfile();
   }, [username, isPreviewMode]);
 
+  useEffect(() => {
+    if (!isPreviewMode || !username) return;
+    const draftKey = `publicWebsiteProfileDraft:${username}`;
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== draftKey) return;
+      if (!event.newValue) return;
+      try {
+        const parsed = JSON.parse(event.newValue);
+        if (!parsed || typeof parsed !== 'object') return;
+        setCreatorData((prev: any) => ({ ...(prev || {}), ...parsed }));
+      } catch {
+        // Ignore invalid draft payloads.
+      }
+    };
+
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, [isPreviewMode, username]);
+
   const creatorName = creatorData?.displayName || creatorData?.username || username || "Creator";
   const creatorBio = typeof creatorData?.bio === "string" ? creatorData.bio.trim() : "";
   useSeo(
