@@ -947,7 +947,19 @@
     background: #ffffff;
     min-height: 100vh;
     position: relative;
-    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    overflow-y: visible;
+    overscroll-behavior-x: none;
+    touch-action: pan-y pinch-zoom;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  @supports not (overflow: clip) {
+    .landing-universe {
+      overflow-x: hidden;
+    }
   }
 
   /* Subtle purple aurora blobs */
@@ -992,6 +1004,7 @@
     pointer-events: none;
     z-index: 0;
     perspective: 900px;
+    overflow: hidden;
   }
 
   .landing-67-surface {
@@ -1327,6 +1340,19 @@
   @media (min-width: 768px) {
     .landing-section {
       padding: 6rem 2rem;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .landing-universe {
+      min-height: 100svh;
+    }
+
+    .landing-nav {
+      width: 100%;
+      max-width: 100%;
+      padding-left: 0.875rem;
+      padding-right: 0.875rem;
     }
   }
 
