@@ -134,10 +134,25 @@ const CreatorProfile = () => {
     }),
     [username, mockPack]
   );
-  const withMockProfileDefaults = (profile?: any) => ({
-    ...mockProfileDefaults,
-    ...(profile && typeof profile === "object" ? profile : {})
-  });
+  const withMockProfileDefaults = (profile?: any) => {
+    const merged = {
+      ...mockProfileDefaults,
+      ...(profile && typeof profile === "object" ? profile : {})
+    } as any;
+    if (typeof merged.avatar === "string" && merged.avatar.trim() === "") {
+      merged.avatar = mockProfileDefaults.avatar;
+    }
+    if (typeof merged.coverImage === "string" && merged.coverImage.trim() === "") {
+      merged.coverImage = mockProfileDefaults.coverImage;
+    }
+    if (typeof merged.displayName === "string" && merged.displayName.trim() === "") {
+      merged.displayName = mockProfileDefaults.displayName;
+    }
+    if (typeof merged.bio === "string" && merged.bio.trim() === "") {
+      merged.bio = mockProfileDefaults.bio;
+    }
+    return merged;
+  };
   const mockAvatar = creatorData?.avatar || mockPack.avatar;
   const getProfileDraft = (targetUsername?: string) => {
     if (!targetUsername) return null;
