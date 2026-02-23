@@ -884,12 +884,6 @@ const CreatorDashboard = () => {
       const key = getProfileDraftKey(user.username);
       if (!key) return;
       const snapshot = buildProfileDraftSnapshot();
-      if (typeof snapshot.avatar === 'string' && snapshot.avatar.trim() === '' && user?.avatar) {
-        snapshot.avatar = user.avatar;
-      }
-      if (typeof snapshot.coverImage === 'string' && snapshot.coverImage.trim() === '' && user?.coverImage) {
-        snapshot.coverImage = user.coverImage;
-      }
       localStorage.setItem(key, JSON.stringify(snapshot));
       markPublicWebsiteDirty();
     } catch {
@@ -911,12 +905,6 @@ const CreatorDashboard = () => {
         const key = getProfileDraftKey(user.username);
         if (!key) return;
         const snapshot = buildProfileDraftSnapshot();
-        if (typeof snapshot.avatar === 'string' && snapshot.avatar.trim() === '' && user?.avatar) {
-          snapshot.avatar = user.avatar;
-        }
-        if (typeof snapshot.coverImage === 'string' && snapshot.coverImage.trim() === '' && user?.coverImage) {
-          snapshot.coverImage = user.coverImage;
-        }
         localStorage.setItem(key, JSON.stringify(snapshot));
         profileBaselineRef.current = serializeForDirtyCheck(profileData);
         setIsProfileDirty(false);
@@ -1012,10 +1000,10 @@ const CreatorDashboard = () => {
       payload.telegramUsername = payload.telegramUsername.trim().replace(/^@/, '');
     }
     if (typeof payload.avatar === 'string' && payload.avatar.trim() === '') {
-      delete payload.avatar;
+      payload.avatar = '';
     }
     if (typeof payload.coverImage === 'string' && payload.coverImage.trim() === '') {
-      delete payload.coverImage;
+      payload.coverImage = '';
     }
     const result = await api.updateProfile(payload);
     if (!result?.success) {
@@ -1029,12 +1017,6 @@ const CreatorDashboard = () => {
     const key = getProfileDraftKey(user.username);
     if (!key) return;
     const snapshot = buildProfileDraftSnapshot();
-    if (typeof snapshot.avatar === 'string' && snapshot.avatar.trim() === '' && user?.avatar) {
-      snapshot.avatar = user.avatar;
-    }
-    if (typeof snapshot.coverImage === 'string' && snapshot.coverImage.trim() === '' && user?.coverImage) {
-      snapshot.coverImage = user.coverImage;
-    }
     localStorage.setItem(key, JSON.stringify(snapshot));
     profileBaselineRef.current = serializeForDirtyCheck(profileData);
     setIsProfileDirty(false);
@@ -1055,12 +1037,6 @@ const CreatorDashboard = () => {
       snapshot.telegramChatId = '';
     } else if (telegramBotTokenConfigured && !isEditingTelegramToken && !String(snapshot.telegramBotToken || '').trim()) {
       delete snapshot.telegramBotToken;
-    }
-    if (typeof snapshot.avatar === 'string' && snapshot.avatar.trim() === '' && user?.avatar) {
-      snapshot.avatar = user.avatar;
-    }
-    if (typeof snapshot.coverImage === 'string' && snapshot.coverImage.trim() === '' && user?.coverImage) {
-      snapshot.coverImage = user.coverImage;
     }
     localStorage.setItem(key, JSON.stringify(snapshot));
     profileBaselineRef.current = serializeForDirtyCheck(nextProfileData);

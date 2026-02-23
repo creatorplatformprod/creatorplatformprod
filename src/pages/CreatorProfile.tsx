@@ -97,6 +97,12 @@ const isBlankLike = (value: unknown) => {
   const normalized = value.trim().toLowerCase();
   return normalized === "" || normalized === "null" || normalized === "undefined";
 };
+const isGeneratedPlaceholderAvatar = (value: unknown) => {
+  if (typeof value !== "string") return false;
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) return false;
+  return normalized.includes("ui-avatars.com") || normalized.includes("/avatar-placeholder");
+};
 const toDisplayNameFromUsername = (value?: string) => {
   const raw = (value || "").trim();
   if (!raw) return "Creator";
@@ -144,7 +150,7 @@ const CreatorProfile = () => {
       ...mockProfileDefaults,
       ...(profile && typeof profile === "object" ? profile : {})
     } as any;
-    if (isBlankLike(merged.avatar)) {
+    if (isBlankLike(merged.avatar) || isGeneratedPlaceholderAvatar(merged.avatar)) {
       merged.avatar = mockProfileDefaults.avatar;
     }
     if (isBlankLike(merged.coverImage)) {
@@ -158,7 +164,10 @@ const CreatorProfile = () => {
     }
     return merged;
   };
-  const mockAvatar = creatorData?.avatar || mockPhotos[0] || mockPack.avatar;
+  const mockAvatar =
+    (typeof creatorData?.avatar === "string" && !isBlankLike(creatorData.avatar) && !isGeneratedPlaceholderAvatar(creatorData.avatar)
+      ? creatorData.avatar
+      : null) || mockPhotos[0] || mockPack.avatar;
   const getProfileDraft = (targetUsername?: string) => {
     if (!targetUsername) return null;
     try {
@@ -742,7 +751,9 @@ const CreatorProfile = () => {
     typeof creatorData?.coverImage === 'string' ? creatorData.coverImage.trim() : '';
   const heroCoverImage = creatorCoverImage || mockPack.cover;
   const profileAvatarImage =
-    typeof creatorData?.avatar === 'string' && !isBlankLike(creatorData.avatar)
+    typeof creatorData?.avatar === 'string' &&
+    !isBlankLike(creatorData.avatar) &&
+    !isGeneratedPlaceholderAvatar(creatorData.avatar)
       ? creatorData.avatar.trim()
       : (mockPhotos[0] || mockPack.avatar);
 
