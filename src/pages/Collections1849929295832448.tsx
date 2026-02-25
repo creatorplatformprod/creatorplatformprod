@@ -192,7 +192,7 @@ const Collections1849929295832448 = () => {
 
     const isInteractiveTarget = (target: EventTarget | null) => {
       if (!(target instanceof Element)) return false;
-      return !!target.closest('button, a, input, textarea, select, video, [role="button"]');
+      return !!target.closest('button, a, input, textarea, select, video, img, picture, .video-container, [role="button"]');
     };
 
     const handleTouchStart = (event: TouchEvent) => {

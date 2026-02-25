@@ -289,6 +289,10 @@ const PublicWebsitePreview = () => {
     });
   };
 
+  const previewSurfaceStyle = {
+    backgroundColor: isDarkPreviewTheme ? '#020817' : '#f8fafc',
+  } as const;
+
   return (
     <div className="min-h-screen feed-bg">
       {/* Top Navbar */}
@@ -419,7 +423,7 @@ const PublicWebsitePreview = () => {
             <div className="w-full max-w-[1060px]">
               <div className="relative">
                 <div className="bg-gradient-to-b from-[#2d2d2d] to-[#1a1a1a] rounded-[20px] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)]">
-                  <div className="rounded-[14px] overflow-hidden">
+                  <div className="rounded-[14px] overflow-hidden" style={previewSurfaceStyle}>
                     {/* Browser Chrome */}
                     <div className={`browser-chrome ${isDarkPreviewTheme ? 'bg-black border-slate-800' : ''}`}>
                       <div className="browser-dots">
@@ -436,6 +440,7 @@ const PublicWebsitePreview = () => {
                     </div>
                     <div
                       className="relative mx-auto pr-2 [--viewport-w:1440px] [--viewport-h:900px] [--scale:0.26] sm:[--scale:0.40] md:[--scale:0.60] lg:[--scale:0.72] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]"
+                      style={previewSurfaceStyle}
                       onWheel={(e) => handlePreviewWheel(e, 'desktop')}
                       onTouchStart={(e) => handlePreviewTouchStart(e, 'desktop')}
                       onTouchMove={(e) => handlePreviewTouchMove(e, 'desktop')}
@@ -446,6 +451,7 @@ const PublicWebsitePreview = () => {
                         title="Desktop preview"
                         src={previewUrl}
                         className="absolute inset-0 origin-top-left [transform:scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
+                        style={previewSurfaceStyle}
                       />
                     </div>
                   </div>
@@ -466,11 +472,12 @@ const PublicWebsitePreview = () => {
           {/* Mobile Frame */}
           {activeDevice === 'mobile' && (
             <div className="relative bg-gradient-to-b from-[#2d2d2d] to-[#1a1a1a] rounded-[44px] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.08)] w-[300px] sm:w-[350px] md:w-[380px]">
-              <div className="rounded-[36px] overflow-hidden relative">
+              <div className="rounded-[36px] overflow-hidden relative" style={previewSurfaceStyle}>
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-10" />
                 <div
                   className="relative mx-auto overflow-hidden [--viewport-w:430px] [--viewport-h:932px] [--scale:0.60] sm:[--scale:0.76] md:[--scale:0.86] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]"
+                  style={previewSurfaceStyle}
                   onWheel={(e) => handlePreviewWheel(e, 'mobile')}
                   onTouchStart={(e) => handlePreviewTouchStart(e, 'mobile')}
                   onTouchMove={(e) => handlePreviewTouchMove(e, 'mobile')}
@@ -481,6 +488,7 @@ const PublicWebsitePreview = () => {
                     title="Mobile preview"
                     src={previewUrl}
                     className="absolute inset-0 origin-top-left [transform:translateX(-6px)_scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
+                    style={previewSurfaceStyle}
                   />
                 </div>
               </div>
