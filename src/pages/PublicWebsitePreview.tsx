@@ -470,7 +470,7 @@ const PublicWebsitePreview = () => {
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-10" />
                 <div
-                  className="relative mx-auto overflow-hidden [--viewport-w:430px] [--viewport-h:932px] [--scale:0.60] sm:[--scale:0.76] md:[--scale:0.86] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]"
+                  className="relative mx-auto pr-2 overflow-hidden [--viewport-w:430px] [--viewport-h:932px] [--scale:0.60] sm:[--scale:0.76] md:[--scale:0.86] w-[calc(var(--viewport-w)*var(--scale))] h-[calc(var(--viewport-h)*var(--scale))]"
                   onWheel={(e) => handlePreviewWheel(e, 'mobile')}
                   onTouchStart={(e) => handlePreviewTouchStart(e, 'mobile')}
                   onTouchMove={(e) => handlePreviewTouchMove(e, 'mobile')}
