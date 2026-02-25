@@ -24,6 +24,10 @@ export function usePublicWebsiteTheme(creatorUsername: string | undefined): stri
 
   useEffect(() => {
     if (!themeKey) return;
+    const syncFromStorage = () => {
+      const saved = localStorage.getItem(themeKey);
+      setUseClassicTheme(saved === 'classic');
+    };
     const handler = (e: MessageEvent) => {
       if (e.data?.type === 'TOGGLE_THEME') {
         setUseClassicTheme((prev) => {
@@ -31,10 +35,26 @@ export function usePublicWebsiteTheme(creatorUsername: string | undefined): stri
           localStorage.setItem(themeKey, next ? 'classic' : 'modern');
           return next;
         });
+        return;
+      }
+      if (e.data?.type === 'PUBLIC_THEME_CHANGED') {
+        if (e.data?.theme === 'classic' || e.data?.theme === 'modern') {
+          setUseClassicTheme(e.data.theme === 'classic');
+        } else {
+          syncFromStorage();
+        }
       }
     };
+    const storageHandler = (e: StorageEvent) => {
+      if (e.key !== themeKey) return;
+      syncFromStorage();
+    };
     window.addEventListener('message', handler);
-    return () => window.removeEventListener('message', handler);
+    window.addEventListener('storage', storageHandler);
+    return () => {
+      window.removeEventListener('message', handler);
+      window.removeEventListener('storage', storageHandler);
+    };
   }, [themeKey]);
 
   return useClassicTheme ? 'theme-classic-dark' : '';

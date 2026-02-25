@@ -769,12 +769,37 @@ const CreatorProfile = () => {
     return false;
   });
 
+  const applyPublicThemeSelection = (nextClassic: boolean) => {
+    setUseClassicTheme(nextClassic);
+    localStorage.setItem(THEME_KEY, nextClassic ? 'classic' : 'modern');
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage(
+          { type: 'PUBLIC_THEME_CHANGED', theme: nextClassic ? 'classic' : 'modern', username },
+          '*'
+        );
+      }
+    } catch {
+      // Ignore cross-window messaging failures.
+    }
+  };
+
   useEffect(() => {
     const handler = (e: MessageEvent) => {
       if (e.data?.type === 'TOGGLE_THEME') {
         setUseClassicTheme(prev => {
           const next = !prev;
-          localStorage.setItem(THEME_KEY, next ? 'classic' : 'modern');
+          try {
+            localStorage.setItem(THEME_KEY, next ? 'classic' : 'modern');
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage(
+                { type: 'PUBLIC_THEME_CHANGED', theme: next ? 'classic' : 'modern', username },
+                '*'
+              );
+            }
+          } catch {
+            // Ignore localStorage/postMessage failures.
+          }
           return next;
         });
       }
@@ -920,8 +945,7 @@ const CreatorProfile = () => {
             <div className="flex flex-col gap-1 rounded-full bg-background/90 backdrop-blur-sm border border-border shadow-sm p-1">
               <button
                 onClick={() => {
-                  setUseClassicTheme(false);
-                  localStorage.setItem(THEME_KEY, 'modern');
+                  applyPublicThemeSelection(false);
                 }}
                 className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
                   !useClassicTheme
@@ -935,8 +959,7 @@ const CreatorProfile = () => {
               </button>
               <button
                 onClick={() => {
-                  setUseClassicTheme(true);
-                  localStorage.setItem(THEME_KEY, 'classic');
+                  applyPublicThemeSelection(true);
                 }}
                 className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
                   useClassicTheme
