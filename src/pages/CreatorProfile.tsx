@@ -900,10 +900,24 @@ const CreatorProfile = () => {
     roundedClass: string
   ) => {
     const hasUrl = Boolean(url);
-    if (!hasUrl) {
-      return null;
-    }
     const baseClass = `${sizeClass} ${roundedClass} bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors`;
+    const iconNode = iconClass ? <span className={iconClass}>{icon}</span> : icon;
+
+    if (!hasUrl) {
+      if (!isPreviewMode) {
+        return null;
+      }
+      return (
+        <span
+          aria-label={`${label} (not set)`}
+          title={`${label} not set`}
+          className={`${baseClass} opacity-45 cursor-default`}
+        >
+          {iconNode}
+        </span>
+      );
+    }
+
     return (
       <a
         href={url}
@@ -913,14 +927,14 @@ const CreatorProfile = () => {
         title={label}
         className={baseClass}
       >
-        {iconClass ? (
-          <span className={iconClass}>{icon}</span>
-        ) : (
-          icon
-        )}
+        {iconNode}
       </a>
     );
   };
+
+  const hasAnySocialLinks = Boolean(
+    twitterUrl || instagramUrl || tiktokUrl || twitchUrl || telegramUrl || emailUrl
+  );
 
   const socialIconSet = (
     <>
@@ -1078,10 +1092,10 @@ const CreatorProfile = () => {
         {/* Profile Info */}
         <div className={`template-profile-shell relative max-w-[1600px] mx-auto px-4 -mt-10 sm:-mt-14 pb-6 sm:pb-8 transition-all duration-300 ${mainOffsetClass}`}>
           {allCollections.length > 0 && (
-            <div className="hidden lg:flex justify-end mb-3">
+            <div className="hidden lg:flex justify-start mb-3">
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta relative overflow-hidden text-xl font-extrabold tracking-tight text-foreground transition-all"
+                className="template-unlock-cta relative overflow-hidden text-2xl xl:text-3xl font-extrabold tracking-tight text-foreground transition-all"
               >
                 {!useClassicTheme && (
                   <span
@@ -1120,9 +1134,11 @@ const CreatorProfile = () => {
                 <span className="stat-pill">{(shouldUseMockData ? mockStatusCards.length : formattedStatusData.length)} Posts</span>
               </div>
             </div>
-            <div className="hidden lg:flex items-center gap-2 ml-auto self-center">
-              {socialIconSet}
-            </div>
+            {(isPreviewMode || hasAnySocialLinks) && (
+              <div className="hidden lg:flex items-center gap-2 ml-auto self-center">
+                {socialIconSet}
+              </div>
+            )}
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}

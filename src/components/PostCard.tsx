@@ -22,6 +22,13 @@ const MIN_IMAGES_TO_FILL_LAYOUT: Record<string, number> = {
 };
 
 const PostCard = ({ collection }: PostCardProps) => {
+  const visibleImages = collection.images.filter((image) => {
+    const full = String(image?.full || "").trim();
+    if (!full) return false;
+    // Draft/local upload blobs should be preview-only and never create broken tiles on public pages.
+    if (!collection.previewMode && full.startsWith("blob:")) return false;
+    return true;
+  });
   const engagementId = `collection:${collection.id}`;
   const [isLiked, setIsLiked] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(0);
@@ -74,7 +81,7 @@ const PostCard = ({ collection }: PostCardProps) => {
     setAllImagesLoaded(false);
     setLoadedCount(0);
     setCardRevealReady(false);
-  }, [collection.id, collection.images.length, collection.cardLayout?.maxImages]);
+  }, [collection.id, visibleImages.length, collection.cardLayout?.maxImages]);
 
   useEffect(() => {
     if (!allImagesLoaded) return;
@@ -84,7 +91,7 @@ const PostCard = ({ collection }: PostCardProps) => {
 
   useEffect(() => {
     if (allImagesLoaded) return;
-    const totalImages = Math.min(collection.images.length, collection.cardLayout.maxImages);
+    const totalImages = Math.min(visibleImages.length, collection.cardLayout.maxImages);
     if (totalImages <= 0) {
       setAllImagesLoaded(true);
       return;
@@ -93,7 +100,7 @@ const PostCard = ({ collection }: PostCardProps) => {
       setAllImagesLoaded(true);
     }, 4500);
     return () => window.clearTimeout(timeout);
-  }, [allImagesLoaded, collection.images.length, collection.cardLayout.maxImages]);
+  }, [allImagesLoaded, visibleImages.length, collection.cardLayout.maxImages]);
 
   const persistEngagement = (nextLikes: number, nextShares: number, nextLiked: boolean) => {
     setCurrentLikes(nextLikes);
@@ -207,7 +214,7 @@ const PostCard = ({ collection }: PostCardProps) => {
   const handleImageLoad = () => {
     setLoadedCount(prev => {
       const newCount = prev + 1;
-      const totalImages = Math.min(collection.images.length, collection.cardLayout.maxImages);
+      const totalImages = Math.min(visibleImages.length, collection.cardLayout.maxImages);
       if (newCount >= totalImages) {
         setAllImagesLoaded(true);
       }
@@ -216,8 +223,8 @@ const PostCard = ({ collection }: PostCardProps) => {
   };
 
   const renderCollectionPreview = () => {
-    const { cardLayout, images } = collection;
-    const initialPreviewImages = images.slice(0, cardLayout.maxImages);
+    const { cardLayout } = collection;
+    const initialPreviewImages = visibleImages.slice(0, cardLayout.maxImages);
     const isMockCollection = /^mock-collection-\d+$/i.test(collection.id);
     const filledPreviewImages = (() => {
       if (!isMockCollection) return initialPreviewImages;
@@ -282,10 +289,10 @@ const PostCard = ({ collection }: PostCardProps) => {
           })}
 
           {/* Additional images indicator - positioned relative to entire image area */}
-          {images.length > effectiveLayout.maxImages && (
+          {visibleImages.length > effectiveLayout.maxImages && (
             <div className="absolute bottom-3 right-4 z-10">
               <span className="text-white text-sm font-bold drop-shadow-lg">
-                +{images.length - effectiveLayout.maxImages}
+                +{visibleImages.length - effectiveLayout.maxImages}
               </span>
             </div>
           )}
