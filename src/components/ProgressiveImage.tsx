@@ -19,8 +19,8 @@ const ProgressiveImage = ({
   const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
   const FALLBACK_IMAGE = '/placeholder.svg';
   const hasDistinctThumbnail = Boolean(thumbnail && thumbnail !== src);
-  const [imgSrc, setImgSrc] = useState(hasDistinctThumbnail ? thumbnail : BLANK_IMAGE);
-  const [isLoading, setIsLoading] = useState(true);
+  const [imgSrc, setImgSrc] = useState(hasDistinctThumbnail ? thumbnail : (src || BLANK_IMAGE));
+  const [isLoading, setIsLoading] = useState(Boolean(src));
   const [isInView, setIsInView] = useState(false);
   const onLoadCalledRef = useRef(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -136,10 +136,11 @@ const ProgressiveImage = ({
   }, [src, onLoad, isInView]);
 
   useEffect(() => {
-    const initialThumb =
-      hasDistinctThumbnail && !failedCacheRef.current.has(thumbnail) ? thumbnail : BLANK_IMAGE;
-    setImgSrc(initialThumb);
-    setIsLoading(true);
+    const initialSrc = hasDistinctThumbnail && !failedCacheRef.current.has(thumbnail)
+      ? thumbnail
+      : (src || BLANK_IMAGE);
+    setImgSrc(initialSrc);
+    setIsLoading(Boolean(src));
     onLoadCalledRef.current = false;
   }, [src, thumbnail, hasDistinctThumbnail]);
 
@@ -149,8 +150,19 @@ const ProgressiveImage = ({
       src={imgSrc}
       alt={alt}
       className={`${className} ${isLoading ? 'image-loading' : 'image-loaded'}`}
-      loading="lazy"
+      loading={hasDistinctThumbnail ? "lazy" : "eager"}
       decoding="async"
+      onLoad={() => {
+        if (!hasDistinctThumbnail) {
+          if (isLoading) {
+            setIsLoading(false);
+          }
+          if (!onLoadCalledRef.current && onLoad) {
+            onLoadCalledRef.current = true;
+            onLoad();
+          }
+        }
+      }}
       onError={() => {
         if (imgSrc === thumbnail && hasDistinctThumbnail) {
           failedCacheRef.current.add(thumbnail);

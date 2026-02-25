@@ -39,6 +39,15 @@ const PINK_LEMONADE_IMAGE_IDS = [
 const pexelsImageUrl = (id, width = 1600) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
 const pexelsThumbUrl = (url, width = 560) => url.replace(/w=\d+/, `w=${width}`);
+const localMockImageModules = import.meta.glob("../../mockdata/*.{jpg,jpeg,png,webp,avif}", {
+  eager: true,
+  query: "?url",
+  import: "default"
+}) as Record<string, string>;
+const LOCAL_MOCK_IMAGE_URLS = Object.entries(localMockImageModules)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([, url]) => String(url))
+  .filter(Boolean);
 const hashString = (value) => {
   let hash = 0;
   for (let i = 0; i < value.length; i += 1) {
@@ -277,7 +286,12 @@ const Collections = () => {
 
   const mockSeed = useMemo(() => hashString((creatorUsername || 'creator').toLowerCase()), [creatorUsername]);
   const mockPhotos = useMemo(
-    () => seededShuffle(PINK_LEMONADE_IMAGE_IDS.map((id) => pexelsImageUrl(id, 1600)), mockSeed + 77),
+    () => seededShuffle(
+      (LOCAL_MOCK_IMAGE_URLS.length > 0
+        ? LOCAL_MOCK_IMAGE_URLS
+        : PINK_LEMONADE_IMAGE_IDS.map((id) => pexelsImageUrl(id, 1600))),
+      mockSeed + 77
+    ),
     [mockSeed]
   );
   const localMockCollections = useMemo(() => {

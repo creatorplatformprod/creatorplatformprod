@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Collection } from "@/collections/collectionsData";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import { fetchEngagement, registerEngagementShare, registerEngagementView, setEngagementLike } from "@/lib/engagement";
+import { buildCardLayout } from "@/lib/collectionLayout";
 
 interface PostCardProps {
   collection: Collection;
@@ -207,7 +208,33 @@ const PostCard = ({ collection }: PostCardProps) => {
 
   const renderCollectionPreview = () => {
     const { cardLayout, images } = collection;
-    const previewImages = images.slice(0, cardLayout.maxImages);
+    const initialPreviewImages = images.slice(0, cardLayout.maxImages);
+    const isMockCollection = /^mock-collection-\d+$/i.test(collection.id);
+    const filledPreviewImages = (() => {
+      if (!isMockCollection) return initialPreviewImages;
+      if (initialPreviewImages.length === 0) return initialPreviewImages;
+      if (initialPreviewImages.length >= cardLayout.maxImages) return initialPreviewImages;
+
+      let hash = 0;
+      for (let i = 0; i < collection.id.length; i += 1) {
+        hash = (hash * 31 + collection.id.charCodeAt(i)) >>> 0;
+      }
+
+      const next = [...initialPreviewImages];
+      while (next.length < cardLayout.maxImages) {
+        hash = (hash * 1664525 + 1013904223) >>> 0;
+        const pick = initialPreviewImages[hash % initialPreviewImages.length];
+        next.push(pick);
+      }
+      return next;
+    })();
+    const needsCompactFallback =
+      (cardLayout.gridType === 'asymmetric' && filledPreviewImages.length < 3) ||
+      (cardLayout.gridType === 'masonry' && filledPreviewImages.length < 4);
+    const effectiveLayout = needsCompactFallback
+      ? buildCardLayout(filledPreviewImages.length || 1)
+      : cardLayout;
+    const previewImages = filledPreviewImages.slice(0, effectiveLayout.maxImages);
     
     return (
       <div 
@@ -222,12 +249,12 @@ const PostCard = ({ collection }: PostCardProps) => {
         />
         
         <div
-          className={`${cardLayout.gridClasses} transition-opacity duration-500 ${
+          className={`${effectiveLayout.gridClasses} transition-opacity duration-500 ${
             cardRevealReady ? 'opacity-100' : 'opacity-0'
           }`}
         >
           {previewImages.map((image, index) => {
-            const spanClasses = cardLayout.imageSpans?.[index] || '';
+            const spanClasses = effectiveLayout.imageSpans?.[index] || '';
             
             return (
               <div 
@@ -246,10 +273,10 @@ const PostCard = ({ collection }: PostCardProps) => {
           })}
 
           {/* Additional images indicator - positioned relative to entire image area */}
-          {images.length > cardLayout.maxImages && (
+          {images.length > effectiveLayout.maxImages && (
             <div className="absolute bottom-3 right-4 z-10">
               <span className="text-white text-sm font-bold drop-shadow-lg">
-                +{images.length - cardLayout.maxImages}
+                +{images.length - effectiveLayout.maxImages}
               </span>
             </div>
           )}
