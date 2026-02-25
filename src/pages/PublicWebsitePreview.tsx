@@ -480,7 +480,7 @@ const PublicWebsitePreview = () => {
                     ref={mobileIframeRef}
                     title="Mobile preview"
                     src={previewUrl}
-                    className="absolute inset-0 origin-top-left [transform:scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
+                    className="absolute inset-0 origin-top-left [transform:translateX(-6px)_scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
                   />
                 </div>
               </div>
