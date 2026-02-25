@@ -20,6 +20,17 @@ type MockSourcePack = {
   photos: string[];
 };
 
+const localMockImageModules = import.meta.glob("../../mockdata/*.{jpg,jpeg,png,webp,avif}", {
+  eager: true,
+  query: "?url",
+  import: "default"
+}) as Record<string, string>;
+
+const LOCAL_MOCK_IMAGE_URLS = Object.entries(localMockImageModules)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([, url]) => String(url))
+  .filter(Boolean);
+
 const pexelsImageUrl = (id: number, width = 1600) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
 const pexelsThumbUrl = (url: string, width = 560) => url.replace(/w=\d+/, `w=${width}`);
@@ -35,10 +46,12 @@ const PINK_LEMONADE_IMAGE_IDS = [
 
 const MOCK_SOURCE_PACKS: MockSourcePack[] = [
   {
-    key: "pink-lemonade",
-    avatar: pexelsImageUrl(7346629, 800),
-    cover: pexelsImageUrl(7346691, 1800) + "&fit=crop",
-    photos: PINK_LEMONADE_IMAGE_IDS.map((id) => pexelsImageUrl(id, 1600))
+    key: LOCAL_MOCK_IMAGE_URLS.length > 0 ? "local-mockdata" : "pink-lemonade",
+    avatar: LOCAL_MOCK_IMAGE_URLS[0] || pexelsImageUrl(7346629, 800),
+    cover: LOCAL_MOCK_IMAGE_URLS[1] || LOCAL_MOCK_IMAGE_URLS[0] || (pexelsImageUrl(7346691, 1800) + "&fit=crop"),
+    photos: LOCAL_MOCK_IMAGE_URLS.length > 0
+      ? LOCAL_MOCK_IMAGE_URLS
+      : PINK_LEMONADE_IMAGE_IDS.map((id) => pexelsImageUrl(id, 1600))
   }
 ];
 
