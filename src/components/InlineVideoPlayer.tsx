@@ -225,9 +225,11 @@ const InlineVideoPlayer = ({
       <img
         src={thumbnailError ? thumbnail : videoThumbnail}
         alt=""
+        draggable={false}
         className={`w-full h-full object-cover absolute inset-0 ${isBlurred ? 'filter blur-sm' : ''} ${
           showThumbnail && !isPlaying && thumbnailLoaded ? 'opacity-100' : 'opacity-0'
         } transition-opacity duration-500`}
+        style={{ touchAction: 'pan-y' }}
         onLoad={() => setThumbnailLoaded(true)}
         onError={(e) => {
           if (!thumbnailError) {
@@ -250,9 +252,11 @@ const InlineVideoPlayer = ({
       <video
         ref={videoRef}
         src={src}
+        draggable={false}
         className={`w-full h-full ${isBlurred ? 'filter blur-sm' : ''} ${
           isVideoLoaded ? 'opacity-100' : 'opacity-0'
         } transition-opacity duration-500 ${isFullscreen ? 'object-contain' : 'object-cover'}`}
+        style={{ touchAction: 'pan-y' }}
         loop
         playsInline
         muted={isMuted}

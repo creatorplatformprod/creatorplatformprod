@@ -169,7 +169,9 @@ const ProgressiveImage = ({
       ref={imgRef}
       src={imgSrc}
       alt={alt}
+      draggable={false}
       className={`${className} ${isLoading ? 'image-loading' : 'image-loaded'}`}
+      style={{ touchAction: 'pan-y' }}
       loading={useStableMockDecode ? "eager" : (hasDistinctThumbnail ? "lazy" : "eager")}
       decoding="async"
       onLoad={() => {
