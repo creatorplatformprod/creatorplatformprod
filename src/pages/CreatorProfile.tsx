@@ -900,10 +900,8 @@ const CreatorProfile = () => {
     roundedClass: string
   ) => {
     const hasUrl = Boolean(url);
-    const neutralSurfaceClass = useClassicTheme
-      ? "bg-white/10 border border-white/15 text-white/80"
-      : "bg-white border border-gray-200 text-gray-600";
-    const baseClass = `${sizeClass} ${roundedClass} ${neutralSurfaceClass} flex items-center justify-center`;
+    const neutralColorClass = useClassicTheme ? "text-white/80" : "text-gray-500";
+    const baseClass = `${sizeClass} ${roundedClass} ${neutralColorClass} flex items-center justify-center`;
     const iconNode = iconClass ? <span className={iconClass}>{icon}</span> : icon;
 
     if (!hasUrl) {
@@ -928,7 +926,7 @@ const CreatorProfile = () => {
         rel="noopener noreferrer"
         aria-label={label}
         title={label}
-        className={baseClass}
+        className={`${baseClass} no-underline`}
       >
         {iconNode}
       </a>
@@ -1094,6 +1092,22 @@ const CreatorProfile = () => {
 
         {/* Profile Info */}
         <div className={`template-profile-shell relative max-w-[1600px] mx-auto px-4 -mt-10 sm:-mt-14 pb-6 sm:pb-8 transition-all duration-300 ${mainOffsetClass}`}>
+          {allCollections.length > 0 && (
+            <div className="hidden lg:flex justify-end mb-3">
+              <button
+                onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
+                className="template-unlock-cta relative overflow-hidden text-2xl xl:text-3xl font-extrabold tracking-tight text-foreground transition-all text-right"
+              >
+                {!useClassicTheme && (
+                  <span
+                    className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50"
+                    style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
+                  />
+                )}
+                <span className="relative unlock-cta-brand-gradient">Unlock Everything</span>
+              </button>
+            </div>
+          )}
           <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background lg:px-5 lg:py-4">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
@@ -1122,28 +1136,14 @@ const CreatorProfile = () => {
               </div>
             </div>
             <div className="hidden lg:flex ml-auto self-start flex-col items-end gap-3 pt-1">
-              {allCollections.length > 0 && (
-                <button
-                  onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                  className="template-unlock-cta relative overflow-hidden text-2xl xl:text-3xl font-extrabold tracking-tight text-foreground transition-all text-right"
-                >
-                  {!useClassicTheme && (
-                    <span
-                      className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50"
-                      style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
-                    />
-                  )}
-                  <span className="relative unlock-cta-brand-gradient">Unlock Everything</span>
-                </button>
-              )}
               {(isPreviewMode || hasAnySocialLinks) && (
                 <div className="flex flex-col items-end gap-2">
-                  <p className={`text-xs ${useClassicTheme ? 'text-white/70' : 'text-gray-500'} text-right`}>
-                    Follow {creatorData?.displayName || creatorData?.username || 'Creator'} on all platforms
-                  </p>
                   <div className="flex items-center justify-end gap-2">
                     {socialIconSet}
                   </div>
+                  <p className={`text-xs ${useClassicTheme ? 'text-white/70' : 'text-gray-500'} text-right`}>
+                    Follow {creatorData?.displayName || creatorData?.username || 'Creator'} on all platforms
+                  </p>
                 </div>
               )}
             </div>
