@@ -1095,14 +1095,8 @@ const CreatorProfile = () => {
             <div className="hidden lg:flex justify-end mb-3">
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta relative overflow-hidden text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all text-right"
+                className="template-unlock-cta relative overflow-hidden text-2xl xl:text-3xl font-bold tracking-tight text-foreground transition-all text-right"
               >
-                {!useClassicTheme && (
-                  <span
-                    className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50"
-                    style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
-                  />
-                )}
                 <span className="relative unlock-cta-brand-gradient unlock-cta-font">Unlock Everything</span>
               </button>
             </div>
@@ -1134,24 +1128,9 @@ const CreatorProfile = () => {
                 <span className="stat-pill">{(shouldUseMockData ? mockStatusCards.length : formattedStatusData.length)} Posts</span>
               </div>
             </div>
-            <div className="hidden lg:block ml-auto self-stretch w-[220px]" />
-            {allCollections.length > 0 && (
-              <button
-                onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-foreground transition-all lg:hidden"
-              >
-                {!useClassicTheme && (
-                  <span
-                    className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"
-                    style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
-                  />
-                )}
-                <span className="relative unlock-cta-brand-gradient unlock-cta-font">Unlock Everything</span>
-              </button>
-            )}
-            {(isPreviewMode || hasAnySocialLinks) && (
-              <div className="hidden lg:flex basis-full justify-end mt-1 pt-2 border-t border-border/50">
-                <div className="flex flex-col items-center gap-2 min-w-[220px]">
+            <div className="hidden lg:flex ml-auto self-stretch w-[220px] flex-col justify-end">
+              {(isPreviewMode || hasAnySocialLinks) && (
+                <div className="flex flex-col items-center gap-2 pb-1">
                   <p className={`text-[11px] ${useClassicTheme ? 'text-white/65' : 'text-gray-500'} text-center`}>
                     Follow for more
                   </p>
@@ -1159,7 +1138,15 @@ const CreatorProfile = () => {
                     {socialIconSet}
                   </div>
                 </div>
-              </div>
+              )}
+            </div>
+            {allCollections.length > 0 && (
+              <button
+                onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
+                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-foreground transition-all lg:hidden"
+              >
+                <span className="relative unlock-cta-brand-gradient unlock-cta-font">Unlock Everything</span>
+              </button>
             )}
           </div>
 
