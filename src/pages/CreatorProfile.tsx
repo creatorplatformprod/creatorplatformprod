@@ -945,7 +945,7 @@ const CreatorProfile = () => {
         <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.040 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
         </svg>,
-        "w-7 h-7",
+        "w-5 h-5",
         "",
         "rounded-md"
       )}
@@ -955,7 +955,7 @@ const CreatorProfile = () => {
         <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.40s-.644-1.44-1.439-1.40z"/>
         </svg>,
-        "w-7 h-7",
+        "w-5 h-5",
         "",
         "rounded-md"
       )}
@@ -965,7 +965,7 @@ const CreatorProfile = () => {
         <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.8v13.1a2.48 2.48 0 0 1-2.47 2.48 2.48 2.48 0 0 1-2.48-2.48 2.48 2.48 0 0 1 2.48-2.48c.24 0 .47.03.69.08V8.72a6.06 6.06 0 0 0-.69-.04A6.42 6.42 0 0 0 3.13 15.1a6.42 6.42 0 0 0 6.42 6.42 6.42 6.42 0 0 0 6.42-6.42V9.78a8.7 8.7 0 0 0 3.62.78z"/>
         </svg>,
-        "w-7 h-7",
+        "w-5 h-5",
         "",
         "rounded-md"
       )}
@@ -975,7 +975,7 @@ const CreatorProfile = () => {
         <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M4 3h16v10h-5l-3 3h-2v-3H4V3zm2 2v6h4v3.5L13 11h5V5H6zm11.5 9.5h2.5V21h-6v-3h4v-3.5z"/>
         </svg>,
-        "w-7 h-7",
+        "w-5 h-5",
         "",
         "rounded-md"
       )}
@@ -985,7 +985,7 @@ const CreatorProfile = () => {
         <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.174 1.858-.924 6.667-1.304 8.842-.168.968-.5 1.29-1.02 1.323-.87.052-1.53-.574-2.373-1.125-1.055-.69-1.653-1.07-2.68-1.714-1.188-.78-.418-1.21.258-1.912.178-.18 3.247-2.977 3.307-3.23.008-.03.015-.14-.053-.198-.068-.057-.17-.037-.244-.022-.105.02-1.79 1.14-5.06 3.345-.48.336-.914.5-1.302.492-.428-.008-1.252-.242-1.865-.44-.752-.243-1.35-.375-1.297-.79.027-.21.405-.416 1.11-.64 4.28-1.86 7.13-3.09 8.55-3.69 4.01-1.68 4.83-1.98 5.37-2.01.114-.005.37-.027.536.16.13.147.168.345.185.48z"/>
         </svg>,
-        "w-7 h-7",
+        "w-5 h-5",
         "",
         "rounded-md"
       )}
@@ -995,7 +995,7 @@ const CreatorProfile = () => {
         <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/>
         </svg>,
-        "w-7 h-7",
+        "w-5 h-5",
         "",
         "rounded-md"
       )}
@@ -1095,7 +1095,7 @@ const CreatorProfile = () => {
             <div className="hidden lg:flex justify-end mb-3">
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta relative overflow-hidden text-2xl xl:text-3xl font-extrabold tracking-tight text-foreground transition-all text-right"
+                className="template-unlock-cta relative overflow-hidden text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all text-right"
               >
                 {!useClassicTheme && (
                   <span
@@ -1103,11 +1103,11 @@ const CreatorProfile = () => {
                     style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
                   />
                 )}
-                <span className="relative unlock-cta-brand-gradient">Unlock Everything</span>
+                <span className="relative unlock-cta-brand-gradient italic font-serif tracking-normal">Unlock Everything</span>
               </button>
             </div>
           )}
-          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background lg:px-5 lg:py-4">
+          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 lg:flex-wrap lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background lg:px-5 lg:py-4">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
                 src={profileAvatarImage}
@@ -1134,7 +1134,7 @@ const CreatorProfile = () => {
                 <span className="stat-pill">{(shouldUseMockData ? mockStatusCards.length : formattedStatusData.length)} Posts</span>
               </div>
             </div>
-            <div className="hidden lg:block ml-auto self-stretch w-[320px]" />
+            <div className="hidden lg:block ml-auto self-stretch w-[220px]" />
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
@@ -1146,24 +1146,22 @@ const CreatorProfile = () => {
                     style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
                   />
                 )}
-                <span className="relative unlock-cta-brand-gradient">Unlock Everything</span>
+                <span className="relative unlock-cta-brand-gradient italic font-serif tracking-normal">Unlock Everything</span>
               </button>
             )}
-          </div>
-          {(isPreviewMode || hasAnySocialLinks) && (
-            <div className="hidden lg:flex -mt-4 mb-4 justify-end">
-              <div className="lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background px-5 py-3 min-w-[320px]">
-                <div className="flex flex-col items-center gap-2">
-                  <p className={`text-xs ${useClassicTheme ? 'text-white/70' : 'text-gray-500'} text-center`}>
+            {(isPreviewMode || hasAnySocialLinks) && (
+              <div className="hidden lg:flex basis-full justify-end mt-1 pt-2 border-t border-border/50">
+                <div className="flex flex-col items-center gap-2 min-w-[220px]">
+                  <p className={`text-[11px] ${useClassicTheme ? 'text-white/65' : 'text-gray-500'} text-center`}>
                     Follow for more
                   </p>
-                  <div className="flex items-center justify-center gap-3">
+                  <div className="flex items-center justify-center gap-4 opacity-85">
                     {socialIconSet}
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Content Filter Tabs - Integrated into hero */}
           <div className="max-w-4xl mx-auto">
