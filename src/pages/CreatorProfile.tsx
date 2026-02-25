@@ -958,7 +958,7 @@ const CreatorProfile = () => {
       {/* Profile Hero Section */}
       <div className="profile-hero template-hero relative">
         {/* Cover Photo Area with gradient overlay */}
-        <div className="template-cover relative h-72 sm:h-96 lg:h-[26rem] overflow-hidden">
+        <div className="template-cover relative h-72 sm:h-96 lg:h-[26rem] overflow-hidden -mb-px">
           {heroCoverImage ? (
             <img
               src={heroCoverImage}
