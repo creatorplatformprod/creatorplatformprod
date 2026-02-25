@@ -1051,7 +1051,6 @@ const CreatorProfile = () => {
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
           <div className="absolute inset-0" style={{ backgroundColor: `rgba(0, 0, 0, ${coverOverlay * 0.3})` }} />
           {useClassicTheme && (
             <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--feed-bg))] via-transparent to-transparent" />
@@ -1135,18 +1134,7 @@ const CreatorProfile = () => {
                 <span className="stat-pill">{(shouldUseMockData ? mockStatusCards.length : formattedStatusData.length)} Posts</span>
               </div>
             </div>
-            <div className="hidden lg:flex ml-auto self-start flex-col items-end gap-3 pt-1">
-              {(isPreviewMode || hasAnySocialLinks) && (
-                <div className="flex flex-col items-end gap-2">
-                  <div className="flex items-center justify-end gap-2">
-                    {socialIconSet}
-                  </div>
-                  <p className={`text-xs ${useClassicTheme ? 'text-white/70' : 'text-gray-500'} text-right`}>
-                    Follow {creatorData?.displayName || creatorData?.username || 'Creator'} on all platforms
-                  </p>
-                </div>
-              )}
-            </div>
+            <div className="hidden lg:block ml-auto self-stretch w-[320px]" />
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
@@ -1162,6 +1150,20 @@ const CreatorProfile = () => {
               </button>
             )}
           </div>
+          {(isPreviewMode || hasAnySocialLinks) && (
+            <div className="hidden lg:flex -mt-4 mb-4 justify-end">
+              <div className="lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background px-5 py-3 min-w-[320px]">
+                <div className="flex flex-col items-center gap-2">
+                  <p className={`text-xs ${useClassicTheme ? 'text-white/70' : 'text-gray-500'} text-center`}>
+                    Follow for more
+                  </p>
+                  <div className="flex items-center justify-center gap-3">
+                    {socialIconSet}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Content Filter Tabs - Integrated into hero */}
           <div className="max-w-4xl mx-auto">
