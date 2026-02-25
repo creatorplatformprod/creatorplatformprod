@@ -2,6 +2,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
+@font-face {
+  font-family: 'Rustic Roadway';
+  src: url('./assets/fonts/RusticRoadway.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Landing page typography */
 .font-fraunces {
   font-family: 'Fraunces', serif;
@@ -9,6 +17,12 @@
 
 .font-space-grotesk {
   font-family: 'Space Grotesk', sans-serif;
+}
+
+.unlock-cta-font {
+  font-family: 'Rustic Roadway', 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 @tailwind base;

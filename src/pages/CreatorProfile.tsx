@@ -1103,7 +1103,7 @@ const CreatorProfile = () => {
                     style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
                   />
                 )}
-                <span className="relative unlock-cta-brand-gradient italic font-serif tracking-normal">Unlock Everything</span>
+                <span className="relative unlock-cta-brand-gradient unlock-cta-font">Unlock Everything</span>
               </button>
             </div>
           )}
@@ -1146,7 +1146,7 @@ const CreatorProfile = () => {
                     style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
                   />
                 )}
-                <span className="relative unlock-cta-brand-gradient italic font-serif tracking-normal">Unlock Everything</span>
+                <span className="relative unlock-cta-brand-gradient unlock-cta-font">Unlock Everything</span>
               </button>
             )}
             {(isPreviewMode || hasAnySocialLinks) && (
