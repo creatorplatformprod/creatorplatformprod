@@ -591,6 +591,38 @@ const CreatorProfile = () => {
     setSearchQuery(query);
   };
 
+  const realSearchSuggestions = useMemo(() => {
+    if (shouldUseMockData) return [];
+    const values = new Set<string>();
+
+    formattedCollections.forEach((collection: any) => {
+      const title = String(collection?.title || '').trim();
+      if (title) values.add(title);
+      const description = String(collection?.description || '').trim();
+      if (description) {
+        description
+          .split(/[.!?\n,]+/)
+          .map((part) => part.trim())
+          .filter((part) => part.length >= 3 && part.length <= 48)
+          .slice(0, 2)
+          .forEach((part) => values.add(part));
+      }
+    });
+
+    formattedStatusData.forEach((status: any) => {
+      const text = String(status?.text || '').trim();
+      if (!text) return;
+      text
+        .split(/[.!?\n,]+/)
+        .map((part) => part.trim())
+        .filter((part) => part.length >= 3 && part.length <= 48)
+        .slice(0, 2)
+        .forEach((part) => values.add(part));
+    });
+
+    return Array.from(values).slice(0, 60);
+  }, [shouldUseMockData, formattedCollections, formattedStatusData]);
+
   const createStatusGroups = (posts: any[]) => {
     const groups = [];
     let i = 0;
@@ -913,6 +945,7 @@ const CreatorProfile = () => {
         onLogoClick={() => setSidebarOpen(!sidebarOpen)} 
         sidebarOpen={sidebarOpen} 
         title={creatorData?.displayName || creatorData?.username || "Creator"}
+        suggestions={shouldUseMockData ? undefined : realSearchSuggestions}
         rightSlot={
           <FanAccountMenu
             onOpenAuth={() => setShowFanAuthModal(true)}

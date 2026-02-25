@@ -10,6 +10,7 @@ interface FeedHeaderProps {
   title?: string;
   subtitle?: string;
   rightSlot?: JSX.Element;
+  suggestions?: string[];
 }
 
 const FeedHeader = ({
@@ -17,6 +18,7 @@ const FeedHeader = ({
   onLogoClick,
   title = "Creator",
   rightSlot,
+  suggestions,
 }: FeedHeaderProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -32,7 +34,7 @@ const FeedHeader = ({
   }, []);
 
 
-  const searchSuggestions = [
+  const defaultSearchSuggestions = [
     // Collection Titles
     "Dripping in Midnight", "Creature of the Night", "Netflix & Thrill",
     "Body as Canvas", "Dark Elegance", "Midnight Muse", "Crimson Sophistication",
@@ -53,6 +55,9 @@ const FeedHeader = ({
     "Lingerie", "Lace", "Silk", "Cozy Fit", "Minimal", "Body Art", "Photography",
     "Behind Scenes", "Photoshoot", "Camera", "Curves", "Silhouette"
   ];
+  const searchSuggestions = (Array.isArray(suggestions) && suggestions.length > 0)
+    ? suggestions
+    : defaultSearchSuggestions;
 
   const filteredSuggestions = searchSuggestions.filter(suggestion =>
     suggestion.toLowerCase().includes(searchQuery.toLowerCase())
