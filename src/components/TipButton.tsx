@@ -5,6 +5,21 @@ interface TipButtonProps {
   onTipClick?: () => void;
 }
 
+const RESERVED_PATHS = new Set([
+  '',
+  'public',
+  'collections',
+  'post',
+  'post-blurred',
+  'checkout',
+  'tip-checkout',
+  'dashboard',
+  'login',
+  'signup',
+  'recover-access',
+  'public-unavailable'
+]);
+
 const TipButton = ({ onTipClick }: TipButtonProps) => {
   const [showTipModal, setShowTipModal] = useState(false);
   const [tipEmail, setTipEmail] = useState("");
@@ -83,10 +98,22 @@ const TipButton = ({ onTipClick }: TipButtonProps) => {
 
     // Small delay to show loading state
     setTimeout(() => {
+      const currentUrl = new URL(window.location.href);
+      const pathParts = currentUrl.pathname.split('/').filter(Boolean);
+      const creatorFromQuery = currentUrl.searchParams.get('creator') || '';
+      let creatorFromPath = '';
+      if (pathParts[0] === 'public' && pathParts[1]) {
+        creatorFromPath = pathParts[1];
+      } else if (pathParts.length === 1 && !RESERVED_PATHS.has(pathParts[0])) {
+        creatorFromPath = pathParts[0];
+      }
+      const creatorUsername = (creatorFromQuery || creatorFromPath || '').trim();
+
       // Redirect to tip checkout page
       const checkoutUrl = `/tip-checkout?` +
         `amount=${amount}` +
-        `&email=${encodeURIComponent(sanitizedEmail)}`;
+        `&email=${encodeURIComponent(sanitizedEmail)}` +
+        (creatorUsername ? `&creator=${encodeURIComponent(creatorUsername)}` : '');
 
       window.location.href = checkoutUrl;
     }, 500); // 500ms delay to show the loader

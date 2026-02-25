@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import StatusCard from '@/components/StatusCard';
+import StatusCardWithMedia from '@/components/StatusCardWithMedia';
 import {
   LineChart, 
   Line, 
@@ -1156,7 +1158,7 @@ const CreatorDashboard = () => {
       thumbnailUrl: url,
       mediaType: isVideoMedia({ url }) ? 'video' : 'image'
     })),
-    isLocked: !!form.isLocked,
+    isLocked: false,
     order: Number.isFinite(Number(form.order)) ? Number(form.order) : 0
   });
 
@@ -1243,7 +1245,7 @@ const CreatorDashboard = () => {
       text: card.text || '',
       imageUrl: mediaItems[0]?.url || '',
       mediaUrls: mediaItems.map((item: any) => item.url),
-      isLocked: !!card.isLocked,
+      isLocked: false,
       order: Number(card.order) || 0
     };
     setSelectedPostCardId(card._id || '');
@@ -3274,7 +3276,6 @@ const CreatorDashboard = () => {
                               <p className="text-[11px] text-muted-foreground mt-0.5">
                                 {[
                                   cardMediaItems.length > 0 ? `${cardMediaItems.length} media` : 'Text only',
-                                  card.isLocked ? 'Locked' : null,
                                   `Order ${Number.isFinite(Number(card.order)) ? Number(card.order) : 0}`
                                 ].filter(Boolean).join(' - ')}
                               </p>
@@ -3434,19 +3435,6 @@ const CreatorDashboard = () => {
                     </div>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="isLocked"
-                    checked={statusCardForm.isLocked}
-                    onChange={(e) => setStatusCardForm({ ...statusCardForm, isLocked: e.target.checked })}
-                    className="w-4 h-4"
-                  />
-                  <label htmlFor="isLocked" className="text-sm text-foreground flex items-center gap-2">
-                    {statusCardForm.isLocked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
-                    Lock this post card
-                  </label>
-                </div>
               </div>
 
               <div className="border border-border rounded-lg p-3 space-y-2">
@@ -3456,56 +3444,49 @@ const CreatorDashboard = () => {
                     {postCardEditorMedia.length} media {postCardEditorMedia.length === 1 ? 'item' : 'items'}
                   </div>
                 </div>
-                <div className="post-card rounded-xl overflow-hidden bg-post-bg border border-border">
-                  <div className="p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-semibold text-primary">
-                          {(profileData.displayName || user?.username || 'C').slice(0, 1).toUpperCase()}
-                        </div>
-                        <div className="min-w-0">
-                          <div className="text-sm font-semibold text-foreground truncate">
-                            {profileData.displayName || user?.username || 'Your Name'}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {selectedPostCardId ? 'Previewing selected card' : 'Draft preview'}
-                          </div>
-                        </div>
-                      </div>
-                      {statusCardForm.isLocked && (
-                        <span className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary/70 px-2 py-1 text-[10px] text-muted-foreground">
-                          <Lock className="w-3 h-3" />
-                          Locked
-                        </span>
-                      )}
-                    </div>
-
-                    <p className="text-sm text-foreground whitespace-pre-wrap break-words min-h-[2.5rem]">
-                      {statusCardForm.text?.trim() || 'Your post text will appear here...'}
-                    </p>
-
-                    {postCardEditorMedia.length > 0 && (
-                      <div className="mt-3 grid grid-cols-2 gap-2">
-                        {postCardEditorMedia.slice(0, 4).map((media: any, idx: number) => {
-                          const src = getMediaSrcCandidates(media.thumbnailUrl || media.url)[0] || media.url;
-                          const isVideo = String(media.mediaType).includes('video');
-                          return (
-                            <div key={`${media.url}-${idx}`} className="relative h-24 rounded-md overflow-hidden border border-border bg-muted/20">
-                              {isVideo ? (
-                                <video src={src} className="h-full w-full object-cover" muted preload="metadata" />
-                              ) : (
-                                <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-3 border-t border-border bg-post-bg flex items-center justify-between text-xs text-muted-foreground">
-                    <span>{statusCardForm.isLocked ? 'Premium post card' : 'Public post card'}</span>
-                    <span>Order {Number.isFinite(Number(statusCardForm.order)) ? Number(statusCardForm.order) : 0}</span>
-                  </div>
+                <div className="pointer-events-none">
+                  {postCardEditorMedia.length > 0 ? (
+                    <StatusCardWithMedia
+                      id={`dashboard-preview-${selectedPostCardId || 'draft'}`}
+                      user={{
+                        name: profileData.displayName || user?.username || 'Your Name',
+                        avatar: profileData.avatar || user?.avatar || '/placeholder.svg',
+                        verified: !!user?.isVerified
+                      }}
+                      title=""
+                      text={statusCardForm.text?.trim() || 'Your post text will appear here...'}
+                      timestamp={selectedPostCardId ? 'Previewing selected card' : 'Draft preview'}
+                      likes={0}
+                      comments={0}
+                      mediaItems={postCardEditorMedia.slice(0, 4).map((media: any, idx: number) => {
+                        const candidates = getMediaSrcCandidates(media.thumbnailUrl || media.url);
+                        const thumb = candidates[0] || media.thumbnailUrl || media.url;
+                        return {
+                          type: String(media.mediaType).includes('video') ? 'video' as const : 'image' as const,
+                          url: getMediaSrcCandidates(media.url)[0] || media.url,
+                          thumbnail: thumb,
+                          alt: `Preview media ${idx + 1}`
+                        };
+                      })}
+                    />
+                  ) : (
+                    <StatusCard
+                      id={`dashboard-preview-${selectedPostCardId || 'draft'}`}
+                      user={{
+                        name: profileData.displayName || user?.username || 'Your Name',
+                        avatar: profileData.avatar || user?.avatar || '/placeholder.svg',
+                        verified: !!user?.isVerified
+                      }}
+                      title=""
+                      text={statusCardForm.text?.trim() || 'Your post text will appear here...'}
+                      timestamp={selectedPostCardId ? 'Previewing selected card' : 'Draft preview'}
+                      likes={0}
+                      comments={0}
+                    />
+                  )}
+                </div>
+                <div className="flex justify-end text-xs text-muted-foreground pt-1">
+                  <span>Order {Number.isFinite(Number(statusCardForm.order)) ? Number(statusCardForm.order) : 0}</span>
                 </div>
               </div>
 

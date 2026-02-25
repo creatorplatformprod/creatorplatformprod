@@ -12,6 +12,15 @@ interface PostCardProps {
   collection: Collection;
 }
 
+const MIN_IMAGES_TO_FILL_LAYOUT: Record<string, number> = {
+  single: 1,
+  double: 2,
+  triple: 3,
+  quad: 4,
+  masonry: 4,
+  asymmetric: 3
+};
+
 const PostCard = ({ collection }: PostCardProps) => {
   const engagementId = `collection:${collection.id}`;
   const [isLiked, setIsLiked] = useState(false);
@@ -229,8 +238,8 @@ const PostCard = ({ collection }: PostCardProps) => {
       return next;
     })();
     const needsCompactFallback =
-      (cardLayout.gridType === 'asymmetric' && filledPreviewImages.length < 3) ||
-      (cardLayout.gridType === 'masonry' && filledPreviewImages.length < 4);
+      filledPreviewImages.length <
+      (MIN_IMAGES_TO_FILL_LAYOUT[cardLayout.gridType] ?? cardLayout.maxImages ?? 1);
     const effectiveLayout = needsCompactFallback
       ? buildCardLayout(filledPreviewImages.length || 1)
       : cardLayout;

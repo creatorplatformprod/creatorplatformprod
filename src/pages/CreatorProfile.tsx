@@ -121,6 +121,21 @@ const toDisplayNameFromUsername = (value?: string) => {
   if (!raw) return "Creator";
   return raw.replace(/[._-]+/g, " ").replace(/\s+/g, " ").trim();
 };
+const isLocalMockAssetUrl = (value?: string) => {
+  const url = String(value || '').trim();
+  if (!url) return false;
+  if (/^https?:\/\//i.test(url)) return false;
+  if (url.includes('/mockdata/')) return true;
+  return /\/assets\/pexels-[^/]+\.(jpg|jpeg|png|webp|avif)(\?|#|$)/i.test(url);
+};
+const getMockDecodedCache = () => {
+  const key = '__mockDecodedImageCache';
+  const store = (globalThis as any)[key];
+  if (store instanceof Set) return store as Set<string>;
+  const next = new Set<string>();
+  (globalThis as any)[key] = next;
+  return next;
+};
 
 const CreatorProfile = () => {
   const { username } = useParams();
@@ -131,6 +146,7 @@ const CreatorProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showPreloader, setShowPreloader] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [heroCoverReady, setHeroCoverReady] = useState(false);
   const [creatorData, setCreatorData] = useState<any>(null);
   const [collections, setCollections] = useState<any[]>([]);
   const [statusCards, setStatusCards] = useState<any[]>([]);
@@ -774,6 +790,49 @@ const CreatorProfile = () => {
   const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
   const heroCoverImage = resolvedCreatorCoverImage;
   const profileAvatarImage = resolvedCreatorAvatarImage;
+  const shouldStabilizeHeroCover = isLocalMockAssetUrl(heroCoverImage);
+
+  useEffect(() => {
+    if (!heroCoverImage) {
+      setHeroCoverReady(false);
+      return;
+    }
+    if (!shouldStabilizeHeroCover) {
+      setHeroCoverReady(true);
+      return;
+    }
+    const cache = getMockDecodedCache();
+    if (cache.has(heroCoverImage)) {
+      setHeroCoverReady(true);
+      return;
+    }
+    setHeroCoverReady(false);
+    let cancelled = false;
+    const img = new window.Image();
+    img.decoding = 'async';
+    img.onload = async () => {
+      try {
+        if (typeof img.decode === 'function') {
+          await img.decode();
+        }
+      } catch {
+        // fallback to onload
+      }
+      if (cancelled) return;
+      cache.add(heroCoverImage);
+      setHeroCoverReady(true);
+    };
+    img.onerror = () => {
+      if (cancelled) return;
+      setHeroCoverReady(true);
+    };
+    img.src = heroCoverImage;
+    return () => {
+      cancelled = true;
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [heroCoverImage, shouldStabilizeHeroCover]);
 
   const renderSocialIcon = (
     url: string,
@@ -846,7 +905,9 @@ const CreatorProfile = () => {
             <img
               src={heroCoverImage}
               alt="Profile cover"
-              className="absolute inset-0 w-full h-full object-cover"
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-200 ${
+                heroCoverReady ? 'opacity-100' : 'opacity-0'
+              }`}
               onError={handleCoverImageError}
             />
           ) : (

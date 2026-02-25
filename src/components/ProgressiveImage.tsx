@@ -9,6 +9,14 @@ interface ProgressiveImageProps {
   onLoad?: () => void;
 }
 
+const isLocalMockAssetUrl = (value: string) => {
+  const url = String(value || '').trim();
+  if (!url) return false;
+  if (/^https?:\/\//i.test(url)) return false;
+  if (url.includes('/mockdata/')) return true;
+  return /\/assets\/pexels-[^/]+\.(jpg|jpeg|png|webp|avif)(\?|#|$)/i.test(url);
+};
+
 const ProgressiveImage = ({ 
   src, 
   thumbnail, 
@@ -18,8 +26,13 @@ const ProgressiveImage = ({
 }: ProgressiveImageProps) => {
   const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
   const FALLBACK_IMAGE = '/placeholder.svg';
+  const useStableMockDecode = isLocalMockAssetUrl(src);
   const hasDistinctThumbnail = Boolean(thumbnail && thumbnail !== src);
-  const [imgSrc, setImgSrc] = useState(hasDistinctThumbnail ? thumbnail : (src || BLANK_IMAGE));
+  const [imgSrc, setImgSrc] = useState(
+    useStableMockDecode
+      ? BLANK_IMAGE
+      : (hasDistinctThumbnail ? thumbnail : (src || BLANK_IMAGE))
+  );
   const [isLoading, setIsLoading] = useState(Boolean(src));
   const [isInView, setIsInView] = useState(false);
   const onLoadCalledRef = useRef(false);
@@ -78,6 +91,9 @@ const ProgressiveImage = ({
       return;
     }
 
+    if (useStableMockDecode) {
+      setImgSrc(BLANK_IMAGE);
+    }
     img.src = targetSrc;
     img.decoding = 'async';
 
@@ -133,16 +149,20 @@ const ProgressiveImage = ({
       img.onload = null;
       img.onerror = null;
     };
-  }, [src, onLoad, isInView]);
+  }, [src, onLoad, isInView, useStableMockDecode]);
 
   useEffect(() => {
-    const initialSrc = hasDistinctThumbnail && !failedCacheRef.current.has(thumbnail)
-      ? thumbnail
-      : (src || BLANK_IMAGE);
+    const initialSrc = useStableMockDecode
+      ? BLANK_IMAGE
+      : (
+          hasDistinctThumbnail && !failedCacheRef.current.has(thumbnail)
+            ? thumbnail
+            : (src || BLANK_IMAGE)
+        );
     setImgSrc(initialSrc);
     setIsLoading(Boolean(src));
     onLoadCalledRef.current = false;
-  }, [src, thumbnail, hasDistinctThumbnail]);
+  }, [src, thumbnail, hasDistinctThumbnail, useStableMockDecode]);
 
   return (
     <img
@@ -150,10 +170,10 @@ const ProgressiveImage = ({
       src={imgSrc}
       alt={alt}
       className={`${className} ${isLoading ? 'image-loading' : 'image-loaded'}`}
-      loading={hasDistinctThumbnail ? "lazy" : "eager"}
+      loading={useStableMockDecode ? "eager" : (hasDistinctThumbnail ? "lazy" : "eager")}
       decoding="async"
       onLoad={() => {
-        if (!hasDistinctThumbnail) {
+        if (!hasDistinctThumbnail && !useStableMockDecode) {
           if (isLoading) {
             setIsLoading(false);
           }

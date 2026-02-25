@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Loader2, CheckCircle2, Gift, AlertCircle, Clock, ChevronDown, CreditCard } from "lucide-react";
+import { api } from "@/lib/api";
 
 const RAW_API_URL =
   import.meta.env.VITE_API_URL ||
@@ -36,14 +37,20 @@ const TipCheckoutPage = () => {
   const [sessionExpired, setSessionExpired] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [creatorUsername, setCreatorUsername] = useState("");
+  const [creatorId, setCreatorId] = useState("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const email = params.get('email') || '';
     const amount = params.get('amount');
     const accessToken = params.get('access');
+    const creator = (params.get('creator') || '').trim();
+    const creatorIdParam = (params.get('creatorId') || '').trim();
     
     setCustomerEmail(email);
+    setCreatorUsername(creator);
+    setCreatorId(creatorIdParam);
     
     // Validate tip amount
     if (amount) {
@@ -72,6 +79,32 @@ const TipCheckoutPage = () => {
       setIsLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (creatorId) return;
+    if (!creatorUsername) return;
+    let cancelled = false;
+
+    api.getUser(creatorUsername)
+      .then((result: any) => {
+        if (cancelled) return;
+        const resolved =
+          result?.user?._id ||
+          result?.user?.id ||
+          result?.userId ||
+          '';
+        if (resolved) {
+          setCreatorId(String(resolved));
+        }
+      })
+      .catch(() => {
+        // Keep error handling on payment submit to match checkout behavior.
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [creatorUsername, creatorId]);
 
   // Fire purchase analytics event when payment succeeds
   useEffect(() => {
@@ -241,6 +274,11 @@ const TipCheckoutPage = () => {
       return;
     }
 
+    if (!creatorId) {
+      setPaymentError('Creator ID required');
+      return;
+    }
+
     setIsProcessing(true);
     setPaymentError("");
 
@@ -256,7 +294,9 @@ const TipCheckoutPage = () => {
             collectionId: 'all',
             currency: 'USD',
             provider: selectedProvider.id,
-            email: customerEmail.toLowerCase().trim()
+            email: customerEmail.toLowerCase().trim(),
+            creatorId,
+            ...(creatorUsername ? { creator: creatorUsername } : {})
           })
         }
       );
