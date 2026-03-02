@@ -1123,7 +1123,7 @@ const CreatorProfile = () => {
               {allCollections.length > 0 && (
                 <button
                   onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                  className="template-unlock-cta relative overflow-hidden mb-3 text-right text-2xl xl:text-3xl font-bold tracking-tight text-foreground transition-all"
+                  className="template-unlock-cta relative overflow-hidden mb-3 text-right text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
                 >
                   <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">Unlock Everything</span>
                 </button>
