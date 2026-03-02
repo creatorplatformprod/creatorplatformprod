@@ -1,6 +1,7 @@
 type PublicPageSkeletonProps = {
   variant?: "profile" | "locked-grid";
   themeClass?: string;
+  neutral?: boolean;
 };
 
 const cardHeights = [
@@ -17,11 +18,18 @@ const cardHeights = [
 const PublicPageSkeleton = ({
   variant = "profile",
   themeClass = "",
+  neutral = false,
 }: PublicPageSkeletonProps) => {
   const isLockedGrid = variant === "locked-grid";
+  const rootClasses = neutral
+    ? "min-h-screen mobile-stable-shell bg-gray-100"
+    : `min-h-screen mobile-stable-shell feed-bg ${themeClass}`;
+  const shellCardClass = neutral
+    ? "rounded-xl p-3 border border-gray-200 bg-white"
+    : "post-card rounded-xl p-3";
 
   return (
-    <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
+    <div className={rootClasses}>
       <header className="sticky top-0 z-20 nav-elevated">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
@@ -94,7 +102,7 @@ const PublicPageSkeleton = ({
               {Array.from({ length: isLockedGrid ? 12 : 6 }).map((_, idx) => (
                 <div
                   key={`card-${idx}`}
-                  className={`${isLockedGrid ? "mb-3 break-inside-avoid" : ""} post-card rounded-xl p-3`}
+                  className={`${isLockedGrid ? "mb-3 break-inside-avoid" : ""} ${shellCardClass}`}
                 >
                   <div className={`skeleton-shimmer rounded-lg ${cardHeights[idx % cardHeights.length]}`} />
                   {!isLockedGrid && (
@@ -111,11 +119,17 @@ const PublicPageSkeleton = ({
       </main>
 
       {isLockedGrid && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/45 px-4">
-          <div className="w-full max-w-xs rounded-2xl p-5 bg-black/25 backdrop-blur-sm border border-white/10">
+        <div className={`fixed inset-0 z-40 flex items-center justify-center px-4 ${neutral ? "bg-white/70" : "bg-black/45"}`}>
+          <div
+            className={`w-full max-w-xs rounded-2xl p-5 ${
+              neutral
+                ? "bg-gray-100 border border-gray-300"
+                : "bg-black/25 backdrop-blur-sm border border-white/10"
+            }`}
+          >
             <div className="skeleton-shimmer h-7 w-32 rounded-md mx-auto mb-4" />
             <div className="skeleton-shimmer h-4 w-48 rounded-md mx-auto mb-6" />
-            <div className="skeleton-dark-shimmer h-12 rounded-xl w-full" />
+            <div className={`${neutral ? "skeleton-shimmer bg-gray-300" : "skeleton-dark-shimmer"} h-12 rounded-xl w-full`} />
           </div>
         </div>
       )}

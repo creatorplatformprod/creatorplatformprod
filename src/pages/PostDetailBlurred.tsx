@@ -580,7 +580,7 @@ const PostDetailBlurred = () => {
   };
 
   if (showPageSkeleton) {
-    return <PublicPageSkeleton variant="locked-grid" themeClass={themeClass} />;
+    return <PublicPageSkeleton variant="locked-grid" themeClass={themeClass} neutral />;
   }
 
   if (!collection) {
