@@ -25,13 +25,6 @@
   letter-spacing: 0.01em;
 }
 
-@media (min-width: 1024px) {
-  .unlock-cta-desktop-outline {
-    -webkit-text-stroke: 0.2px rgba(255, 255, 255, 0.9);
-    paint-order: stroke fill;
-  }
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

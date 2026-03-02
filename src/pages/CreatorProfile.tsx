@@ -1098,7 +1098,7 @@ const CreatorProfile = () => {
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
                 className="template-unlock-cta relative overflow-hidden text-2xl xl:text-3xl font-extrabold tracking-tight text-foreground transition-all text-right"
               >
-                <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold unlock-cta-desktop-outline">Unlock Everything</span>
+                <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold">Unlock Everything</span>
               </button>
             </div>
           )}
