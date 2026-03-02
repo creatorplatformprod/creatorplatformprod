@@ -150,6 +150,66 @@ const loadImageDimensions = (file: File): Promise<{ width: number; height: numbe
   });
 };
 
+const convertImageFileToAvif = async (file: File, quality = 0.72): Promise<File> => {
+  if (!file?.type?.startsWith('image/')) {
+    return file;
+  }
+
+  try {
+    const objectUrl = URL.createObjectURL(file);
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new window.Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('Failed to decode selected image'));
+      img.src = objectUrl;
+    }).finally(() => {
+      URL.revokeObjectURL(objectUrl);
+    });
+
+    const width = Number.isFinite(image.naturalWidth) ? image.naturalWidth : 0;
+    const height = Number.isFinite(image.naturalHeight) ? image.naturalHeight : 0;
+    if (width <= 0 || height <= 0) {
+      return file;
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d');
+    if (!context) {
+      return file;
+    }
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = 'high';
+    context.drawImage(image, 0, 0, width, height);
+
+    const avifBlob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob(resolve, 'image/avif', quality);
+    });
+    if (!avifBlob || avifBlob.size <= 0 || !avifBlob.type.includes('avif')) {
+      return file;
+    }
+
+    const baseName = file.name.replace(/\.[^.]+$/, '') || 'image';
+    return new File([avifBlob], `${baseName}.avif`, {
+      type: 'image/avif',
+      lastModified: Date.now()
+    });
+  } catch {
+    return file;
+  }
+};
+
+const convertMediaFilesForDashboard = async (files: File[]) => {
+  const converted = await Promise.all(
+    files.map(async (file) => {
+      if (!file.type.startsWith('image/')) return file;
+      return convertImageFileToAvif(file);
+    })
+  );
+  return converted;
+};
+
 const getClampedOffsets = (
   dimensions: { width: number; height: number } | null,
   frame: { width: number; height: number },
@@ -221,15 +281,21 @@ const createEditedImageFile = async (
     drawHeight * scaleY
   );
 
-  const blob = await new Promise<Blob | null>((resolve) => {
-    canvas.toBlob(resolve, 'image/jpeg', 0.92);
+  const baseName = file.name.replace(/\.[^.]+$/, '') || 'image';
+  const avifBlob = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob(resolve, 'image/avif', 0.74);
   });
-  if (!blob) {
-    return file;
+  if (avifBlob && avifBlob.size > 0 && avifBlob.type.includes('avif')) {
+    return new File([avifBlob], `${baseName}-edited.avif`, { type: 'image/avif' });
   }
 
-  const baseName = file.name.replace(/\.[^.]+$/, '') || 'image';
-  return new File([blob], `${baseName}-edited.jpg`, { type: 'image/jpeg' });
+  const jpegBlob = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob(resolve, 'image/jpeg', 0.9);
+  });
+  if (!jpegBlob) {
+    return file;
+  }
+  return new File([jpegBlob], `${baseName}-edited.jpg`, { type: 'image/jpeg' });
 };
 
 const getFileDimensions = async (file: File): Promise<{ width: number | null; height: number | null }> => {
@@ -559,21 +625,22 @@ const CreatorDashboard = () => {
     return () => observer.disconnect();
   }, []);
 
-  const applyAvatarFile = (file: File | null) => {
+  const applyAvatarFile = async (file: File | null) => {
     if (!file || !file.type.startsWith('image/')) {
       setAvatarFile(null);
       setAvatarDimensions(null);
       setAvatarEditor(createDefaultCropEditorState());
       return;
     }
-    setAvatarFile(file);
+    const normalizedFile = await convertImageFileToAvif(file);
+    setAvatarFile(normalizedFile);
     setAvatarEditor(createDefaultCropEditorState());
-    loadImageDimensions(file)
+    loadImageDimensions(normalizedFile)
       .then((dims) => setAvatarDimensions(dims))
       .catch(() => setAvatarDimensions(null));
   };
 
-  const applyCoverFile = (file: File | null) => {
+  const applyCoverFile = async (file: File | null) => {
     if (!file || !file.type.startsWith('image/')) {
       setCoverImageFile(null);
       setCoverDimensions(null);
@@ -583,12 +650,13 @@ const CreatorDashboard = () => {
       }
       return;
     }
-    setCoverImageFile(file);
+    const normalizedFile = await convertImageFileToAvif(file);
+    setCoverImageFile(normalizedFile);
     setCoverEditor(createDefaultCropEditorState());
     requestAnimationFrame(() => {
       setCoverFrameSize(getCoverFrameSize());
     });
-    loadImageDimensions(file)
+    loadImageDimensions(normalizedFile)
       .then((dims) => setCoverDimensions(dims))
       .catch(() => setCoverDimensions(null));
   };
@@ -597,14 +665,23 @@ const CreatorDashboard = () => {
     e.preventDefault();
     setAvatarDropActive(false);
     const file = e.dataTransfer.files?.[0] || null;
-    applyAvatarFile(file);
+    void applyAvatarFile(file);
   };
 
   const handleCoverDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setCoverDropActive(false);
     const file = e.dataTransfer.files?.[0] || null;
-    applyCoverFile(file);
+    void applyCoverFile(file);
+  };
+
+  const handleSelectStatusCardFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) {
+      setStatusCardFiles([]);
+      return;
+    }
+    const converted = await convertMediaFilesForDashboard(Array.from(files));
+    setStatusCardFiles(converted);
   };
 
   const handleAvatarMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -1473,6 +1550,7 @@ const CreatorDashboard = () => {
         const attachResult = await api.addCollectionMedia(targetCollectionId, {
           url: uploadResult.url,
           thumbnailUrl: uploadResult.thumbnailUrl || uploadResult.url,
+          hlsUrl: uploadResult.hlsUrl || '',
           mediaType: uploadResult.mediaType,
           size: uploadResult.size,
           width: uploadResult.width ?? sourceDimensions.width,
@@ -1497,9 +1575,10 @@ const CreatorDashboard = () => {
     }
   };
 
-  const handleAddMoreCollectionFiles = (files: FileList | null) => {
+  const handleAddMoreCollectionFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
-    setCollectionFiles((prev) => [...prev, ...Array.from(files)]);
+    const converted = await convertMediaFilesForDashboard(Array.from(files));
+    setCollectionFiles((prev) => [...prev, ...converted]);
   };
 
   const handleRemoveSelectedFile = (index: number) => {
@@ -1559,6 +1638,7 @@ const CreatorDashboard = () => {
           const attachResult = await api.addCollectionMedia(createdId, {
             url: uploadResult.url,
             thumbnailUrl: uploadResult.thumbnailUrl || uploadResult.url,
+            hlsUrl: uploadResult.hlsUrl || '',
             mediaType: uploadResult.mediaType,
             size: uploadResult.size,
             width: uploadResult.width ?? sourceDimensions.width,
@@ -1839,7 +1919,7 @@ const CreatorDashboard = () => {
       return type.includes('video');
     }
     const url = String(media?.url || '');
-    return /\.(mp4|webm|mov|ogg|avi)(\?|#|$)/i.test(url);
+    return /\.(mp4|webm|mov|ogg|avi|m3u8)(\?|#|$)/i.test(url);
   };
 
   const collectionEditorMedia = useMemo(() => {
@@ -2646,7 +2726,7 @@ const CreatorDashboard = () => {
                     ref={avatarInputRef}
                     type="file"
                     accept="image/*"
-                    onChange={(e) => applyAvatarFile(e.target.files?.[0] || null)}
+                    onChange={(e) => void applyAvatarFile(e.target.files?.[0] || null)}
                     className="hidden"
                   />
                   <div
@@ -2812,7 +2892,7 @@ const CreatorDashboard = () => {
                     ref={coverInputRef}
                     type="file"
                     accept="image/*"
-                    onChange={(e) => applyCoverFile(e.target.files?.[0] || null)}
+                    onChange={(e) => void applyCoverFile(e.target.files?.[0] || null)}
                     onClick={(e) => {
                       (e.currentTarget as HTMLInputElement).value = '';
                     }}
@@ -3517,7 +3597,7 @@ const CreatorDashboard = () => {
                         type="file"
                         accept="image/*,video/*"
                         multiple
-                        onChange={(e) => setStatusCardFiles(Array.from(e.target.files || []))}
+                        onChange={(e) => void handleSelectStatusCardFiles(e.target.files)}
                       />
                       <div className="flex flex-wrap items-center gap-2 mt-2">
                         <Button

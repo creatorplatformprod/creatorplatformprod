@@ -212,7 +212,7 @@ const PostDetailBlurred = () => {
   }, [id]);
 
   const isVideoUrl = (url: string): boolean => {
-    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.m3u8'];
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   };
 
@@ -251,6 +251,7 @@ const PostDetailBlurred = () => {
           images: (collectionResult.collection.media || []).map((media: any) => ({
             full: media.url,
             thumb: media.thumbnailUrl || media.url,
+            hlsSrc: String(media.hlsUrl || '').trim(),
             width: Number.isFinite(Number(media.width)) && Number(media.width) > 0 ? Number(media.width) : null,
             height: Number.isFinite(Number(media.height)) && Number(media.height) > 0 ? Number(media.height) : null
           })),
@@ -285,6 +286,7 @@ const PostDetailBlurred = () => {
               images: (ownCollection.media || []).map((media: any) => ({
                 full: media.url,
                 thumb: media.thumbnailUrl || media.url,
+                hlsSrc: String(media.hlsUrl || '').trim(),
                 width: Number.isFinite(Number(media.width)) && Number(media.width) > 0 ? Number(media.width) : null,
                 height: Number.isFinite(Number(media.height)) && Number(media.height) > 0 ? Number(media.height) : null
               })),
@@ -319,6 +321,7 @@ const PostDetailBlurred = () => {
               images: (ownCollection.media || []).map((media: any) => ({
                 full: media.url,
                 thumb: media.thumbnailUrl || media.url,
+                hlsSrc: String(media.hlsUrl || '').trim(),
                 width: Number.isFinite(Number(media.width)) && Number(media.width) > 0 ? Number(media.width) : null,
                 height: Number.isFinite(Number(media.height)) && Number(media.height) > 0 ? Number(media.height) : null
               })),
@@ -641,12 +644,15 @@ const PostDetailBlurred = () => {
                 let thumbSrc = typeof imageData === 'string' 
                   ? imageSrc
                   : imageData.thumb;
+                const hlsSrc = typeof imageData === 'string'
+                  ? ''
+                  : String(imageData?.hlsSrc || '');
                 
                 const mediaType = isVideoUrl(imageSrc) ? 'video' : 'image';
                 
                 // For videos, try to get an avif thumbnail instead of the video file
                 if (mediaType === 'video') {
-                  thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.avif');
+                  thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi|m3u8)$/i, '.avif');
                 }
                 const isMediaLoaded = loadedImages.has(imageSrc);
                 const md = measuredDims[imageSrc];
@@ -680,6 +686,7 @@ const PostDetailBlurred = () => {
                     {mediaType === 'video' ? (
                       <InlineVideoPlayer
                         src={imageSrc}
+                        hlsSrc={hlsSrc}
                         thumbnail={thumbSrc}
                         alt=""
                         className={`w-full h-full transition-all duration-500 ${isMediaLoaded ? 'opacity-100' : 'opacity-0'}`}

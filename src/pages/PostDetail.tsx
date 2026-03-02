@@ -11,6 +11,8 @@ import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
 import { useSeo } from "@/hooks/use-seo";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
+import PublicPageSkeleton from "@/components/PublicPageSkeleton";
+import { useSkeletonGate } from "@/hooks/useSkeletonGate";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -78,6 +80,7 @@ const PostDetail = () => {
   const [remoteCollection, setRemoteCollection] = useState<any>(null);
   const [remoteLoading, setRemoteLoading] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
+  const [pageBootLoading, setPageBootLoading] = useState(true);
   const themeClass = usePublicWebsiteTheme(creatorParam || undefined);
   const isDarkTheme = themeClass === 'theme-classic-dark';
   const mockSeed = useMemo(() => hashString((creatorParam || 'creator').toLowerCase()), [creatorParam]);
@@ -163,8 +166,14 @@ const PostDetail = () => {
     window.scrollTo(0, 0);
   }, [secureId]);
 
+  useEffect(() => {
+    setPageBootLoading(true);
+    const timer = window.setTimeout(() => setPageBootLoading(false), 280);
+    return () => window.clearTimeout(timer);
+  }, [secureId]);
+
   const isVideoUrl = (url: string): boolean => {
-    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.m3u8'];
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   };
 
@@ -216,6 +225,7 @@ const PostDetail = () => {
                   images: (ownCollection.media || []).map((media: any) => ({
                     full: media.url,
                     thumb: media.thumbnailUrl || media.url,
+                    hlsSrc: String(media.hlsUrl || '').trim(),
                     width: Number.isFinite(Number(media.width)) && Number(media.width) > 0 ? Number(media.width) : null,
                     height: Number.isFinite(Number(media.height)) && Number(media.height) > 0 ? Number(media.height) : null
                   })),
@@ -274,6 +284,7 @@ const PostDetail = () => {
           images: (collectionResult.collection.media || []).map((media: any) => ({
             full: media.url,
             thumb: media.thumbnailUrl || media.url,
+            hlsSrc: String(media.hlsUrl || '').trim(),
             width: Number.isFinite(Number(media.width)) && Number(media.width) > 0 ? Number(media.width) : null,
             height: Number.isFinite(Number(media.height)) && Number(media.height) > 0 ? Number(media.height) : null
           })),
@@ -310,6 +321,10 @@ const PostDetail = () => {
 
   const localCollection = getCollectionFromSecureId();
   const collection = remoteCollection || localCollection;
+  const showPageSkeleton = useSkeletonGate((remoteLoading && !collection) || pageBootLoading, {
+    delayMs: 100,
+    minVisibleMs: 320,
+  });
 
   useSeo(
     {
@@ -468,15 +483,8 @@ const PostDetail = () => {
     );
   }
 
-  if (remoteLoading && !collection) {
-    return (
-      <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-          <p className="text-muted-foreground">Loading collection...</p>
-        </div>
-      </div>
-    );
+  if (showPageSkeleton && !accessDenied) {
+    return <PublicPageSkeleton variant="profile" themeClass={themeClass} />;
   }
 
   if (!collection) {
@@ -569,12 +577,15 @@ const PostDetail = () => {
                     let thumbSrc = typeof imageData === 'string' 
                       ? imageSrc
                       : imageData.thumb;
+                    const hlsSrc = typeof imageData === 'string'
+                      ? ''
+                      : String(imageData?.hlsSrc || '');
                     
                     const mediaType = isVideoUrl(imageSrc) ? 'video' : 'image';
                     
                     // For videos, try to get an avif thumbnail instead of the video file
                     if (mediaType === 'video') {
-                      thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.avif');
+                      thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi|m3u8)$/i, '.avif');
                     }
                     const isMediaLoaded = loadedImages.has(imageSrc);
                     const md = measuredDims[imageSrc];
@@ -605,6 +616,7 @@ const PostDetail = () => {
                         {mediaType === 'video' ? (
                           <InlineVideoPlayer
                             src={imageSrc}
+                            hlsSrc={hlsSrc}
                             thumbnail={thumbSrc}
                             alt={`${collection.title} - Video ${index + 1}`}
                             className={`w-full h-full transition-all duration-500 ${

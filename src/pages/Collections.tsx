@@ -173,7 +173,7 @@ const Collections = () => {
   }, [activeFan?.email, customerEmail]);
 
   const isVideoUrl = (url) => {
-    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.m3u8'];
     return videoExtensions.some(ext => url.toLowerCase().includes(ext));
   };
 
@@ -345,7 +345,7 @@ const Collections = () => {
           let thumbSrc = mediaItem.thumbnailUrl || mediaItem.url;
           const mediaType = mediaItem.mediaType || (isVideoUrl(imageSrc) ? 'video' : 'image');
           if (mediaType === 'video') {
-            thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.avif');
+            thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi|m3u8)$/i, '.avif');
           }
           const parsedWidth = Number(mediaItem.width);
           const parsedHeight = Number(mediaItem.height);
@@ -353,6 +353,7 @@ const Collections = () => {
           items.push({
             src: imageSrc,
             thumb: thumbSrc,
+            hlsSrc: String(mediaItem.hlsUrl || '').trim(),
             collectionId: collection._id,
             collectionTitle: collection.title,
             imageIndex: index,
@@ -651,6 +652,7 @@ const Collections = () => {
                       {mediaObj.mediaType === 'video' ? (
                         <InlineVideoPlayer
                           src={mediaObj.src}
+                          hlsSrc={mediaObj.hlsSrc}
                           thumbnail={mediaObj.thumb}
                           alt={`${mediaObj.collectionTitle} - Video ${mediaObj.imageIndex + 1}`}
                           className={`w-full h-full transition-all duration-500 ${

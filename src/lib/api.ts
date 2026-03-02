@@ -255,6 +255,7 @@ export const api = {
     media?: Array<{
       url: string;
       thumbnailUrl?: string;
+      hlsUrl?: string;
       mediaType?: string;
       size?: number;
       width?: number;
@@ -332,7 +333,7 @@ export const api = {
   createCollection: async (data: {
     title: string;
     description?: string;
-    media?: Array<{ url: string; thumbnailUrl: string; mediaType: string }>;
+    media?: Array<{ url: string; thumbnailUrl: string; hlsUrl?: string; mediaType: string }>;
     price: number;
     currency?: string;
     tags?: string[];
@@ -349,6 +350,7 @@ export const api = {
   addCollectionMedia: async (collectionId: string, data: {
     url: string;
     thumbnailUrl?: string;
+    hlsUrl?: string;
     mediaType?: string;
     size?: number;
     width?: number | null;

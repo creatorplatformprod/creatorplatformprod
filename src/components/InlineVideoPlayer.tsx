@@ -3,6 +3,7 @@ import { Play, Pause, Volume2, VolumeX, Maximize2 } from 'lucide-react';
 
 interface InlineVideoPlayerProps {
   src: string;
+  hlsSrc?: string;
   thumbnail: string;
   alt: string;
   className?: string;
@@ -13,6 +14,7 @@ interface InlineVideoPlayerProps {
 
 const InlineVideoPlayer = ({ 
   src, 
+  hlsSrc = "",
   thumbnail, 
   alt, 
   className = "",
@@ -39,13 +41,77 @@ const InlineVideoPlayer = ({
   const getVideoThumbnail = () => {
     let thumbSrc = thumbnail;
     // For videos, try to get an avif thumbnail instead of the video file
-    if (src.match(/\.(mp4|webm|mov|ogg|avi)$/i)) {
-      thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.avif');
+    if (src.match(/\.(mp4|webm|mov|ogg|avi|m3u8)$/i)) {
+      thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi|m3u8)$/i, '.avif');
     }
     return thumbSrc;
   };
 
   const videoThumbnail = getVideoThumbnail();
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    let isMounted = true;
+    let hlsInstance: any = null;
+
+    const useMp4Fallback = () => {
+      if (!isMounted) return;
+      if (video.src !== src) {
+        video.src = src;
+        video.load();
+      }
+    };
+
+    const setupSource = async () => {
+      if (!hlsSrc) {
+        useMp4Fallback();
+        return;
+      }
+
+      const canPlayNativeHls = video.canPlayType('application/vnd.apple.mpegurl') !== '';
+      if (canPlayNativeHls) {
+        video.src = hlsSrc;
+        video.load();
+        return;
+      }
+
+      try {
+        const module = await import('hls.js');
+        if (!isMounted) return;
+        const Hls = module.default;
+        if (!Hls?.isSupported?.()) {
+          useMp4Fallback();
+          return;
+        }
+        hlsInstance = new Hls({
+          enableWorker: true,
+          backBufferLength: 45
+        });
+        hlsInstance.loadSource(hlsSrc);
+        hlsInstance.attachMedia(video);
+        hlsInstance.on(Hls.Events.ERROR, (_evt: any, data: any) => {
+          if (data?.fatal) {
+            hlsInstance?.destroy?.();
+            hlsInstance = null;
+            useMp4Fallback();
+          }
+        });
+      } catch {
+        useMp4Fallback();
+      }
+    };
+
+    setupSource();
+
+    return () => {
+      isMounted = false;
+      if (hlsInstance) {
+        hlsInstance.destroy();
+      }
+    };
+  }, [src, hlsSrc]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -251,7 +317,6 @@ const InlineVideoPlayer = ({
       {/* Video Element */}
       <video
         ref={videoRef}
-        src={src}
         draggable={false}
         className={`w-full h-full ${isBlurred ? 'filter blur-sm' : ''} ${
           isVideoLoaded ? 'opacity-100' : 'opacity-0'
