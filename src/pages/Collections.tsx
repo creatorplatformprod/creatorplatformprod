@@ -589,7 +589,7 @@ const Collections = () => {
   };
 
   if (showPageSkeleton) {
-    return <PublicPageSkeleton variant="locked-grid" themeClass={themeClass} neutral />;
+    return <PublicPageSkeleton variant="locked-grid" themeClass={themeClass} />;
   }
 
   return (
