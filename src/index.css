@@ -853,54 +853,6 @@
     transform: translateX(-100%);
   }
 
-  .skeleton-neutral-light {
-    position: relative;
-    overflow: hidden;
-    background: #e5e7eb;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .skeleton-neutral-light::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.42) 45%,
-      rgba(255, 255, 255, 0.62) 50%,
-      rgba(255, 255, 255, 0.42) 55%,
-      transparent 100%
-    );
-    animation: shimmer-sweep 1.7s ease-in-out infinite;
-    transform: translateX(-100%);
-  }
-
-  .skeleton-neutral-dark {
-    position: relative;
-    overflow: hidden;
-    background: #243042;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .skeleton-neutral-dark::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.08) 45%,
-      rgba(255, 255, 255, 0.14) 50%,
-      rgba(255, 255, 255, 0.08) 55%,
-      transparent 100%
-    );
-    animation: shimmer-sweep 1.8s ease-in-out infinite;
-    transform: translateX(-100%);
-  }
-
   /* Image reveal transition */
   .image-loading {
     opacity: 0;
