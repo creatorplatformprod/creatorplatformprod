@@ -1809,7 +1809,8 @@
   }
 
   /* Unlock Everything CTA */
-  .theme-classic-dark .unlock-cta-brand-gradient {
+  .theme-classic-dark .unlock-cta-brand-gradient,
+  .theme-classic-dark .template-unlock-cta {
     background: linear-gradient(135deg, hsl(200 100% 65%) 0%, hsl(280 80% 65%) 100%) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
