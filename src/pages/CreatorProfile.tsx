@@ -1003,7 +1003,7 @@ const CreatorProfile = () => {
     </>
   );
 
-  if (showPageSkeleton) {
+  if (isLoading || showPreloader || showPageSkeleton) {
     return <PublicPageSkeleton variant="profile" themeClass={classicDarkClass} />;
   }
 
