@@ -27,8 +27,7 @@
 
 @media (min-width: 1024px) {
   .unlock-cta-desktop-outline {
-    -webkit-text-stroke: 0.3px rgba(255, 255, 255, 0.7);
-    text-shadow: 0 0 0.4px rgba(255, 255, 255, 0.3);
+    -webkit-text-stroke: 0.2px rgba(255, 255, 255, 0.9);
     paint-order: stroke fill;
   }
 }
