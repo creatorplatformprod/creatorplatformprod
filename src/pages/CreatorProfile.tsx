@@ -1098,7 +1098,7 @@ const CreatorProfile = () => {
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
                 className="template-unlock-cta relative overflow-hidden text-2xl xl:text-3xl font-bold tracking-tight text-foreground transition-all text-right"
               >
-                <span className="relative unlock-cta-brand-gradient unlock-cta-font">Unlock Everything</span>
+                <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold">Unlock Everything</span>
               </button>
             </div>
           )}
@@ -1146,7 +1146,7 @@ const CreatorProfile = () => {
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
                 className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-foreground transition-all lg:hidden"
               >
-                <span className="relative unlock-cta-brand-gradient unlock-cta-font">Unlock Everything</span>
+                <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold">Unlock Everything</span>
               </button>
             )}
           </div>
