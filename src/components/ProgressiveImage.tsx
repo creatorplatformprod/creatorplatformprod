@@ -38,13 +38,10 @@ const ProgressiveImage = ({
   const onLoadCalledRef = useRef(false);
   const imgRef = useRef<HTMLImageElement>(null);
   const loadedCacheRef = useRef<Set<string>>((globalThis as any).__progressiveImageLoadedCache || new Set<string>());
-  const failedCacheRef = useRef<Set<string>>((globalThis as any).__progressiveImageFailedCache || new Set<string>());
+  const failedThumbnailCacheRef = useRef<Set<string>>(new Set<string>());
 
   if (!(globalThis as any).__progressiveImageLoadedCache) {
     (globalThis as any).__progressiveImageLoadedCache = loadedCacheRef.current;
-  }
-  if (!(globalThis as any).__progressiveImageFailedCache) {
-    (globalThis as any).__progressiveImageFailedCache = failedCacheRef.current;
   }
 
   // Intersection Observer for lazy loading
@@ -77,12 +74,26 @@ const ProgressiveImage = ({
   useEffect(() => {
     if (!isInView) return;
 
-    const targetSrc = failedCacheRef.current.has(src) ? FALLBACK_IMAGE : src;
-    const img = new Image();
+    const targetSrc = src || FALLBACK_IMAGE;
+    const srcCandidates = (() => {
+      const normalized = String(targetSrc || '').trim();
+      if (!normalized) return [FALLBACK_IMAGE];
+      const candidates = [normalized];
+      if (/\.avif(\?|#|$)/i.test(normalized)) {
+        candidates.push(
+          normalized.replace(/\.avif(\?|#|$)/i, '.webp$1'),
+          normalized.replace(/\.avif(\?|#|$)/i, '.jpg$1'),
+          normalized.replace(/\.avif(\?|#|$)/i, '.jpeg$1'),
+          normalized.replace(/\.avif(\?|#|$)/i, '.png$1')
+        );
+      }
+      return Array.from(new Set(candidates.filter(Boolean)));
+    })();
     let cancelled = false;
 
-    if (loadedCacheRef.current.has(targetSrc)) {
-      setImgSrc(targetSrc);
+    const cached = srcCandidates.find((candidate) => loadedCacheRef.current.has(candidate));
+    if (cached) {
+      setImgSrc(cached);
       setIsLoading(false);
       if (!onLoadCalledRef.current && onLoad) {
         onLoadCalledRef.current = true;
@@ -94,60 +105,42 @@ const ProgressiveImage = ({
     if (useStableMockDecode) {
       setImgSrc(BLANK_IMAGE);
     }
-    img.src = targetSrc;
-    img.decoding = 'async';
-
-    img.onload = async () => {
-      try {
-        if (typeof img.decode === 'function') {
-          await img.decode();
-        }
-      } catch {
-        // decode can fail on some browsers; fallback to onload behavior
-      }
-
+    const preloadCandidate = (index: number) => {
       if (cancelled) return;
-      loadedCacheRef.current.add(targetSrc);
-      setImgSrc(targetSrc);
-      setIsLoading(false);
-      if (!onLoadCalledRef.current && onLoad) {
-        onLoadCalledRef.current = true;
-        onLoad();
-      }
-    };
-
-    img.onerror = () => {
-      if (cancelled) return;
-      failedCacheRef.current.add(targetSrc);
-      if (targetSrc !== FALLBACK_IMAGE) {
-        const fallbackImg = new Image();
-        fallbackImg.src = FALLBACK_IMAGE;
-        fallbackImg.onload = () => {
-          if (cancelled) return;
-          loadedCacheRef.current.add(FALLBACK_IMAGE);
-          setImgSrc(FALLBACK_IMAGE);
-          setIsLoading(false);
-          if (!onLoadCalledRef.current && onLoad) {
-            onLoadCalledRef.current = true;
-            onLoad();
-          }
-        };
-        fallbackImg.onerror = () => {
-          if (cancelled) return;
-          setImgSrc(BLANK_IMAGE);
-          setIsLoading(false);
-        };
+      const currentCandidate = srcCandidates[index];
+      if (!currentCandidate) {
+        setImgSrc(BLANK_IMAGE);
+        setIsLoading(false);
         return;
       }
-
-      setImgSrc(BLANK_IMAGE);
-      setIsLoading(false);
+      const img = new Image();
+      img.src = currentCandidate;
+      img.decoding = 'async';
+      img.onload = async () => {
+        try {
+          if (typeof img.decode === 'function') {
+            await img.decode();
+          }
+        } catch {
+          // decode can fail on some browsers; fallback to onload behavior
+        }
+        if (cancelled) return;
+        loadedCacheRef.current.add(currentCandidate);
+        setImgSrc(currentCandidate);
+        setIsLoading(false);
+        if (!onLoadCalledRef.current && onLoad) {
+          onLoadCalledRef.current = true;
+          onLoad();
+        }
+      };
+      img.onerror = () => {
+        preloadCandidate(index + 1);
+      };
     };
+    preloadCandidate(0);
 
     return () => {
       cancelled = true;
-      img.onload = null;
-      img.onerror = null;
     };
   }, [src, onLoad, isInView, useStableMockDecode]);
 
@@ -155,7 +148,7 @@ const ProgressiveImage = ({
     const initialSrc = useStableMockDecode
       ? BLANK_IMAGE
       : (
-          hasDistinctThumbnail && !failedCacheRef.current.has(thumbnail)
+          hasDistinctThumbnail && !failedThumbnailCacheRef.current.has(thumbnail)
             ? thumbnail
             : (src || BLANK_IMAGE)
         );
@@ -187,7 +180,7 @@ const ProgressiveImage = ({
       }}
       onError={() => {
         if (imgSrc === thumbnail && hasDistinctThumbnail) {
-          failedCacheRef.current.add(thumbnail);
+          failedThumbnailCacheRef.current.add(thumbnail);
           setImgSrc(BLANK_IMAGE);
           return;
         }
