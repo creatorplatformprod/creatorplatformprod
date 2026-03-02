@@ -11,8 +11,6 @@ import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
 import { useSeo } from "@/hooks/use-seo";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
-import PublicPageSkeleton from "@/components/PublicPageSkeleton";
-import { useSkeletonGate } from "@/hooks/useSkeletonGate";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -80,7 +78,6 @@ const PostDetail = () => {
   const [remoteCollection, setRemoteCollection] = useState<any>(null);
   const [remoteLoading, setRemoteLoading] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
-  const [pageBootLoading, setPageBootLoading] = useState(true);
   const themeClass = usePublicWebsiteTheme(creatorParam || undefined);
   const isDarkTheme = themeClass === 'theme-classic-dark';
   const mockSeed = useMemo(() => hashString((creatorParam || 'creator').toLowerCase()), [creatorParam]);
@@ -164,12 +161,6 @@ const PostDetail = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [secureId]);
-
-  useEffect(() => {
-    setPageBootLoading(true);
-    const timer = window.setTimeout(() => setPageBootLoading(false), 280);
-    return () => window.clearTimeout(timer);
   }, [secureId]);
 
   const isVideoUrl = (url: string): boolean => {
@@ -321,10 +312,6 @@ const PostDetail = () => {
 
   const localCollection = getCollectionFromSecureId();
   const collection = remoteCollection || localCollection;
-  const showPageSkeleton = useSkeletonGate((remoteLoading && !collection) || pageBootLoading, {
-    delayMs: 100,
-    minVisibleMs: 320,
-  });
 
   useSeo(
     {
@@ -481,10 +468,6 @@ const PostDetail = () => {
         </div>
       </div>
     );
-  }
-
-  if (showPageSkeleton && !accessDenied) {
-    return <PublicPageSkeleton variant="profile" themeClass={themeClass} />;
   }
 
   if (!collection) {

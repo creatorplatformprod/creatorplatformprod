@@ -5,8 +5,6 @@ import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
-import PublicPageSkeleton from "@/components/PublicPageSkeleton";
-import { useSkeletonGate } from "@/hooks/useSkeletonGate";
 import { api } from "@/lib/api";
 import { getSecureId } from "@/utils/secureIdMapper";
 import { useFanAuth } from "@/contexts/FanAuthContext";
@@ -394,10 +392,6 @@ const PostDetailBlurred = () => {
   };
 
   const collection = remoteCollection || localCollection || fallbackMockCollection;
-  const showPageSkeleton = useSkeletonGate(remoteLoading && !collection, {
-    delayMs: 220,
-    minVisibleMs: 400
-  });
   useSeo(
     {
       title: collection?.title
@@ -578,17 +572,6 @@ const PostDetailBlurred = () => {
   const handleUnlockClick = () => {
     // Modal is already visible
   };
-
-  if (showPageSkeleton) {
-    return (
-      <PublicPageSkeleton
-        variant="locked-grid"
-        themeClass={themeClass}
-        neutral
-        neutralTone={themeClass === 'theme-classic-dark' ? 'dark' : 'light'}
-      />
-    );
-  }
 
   if (!collection) {
     return (
