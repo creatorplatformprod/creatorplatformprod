@@ -4,7 +4,9 @@ import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
+import PublicPageSkeleton from "@/components/PublicPageSkeleton";
 import { api } from "@/lib/api";
+import { useSkeletonGate } from "@/hooks/useSkeletonGate";
 import { specialSecureIds } from "@/utils/secureIdMapper";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import FanAccountMenu from "@/components/FanAccountMenu";
@@ -74,6 +76,7 @@ const Collections = () => {
   const [loadedImages, setLoadedImages] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [isPreloading, setIsPreloading] = useState(true);
+  const [showPreloader, setShowPreloader] = useState(true);
   const [measuredDims, setMeasuredDims] = useState({});
   const [customerEmail, setCustomerEmail] = useState("");
   const [paymentError, setPaymentError] = useState("");
@@ -85,6 +88,10 @@ const Collections = () => {
   const [canRevealContent, setCanRevealContent] = useState(false);
   const [revealStoreUrl, setRevealStoreUrl] = useState('');
   const [showFanAuthModal, setShowFanAuthModal] = useState(false);
+  const showPageSkeleton = useSkeletonGate(showPreloader, {
+    delayMs: 220,
+    minVisibleMs: 400
+  });
   const isMobileViewport = typeof window !== 'undefined' && window.innerWidth < 768;
   const imagesPerPage = isMobileViewport ? 12 : 20;
   const [revealedCount, setRevealedCount] = useState(imagesPerPage);
@@ -507,6 +514,12 @@ const Collections = () => {
     return () => clearTimeout(timeout);
   }, [isPreloading]);
 
+  useEffect(() => {
+    if (!isPreloading) {
+      setShowPreloader(false);
+    }
+  }, [isPreloading]);
+
   const handleUnlockClick = () => {
     setShowUnlockModal(true);
   };
@@ -574,6 +587,17 @@ const Collections = () => {
 
     navigate(checkoutUrl);
   };
+
+  if (showPageSkeleton) {
+    return (
+      <PublicPageSkeleton
+        variant="locked-grid"
+        themeClass={themeClass}
+        neutral
+        neutralTone={themeClass === 'theme-classic-dark' ? 'dark' : 'light'}
+      />
+    );
+  }
 
   return (
         <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
