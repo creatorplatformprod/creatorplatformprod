@@ -2,6 +2,7 @@ type PublicPageSkeletonProps = {
   variant?: "profile" | "locked-grid";
   themeClass?: string;
   neutral?: boolean;
+  neutralTone?: "light" | "dark";
 };
 
 const cardHeights = [
@@ -19,13 +20,22 @@ const PublicPageSkeleton = ({
   variant = "profile",
   themeClass = "",
   neutral = false,
+  neutralTone = "light",
 }: PublicPageSkeletonProps) => {
   const isLockedGrid = variant === "locked-grid";
+  const isNeutralDark = neutral && neutralTone === "dark";
+  const shimmerClass = neutral
+    ? (isNeutralDark ? "skeleton-neutral-dark" : "skeleton-neutral-light")
+    : "skeleton-shimmer";
   const rootClasses = neutral
-    ? "min-h-screen mobile-stable-shell bg-gray-100"
+    ? (isNeutralDark
+        ? "min-h-screen mobile-stable-shell bg-slate-900"
+        : "min-h-screen mobile-stable-shell bg-gray-100")
     : `min-h-screen mobile-stable-shell feed-bg ${themeClass}`;
   const shellCardClass = neutral
-    ? "rounded-xl p-3 border border-gray-200 bg-white"
+    ? (isNeutralDark
+        ? "rounded-xl p-3 border border-slate-700 bg-slate-800"
+        : "rounded-xl p-3 border border-gray-200 bg-white")
     : "post-card rounded-xl p-3";
 
   return (
@@ -34,12 +44,12 @@ const PublicPageSkeleton = ({
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="skeleton-shimmer h-8 w-36 rounded-full" />
-              <div className="skeleton-shimmer h-7 w-20 rounded-full" />
+              <div className={`${shimmerClass} h-8 w-36 rounded-full`} />
+              <div className={`${shimmerClass} h-7 w-20 rounded-full`} />
             </div>
             <div className="flex items-center gap-2">
-              <div className="skeleton-shimmer h-8 w-8 rounded-full" />
-              <div className="skeleton-shimmer h-8 w-24 rounded-full" />
+              <div className={`${shimmerClass} h-8 w-8 rounded-full`} />
+              <div className={`${shimmerClass} h-8 w-24 rounded-full`} />
             </div>
           </div>
         </div>
@@ -47,23 +57,23 @@ const PublicPageSkeleton = ({
 
       {!isLockedGrid && (
         <section className="max-w-[1600px] mx-auto px-4 pt-4">
-          <div className="skeleton-shimmer h-[220px] sm:h-[280px] rounded-2xl" />
+          <div className={`${shimmerClass} h-[220px] sm:h-[280px] rounded-2xl`} />
           <div className="relative -mt-10 sm:-mt-14 mx-auto max-w-5xl">
             <div className="post-card rounded-2xl p-5 sm:p-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-                <div className="skeleton-shimmer h-24 w-24 rounded-full" />
+                <div className={`${shimmerClass} h-24 w-24 rounded-full`} />
                 <div className="flex-1 w-full">
-                  <div className="skeleton-shimmer h-7 w-48 rounded-md mb-3 mx-auto sm:mx-0" />
-                  <div className="skeleton-shimmer h-4 w-full max-w-xl rounded-md mb-2" />
-                  <div className="skeleton-shimmer h-4 w-3/4 max-w-md rounded-md mb-4" />
+                  <div className={`${shimmerClass} h-7 w-48 rounded-md mb-3 mx-auto sm:mx-0`} />
+                  <div className={`${shimmerClass} h-4 w-full max-w-xl rounded-md mb-2`} />
+                  <div className={`${shimmerClass} h-4 w-3/4 max-w-md rounded-md mb-4`} />
                   <div className="flex gap-2 justify-center sm:justify-start">
-                    <div className="skeleton-shimmer h-7 w-28 rounded-full" />
-                    <div className="skeleton-shimmer h-7 w-24 rounded-full" />
+                    <div className={`${shimmerClass} h-7 w-28 rounded-full`} />
+                    <div className={`${shimmerClass} h-7 w-24 rounded-full`} />
                   </div>
                 </div>
               </div>
               <div className="flex justify-center mt-5">
-                <div className="skeleton-shimmer h-10 w-72 rounded-xl" />
+                <div className={`${shimmerClass} h-10 w-72 rounded-xl`} />
               </div>
             </div>
           </div>
@@ -78,10 +88,10 @@ const PublicPageSkeleton = ({
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5">
           {!isLockedGrid && (
             <aside className="hidden lg:block post-card rounded-xl p-3 h-[620px]">
-              <div className="skeleton-shimmer h-5 w-28 rounded mb-4" />
+              <div className={`${shimmerClass} h-5 w-28 rounded mb-4`} />
               <div className="space-y-2">
                 {Array.from({ length: 8 }).map((_, idx) => (
-                  <div key={`side-${idx}`} className="skeleton-shimmer h-10 rounded-lg" />
+                  <div key={`side-${idx}`} className={`${shimmerClass} h-10 rounded-lg`} />
                 ))}
               </div>
             </aside>
@@ -89,7 +99,7 @@ const PublicPageSkeleton = ({
 
           <div className={isLockedGrid ? "" : "space-y-4"}>
             {!isLockedGrid && (
-              <div className="skeleton-shimmer h-14 w-full max-w-sm rounded-xl mx-auto lg:mx-0" />
+              <div className={`${shimmerClass} h-14 w-full max-w-sm rounded-xl mx-auto lg:mx-0`} />
             )}
 
             <div
@@ -104,11 +114,11 @@ const PublicPageSkeleton = ({
                   key={`card-${idx}`}
                   className={`${isLockedGrid ? "mb-3 break-inside-avoid" : ""} ${shellCardClass}`}
                 >
-                  <div className={`skeleton-shimmer rounded-lg ${cardHeights[idx % cardHeights.length]}`} />
+                  <div className={`${shimmerClass} rounded-lg ${cardHeights[idx % cardHeights.length]}`} />
                   {!isLockedGrid && (
                     <div className="mt-3 space-y-2">
-                      <div className="skeleton-shimmer h-4 w-2/3 rounded" />
-                      <div className="skeleton-shimmer h-4 w-full rounded" />
+                      <div className={`${shimmerClass} h-4 w-2/3 rounded`} />
+                      <div className={`${shimmerClass} h-4 w-full rounded`} />
                     </div>
                   )}
                 </div>
@@ -119,17 +129,19 @@ const PublicPageSkeleton = ({
       </main>
 
       {isLockedGrid && (
-        <div className={`fixed inset-0 z-40 flex items-center justify-center px-4 ${neutral ? "bg-white/70" : "bg-black/45"}`}>
+        <div className={`fixed inset-0 z-40 flex items-center justify-center px-4 ${neutral ? (isNeutralDark ? "bg-slate-950/65" : "bg-white/70") : "bg-black/45"}`}>
           <div
             className={`w-full max-w-xs rounded-2xl p-5 ${
               neutral
-                ? "bg-gray-100 border border-gray-300"
+                ? (isNeutralDark
+                    ? "bg-slate-900 border border-slate-700"
+                    : "bg-gray-100 border border-gray-300")
                 : "bg-black/25 backdrop-blur-sm border border-white/10"
             }`}
           >
-            <div className="skeleton-shimmer h-7 w-32 rounded-md mx-auto mb-4" />
-            <div className="skeleton-shimmer h-4 w-48 rounded-md mx-auto mb-6" />
-            <div className={`${neutral ? "skeleton-shimmer bg-gray-300" : "skeleton-dark-shimmer"} h-12 rounded-xl w-full`} />
+            <div className={`${shimmerClass} h-7 w-32 rounded-md mx-auto mb-4`} />
+            <div className={`${shimmerClass} h-4 w-48 rounded-md mx-auto mb-6`} />
+            <div className={`${neutral ? shimmerClass : "skeleton-dark-shimmer"} h-12 rounded-xl w-full`} />
           </div>
         </div>
       )}
