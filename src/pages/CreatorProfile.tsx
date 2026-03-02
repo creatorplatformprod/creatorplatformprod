@@ -1096,7 +1096,7 @@ const CreatorProfile = () => {
             <div className="hidden lg:flex justify-end mb-3">
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta relative overflow-hidden text-4xl xl:text-5xl font-extrabold tracking-tight text-foreground transition-all text-right"
+                className="template-unlock-cta relative overflow-hidden text-2xl xl:text-3xl font-extrabold tracking-tight text-foreground transition-all text-right"
               >
                 <span className="relative unlock-cta-brand-gradient unlock-cta-font">Unlock Everything</span>
               </button>
