@@ -26,9 +26,9 @@
 }
 
 @media (min-width: 1024px) {
-  .unlock-cta-desktop-bold {
-    font-weight: 700 !important;
-    font-synthesis: weight;
+  .unlock-cta-desktop-outline {
+    -webkit-text-stroke: 0.6px rgba(255, 255, 255, 0.85);
+    paint-order: stroke fill;
   }
 }
 
