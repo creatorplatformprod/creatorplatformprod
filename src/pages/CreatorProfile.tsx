@@ -1092,16 +1092,6 @@ const CreatorProfile = () => {
 
         {/* Profile Info */}
         <div className={`template-profile-shell relative max-w-[1600px] mx-auto px-4 -mt-10 sm:-mt-14 pb-6 sm:pb-8 transition-all duration-300 ${mainOffsetClass}`}>
-          {allCollections.length > 0 && (
-            <div className="hidden lg:flex justify-end mb-3">
-              <button
-                onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta relative overflow-hidden text-2xl xl:text-3xl font-bold tracking-tight text-foreground transition-all text-right"
-              >
-                <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">Unlock Everything</span>
-              </button>
-            </div>
-          )}
           <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 lg:flex-wrap lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background lg:px-5 lg:py-4">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
@@ -1130,6 +1120,14 @@ const CreatorProfile = () => {
               </div>
             </div>
             <div className="hidden lg:flex ml-auto self-stretch w-[220px] flex-col justify-end">
+              {allCollections.length > 0 && (
+                <button
+                  onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
+                  className="template-unlock-cta relative overflow-hidden mb-3 text-right text-2xl xl:text-3xl font-bold tracking-tight text-foreground transition-all"
+                >
+                  <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">Unlock Everything</span>
+                </button>
+              )}
               {(isPreviewMode || hasAnySocialLinks) && (
                 <div className="flex flex-col items-center gap-2 pb-1">
                   <p className={`text-[11px] ${useClassicTheme ? 'text-white/65' : 'text-gray-500'} text-center`}>
