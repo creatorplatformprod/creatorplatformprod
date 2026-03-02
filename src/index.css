@@ -25,6 +25,13 @@
   letter-spacing: 0.01em;
 }
 
+@media (min-width: 1024px) {
+  .unlock-cta-desktop-bold {
+    font-weight: 700 !important;
+    font-synthesis: weight;
+  }
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
