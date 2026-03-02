@@ -36,7 +36,7 @@ const PINK_LEMONADE_IMAGE_IDS = [
 const pexelsImageUrl = (id: number, width = 1600) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
 const pexelsThumbUrl = (url: string, width = 560) => url.replace(/w=\d+/, `w=${width}`);
-const localMockImageModules = import.meta.glob("../../mockdata/*.{jpg,jpeg,png,webp,avif}", {
+const localMockImageModules = import.meta.glob("../../mockdata/*.avif", {
   eager: true,
   query: "?url",
   import: "default"
@@ -290,7 +290,7 @@ const Collections1849929295832448 = () => {
           let thumbSrc = mediaItem.thumbnailUrl || mediaItem.url;
           const mediaType = mediaItem.mediaType || (isVideoUrl(imageSrc) ? 'video' : 'image');
           if (mediaType === 'video') {
-            thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
+            thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.avif');
           }
           const parsedWidth = Number(mediaItem.width);
           const parsedHeight = Number(mediaItem.height);

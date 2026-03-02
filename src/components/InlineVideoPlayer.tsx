@@ -35,12 +35,12 @@ const InlineVideoPlayer = ({
   const controlsTimeoutRef = useRef<NodeJS.Timeout>();
   const instanceIdRef = useRef(Math.random().toString(36));
 
-  // Get video thumbnail - try to use .jpg instead of video file for thumbnail
+  // Get video thumbnail - try to use .avif instead of video file for thumbnail
   const getVideoThumbnail = () => {
     let thumbSrc = thumbnail;
-    // For videos, try to get a jpg thumbnail instead of the video file
+    // For videos, try to get an avif thumbnail instead of the video file
     if (src.match(/\.(mp4|webm|mov|ogg|avi)$/i)) {
-      thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
+      thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.avif');
     }
     return thumbSrc;
   };

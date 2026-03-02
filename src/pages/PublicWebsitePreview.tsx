@@ -3,8 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Monitor, Smartphone, Copy, Check, Link2 } from "lucide-react";
 import AccountMenu from "@/components/AccountMenu";
+import PublicPageSkeleton from "@/components/PublicPageSkeleton";
 import { api } from "@/lib/api";
 import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
+import { useSkeletonGate } from "@/hooks/useSkeletonGate";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
 
 const ONBOARDING_STEPS = [
@@ -48,6 +50,16 @@ const PublicWebsitePreview = () => {
   const [copied, setCopied] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(-1);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [desktopPreviewLoaded, setDesktopPreviewLoaded] = useState(false);
+  const [mobilePreviewLoaded, setMobilePreviewLoaded] = useState(false);
+  const showDesktopPreviewSkeleton = useSkeletonGate(!desktopPreviewLoaded && activeDevice === 'desktop', {
+    delayMs: 220,
+    minVisibleMs: 400
+  });
+  const showMobilePreviewSkeleton = useSkeletonGate(!mobilePreviewLoaded && activeDevice === 'mobile', {
+    delayMs: 220,
+    minVisibleMs: 400
+  });
   useFeedbackToasts({ success: publishSuccess, error: publishError });
   const themeClass = usePublicWebsiteTheme(username || undefined);
   const isDarkPreviewTheme = themeClass === 'theme-classic-dark';
@@ -126,6 +138,11 @@ const PublicWebsitePreview = () => {
   useEffect(() => {
     refreshPublishState();
   }, [username]);
+
+  useEffect(() => {
+    setDesktopPreviewLoaded(false);
+    setMobilePreviewLoaded(false);
+  }, [previewUrl, activeDevice]);
 
   useEffect(() => {
     const loadCurrentUser = async () => {
@@ -446,12 +463,18 @@ const PublicWebsitePreview = () => {
                       onTouchMove={(e) => handlePreviewTouchMove(e, 'desktop')}
                       onTouchEnd={() => handlePreviewTouchEnd('desktop')}
                     >
+                      {showDesktopPreviewSkeleton && (
+                        <div className="absolute inset-0 z-10 overflow-hidden rounded-md">
+                          <PublicPageSkeleton variant="profile" />
+                        </div>
+                      )}
                       <iframe
                         ref={desktopIframeRef}
                         title="Desktop preview"
                         src={previewUrl}
                         className="absolute inset-0 origin-top-left [transform:scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
                         style={previewSurfaceStyle}
+                        onLoad={() => setDesktopPreviewLoaded(true)}
                       />
                     </div>
                   </div>
@@ -483,12 +506,18 @@ const PublicWebsitePreview = () => {
                   onTouchMove={(e) => handlePreviewTouchMove(e, 'mobile')}
                   onTouchEnd={() => handlePreviewTouchEnd('mobile')}
                 >
+                  {showMobilePreviewSkeleton && (
+                    <div className="absolute inset-0 z-10 overflow-hidden rounded-md">
+                      <PublicPageSkeleton variant="profile" />
+                    </div>
+                  )}
                   <iframe
                     ref={mobileIframeRef}
                     title="Mobile preview"
                     src={previewUrl}
                     className="absolute inset-0 origin-top-left [transform:translateX(-6px)_scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
                     style={previewSurfaceStyle}
+                    onLoad={() => setMobilePreviewLoaded(true)}
                   />
                 </div>
               </div>

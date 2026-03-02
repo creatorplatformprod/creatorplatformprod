@@ -38,7 +38,7 @@ const PINK_LEMONADE_IMAGE_IDS = [
 const pexelsImageUrl = (id: number, width = 1600) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
 const pexelsThumbUrl = (url: string, width = 560) => url.replace(/w=\d+/, `w=${width}`);
-const localMockImageModules = import.meta.glob("../../mockdata/*.{jpg,jpeg,png,webp,avif}", {
+const localMockImageModules = import.meta.glob("../../mockdata/*.avif", {
   eager: true,
   query: "?url",
   import: "default"
@@ -572,9 +572,9 @@ const PostDetail = () => {
                     
                     const mediaType = isVideoUrl(imageSrc) ? 'video' : 'image';
                     
-                    // For videos, try to get a jpg thumbnail instead of the video file
+                    // For videos, try to get an avif thumbnail instead of the video file
                     if (mediaType === 'video') {
-                      thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
+                      thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.avif');
                     }
                     const isMediaLoaded = loadedImages.has(imageSrc);
                     const md = measuredDims[imageSrc];

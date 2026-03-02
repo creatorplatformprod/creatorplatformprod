@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const baseDir = './public/images485573257456374938';
-const outputQuality = 30; // 30% quality for thumbnails
+const outputQuality = 45; // AVIF quality for thumbnails
 const maxWidth = 600; // Max width in pixels
 
 // Get all collection folders
@@ -34,9 +34,9 @@ collectionFolders.forEach((collectionFolder, folderIndex) => {
     console.log(`Created directory: ${thumbsPath}`);
   }
   
-  // Get all JPG images in the collection
+  // Get all source images in the collection
   const images = fs.readdirSync(collectionPath).filter(f => 
-    f.toLowerCase().endsWith('.jpg') || f.toLowerCase().endsWith('.jpeg')
+    ['.jpg', '.jpeg', '.png', '.webp', '.avif'].includes(path.extname(f).toLowerCase())
   );
   
   console.log(`Processing ${collectionFolder}: ${images.length} images`);
@@ -44,7 +44,8 @@ collectionFolders.forEach((collectionFolder, folderIndex) => {
   // Process each image
   images.forEach((image, imageIndex) => {
     const inputPath = path.join(collectionPath, image);
-    const outputPath = path.join(thumbsPath, image);
+    const outputFileName = `${path.parse(image).name}.avif`;
+    const outputPath = path.join(thumbsPath, outputFileName);
     
     // Skip if thumbnail already exists
     if (fs.existsSync(outputPath)) {
@@ -57,10 +58,9 @@ collectionFolders.forEach((collectionFolder, folderIndex) => {
         withoutEnlargement: true,
         fit: 'inside'
       })
-      .jpeg({ 
+      .avif({
         quality: outputQuality,
-        progressive: true,
-        mozjpeg: true
+        effort: 4
       })
       .toFile(outputPath)
       .then(info => {

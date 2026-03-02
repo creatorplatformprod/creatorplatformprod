@@ -2,10 +2,11 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import Preloader from "../components/Preloader";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
+import PublicPageSkeleton from "@/components/PublicPageSkeleton";
 import { api } from "@/lib/api";
+import { useSkeletonGate } from "@/hooks/useSkeletonGate";
 import { specialSecureIds } from "@/utils/secureIdMapper";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import FanAccountMenu from "@/components/FanAccountMenu";
@@ -39,7 +40,7 @@ const PINK_LEMONADE_IMAGE_IDS = [
 const pexelsImageUrl = (id, width = 1600) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
 const pexelsThumbUrl = (url, width = 560) => url.replace(/w=\d+/, `w=${width}`);
-const localMockImageModules = import.meta.glob("../../mockdata/*.{jpg,jpeg,png,webp,avif}", {
+const localMockImageModules = import.meta.glob("../../mockdata/*.avif", {
   eager: true,
   query: "?url",
   import: "default"
@@ -87,6 +88,10 @@ const Collections = () => {
   const [canRevealContent, setCanRevealContent] = useState(false);
   const [revealStoreUrl, setRevealStoreUrl] = useState('');
   const [showFanAuthModal, setShowFanAuthModal] = useState(false);
+  const showPageSkeleton = useSkeletonGate(showPreloader, {
+    delayMs: 220,
+    minVisibleMs: 400
+  });
   const isMobileViewport = typeof window !== 'undefined' && window.innerWidth < 768;
   const imagesPerPage = isMobileViewport ? 12 : 20;
   const [revealedCount, setRevealedCount] = useState(imagesPerPage);
@@ -340,7 +345,7 @@ const Collections = () => {
           let thumbSrc = mediaItem.thumbnailUrl || mediaItem.url;
           const mediaType = mediaItem.mediaType || (isVideoUrl(imageSrc) ? 'video' : 'image');
           if (mediaType === 'video') {
-            thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.jpg');
+            thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi)$/i, '.avif');
           }
           const parsedWidth = Number(mediaItem.width);
           const parsedHeight = Number(mediaItem.height);
@@ -508,6 +513,12 @@ const Collections = () => {
     return () => clearTimeout(timeout);
   }, [isPreloading]);
 
+  useEffect(() => {
+    if (!isPreloading) {
+      setShowPreloader(false);
+    }
+  }, [isPreloading]);
+
   const handleUnlockClick = () => {
     setShowUnlockModal(true);
   };
@@ -576,15 +587,11 @@ const Collections = () => {
     navigate(checkoutUrl);
   };
 
-  const handlePreloaderComplete = () => {
-    setShowPreloader(false);
-  };
+  if (showPageSkeleton) {
+    return <PublicPageSkeleton variant="locked-grid" themeClass={themeClass} />;
+  }
 
   return (
-    <>
-      <Preloader isVisible={isPreloading} onComplete={handlePreloaderComplete} themeClass={themeClass} />
-      
-      {!showPreloader && (
         <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
           <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 relative">
           <button
@@ -853,8 +860,6 @@ const Collections = () => {
             )}
           </main>
         </div>
-      )}
-    </>
   );
 };
 

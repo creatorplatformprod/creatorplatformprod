@@ -5,13 +5,14 @@ import FeedHeader from "@/components/FeedHeader";
 import PostCard from "@/components/PostCard";
 import StatusCard from "@/components/StatusCard";
 import StatusCardWithMedia from "@/components/StatusCardWithMedia";
-import Preloader from "@/components/Preloader";
 import TopLoader from "@/components/TopLoader";
+import PublicPageSkeleton from "@/components/PublicPageSkeleton";
 import FanAccountMenu from "@/components/FanAccountMenu";
 import FanAuthModal from "@/components/FanAuthModal";
 import { api } from "@/lib/api";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import { useSeo } from "@/hooks/use-seo";
+import { useSkeletonGate } from "@/hooks/useSkeletonGate";
 import { buildCardLayout, parseLayoutTag, type CollectionCardTemplate } from "@/lib/collectionLayout";
 type MockSourcePack = {
   key: string;
@@ -20,7 +21,7 @@ type MockSourcePack = {
   photos: string[];
 };
 
-const localMockImageModules = import.meta.glob("../../mockdata/*.{jpg,jpeg,png,webp,avif}", {
+const localMockImageModules = import.meta.glob("../../mockdata/*.avif", {
   eager: true,
   query: "?url",
   import: "default"
@@ -153,6 +154,10 @@ const CreatorProfile = () => {
   const [feedFilter, setFeedFilter] = useState<'all' | 'collections' | 'posts'>('all');
   const [showFanAuthModal, setShowFanAuthModal] = useState(false);
   const { fan, loading: fanLoading, guestMode } = useFanAuth();
+  const showPageSkeleton = useSkeletonGate(isLoading || showPreloader, {
+    delayMs: 220,
+    minVisibleMs: 400
+  });
   const hasDraftCapablePreview = isPreviewMode;
   const mockSeed = useMemo(() => hashString((username || "creator").toLowerCase()), [username]);
   const mockPack = useMemo(
@@ -439,10 +444,6 @@ const CreatorProfile = () => {
         setShowPreloader(false);
       }, 2000);
     }
-  };
-
-  const handlePreloaderComplete = () => {
-    setShowPreloader(false);
   };
 
   // Format status cards to match Index.tsx structure
@@ -1002,8 +1003,8 @@ const CreatorProfile = () => {
     </>
   );
 
-  if (isLoading || showPreloader) {
-    return <Preloader isVisible={true} onComplete={handlePreloaderComplete} themeClass={classicDarkClass} />;
+  if (showPageSkeleton) {
+    return <PublicPageSkeleton variant="profile" themeClass={classicDarkClass} />;
   }
 
   if (!creatorData) {
