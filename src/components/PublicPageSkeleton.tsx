@@ -18,16 +18,20 @@ const cardHeights = [
 const PublicPageSkeleton = ({
   variant = "profile",
   themeClass = "",
-  previewMode = false,
+  previewMode,
 }: PublicPageSkeletonProps) => {
   const isLockedGrid = variant === "locked-grid";
+  const isPreviewFromUrl =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("mode") === "preview";
+  const effectivePreviewMode = previewMode ?? isPreviewFromUrl;
 
   return (
-    <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
-      <header
-        className="sticky top-0 z-20 nav-elevated"
-        style={previewMode ? { paddingTop: "2.25rem" } : undefined}
-      >
+    <div
+      className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}
+      style={effectivePreviewMode ? { paddingTop: "2.25rem" } : undefined}
+    >
+      <header className="sticky top-0 z-20 nav-elevated">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
