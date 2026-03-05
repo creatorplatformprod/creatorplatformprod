@@ -853,6 +853,28 @@
     transform: translateX(-100%);
   }
 
+  .theme-classic-dark .skeleton-shimmer,
+  .dark .skeleton-shimmer {
+    background: #1f2937;
+  }
+
+  .theme-classic-dark .skeleton-shimmer::after,
+  .dark .skeleton-shimmer::after {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.06) 25%,
+      rgba(255, 255, 255, 0.14) 50%,
+      rgba(255, 255, 255, 0.06) 75%,
+      transparent 100%
+    );
+  }
+
+  .theme-classic-dark .skeleton-dark-shimmer,
+  .dark .skeleton-dark-shimmer {
+    background: #374151;
+  }
+
   /* Image reveal transition */
   .image-loading {
     opacity: 0;

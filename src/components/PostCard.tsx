@@ -304,7 +304,7 @@ const PostCard = ({ collection }: PostCardProps) => {
         <div className="absolute inset-0 flex items-center justify-center z-[6]">
           {!cardRevealReady ? (
             <div
-              className="skeleton-shimmer h-10 w-[132px] rounded-full border border-gray-200 bg-gray-100"
+              className="skeleton-shimmer h-10 w-[132px] rounded-full border border-border/60"
               aria-hidden="true"
             />
           ) : (
