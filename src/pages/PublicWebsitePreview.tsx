@@ -625,7 +625,10 @@ const PublicWebsitePreview = () => {
                   onTouchEnd={() => handlePreviewTouchEnd('mobile')}
                 >
                   {showMobilePreviewSkeleton && (
-                    <div className="absolute inset-0 z-10 overflow-hidden rounded-md">
+                    <div
+                      className="absolute left-0 right-0 bottom-0 z-10 overflow-hidden rounded-md"
+                      style={{ top: "2.25rem" }}
+                    >
                       <PublicPageSkeleton variant="profile" previewMode />
                     </div>
                   )}
