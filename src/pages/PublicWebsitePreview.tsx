@@ -85,14 +85,14 @@ const PublicWebsitePreview = () => {
       let lastX: number | null = null;
       let lastY: number | null = null;
 
-      const onTouchStart = (event: TouchEvent) => {
+      const onTouchStart = (event: globalThis.TouchEvent) => {
         const touch = event.touches?.[0];
         if (!touch) return;
         lastX = touch.clientX;
         lastY = touch.clientY;
       };
 
-      const onTouchMove = (event: TouchEvent) => {
+      const onTouchMove = (event: globalThis.TouchEvent) => {
         const touch = event.touches?.[0];
         if (!touch) return;
         if (typeof lastX !== 'number' || typeof lastY !== 'number') {
@@ -107,8 +107,19 @@ const PublicWebsitePreview = () => {
         lastY = touch.clientY;
 
         if (Math.abs(deltaY) <= Math.abs(deltaX) || Math.abs(deltaY) < 0.5) return;
-        event.preventDefault();
-        iframe.contentWindow?.scrollBy({ top: deltaY, behavior: 'auto' });
+        const didScroll = scrollIframeBy(iframe, deltaY);
+        if (didScroll) {
+          event.preventDefault();
+        }
+      };
+
+      const onWheel = (event: globalThis.WheelEvent) => {
+        if (!Number.isFinite(event.deltaY) || event.deltaY === 0) return;
+        const multiplier = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+        const didScroll = scrollIframeBy(iframe, event.deltaY * multiplier);
+        if (didScroll) {
+          event.preventDefault();
+        }
       };
 
       const onTouchEnd = () => {
@@ -120,27 +131,54 @@ const PublicWebsitePreview = () => {
       doc.addEventListener('touchmove', onTouchMove as EventListener, { passive: false });
       doc.addEventListener('touchend', onTouchEnd as EventListener, { passive: true });
       doc.addEventListener('touchcancel', onTouchEnd as EventListener, { passive: true });
+      doc.addEventListener('wheel', onWheel as EventListener, { passive: false });
 
       cleanupRef.current = () => {
         doc.removeEventListener('touchstart', onTouchStart as EventListener);
         doc.removeEventListener('touchmove', onTouchMove as EventListener);
         doc.removeEventListener('touchend', onTouchEnd as EventListener);
         doc.removeEventListener('touchcancel', onTouchEnd as EventListener);
+        doc.removeEventListener('wheel', onWheel as EventListener);
       };
     } catch {
       cleanupRef.current = null;
     }
   };
 
-  const scrollIframeBy = (iframe: HTMLIFrameElement | null, deltaY: number) => {
-    if (!iframe?.contentWindow || !Number.isFinite(deltaY) || deltaY === 0) return;
-    iframe.contentWindow.scrollBy({ top: deltaY, behavior: "auto" });
+  const scrollIframeBy = (iframe: HTMLIFrameElement | null, deltaY: number): boolean => {
+    if (!iframe?.contentWindow || !Number.isFinite(deltaY) || deltaY === 0) return false;
+    const win = iframe.contentWindow;
+    const doc = iframe.contentDocument || win.document;
+    const scrollingElement = (doc.scrollingElement || doc.documentElement || doc.body) as HTMLElement | null;
+
+    if (scrollingElement) {
+      const before = scrollingElement.scrollTop;
+      scrollingElement.scrollTop += deltaY;
+      if (scrollingElement.scrollTop !== before) return true;
+    }
+
+    const beforeWin = win.scrollY;
+    win.scrollBy({ top: deltaY, behavior: "auto" });
+    if (win.scrollY !== beforeWin) return true;
+
+    const body = doc.body as HTMLElement | null;
+    if (body) {
+      const beforeBody = body.scrollTop;
+      body.scrollTop += deltaY;
+      if (body.scrollTop !== beforeBody) return true;
+    }
+
+    return false;
   };
 
   const handlePreviewWheel = (e: WheelEvent<HTMLDivElement>, device: 'desktop' | 'mobile') => {
-    e.preventDefault();
+    const multiplier = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? window.innerHeight : 1;
+    const normalizedDeltaY = e.deltaY * multiplier;
     const iframe = device === 'desktop' ? desktopIframeRef.current : mobileIframeRef.current;
-    scrollIframeBy(iframe, e.deltaY);
+    const didScroll = scrollIframeBy(iframe, normalizedDeltaY);
+    if (didScroll) {
+      e.preventDefault();
+    }
   };
 
   const handlePreviewTouchStart = (e: TouchEvent<HTMLDivElement>, device: 'desktop' | 'mobile') => {
@@ -164,9 +202,11 @@ const PublicWebsitePreview = () => {
     }
     const deltaY = previousY - y;
     if (Math.abs(deltaY) < 0.5) return;
-    e.preventDefault();
     const iframe = device === 'desktop' ? desktopIframeRef.current : mobileIframeRef.current;
-    scrollIframeBy(iframe, deltaY);
+    const didScroll = scrollIframeBy(iframe, deltaY);
+    if (didScroll) {
+      e.preventDefault();
+    }
     touchRef.current = y;
   };
 
