@@ -3,7 +3,6 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import Preloader from "../components/Preloader";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
@@ -74,8 +73,6 @@ const Collections1849929295832448 = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loadedImages, setLoadedImages] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
-  const [isPreloading, setIsPreloading] = useState(!isPreviewMode);
-  const [showPreloader, setShowPreloader] = useState(!isPreviewMode);
   const [measuredDims, setMeasuredDims] = useState({});
   const [accessVerified, setAccessVerified] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
@@ -205,13 +202,6 @@ const Collections1849929295832448 = () => {
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      @keyframes shimmer {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-      }
-      .animate-shimmer {
-        animation: shimmer 2s infinite linear;
-      }
       video::-webkit-media-controls-panel {
         display: none !important;
       }
@@ -429,11 +419,7 @@ const Collections1849929295832448 = () => {
       });
     });
 
-    Promise.allSettled(preloadPromises).then(() => {
-      setTimeout(() => {
-        setIsPreloading(false);
-      }, 800);
-    });
+    Promise.allSettled(preloadPromises);
   };
 
   useEffect(() => {
@@ -584,10 +570,6 @@ const Collections1849929295832448 = () => {
     preloadNextPage();
   }, [currentPage]);
 
-  const handlePreloaderComplete = () => {
-    setShowPreloader(false);
-  };
-
   // Show verifying state
   if (verifying) {
     return (
@@ -618,11 +600,7 @@ const Collections1849929295832448 = () => {
   }
 
   return (
-    <>
-      {showPreloader && <Preloader isVisible={isPreloading} onComplete={handlePreloaderComplete} themeClass={themeClass} />}
-      
-      {!showPreloader && (
-        <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
+    <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
           <header className={`sticky top-0 z-10 nav-elevated p-3 sm:p-4 ${isPreviewMode ? 'mobile-preview-navbar-offset' : ''}`}>
             <div className="max-w-6xl mx-auto flex items-center justify-between">
               <Button 
@@ -666,13 +644,7 @@ const Collections1849929295832448 = () => {
                         aspectRatio: `${aspectW} / ${aspectH}`
                       }}
                     >
-                      {!isMediaLoaded && (
-                        <div className="absolute inset-0 bg-gradient-to-br from-secondary/80 to-secondary/40 animate-pulse z-10">
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                        </div>
-                      )}
-                      
-                      {mediaObj.mediaType === 'video' ? (
+                    {mediaObj.mediaType === 'video' ? (
                         <InlineVideoPlayer
                           src={mediaObj.src}
                           hlsSrc={mediaObj.hlsSrc}
@@ -803,8 +775,6 @@ const Collections1849929295832448 = () => {
             </footer>
           </main>
         </div>
-      )}
-    </>
   );
 };
 

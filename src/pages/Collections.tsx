@@ -4,9 +4,7 @@ import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
-import PublicPageSkeleton from "@/components/PublicPageSkeleton";
 import { api } from "@/lib/api";
-import { useSkeletonGate } from "@/hooks/useSkeletonGate";
 import { specialSecureIds } from "@/utils/secureIdMapper";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import FanAccountMenu from "@/components/FanAccountMenu";
@@ -76,8 +74,6 @@ const Collections = () => {
   const [showUnlockModal, setShowUnlockModal] = useState(true);
   const [loadedImages, setLoadedImages] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
-  const [isPreloading, setIsPreloading] = useState(true);
-  const [showPreloader, setShowPreloader] = useState(true);
   const [measuredDims, setMeasuredDims] = useState({});
   const [customerEmail, setCustomerEmail] = useState("");
   const [paymentError, setPaymentError] = useState("");
@@ -89,10 +85,6 @@ const Collections = () => {
   const [canRevealContent, setCanRevealContent] = useState(false);
   const [revealStoreUrl, setRevealStoreUrl] = useState('');
   const [showFanAuthModal, setShowFanAuthModal] = useState(false);
-  const showPageSkeleton = useSkeletonGate(showPreloader, {
-    delayMs: 220,
-    minVisibleMs: 400
-  });
   const isMobileViewport = typeof window !== 'undefined' && window.innerWidth < 768;
   const imagesPerPage = isMobileViewport ? 12 : 20;
   const [revealedCount, setRevealedCount] = useState(imagesPerPage);
@@ -432,7 +424,6 @@ const Collections = () => {
   useEffect(() => {
     setLoadedImages(new Set());
     setMeasuredDims({});
-    setIsPreloading(true);
     setRevealedCount(imagesPerPage);
     const firstBatch = allImages.slice(0, Math.min(imagesPerPage, allImages.length));
     firstBatch.forEach((imageObj: any) => {
@@ -458,8 +449,6 @@ const Collections = () => {
       warmImg.src = imageObj.thumb || imageObj.src;
     });
 
-    const timer = window.setTimeout(() => setIsPreloading(false), 260);
-    return () => window.clearTimeout(timer);
   }, [allImages, imagesPerPage]);
 
   useEffect(() => {
@@ -506,22 +495,6 @@ const Collections = () => {
     observer.observe(revealSentinelRef.current);
     return () => observer.disconnect();
   }, [hasMoreImages, imagesPerPage, allImages.length]);
-
-  // Safety timeout: never hang on preloader for more than 5 seconds
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (isPreloading) {
-        setIsPreloading(false);
-      }
-    }, 5000);
-    return () => clearTimeout(timeout);
-  }, [isPreloading]);
-
-  useEffect(() => {
-    if (!isPreloading) {
-      setShowPreloader(false);
-    }
-  }, [isPreloading]);
 
   const handleUnlockClick = () => {
     setShowUnlockModal(true);
@@ -591,10 +564,6 @@ const Collections = () => {
     navigate(checkoutUrl);
   };
 
-  if (showPageSkeleton) {
-    return <PublicPageSkeleton variant="locked-grid" themeClass={themeClass} />;
-  }
-
   return (
         <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
           <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 relative">
@@ -648,10 +617,6 @@ const Collections = () => {
                       }}
                       onClick={handleUnlockClick}
                     >
-                      {!isMediaLoaded && (
-                        <div className="absolute inset-0 skeleton-shimmer z-10 rounded-lg" />
-                      )}
-                      
                       {mediaObj.mediaType === 'video' ? (
                         <InlineVideoPlayer
                           src={mediaObj.src}
@@ -759,30 +724,20 @@ const Collections = () => {
                       )}
                     </div>
                     
-                    {isLoading ? (
-                      <div className="w-full h-[46px] rounded-xl skeleton-shimmer" aria-hidden="true" />
-                    ) : (
-                      <button 
-                        onClick={handleCardPaymentClick}
-                        disabled={isCardPaymentLoading}
-                        className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
-                      >
-                        {!isCardPaymentLoading && (
-                          <span
-                            className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/35 to-transparent opacity-70"
-                            style={{ animation: 'shimmer 2.4s ease-in-out infinite' }}
-                          />
-                        )}
-                        {isCardPaymentLoading ? (
-                          <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                        ) : (
-                          <>
-                            <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
-                            <span className="relative">Unlock All -- ${bundlePrice}</span>
-                          </>
-                        )}
-                      </button>
-                    )}
+                    <button
+                      onClick={handleCardPaymentClick}
+                      disabled={isCardPaymentLoading || isLoading}
+                      className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
+                    >
+                      {isCardPaymentLoading || isLoading ? (
+                        <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                      ) : (
+                        <>
+                          <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
+                          <span className="relative">Unlock All -- ${bundlePrice}</span>
+                        </>
+                      )}
+                    </button>
                     <button
                       type="button"
                       onClick={() => {

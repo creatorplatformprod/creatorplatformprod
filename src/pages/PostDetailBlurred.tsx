@@ -5,8 +5,6 @@ import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
-import PublicPageSkeleton from "@/components/PublicPageSkeleton";
-import { useSkeletonGate } from "@/hooks/useSkeletonGate";
 import { api } from "@/lib/api";
 import { getSecureId } from "@/utils/secureIdMapper";
 import { useFanAuth } from "@/contexts/FanAuthContext";
@@ -414,10 +412,6 @@ const PostDetailBlurred = () => {
   };
 
   const collection = remoteCollection || localCollection || fallbackMockCollection;
-  const showPageSkeleton = useSkeletonGate(remoteLoading && !collection, {
-    delayMs: 220,
-    minVisibleMs: 400
-  });
   useSeo(
     {
       title: collection?.title
@@ -610,10 +604,6 @@ const PostDetailBlurred = () => {
     // Modal is already visible
   };
 
-  if (showPageSkeleton) {
-    return <PublicPageSkeleton variant="locked-grid" themeClass={themeClass} />;
-  }
-
   if (!collection) {
     return (
       <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
@@ -719,10 +709,6 @@ const PostDetailBlurred = () => {
                     }}
                     onClick={handleUnlockClick}
                   >
-                    {!isMediaLoaded && (
-                      <div className="absolute inset-0 skeleton-shimmer z-10 rounded-lg" />
-                    )}
-                    
                     {mediaType === 'video' ? (
                       <InlineVideoPlayer
                         src={imageSrc}
@@ -882,30 +868,20 @@ const PostDetailBlurred = () => {
                 )}
               </div>
               
-              {remoteLoading ? (
-                <div className="w-full h-[46px] rounded-xl skeleton-shimmer" aria-hidden="true" />
-              ) : (
-                <button 
-                  onClick={handleCardPaymentClick}
-                  disabled={isCardPaymentLoading}
-                  className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
-                >
-                  {!isCardPaymentLoading && (
-                    <span
-                      className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/35 to-transparent opacity-70"
-                      style={{ animation: 'shimmer 2.4s ease-in-out infinite' }}
-                    />
-                  )}
-                  {isCardPaymentLoading ? (
-                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                  ) : (
-                    <>
-                      <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
-                      <span className="relative">{`Unlock Now -- ${formattedPrice}`}</span>
-                    </>
-                  )}
-                </button>
-              )}
+              <button
+                onClick={handleCardPaymentClick}
+                disabled={isCardPaymentLoading || remoteLoading}
+                className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
+              >
+                {isCardPaymentLoading || remoteLoading ? (
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                ) : (
+                  <>
+                    <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="relative">{`Unlock Now -- ${formattedPrice}`}</span>
+                  </>
+                )}
+              </button>
               <button
                 type="button"
                 onClick={() => {
