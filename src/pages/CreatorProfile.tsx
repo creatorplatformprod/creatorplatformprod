@@ -495,7 +495,11 @@ const CreatorProfile = () => {
       previewMode: isPreviewMode,
       images: (col.media || []).map((media: any) => ({
         full: media.url,
-        thumb: media.thumbnailUrl || media.url
+        thumb: media.thumbnailUrl || media.url,
+        mediaType: String(media?.mediaType || '').toLowerCase() === 'video' ? 'video' : 'image',
+        hlsSrc: String(media?.hlsUrl || '').trim(),
+        width: Number.isFinite(Number(media?.width)) && Number(media.width) > 0 ? Number(media.width) : null,
+        height: Number.isFinite(Number(media?.height)) && Number(media.height) > 0 ? Number(media.height) : null
       })),
       user: {
         name: creatorData?.displayName || creatorData?.username || 'Creator',

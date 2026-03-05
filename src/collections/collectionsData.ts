@@ -5,7 +5,14 @@ export interface Collection {
   id: string;
   title: string;
   description: string;
-  images: Array<{ full: string; thumb: string }>;
+  images: Array<{
+    full: string;
+    thumb: string;
+    mediaType?: 'image' | 'video';
+    hlsSrc?: string;
+    width?: number | null;
+    height?: number | null;
+  }>;
   creatorUsername?: string;
   previewMode?: boolean;
   user: {

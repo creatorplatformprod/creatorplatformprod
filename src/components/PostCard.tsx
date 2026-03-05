@@ -7,6 +7,7 @@ import { Collection } from "@/collections/collectionsData";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import { fetchEngagement, registerEngagementShare, registerEngagementView, setEngagementLike } from "@/lib/engagement";
 import { buildCardLayout } from "@/lib/collectionLayout";
+import { resolveMediaType } from "@/utils/mediaType";
 
 interface PostCardProps {
   collection: Collection;
@@ -22,7 +23,19 @@ const MIN_IMAGES_TO_FILL_LAYOUT: Record<string, number> = {
 };
 
 const PostCard = ({ collection }: PostCardProps) => {
-  const visibleImages = collection.images.filter((image) => {
+  const visibleImages = collection.images
+  .map((image) => {
+    const full = String(image?.full || "").trim();
+    const thumb = String(image?.thumb || image?.full || "").trim();
+    const hlsSrc = String((image as any)?.hlsSrc || "").trim();
+    const mediaType = resolveMediaType({
+      mediaType: (image as any)?.mediaType,
+      url: full,
+      hlsSrc
+    });
+    return { ...image, full, thumb, hlsSrc, mediaType };
+  })
+  .filter((image) => {
     const full = String(image?.full || "").trim();
     if (!full) return false;
     // Draft/local upload blobs should be preview-only and never create broken tiles on public pages.
@@ -277,13 +290,28 @@ const PostCard = ({ collection }: PostCardProps) => {
                 key={index} 
                 className={`relative overflow-hidden ${spanClasses}`}
               >
-                <ProgressiveImage
-                  src={image.full}
-                  thumbnail={image.thumb}
-                  alt={`${collection.title} - ${index + 1}`}
-                  className="w-full h-full object-cover group-hover:scale-100 transition-transform duration-500"
-                  onLoad={handleImageLoad}
-                />
+                {image.mediaType === 'video' ? (
+                  <video
+                    src={image.full}
+                    poster={image.thumb || '/placeholder.svg'}
+                    className="w-full h-full object-cover group-hover:scale-100 transition-transform duration-500"
+                    muted
+                    loop
+                    autoPlay
+                    playsInline
+                    preload="metadata"
+                    onLoadedData={handleImageLoad}
+                    onError={handleImageLoad}
+                  />
+                ) : (
+                  <ProgressiveImage
+                    src={image.full}
+                    thumbnail={image.thumb}
+                    alt={`${collection.title} - ${index + 1}`}
+                    className="w-full h-full object-cover group-hover:scale-100 transition-transform duration-500"
+                    onLoad={handleImageLoad}
+                  />
+                )}
               </div>
             );
           })}

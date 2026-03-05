@@ -3952,23 +3952,49 @@ const CreatorDashboard = () => {
                           .slice(0, liveCardLayout.maxImages)
                           .map((media: any, index: number) => {
                             const spanClasses = liveCardLayout.imageSpans?.[index] || '';
+                            const mediaSrcCandidates = getMediaSrcCandidates(media.url);
+                            const thumbCandidates = getMediaSrcCandidates(media.thumbnailUrl || media.url);
+                            const mediaSrc = mediaSrcCandidates[0] || media.url;
+                            const thumbSrc = thumbCandidates[0] || media.thumbnailUrl || media.url;
                             return (
-                              <div key={`${media.url}-${index}`} className={`relative overflow-hidden ${spanClasses}`}>
+                              <div key={`${mediaSrc}-${index}`} className={`relative overflow-hidden ${spanClasses}`}>
                                 {String(media.mediaType).includes('video') ? (
                                   <video
-                                    src={media.url}
+                                    src={mediaSrc}
+                                    poster={thumbSrc}
                                     className="w-full h-full object-cover"
                                     muted
+                                    loop
+                                    autoPlay
                                     playsInline
                                     preload="metadata"
+                                    onError={(event) => {
+                                      const el = event.currentTarget;
+                                      const currentIndex = mediaSrcCandidates.indexOf(el.currentSrc || el.src);
+                                      const nextIndex = currentIndex >= 0 ? currentIndex + 1 : 1;
+                                      const fallback = mediaSrcCandidates[nextIndex];
+                                      if (fallback) {
+                                        el.src = fallback;
+                                        el.load();
+                                      }
+                                    }}
                                   />
                                 ) : (
                                   <img
-                                    src={media.thumbnailUrl || media.url}
+                                    src={thumbSrc}
                                     alt=""
                                     className="w-full h-full object-cover"
                                     loading="lazy"
                                     decoding="async"
+                                    onError={(event) => {
+                                      const el = event.currentTarget;
+                                      const currentIndex = thumbCandidates.indexOf(el.currentSrc || el.src);
+                                      const nextIndex = currentIndex >= 0 ? currentIndex + 1 : 1;
+                                      const fallback = thumbCandidates[nextIndex];
+                                      if (fallback) {
+                                        el.src = fallback;
+                                      }
+                                    }}
                                   />
                                 )}
                               </div>
