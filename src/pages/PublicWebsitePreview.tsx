@@ -65,8 +65,72 @@ const PublicWebsitePreview = () => {
   const isDarkPreviewTheme = themeClass === 'theme-classic-dark';
   const desktopIframeRef = useRef<HTMLIFrameElement | null>(null);
   const mobileIframeRef = useRef<HTMLIFrameElement | null>(null);
+  const desktopIframeTouchCleanupRef = useRef<(() => void) | null>(null);
+  const mobileIframeTouchCleanupRef = useRef<(() => void) | null>(null);
   const desktopTouchYRef = useRef<number | null>(null);
   const mobileTouchYRef = useRef<number | null>(null);
+
+  const installIframeTouchScrollBridge = (iframe: HTMLIFrameElement | null, device: 'desktop' | 'mobile') => {
+    const cleanupRef = device === 'desktop' ? desktopIframeTouchCleanupRef : mobileIframeTouchCleanupRef;
+    if (cleanupRef.current) {
+      cleanupRef.current();
+      cleanupRef.current = null;
+    }
+    if (!iframe?.contentWindow) return;
+
+    try {
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      if (!doc) return;
+
+      let lastX: number | null = null;
+      let lastY: number | null = null;
+
+      const onTouchStart = (event: TouchEvent) => {
+        const touch = event.touches?.[0];
+        if (!touch) return;
+        lastX = touch.clientX;
+        lastY = touch.clientY;
+      };
+
+      const onTouchMove = (event: TouchEvent) => {
+        const touch = event.touches?.[0];
+        if (!touch) return;
+        if (typeof lastX !== 'number' || typeof lastY !== 'number') {
+          lastX = touch.clientX;
+          lastY = touch.clientY;
+          return;
+        }
+
+        const deltaX = lastX - touch.clientX;
+        const deltaY = lastY - touch.clientY;
+        lastX = touch.clientX;
+        lastY = touch.clientY;
+
+        if (Math.abs(deltaY) <= Math.abs(deltaX) || Math.abs(deltaY) < 0.5) return;
+        event.preventDefault();
+        iframe.contentWindow?.scrollBy({ top: deltaY, behavior: 'auto' });
+      };
+
+      const onTouchEnd = () => {
+        lastX = null;
+        lastY = null;
+      };
+
+      doc.addEventListener('touchstart', onTouchStart as EventListener, { passive: true });
+      doc.addEventListener('touchmove', onTouchMove as EventListener, { passive: false });
+      doc.addEventListener('touchend', onTouchEnd as EventListener, { passive: true });
+      doc.addEventListener('touchcancel', onTouchEnd as EventListener, { passive: true });
+
+      cleanupRef.current = () => {
+        doc.removeEventListener('touchstart', onTouchStart as EventListener);
+        doc.removeEventListener('touchmove', onTouchMove as EventListener);
+        doc.removeEventListener('touchend', onTouchEnd as EventListener);
+        doc.removeEventListener('touchcancel', onTouchEnd as EventListener);
+      };
+    } catch {
+      cleanupRef.current = null;
+    }
+  };
 
   const scrollIframeBy = (iframe: HTMLIFrameElement | null, deltaY: number) => {
     if (!iframe?.contentWindow || !Number.isFinite(deltaY) || deltaY === 0) return;
@@ -143,6 +207,17 @@ const PublicWebsitePreview = () => {
     setDesktopPreviewLoaded(false);
     setMobilePreviewLoaded(false);
   }, [previewUrl, activeDevice]);
+
+  useEffect(() => {
+    return () => {
+      if (desktopIframeTouchCleanupRef.current) {
+        desktopIframeTouchCleanupRef.current();
+      }
+      if (mobileIframeTouchCleanupRef.current) {
+        mobileIframeTouchCleanupRef.current();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const loadCurrentUser = async () => {
@@ -465,7 +540,7 @@ const PublicWebsitePreview = () => {
                     >
                       {showDesktopPreviewSkeleton && (
                         <div className="absolute inset-0 z-10 overflow-hidden rounded-md">
-                          <PublicPageSkeleton variant="profile" />
+                          <PublicPageSkeleton variant="profile" previewMode />
                         </div>
                       )}
                       <iframe
@@ -474,7 +549,10 @@ const PublicWebsitePreview = () => {
                         src={previewUrl}
                         className="absolute inset-0 origin-top-left [transform:scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
                         style={previewSurfaceStyle}
-                        onLoad={() => setDesktopPreviewLoaded(true)}
+                        onLoad={() => {
+                          setDesktopPreviewLoaded(true);
+                          installIframeTouchScrollBridge(desktopIframeRef.current, 'desktop');
+                        }}
                       />
                     </div>
                   </div>
@@ -508,7 +586,7 @@ const PublicWebsitePreview = () => {
                 >
                   {showMobilePreviewSkeleton && (
                     <div className="absolute inset-0 z-10 overflow-hidden rounded-md">
-                      <PublicPageSkeleton variant="profile" />
+                      <PublicPageSkeleton variant="profile" previewMode />
                     </div>
                   )}
                   <iframe
@@ -517,7 +595,10 @@ const PublicWebsitePreview = () => {
                     src={previewUrl}
                     className="absolute inset-0 origin-top-left [transform:translateX(-6px)_scale(var(--scale))] w-[var(--viewport-w)] h-[var(--viewport-h)]"
                     style={previewSurfaceStyle}
-                    onLoad={() => setMobilePreviewLoaded(true)}
+                    onLoad={() => {
+                      setMobilePreviewLoaded(true);
+                      installIframeTouchScrollBridge(mobileIframeRef.current, 'mobile');
+                    }}
                   />
                 </div>
               </div>

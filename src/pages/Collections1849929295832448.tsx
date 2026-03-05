@@ -9,6 +9,7 @@ import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { api } from "@/lib/api";
 import { useSeo } from "@/hooks/use-seo";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
+import { resolveMediaType } from "@/utils/mediaType";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -237,11 +238,6 @@ const Collections1849929295832448 = () => {
     });
   };
 
-  const isVideoUrl = (url: string): boolean => {
-    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.m3u8'];
-    return videoExtensions.some(ext => url.toLowerCase().includes(ext));
-  };
-
   const mockSeed = useMemo(() => hashString((creatorParam || 'creator').toLowerCase()), [creatorParam]);
   const mockPhotos = useMemo(
     () => seededShuffle(
@@ -288,7 +284,14 @@ const Collections1849929295832448 = () => {
           if (!mediaItem?.url) return;
           const imageSrc = mediaItem.url;
           let thumbSrc = mediaItem.thumbnailUrl || mediaItem.url;
-          const mediaType = mediaItem.mediaType || (isVideoUrl(imageSrc) ? 'video' : 'image');
+          const mediaType = resolveMediaType({
+            mediaType: mediaItem.mediaType,
+            mimeType: mediaItem.mimeType,
+            contentType: mediaItem.contentType,
+            type: mediaItem.type,
+            url: imageSrc,
+            hlsUrl: mediaItem.hlsUrl
+          });
           if (mediaType === 'video') {
             thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi|m3u8)$/i, '.avif');
           }

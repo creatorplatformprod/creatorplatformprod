@@ -1,6 +1,7 @@
 type PublicPageSkeletonProps = {
   variant?: "profile" | "locked-grid";
   themeClass?: string;
+  previewMode?: boolean;
 };
 
 const cardHeights = [
@@ -17,12 +18,13 @@ const cardHeights = [
 const PublicPageSkeleton = ({
   variant = "profile",
   themeClass = "",
+  previewMode = false,
 }: PublicPageSkeletonProps) => {
   const isLockedGrid = variant === "locked-grid";
 
   return (
     <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
-      <header className="sticky top-0 z-20 nav-elevated">
+      <header className={`sticky top-0 z-20 nav-elevated ${previewMode ? "mobile-preview-navbar-offset" : ""}`}>
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

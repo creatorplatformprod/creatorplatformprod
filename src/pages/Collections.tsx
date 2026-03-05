@@ -13,6 +13,7 @@ import FanAccountMenu from "@/components/FanAccountMenu";
 import FanAuthModal from "@/components/FanAuthModal";
 import { useSeo } from "@/hooks/use-seo";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
+import { resolveMediaType } from "@/utils/mediaType";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -171,11 +172,6 @@ const Collections = () => {
       setCustomerEmail(preferredEmail);
     }
   }, [activeFan?.email, customerEmail]);
-
-  const isVideoUrl = (url) => {
-    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.m3u8'];
-    return videoExtensions.some(ext => url.toLowerCase().includes(ext));
-  };
 
   // Load collections: use creator username if provided (public), otherwise authenticated (dashboard)
   useEffect(() => {
@@ -343,7 +339,14 @@ const Collections = () => {
           if (!mediaItem?.url) return;
           const imageSrc = mediaItem.url;
           let thumbSrc = mediaItem.thumbnailUrl || mediaItem.url;
-          const mediaType = mediaItem.mediaType || (isVideoUrl(imageSrc) ? 'video' : 'image');
+          const mediaType = resolveMediaType({
+            mediaType: mediaItem.mediaType,
+            mimeType: mediaItem.mimeType,
+            contentType: mediaItem.contentType,
+            type: mediaItem.type,
+            url: imageSrc,
+            hlsUrl: mediaItem.hlsUrl
+          });
           if (mediaType === 'video') {
             thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi|m3u8)$/i, '.avif');
           }

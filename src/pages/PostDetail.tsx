@@ -13,6 +13,7 @@ import { useSeo } from "@/hooks/use-seo";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
 import PublicPageSkeleton from "@/components/PublicPageSkeleton";
 import { useSkeletonGate } from "@/hooks/useSkeletonGate";
+import { isVideoUrl, resolveMediaType } from "@/utils/mediaType";
 
 const MOCK_COLLECTION_TITLES = [
   "Pink Lemonade Mood",
@@ -172,11 +173,6 @@ const PostDetail = () => {
     return () => window.clearTimeout(timer);
   }, [secureId]);
 
-  const isVideoUrl = (url: string): boolean => {
-    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.m3u8'];
-    return videoExtensions.some(ext => url.toLowerCase().includes(ext));
-  };
-
   const getCollectionFromSecureId = () => {
     if (!secureId) {
       return null;
@@ -226,6 +222,14 @@ const PostDetail = () => {
                     full: media.url,
                     thumb: media.thumbnailUrl || media.url,
                     hlsSrc: String(media.hlsUrl || '').trim(),
+                    mediaType: resolveMediaType({
+                      mediaType: media.mediaType,
+                      mimeType: media.mimeType,
+                      contentType: media.contentType,
+                      type: media.type,
+                      url: media.url,
+                      hlsUrl: media.hlsUrl
+                    }),
                     width: Number.isFinite(Number(media.width)) && Number(media.width) > 0 ? Number(media.width) : null,
                     height: Number.isFinite(Number(media.height)) && Number(media.height) > 0 ? Number(media.height) : null
                   })),
@@ -285,6 +289,14 @@ const PostDetail = () => {
             full: media.url,
             thumb: media.thumbnailUrl || media.url,
             hlsSrc: String(media.hlsUrl || '').trim(),
+            mediaType: resolveMediaType({
+              mediaType: media.mediaType,
+              mimeType: media.mimeType,
+              contentType: media.contentType,
+              type: media.type,
+              url: media.url,
+              hlsUrl: media.hlsUrl
+            }),
             width: Number.isFinite(Number(media.width)) && Number(media.width) > 0 ? Number(media.width) : null,
             height: Number.isFinite(Number(media.height)) && Number(media.height) > 0 ? Number(media.height) : null
           })),
@@ -375,7 +387,18 @@ const PostDetail = () => {
     images.forEach((imageData, idx) => {
       const imageSrc = typeof imageData === 'string' ? imageData : imageData.full;
       
-      if (isVideoUrl(imageSrc)) {
+      const mediaType = typeof imageData === 'string'
+        ? (isVideoUrl(imageSrc) ? 'video' : 'image')
+        : resolveMediaType({
+            mediaType: imageData?.mediaType,
+            mimeType: imageData?.mimeType,
+            contentType: imageData?.contentType,
+            type: imageData?.type,
+            url: imageSrc,
+            hlsSrc: imageData?.hlsSrc
+          });
+
+      if (mediaType === 'video') {
         // For videos, load metadata to get actual dimensions
         const video = document.createElement('video');
         video.preload = 'metadata';
@@ -581,7 +604,16 @@ const PostDetail = () => {
                       ? ''
                       : String(imageData?.hlsSrc || '');
                     
-                    const mediaType = isVideoUrl(imageSrc) ? 'video' : 'image';
+                    const mediaType = typeof imageData === 'string'
+                      ? (isVideoUrl(imageSrc) ? 'video' : 'image')
+                      : resolveMediaType({
+                          mediaType: imageData?.mediaType,
+                          mimeType: imageData?.mimeType,
+                          contentType: imageData?.contentType,
+                          type: imageData?.type,
+                          url: imageSrc,
+                          hlsSrc
+                        });
                     
                     // For videos, try to get an avif thumbnail instead of the video file
                     if (mediaType === 'video') {
