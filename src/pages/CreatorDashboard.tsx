@@ -1983,13 +1983,15 @@ const CreatorDashboard = () => {
     Math.min(Number(collectionForm.previewImages) || 1, templateMeta.maxCount)
   );
   const isCollectionEditorBusy = loading || uploadingCollectionMedia;
-  const collectionPrimaryActionLabel = selectedCollectionId
-    ? loading
-      ? 'Saving...'
-      : 'Save Changes'
-    : uploadingCollectionMedia
+  const collectionPrimaryActionLabel = uploadingCollectionMedia
     ? 'Uploading...'
-    : 'Create + Upload';
+    : collectionFiles.length > 0
+    ? selectedCollectionId
+      ? 'Upload Changes'
+      : 'Create + Upload'
+    : loading
+    ? 'Saving...'
+    : 'Save Changes';
   const liveCardLayout = buildCardLayout(collectionEditorMedia.length || effectivePreviewCount, {
     template: collectionForm.cardTemplate,
     previewCount: effectivePreviewCount
@@ -3886,170 +3888,6 @@ const CreatorDashboard = () => {
                       placeholder="art, photography, exclusive"
                     />
                   </div>
-                  <div className="border border-border rounded-lg p-3">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Button
-                        type="button"
-                        onClick={selectedCollectionId ? handleSaveCollectionDetails : handleUploadCollectionMedia}
-                        disabled={isCollectionEditorBusy || (!selectedCollectionId && collectionFiles.length === 0)}
-                        className="dash-btn-primary rounded-full h-9 text-xs px-4"
-                      >
-                        {selectedCollectionId ? (
-                          <Save className="h-3.5 w-3.5 mr-1.5" />
-                        ) : (
-                          <Upload className="h-3.5 w-3.5 mr-1.5" />
-                        )}
-                        {collectionPrimaryActionLabel}
-                      </Button>
-                      {selectedCollectionId && (
-                        <span className="text-[11px] text-muted-foreground">
-                          Collection ID: {selectedCollectionId}
-                        </span>
-                      )}
-                      <span className="text-[11px] text-muted-foreground ml-auto">
-                        {isCollectionDirty || collectionFiles.length > 0 ? 'Unsaved changes' : 'All changes saved'}
-                      </span>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="input-label">Card Template</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {COLLECTION_CARD_TEMPLATE_OPTIONS.map((option) => {
-                        const isAvailable = collectionEditorMedia.length === 0 || option.maxCount <= collectionEditorMedia.length;
-                        const isActive = collectionForm.cardTemplate === option.value;
-                        const previewLayout = buildCardLayout(option.maxCount, {
-                          template: option.value,
-                          previewCount: option.maxCount
-                        });
-                        const previewSlots = Array.from({ length: Math.min(option.maxCount, 6) }, (_, slotIndex) => slotIndex);
-                        return (
-                          <button
-                            key={option.value}
-                            type="button"
-                            disabled={!isAvailable}
-                            onClick={() => {
-                              if (!isAvailable) return;
-                              setCollectionForm((prev) => ({
-                                ...prev,
-                                cardTemplate: option.value,
-                                previewImages: randomPreviewCountForTemplate(option.value, collectionEditorMedia.length)
-                              }));
-                            }}
-                            className={`rounded-md border p-2 text-left transition-all ${
-                              isActive
-                                ? 'border-primary/60 bg-primary/10'
-                                : isAvailable
-                                ? 'border-border bg-background hover:border-primary/40'
-                                : 'border-border/40 bg-muted/20 opacity-50 cursor-not-allowed'
-                            }`}
-                          >
-                            <div className="text-[11px] font-medium text-foreground">{option.label}</div>
-                            <div className="text-[10px] text-muted-foreground mb-1">Up to {option.maxCount}</div>
-                            <div className="h-14 rounded border border-border/60 overflow-hidden bg-muted/20 p-1">
-                              <div className={previewLayout.gridClasses.replace('h-full', 'h-full')}>
-                                {previewSlots.map((slotIndex) => (
-                                  <div
-                                    key={`${option.value}-${slotIndex}`}
-                                    className={`rounded-[2px] bg-primary/35 ${previewLayout.imageSpans?.[slotIndex] || ''}`}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                    <p className="text-[10px] text-muted-foreground mt-1">
-                      Templates are filtered by how many media items you added. Card image count is auto-selected.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border border-border rounded-lg p-3 space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-medium text-muted-foreground">Live Card Preview</div>
-                  <div className="text-[11px] text-muted-foreground">
-                    Showing {Math.min(effectivePreviewCount, collectionEditorMedia.length || effectivePreviewCount)} of {collectionEditorMedia.length || effectivePreviewCount} (auto)
-                  </div>
-                </div>
-                <div className="relative h-44 rounded-md overflow-hidden border border-border bg-muted/20">
-                  {collectionEditorMedia.length === 0 ? (
-                    <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">
-                      Upload media to preview the collection card layout.
-                    </div>
-                  ) : (
-                    <div className="relative h-full">
-                      <div className={liveCardLayout.gridClasses}>
-                        {collectionEditorMedia
-                          .slice(0, liveCardLayout.maxImages)
-                          .map((media: any, index: number) => {
-                            const spanClasses = liveCardLayout.imageSpans?.[index] || '';
-                            const mediaSrcCandidates = getMediaSrcCandidates(media.url);
-                            const thumbCandidates = getMediaSrcCandidates(media.thumbnailUrl || media.url);
-                            const mediaSrc = mediaSrcCandidates[0] || media.url;
-                            const thumbSrc = thumbCandidates[0] || media.thumbnailUrl || media.url;
-                            return (
-                              <div key={`${mediaSrc}-${index}`} className={`relative overflow-hidden ${spanClasses}`}>
-                                {String(media.mediaType).includes('video') ? (
-                                  <video
-                                    src={mediaSrc}
-                                    poster={thumbSrc}
-                                    className="w-full h-full object-cover"
-                                    muted
-                                    loop
-                                    autoPlay
-                                    playsInline
-                                    preload="metadata"
-                                    onError={(event) => {
-                                      const el = event.currentTarget;
-                                      const currentIndex = mediaSrcCandidates.indexOf(el.currentSrc || el.src);
-                                      const nextIndex = currentIndex >= 0 ? currentIndex + 1 : 1;
-                                      const fallback = mediaSrcCandidates[nextIndex];
-                                      if (fallback) {
-                                        el.src = fallback;
-                                        el.load();
-                                      }
-                                    }}
-                                  />
-                                ) : (
-                                  <img
-                                    src={thumbSrc}
-                                    alt=""
-                                    className="w-full h-full object-cover"
-                                    loading="lazy"
-                                    decoding="async"
-                                    onError={(event) => {
-                                      const el = event.currentTarget;
-                                      const currentIndex = thumbCandidates.indexOf(el.currentSrc || el.src);
-                                      const nextIndex = currentIndex >= 0 ? currentIndex + 1 : 1;
-                                      const fallback = thumbCandidates[nextIndex];
-                                      if (fallback) {
-                                        el.src = fallback;
-                                      }
-                                    }}
-                                  />
-                                )}
-                              </div>
-                            );
-                          })}
-                      </div>
-                      <div className="absolute inset-0 bg-black/10 backdrop-blur-[6px]" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <button
-                          type="button"
-                          className="relative overflow-hidden bg-white/20 text-white border border-gray-300 backdrop-blur-sm px-5 py-1.5 rounded-full text-xs font-medium pointer-events-none"
-                        >
-                          <span
-                            className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"
-                            style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
-                          />
-                          <Lock className="inline-block w-3.5 h-3.5 mr-1.5" />
-                          Unlock
-                        </button>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -4106,14 +3944,6 @@ const CreatorDashboard = () => {
                       </div>
                     </div>
 
-                    <Button
-                      type="button"
-                      onClick={handleUploadCollectionMedia}
-                      disabled={uploadingCollectionMedia || collectionFiles.length === 0}
-                      className="w-full dash-btn-primary rounded-full h-9 text-xs"
-                    >
-                      {uploadingCollectionMedia ? 'Uploading...' : (selectedCollectionId ? 'Upload to Collection' : 'Create + Upload')}
-                    </Button>
                   </div>
 
                   <div className="space-y-3">
@@ -4254,6 +4084,170 @@ const CreatorDashboard = () => {
                       </div>
                     )}
                   </div>
+                </div>
+
+                <div>
+                  <label className="input-label">Card Template</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {COLLECTION_CARD_TEMPLATE_OPTIONS.map((option) => {
+                      const isAvailable = collectionEditorMedia.length === 0 || option.maxCount <= collectionEditorMedia.length;
+                      const isActive = collectionForm.cardTemplate === option.value;
+                      const previewLayout = buildCardLayout(option.maxCount, {
+                        template: option.value,
+                        previewCount: option.maxCount
+                      });
+                      const previewSlots = Array.from({ length: Math.min(option.maxCount, 6) }, (_, slotIndex) => slotIndex);
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          disabled={!isAvailable}
+                          onClick={() => {
+                            if (!isAvailable) return;
+                            setCollectionForm((prev) => ({
+                              ...prev,
+                              cardTemplate: option.value,
+                              previewImages: randomPreviewCountForTemplate(option.value, collectionEditorMedia.length)
+                            }));
+                          }}
+                          className={`rounded-md border p-2 text-left transition-all ${
+                            isActive
+                              ? 'border-primary/60 bg-primary/10'
+                              : isAvailable
+                              ? 'border-border bg-background hover:border-primary/40'
+                              : 'border-border/40 bg-muted/20 opacity-50 cursor-not-allowed'
+                          }`}
+                        >
+                          <div className="text-[11px] font-medium text-foreground">{option.label}</div>
+                          <div className="text-[10px] text-muted-foreground mb-1">Up to {option.maxCount}</div>
+                          <div className="h-14 rounded border border-border/60 overflow-hidden bg-muted/20 p-1">
+                            <div className={previewLayout.gridClasses.replace('h-full', 'h-full')}>
+                              {previewSlots.map((slotIndex) => (
+                                <div
+                                  key={`${option.value}-${slotIndex}`}
+                                  className={`rounded-[2px] bg-primary/35 ${previewLayout.imageSpans?.[slotIndex] || ''}`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    Templates are filtered by how many media items you added. Card image count is auto-selected.
+                  </p>
+                </div>
+
+                <div className="border border-border rounded-lg p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-medium text-muted-foreground">Live Card Preview</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      Showing {Math.min(effectivePreviewCount, collectionEditorMedia.length || effectivePreviewCount)} of {collectionEditorMedia.length || effectivePreviewCount} (auto)
+                    </div>
+                  </div>
+                  <div className="relative h-44 rounded-md overflow-hidden border border-border bg-muted/20">
+                    {collectionEditorMedia.length === 0 ? (
+                      <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">
+                        Upload media to preview the collection card layout.
+                      </div>
+                    ) : (
+                      <div className="relative h-full">
+                        <div className={liveCardLayout.gridClasses}>
+                          {collectionEditorMedia
+                            .slice(0, liveCardLayout.maxImages)
+                            .map((media: any, index: number) => {
+                              const spanClasses = liveCardLayout.imageSpans?.[index] || '';
+                              const mediaSrcCandidates = getMediaSrcCandidates(media.url);
+                              const thumbCandidates = getMediaSrcCandidates(media.thumbnailUrl || media.url);
+                              const mediaSrc = mediaSrcCandidates[0] || media.url;
+                              const thumbSrc = thumbCandidates[0] || media.thumbnailUrl || media.url;
+                              return (
+                                <div key={`${mediaSrc}-${index}`} className={`relative overflow-hidden ${spanClasses}`}>
+                                  {String(media.mediaType).includes('video') ? (
+                                    <video
+                                      src={mediaSrc}
+                                      poster={thumbSrc}
+                                      className="w-full h-full object-cover"
+                                      muted
+                                      loop
+                                      autoPlay
+                                      playsInline
+                                      preload="metadata"
+                                      onError={(event) => {
+                                        const el = event.currentTarget;
+                                        const currentIndex = mediaSrcCandidates.indexOf(el.currentSrc || el.src);
+                                        const nextIndex = currentIndex >= 0 ? currentIndex + 1 : 1;
+                                        const fallback = mediaSrcCandidates[nextIndex];
+                                        if (fallback) {
+                                          el.src = fallback;
+                                          el.load();
+                                        }
+                                      }}
+                                    />
+                                  ) : (
+                                    <img
+                                      src={thumbSrc}
+                                      alt=""
+                                      className="w-full h-full object-cover"
+                                      loading="lazy"
+                                      decoding="async"
+                                      onError={(event) => {
+                                        const el = event.currentTarget;
+                                        const currentIndex = thumbCandidates.indexOf(el.currentSrc || el.src);
+                                        const nextIndex = currentIndex >= 0 ? currentIndex + 1 : 1;
+                                        const fallback = thumbCandidates[nextIndex];
+                                        if (fallback) {
+                                          el.src = fallback;
+                                        }
+                                      }}
+                                    />
+                                  )}
+                                </div>
+                              );
+                            })}
+                        </div>
+                        <div className="absolute inset-0 bg-black/10 backdrop-blur-[6px]" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <button
+                            type="button"
+                            className="relative overflow-hidden bg-white/20 text-white border border-gray-300 backdrop-blur-sm px-5 py-1.5 rounded-full text-xs font-medium pointer-events-none"
+                          >
+                            <span
+                              className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"
+                              style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
+                            />
+                            <Lock className="inline-block w-3.5 h-3.5 mr-1.5" />
+                            Unlock
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 border-t border-border/70 pt-4">
+                  <Button
+                    type="button"
+                    onClick={collectionFiles.length > 0 ? handleUploadCollectionMedia : handleSaveCollectionDetails}
+                    disabled={isCollectionEditorBusy || (!selectedCollectionId && collectionFiles.length === 0)}
+                    className="dash-btn-primary rounded-full h-9 text-xs px-4"
+                  >
+                    {collectionFiles.length > 0 ? (
+                      <Upload className="h-3.5 w-3.5 mr-1.5" />
+                    ) : (
+                      <Save className="h-3.5 w-3.5 mr-1.5" />
+                    )}
+                    {collectionPrimaryActionLabel}
+                  </Button>
+                  {selectedCollectionId && (
+                    <span className="text-[11px] text-muted-foreground">
+                      Collection ID: {selectedCollectionId}
+                    </span>
+                  )}
+                  <span className="text-[11px] text-muted-foreground ml-auto">
+                    {isCollectionDirty || collectionFiles.length > 0 ? 'Unsaved changes' : 'All changes saved'}
+                  </span>
                 </div>
               </div>
             </div>
