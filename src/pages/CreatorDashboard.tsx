@@ -1961,6 +1961,18 @@ const CreatorDashboard = () => {
       return true;
     });
   }, [statusCardForm.mediaUrls, statusCardPreviews]);
+  const isPostCardEditorBusy = loading || uploadingStatusCardMedia;
+  const postCardPrimaryActionLabel = uploadingStatusCardMedia
+    ? 'Uploading...'
+    : statusCardFiles.length > 0
+    ? selectedPostCardId
+      ? 'Upload Changes'
+      : 'Create + Upload'
+    : loading
+    ? 'Saving...'
+    : selectedPostCardId
+    ? 'Save Changes'
+    : 'Create Post Card';
 
   const templateMeta =
     COLLECTION_CARD_TEMPLATES[collectionForm.cardTemplate] || COLLECTION_CARD_TEMPLATES[DEFAULT_COLLECTION_TEMPLATE];
@@ -3527,72 +3539,6 @@ const CreatorDashboard = () => {
                 </div>
               </div>
 
-              <div className="border border-border rounded-lg p-3 space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-medium text-muted-foreground">Live Post Card Preview</div>
-                  <div className="text-[11px] text-muted-foreground">
-                    {postCardEditorMedia.length} media {postCardEditorMedia.length === 1 ? 'item' : 'items'}
-                  </div>
-                </div>
-                <div className="pointer-events-none">
-                  {postCardEditorMedia.length > 0 ? (
-                    <StatusCardWithMedia
-                      id={`dashboard-preview-${selectedPostCardId || 'draft'}`}
-                      user={{
-                        name: profileData.displayName || user?.username || 'Your Name',
-                        avatar: profileData.avatar || user?.avatar || '/placeholder.svg',
-                        verified: !!user?.isVerified
-                      }}
-                      title=""
-                      text={statusCardForm.text?.trim() || 'Your post text will appear here...'}
-                      timestamp={selectedPostCardId ? 'Previewing selected card' : 'Draft preview'}
-                      likes={0}
-                      comments={0}
-                      mediaItems={postCardEditorMedia.slice(0, 4).map((media: any, idx: number) => {
-                        const candidates = getMediaSrcCandidates(media.thumbnailUrl || media.url);
-                        const thumb = candidates[0] || media.thumbnailUrl || media.url;
-                        return {
-                          type: String(media.mediaType).includes('video') ? 'video' as const : 'image' as const,
-                          url: getMediaSrcCandidates(media.url)[0] || media.url,
-                          thumbnail: thumb,
-                          alt: `Preview media ${idx + 1}`
-                        };
-                      })}
-                    />
-                  ) : (
-                    <StatusCard
-                      id={`dashboard-preview-${selectedPostCardId || 'draft'}`}
-                      user={{
-                        name: profileData.displayName || user?.username || 'Your Name',
-                        avatar: profileData.avatar || user?.avatar || '/placeholder.svg',
-                        verified: !!user?.isVerified
-                      }}
-                      title=""
-                      text={statusCardForm.text?.trim() || 'Your post text will appear here...'}
-                      timestamp={selectedPostCardId ? 'Previewing selected card' : 'Draft preview'}
-                      likes={0}
-                      comments={0}
-                    />
-                  )}
-                </div>
-                <div className="flex justify-end text-xs text-muted-foreground pt-1">
-                  <span>Order {Number.isFinite(Number(statusCardForm.order)) ? Number(statusCardForm.order) : 0}</span>
-                </div>
-              </div>
-
-              <div className="dashboard-sticky-action-bar flex flex-wrap items-center gap-2">
-                <Button onClick={handleSavePostCard} className="dash-btn-primary">
-                  <Save className="w-4 h-4 mr-2" />
-                  {selectedPostCardId ? 'Save Changes' : 'Create Post Card'}
-                </Button>
-                {selectedPostCardId && (
-                  <span className="text-[11px] text-muted-foreground">Post Card ID: {selectedPostCardId}</span>
-                )}
-                <span className="text-[11px] text-muted-foreground ml-auto">
-                  {isPostCardDirty ? 'Unsaved changes' : 'All changes saved'}
-                </span>
-              </div>
-
               <div className="border-t border-border/70 pt-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-semibold text-foreground">Media Manager</h3>
@@ -3627,14 +3573,6 @@ const CreatorDashboard = () => {
                         </Button>
                       </div>
                     </div>
-                    <Button
-                      type="button"
-                      onClick={handleUploadStatusCardImage}
-                      disabled={uploadingStatusCardMedia || statusCardFiles.length === 0}
-                      className="w-full dash-btn-primary"
-                    >
-                      {uploadingStatusCardMedia ? 'Uploading...' : (selectedPostCardId ? 'Upload + Save' : 'Create + Upload')}
-                    </Button>
                   </div>
 
                   <div className="space-y-3">
@@ -3679,6 +3617,81 @@ const CreatorDashboard = () => {
                       </div>
                     )}
                   </div>
+                </div>
+
+                <div className="border border-border rounded-lg p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-medium text-muted-foreground">Live Post Card Preview</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      {postCardEditorMedia.length} media {postCardEditorMedia.length === 1 ? 'item' : 'items'}
+                    </div>
+                  </div>
+                  <div className="pointer-events-none">
+                    {postCardEditorMedia.length > 0 ? (
+                      <StatusCardWithMedia
+                        id={`dashboard-preview-${selectedPostCardId || 'draft'}`}
+                        user={{
+                          name: profileData.displayName || user?.username || 'Your Name',
+                          avatar: profileData.avatar || user?.avatar || '/placeholder.svg',
+                          verified: !!user?.isVerified
+                        }}
+                        title=""
+                        text={statusCardForm.text?.trim() || 'Your post text will appear here...'}
+                        timestamp={selectedPostCardId ? 'Previewing selected card' : 'Draft preview'}
+                        likes={0}
+                        comments={0}
+                        mediaItems={postCardEditorMedia.slice(0, 4).map((media: any, idx: number) => {
+                          const candidates = getMediaSrcCandidates(media.thumbnailUrl || media.url);
+                          const thumb = candidates[0] || media.thumbnailUrl || media.url;
+                          return {
+                            type: String(media.mediaType).includes('video') ? 'video' as const : 'image' as const,
+                            url: getMediaSrcCandidates(media.url)[0] || media.url,
+                            thumbnail: thumb,
+                            alt: `Preview media ${idx + 1}`
+                          };
+                        })}
+                      />
+                    ) : (
+                      <StatusCard
+                        id={`dashboard-preview-${selectedPostCardId || 'draft'}`}
+                        user={{
+                          name: profileData.displayName || user?.username || 'Your Name',
+                          avatar: profileData.avatar || user?.avatar || '/placeholder.svg',
+                          verified: !!user?.isVerified
+                        }}
+                        title=""
+                        text={statusCardForm.text?.trim() || 'Your post text will appear here...'}
+                        timestamp={selectedPostCardId ? 'Previewing selected card' : 'Draft preview'}
+                        likes={0}
+                        comments={0}
+                      />
+                    )}
+                  </div>
+                  <div className="flex justify-end text-xs text-muted-foreground pt-1">
+                    <span>Order {Number.isFinite(Number(statusCardForm.order)) ? Number(statusCardForm.order) : 0}</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 border-t border-border/70 pt-4">
+                  <Button
+                    type="button"
+                    onClick={statusCardFiles.length > 0 ? handleUploadStatusCardImage : handleSavePostCard}
+                    disabled={isPostCardEditorBusy || (!selectedPostCardId && statusCardFiles.length === 0 && !statusCardForm.text.trim() && statusCardForm.mediaUrls.length === 0)}
+                    className="dash-btn-primary"
+                  >
+                    {statusCardFiles.length > 0 ? (
+                      <Upload className="w-4 h-4 mr-2" />
+                    ) : (
+                      <Save className="w-4 h-4 mr-2" />
+                    )}
+                    {postCardPrimaryActionLabel}
+                  </Button>
+                  {selectedPostCardId && (
+                    <span className="text-[11px] text-muted-foreground">Post Card ID: {selectedPostCardId}</span>
+                  )}
+                  <span className="text-[11px] text-muted-foreground ml-auto">
+                    {isPostCardDirty || statusCardFiles.length > 0 ? 'Unsaved changes' : 'All changes saved'}
+                  </span>
                 </div>
               </div>
             </div>
