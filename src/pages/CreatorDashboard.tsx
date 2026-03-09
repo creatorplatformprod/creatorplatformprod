@@ -1976,23 +1976,20 @@ const CreatorDashboard = () => {
 
   const templateMeta =
     COLLECTION_CARD_TEMPLATES[collectionForm.cardTemplate] || COLLECTION_CARD_TEMPLATES[DEFAULT_COLLECTION_TEMPLATE];
-  const availableTemplateOptions = COLLECTION_CARD_TEMPLATE_OPTIONS.filter((option) => (
-    collectionEditorMedia.length === 0 || option.maxCount <= collectionEditorMedia.length
-  ));
-  const randomPreviewCountForTemplate = (template: CollectionCardTemplate, mediaCount: number) => {
+  const getPreviewCountForTemplate = (template: CollectionCardTemplate, mediaCount: number) => {
     const meta = COLLECTION_CARD_TEMPLATES[template] || COLLECTION_CARD_TEMPLATES[DEFAULT_COLLECTION_TEMPLATE];
-    const max = Math.max(1, Math.min(meta.maxCount, mediaCount || meta.maxCount));
-    if (max <= 1) return 1;
-    const min = Math.max(1, max - 2);
-    return min + Math.floor(Math.random() * (max - min + 1));
+    const safeMedia = Math.max(1, mediaCount || 1);
+    const minAllowed = Math.min(meta.minCount || 1, safeMedia);
+    return Math.max(minAllowed, Math.min(meta.maxCount, safeMedia));
   };
+  const minPreviewCount = Math.min(templateMeta.minCount || 1, collectionEditorMedia.length || 1);
   const maxPreviewCount = Math.max(
     1,
     Math.min(templateMeta.maxCount, collectionEditorMedia.length || templateMeta.maxCount)
   );
   const effectivePreviewCount = Math.max(
-    1,
-    Math.min(Number(collectionForm.previewImages) || 1, templateMeta.maxCount)
+    minPreviewCount,
+    Math.min(Number(collectionForm.previewImages) || minPreviewCount, maxPreviewCount)
   );
   const isCollectionEditorBusy = loading || uploadingCollectionMedia;
   const collectionPrimaryActionLabel = uploadingCollectionMedia
@@ -2117,33 +2114,27 @@ const CreatorDashboard = () => {
   }, [analyticsSeries]);
 
   useEffect(() => {
+    if (collectionEditorMedia.length <= 0) return;
+
+    const resolved = resolveCollectionLayout(collectionEditorMedia.length, {
+      template: collectionForm.cardTemplate,
+      previewCount: collectionForm.previewImages
+    });
+
     if (
-      collectionEditorMedia.length > 0 &&
-      availableTemplateOptions.length > 0 &&
-      !availableTemplateOptions.some((option) => option.value === collectionForm.cardTemplate)
+      resolved.template !== collectionForm.cardTemplate ||
+      resolved.previewCount !== collectionForm.previewImages
     ) {
       setCollectionForm((prev) => ({
         ...prev,
-        cardTemplate: availableTemplateOptions[0].value,
-        previewImages: randomPreviewCountForTemplate(availableTemplateOptions[0].value, collectionEditorMedia.length)
-      }));
-      return;
-    }
-    if (
-      collectionForm.previewImages > maxPreviewCount ||
-      collectionForm.previewImages < 1
-    ) {
-      setCollectionForm((prev) => ({
-        ...prev,
-        previewImages: randomPreviewCountForTemplate(prev.cardTemplate, collectionEditorMedia.length)
+        cardTemplate: resolved.template,
+        previewImages: resolved.previewCount
       }));
     }
   }, [
     collectionForm.previewImages,
     collectionForm.cardTemplate,
-    maxPreviewCount,
-    collectionEditorMedia.length,
-    availableTemplateOptions
+    collectionEditorMedia.length
   ]);
 
   const buildChartSeries = (summary: any) => {
@@ -4103,7 +4094,9 @@ const CreatorDashboard = () => {
                   <label className="input-label">Card Template</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {COLLECTION_CARD_TEMPLATE_OPTIONS.map((option) => {
-                      const isAvailable = collectionEditorMedia.length === 0 || option.maxCount <= collectionEditorMedia.length;
+                      const isAvailable =
+                        collectionEditorMedia.length === 0 ||
+                        collectionEditorMedia.length >= (option.minCount || 1);
                       const isActive = collectionForm.cardTemplate === option.value;
                       const previewLayout = buildCardLayout(option.maxCount, {
                         template: option.value,
@@ -4120,7 +4113,7 @@ const CreatorDashboard = () => {
                             setCollectionForm((prev) => ({
                               ...prev,
                               cardTemplate: option.value,
-                              previewImages: randomPreviewCountForTemplate(option.value, collectionEditorMedia.length)
+                              previewImages: getPreviewCountForTemplate(option.value, collectionEditorMedia.length)
                             }));
                           }}
                           className={`rounded-md border p-2 text-left transition-all ${
@@ -4132,7 +4125,11 @@ const CreatorDashboard = () => {
                           }`}
                         >
                           <div className="text-[11px] font-medium text-foreground">{option.label}</div>
-                          <div className="text-[10px] text-muted-foreground mb-1">Up to {option.maxCount}</div>
+                          <div className="text-[10px] text-muted-foreground mb-1">
+                            {option.minCount === option.maxCount
+                              ? `${option.maxCount} image${option.maxCount === 1 ? '' : 's'}`
+                              : `${option.minCount}-${option.maxCount} images`}
+                          </div>
                           <div className="h-14 rounded border border-border/60 overflow-hidden bg-muted/20 p-1">
                             <div className={previewLayout.gridClasses.replace('h-full', 'h-full')}>
                               {previewSlots.map((slotIndex) => (

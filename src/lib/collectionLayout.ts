@@ -20,6 +20,7 @@ export type CollectionCardLayout = {
 
 type TemplateDefinition = {
   label: string;
+  minCount: number;
   maxCount: number;
   gridClasses: string;
   imageSpans?: Record<number, string>;
@@ -30,27 +31,32 @@ const LAYOUT_TAG_PREFIX = "__layout:v1:";
 export const COLLECTION_CARD_TEMPLATES: Record<CollectionCardTemplate, TemplateDefinition> = {
   single: {
     label: "Single",
+    minCount: 1,
     maxCount: 1,
     gridClasses: "grid grid-cols-1 h-full"
   },
   double: {
     label: "Split 2",
+    minCount: 2,
     maxCount: 2,
     gridClasses: "grid grid-cols-2 gap-1 h-full"
   },
   triple: {
     label: "Triple",
+    minCount: 3,
     maxCount: 3,
     gridClasses: "grid grid-cols-3 gap-1 h-full"
   },
   quad: {
     label: "Quad",
+    minCount: 4,
     maxCount: 4,
     gridClasses: "grid grid-cols-2 grid-rows-2 gap-1 h-full"
   },
   masonry: {
-    label: "Masonry 6",
-    maxCount: 6,
+    label: "Masonry 4",
+    minCount: 4,
+    maxCount: 4,
     gridClasses: "grid grid-cols-3 grid-rows-2 gap-1 h-full",
     imageSpans: {
       0: "col-span-1 row-span-2",
@@ -58,14 +64,14 @@ export const COLLECTION_CARD_TEMPLATES: Record<CollectionCardTemplate, TemplateD
     }
   },
   asymmetric: {
-    label: "Asymmetric 4",
-    maxCount: 4,
+    label: "Asymmetric 3",
+    minCount: 3,
+    maxCount: 3,
     gridClasses: "grid grid-cols-3 grid-rows-2 gap-1 h-full",
     imageSpans: {
       0: "col-span-2 row-span-2",
       1: "col-span-1 row-span-1",
-      2: "col-span-1 row-span-1",
-      3: "hidden"
+      2: "col-span-1 row-span-1"
     }
   }
 };
@@ -75,6 +81,7 @@ export const COLLECTION_CARD_TEMPLATE_OPTIONS = (
 ).map((template) => ({
   value: template,
   label: COLLECTION_CARD_TEMPLATES[template].label,
+  minCount: COLLECTION_CARD_TEMPLATES[template].minCount,
   maxCount: COLLECTION_CARD_TEMPLATES[template].maxCount
 }));
 
@@ -85,11 +92,19 @@ const getDefaultTemplateForCount = (mediaCount: number): CollectionCardTemplate 
   return "quad";
 };
 
+const isTemplateCompatible = (template: CollectionCardTemplate, mediaCount: number) => {
+  const safeMedia = Math.max(1, mediaCount || 1);
+  const minCount = COLLECTION_CARD_TEMPLATES[template]?.minCount || 1;
+  return safeMedia >= minCount;
+};
+
 const clampPreviewCount = (template: CollectionCardTemplate, previewCount: number, mediaCount: number) => {
+  const templateMin = COLLECTION_CARD_TEMPLATES[template]?.minCount || 1;
   const templateMax = COLLECTION_CARD_TEMPLATES[template]?.maxCount || 4;
   const safeMedia = Math.max(1, mediaCount || 1);
   const safeCount = Number.isFinite(previewCount) ? Math.trunc(previewCount) : safeMedia;
-  return Math.max(1, Math.min(safeCount, templateMax, safeMedia));
+  const minAllowed = Math.min(templateMin, safeMedia);
+  return Math.max(minAllowed, Math.min(safeCount, templateMax, safeMedia));
 };
 
 export const buildLayoutTag = (config: CollectionLayoutConfig) => {
@@ -132,7 +147,10 @@ export const resolveCollectionLayout = (
   mediaCount: number,
   persistedConfig?: CollectionLayoutConfig | null
 ): CollectionLayoutConfig => {
-  const template = persistedConfig?.template || getDefaultTemplateForCount(mediaCount);
+  const requestedTemplate = persistedConfig?.template || getDefaultTemplateForCount(mediaCount);
+  const template = isTemplateCompatible(requestedTemplate, mediaCount)
+    ? requestedTemplate
+    : getDefaultTemplateForCount(mediaCount);
   const fallbackCount = Math.min(mediaCount || 1, COLLECTION_CARD_TEMPLATES[template].maxCount);
   const previewCount = clampPreviewCount(template, persistedConfig?.previewCount || fallbackCount, mediaCount);
   return { template, previewCount };
@@ -151,4 +169,3 @@ export const buildCardLayout = (
     imageSpans: definition.imageSpans
   };
 };
-
