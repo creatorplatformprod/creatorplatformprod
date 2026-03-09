@@ -609,8 +609,8 @@ const Collections1849929295832448 = () => {
                 size="sm"
                 className={
                   isDarkTheme
-                    ? "!text-white hover:!text-white border border-border bg-secondary/55 hover:bg-secondary/80"
-                    : "hover:bg-secondary"
+                    ? "!text-white border border-border bg-secondary/55"
+                    : "bg-transparent"
                 }
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
