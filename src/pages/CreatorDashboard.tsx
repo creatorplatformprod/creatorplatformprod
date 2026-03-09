@@ -1982,6 +1982,14 @@ const CreatorDashboard = () => {
     1,
     Math.min(Number(collectionForm.previewImages) || 1, templateMeta.maxCount)
   );
+  const isCollectionEditorBusy = loading || uploadingCollectionMedia;
+  const collectionPrimaryActionLabel = selectedCollectionId
+    ? loading
+      ? 'Saving...'
+      : 'Save Changes'
+    : uploadingCollectionMedia
+    ? 'Uploading...'
+    : 'Create + Upload';
   const liveCardLayout = buildCardLayout(collectionEditorMedia.length || effectivePreviewCount, {
     template: collectionForm.cardTemplate,
     previewCount: effectivePreviewCount
@@ -3878,6 +3886,31 @@ const CreatorDashboard = () => {
                       placeholder="art, photography, exclusive"
                     />
                   </div>
+                  <div className="border border-border rounded-lg p-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        type="button"
+                        onClick={selectedCollectionId ? handleSaveCollectionDetails : handleUploadCollectionMedia}
+                        disabled={isCollectionEditorBusy || (!selectedCollectionId && collectionFiles.length === 0)}
+                        className="dash-btn-primary rounded-full h-9 text-xs px-4"
+                      >
+                        {selectedCollectionId ? (
+                          <Save className="h-3.5 w-3.5 mr-1.5" />
+                        ) : (
+                          <Upload className="h-3.5 w-3.5 mr-1.5" />
+                        )}
+                        {collectionPrimaryActionLabel}
+                      </Button>
+                      {selectedCollectionId && (
+                        <span className="text-[11px] text-muted-foreground">
+                          Collection ID: {selectedCollectionId}
+                        </span>
+                      )}
+                      <span className="text-[11px] text-muted-foreground ml-auto">
+                        {isCollectionDirty || collectionFiles.length > 0 ? 'Unsaved changes' : 'All changes saved'}
+                      </span>
+                    </div>
+                  </div>
                   <div>
                     <label className="input-label">Card Template</label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -4018,36 +4051,6 @@ const CreatorDashboard = () => {
                     </div>
                   )}
                 </div>
-              </div>
-
-              <div className="dashboard-sticky-action-bar flex flex-wrap items-center gap-2">
-                {!selectedCollectionId ? (
-                  <Button
-                    type="button"
-                    onClick={handleCreateCollection}
-                    className="dash-btn-primary rounded-full h-9 text-xs px-4"
-                  >
-                    <Plus className="h-3.5 w-3.5 mr-1.5" />
-                    Create Collection
-                  </Button>
-                ) : (
-                  <Button
-                    type="button"
-                    onClick={handleSaveCollectionDetails}
-                    className="dash-btn-primary rounded-full h-9 text-xs px-4"
-                  >
-                    <Save className="h-3.5 w-3.5 mr-1.5" />
-                    Save Changes
-                  </Button>
-                )}
-                {selectedCollectionId && (
-                  <span className="text-[11px] text-muted-foreground">
-                    Collection ID: {selectedCollectionId}
-                  </span>
-                )}
-                <span className="text-[11px] text-muted-foreground ml-auto">
-                  {isCollectionDirty || collectionFiles.length > 0 ? 'Unsaved changes' : 'All changes saved'}
-                </span>
               </div>
 
               <div className="border-t border-border/70 pt-5 space-y-4">
