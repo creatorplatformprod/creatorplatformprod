@@ -415,8 +415,7 @@ const Collections1849929295832448 = () => {
           setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
           resolve(srcUrl);
         };
-        const cleanUrl = srcUrl.split('?')[0];
-        img.src = cleanUrl;
+        img.src = imageObj.thumb || srcUrl;
       });
     });
 
@@ -480,8 +479,7 @@ const Collections1849929295832448 = () => {
             }));
             setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
           };
-          const cleanUrl = srcUrl.split('?')[0];
-          img.src = cleanUrl;
+          img.src = imageObj.thumb || srcUrl;
         }
       });
     }
@@ -544,8 +542,7 @@ const Collections1849929295832448 = () => {
           }));
           setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
         };
-        const cleanUrl = srcUrl.split('?')[0];
-        img.src = cleanUrl;
+        img.src = imageObj.thumb || srcUrl;
       });
       
       setTimeout(() => {
@@ -661,7 +658,10 @@ const Collections1849929295832448 = () => {
                           className={`w-full h-full transition-all duration-500 ${
                             isRenderReady ? 'opacity-100' : 'opacity-0'
                           }`}
-                          onLoad={() => setLoadedImages(prev => new Set([...prev, mediaObj.src]))}
+                          onLoad={() => {
+                            setLoadedImages(prev => new Set([...prev, mediaObj.src]));
+                            setDimensionReadyImages(prev => new Set([...prev, mediaObj.src]));
+                          }}
                         />
                       ) : (
                         <>
@@ -672,7 +672,10 @@ const Collections1849929295832448 = () => {
                             className={`w-full h-full object-cover transition-all duration-500 hover:scale-105 ${
                               isRenderReady ? 'opacity-100' : 'opacity-0'
                             }`}
-                            onLoad={() => setLoadedImages(prev => new Set([...prev, mediaObj.src]))}
+                            onLoad={() => {
+                              setLoadedImages(prev => new Set([...prev, mediaObj.src]));
+                              setDimensionReadyImages(prev => new Set([...prev, mediaObj.src]));
+                            }}
                           />
                           <div className={`absolute inset-0 bg-black/20 transition-opacity duration-500 ${
                             isRenderReady ? 'opacity-100' : 'opacity-0'

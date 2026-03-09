@@ -36,6 +36,7 @@ const InlineVideoPlayer = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout>();
   const instanceIdRef = useRef(Math.random().toString(36));
+  const readyNotifiedRef = useRef(false);
 
   // Get video thumbnail - try to use .avif instead of video file for thumbnail
   const getVideoThumbnail = () => {
@@ -117,14 +118,23 @@ const InlineVideoPlayer = ({
     const video = videoRef.current;
     if (!video) return;
 
+    readyNotifiedRef.current = false;
+
+    const notifyReady = () => {
+      if (readyNotifiedRef.current) return;
+      readyNotifiedRef.current = true;
+      if (onLoad) onLoad();
+    };
+
     const handleCanPlay = () => {
       setIsVideoLoaded(true);
-      if (onLoad) onLoad();
+      notifyReady();
     };
 
     const handleLoadedMetadata = () => {
       setDuration(video.duration);
       setIsVideoLoaded(true);
+      notifyReady();
     };
 
     video.addEventListener('canplay', handleCanPlay);
@@ -134,7 +144,7 @@ const InlineVideoPlayer = ({
       video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
     };
-  }, [onLoad]);
+  }, [onLoad, src, hlsSrc]);
 
   const handlePlayPause = (e: React.MouseEvent) => {
     e.stopPropagation();

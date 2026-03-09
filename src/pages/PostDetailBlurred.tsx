@@ -731,7 +731,10 @@ const PostDetailBlurred = () => {
                         thumbnail={thumbSrc}
                         alt=""
                         className={`w-full h-full transition-all duration-500 ${isRenderReady ? 'opacity-100' : 'opacity-0'}`}
-                        onLoad={() => setLoadedImages(prev => new Set([...prev, imageSrc]))}
+                        onLoad={() => {
+                          setLoadedImages(prev => new Set([...prev, imageSrc]));
+                          setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+                        }}
                         isBlurred={true}
                         onClick={handleUnlockClick}
                       />
@@ -742,7 +745,10 @@ const PostDetailBlurred = () => {
                           thumbnail={thumbSrc}
                           alt={`${collection.title} - Image ${index + 1}`}
                           className={`w-full h-full object-cover transition-all duration-500 ${isRenderReady ? 'opacity-100' : 'opacity-0'}`}
-                          onLoad={() => setLoadedImages(prev => new Set([...prev, imageSrc]))}
+                          onLoad={() => {
+                            setLoadedImages(prev => new Set([...prev, imageSrc]));
+                            setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+                          }}
                         />
                         <div className={`absolute inset-0 bg-black/30 transition-opacity duration-500 ${isRenderReady ? 'opacity-100' : 'opacity-0'}`} />
                       </>

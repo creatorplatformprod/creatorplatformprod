@@ -648,7 +648,10 @@ const PostDetail = () => {
                             className={`w-full h-full transition-all duration-500 ${
                               isRenderReady ? 'opacity-100' : 'opacity-0'
                             }`}
-                            onLoad={() => setLoadedImages(prev => new Set([...prev, imageSrc]))}
+                            onLoad={() => {
+                              setLoadedImages(prev => new Set([...prev, imageSrc]));
+                              setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+                            }}
                           />
                         ) : (
                           <>
@@ -659,7 +662,10 @@ const PostDetail = () => {
                               className={`w-full h-full object-cover transition-all duration-500 hover:scale-105 ${
                                 isRenderReady ? 'opacity-100' : 'opacity-0'
                               }`}
-                              onLoad={() => setLoadedImages(prev => new Set([...prev, imageSrc]))}
+                              onLoad={() => {
+                                setLoadedImages(prev => new Set([...prev, imageSrc]));
+                                setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+                              }}
                             />
                             <div className={`absolute inset-0 bg-black/20 transition-opacity duration-500 ${
                               isRenderReady ? 'opacity-100' : 'opacity-0'

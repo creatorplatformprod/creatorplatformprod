@@ -699,7 +699,10 @@ const Collections = () => {
                           className={`w-full h-full transition-all duration-500 ${
                             isRenderReady ? 'opacity-100' : 'opacity-0'
                           }`}
-                          onLoad={() => setLoadedImages(prev => new Set([...prev, mediaObj.src]))}
+                          onLoad={() => {
+                            setLoadedImages(prev => new Set([...prev, mediaObj.src]));
+                            setDimensionReadyImages(prev => new Set([...prev, mediaObj.src]));
+                          }}
                           isBlurred={true}
                           onClick={handleUnlockClick}
                         />
@@ -712,7 +715,10 @@ const Collections = () => {
                             className={`w-full h-full object-cover transition-all duration-500 ${
                               isRenderReady ? 'opacity-100' : 'opacity-0'
                             }`}
-                            onLoad={() => setLoadedImages(prev => new Set([...prev, mediaObj.src]))}
+                            onLoad={() => {
+                              setLoadedImages(prev => new Set([...prev, mediaObj.src]));
+                              setDimensionReadyImages(prev => new Set([...prev, mediaObj.src]));
+                            }}
                           />
                           <div className={`absolute inset-0 bg-black/30 transition-opacity duration-500 ${
                             isRenderReady ? 'opacity-100' : 'opacity-0'
