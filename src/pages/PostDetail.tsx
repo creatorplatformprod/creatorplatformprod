@@ -73,6 +73,7 @@ const PostDetail = () => {
   const creatorParam = searchParams.get('creator') || '';
   const isPreviewMode = searchParams.get('mode') === 'preview';
   const [loadedImages, setLoadedImages] = useState(new Set<string>());
+  const [dimensionReadyImages, setDimensionReadyImages] = useState(new Set<string>());
   const [currentImagePage, setCurrentImagePage] = useState(1);
   const [isLoadingImages, setIsLoadingImages] = useState(false);
   const [measuredDims, setMeasuredDims] = useState({});
@@ -358,20 +359,16 @@ const PostDetail = () => {
     navigate(getProfileFallbackUrl());
   };
 
-  const getRandomDimensions = (index: number) => {
-    const ratios = [
-      { width: 400, height: 600 },
-      { width: 800, height: 600 },
-      { width: 600, height: 600 },
-      { width: 1200, height: 400 },
-      { width: 400, height: 800 },
-    ];
-    return ratios[index % ratios.length];
-  };
-
   const preloadImages = (images: any[]) => {
-    images.forEach((imageData, idx) => {
+    images.forEach((imageData) => {
       const imageSrc = typeof imageData === 'string' ? imageData : imageData.full;
+      const intrinsicWidth = typeof imageData === 'string' ? null : Number(imageData?.width);
+      const intrinsicHeight = typeof imageData === 'string' ? null : Number(imageData?.height);
+      const hasIntrinsicDims =
+        Number.isFinite(intrinsicWidth) &&
+        Number.isFinite(intrinsicHeight) &&
+        Number(intrinsicWidth) > 0 &&
+        Number(intrinsicHeight) > 0;
       
       const mediaType = typeof imageData === 'string'
         ? (isVideoUrl(imageSrc) ? 'video' : 'image')
@@ -385,6 +382,10 @@ const PostDetail = () => {
           });
 
       if (mediaType === 'video') {
+        if (hasIntrinsicDims) {
+          setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+          return;
+        }
         // For videos, load metadata to get actual dimensions
         const video = document.createElement('video');
         video.preload = 'metadata';
@@ -396,6 +397,7 @@ const PostDetail = () => {
               height: video.videoHeight || 1080 
             }
           }));
+          setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
         };
         video.onerror = () => {
           // Fallback to 16:9 aspect ratio for videos
@@ -403,29 +405,37 @@ const PostDetail = () => {
             ...prev,
             [imageSrc]: { width: 1920, height: 1080 }
           }));
+          setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
         };
         video.src = imageSrc;
         return;
       }
       
-      if (!loadedImages.has(imageSrc)) {
-        const img = new Image();
-        img.onload = () => {
-          setMeasuredDims(prev => ({
-            ...prev,
-            [imageSrc]: { width: img.naturalWidth, height: img.naturalHeight }
-          }));
-        };
-        img.onerror = () => {
-          const dimensions = getRandomDimensions(idx);
-          setMeasuredDims(prev => ({
-            ...prev,
-            [imageSrc]: { width: dimensions.width, height: dimensions.height }
-          }));
-        };
-        const thumbCandidate = typeof imageData === 'string' ? imageSrc : (imageData.thumb || imageSrc);
-        img.src = thumbCandidate;
+      if (hasIntrinsicDims) {
+        setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+        return;
       }
+
+      const img = new Image();
+      img.onload = () => {
+        setMeasuredDims(prev => ({
+          ...prev,
+          [imageSrc]: { width: img.naturalWidth || 800, height: img.naturalHeight || 1000 }
+        }));
+        setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+      };
+      img.onerror = () => {
+        setMeasuredDims(prev => ({
+          ...prev,
+          [imageSrc]: {
+            width: Number(intrinsicWidth) || 800,
+            height: Number(intrinsicHeight) || 1000
+          }
+        }));
+        setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+      };
+      const thumbCandidate = typeof imageData === 'string' ? imageSrc : (imageData.thumb || imageSrc);
+      img.src = thumbCandidate;
     });
   };
 
@@ -442,6 +452,10 @@ const PostDetail = () => {
 
   useEffect(() => {
     if (collection) {
+      setLoadedImages(new Set());
+      setDimensionReadyImages(new Set());
+      setMeasuredDims({});
+      setCurrentImagePage(1);
       const firstPageImages = collection.images.slice(0, imagesPerPage);
       preloadImages(firstPageImages);
     }
@@ -601,9 +615,6 @@ const PostDetail = () => {
                     if (mediaType === 'video') {
                       thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi|m3u8)$/i, '.avif');
                     }
-                    const isMediaLoaded = loadedImages.has(imageSrc);
-                    const md = measuredDims[imageSrc];
-                    const dimensions = getRandomDimensions(index);
                     const intrinsicWidth = typeof imageData === 'string' ? null : Number(imageData?.width);
                     const intrinsicHeight = typeof imageData === 'string' ? null : Number(imageData?.height);
                     const hasIntrinsicDims =
@@ -611,19 +622,23 @@ const PostDetail = () => {
                       Number.isFinite(intrinsicHeight) &&
                       Number(intrinsicWidth) > 0 &&
                       Number(intrinsicHeight) > 0;
-                    const aspectW = hasIntrinsicDims ? Number(intrinsicWidth) : md ? md.width : dimensions.width;
-                    const aspectH = hasIntrinsicDims ? Number(intrinsicHeight) : md ? md.height : dimensions.height;
+                    const isMediaLoaded = loadedImages.has(imageSrc);
+                    const hasDimensionData = hasIntrinsicDims || dimensionReadyImages.has(imageSrc);
+                    const isRenderReady = isMediaLoaded && hasDimensionData;
+                    const md = measuredDims[imageSrc];
+                    const aspectW = hasIntrinsicDims ? Number(intrinsicWidth) : md ? md.width : 4;
+                    const aspectH = hasIntrinsicDims ? Number(intrinsicHeight) : md ? md.height : 5;
                     
                     return (
                       <div 
                         key={`${imageSrc}-${index}`}
                         className="relative overflow-hidden rounded-lg animate-fade-in"
-                        style={{ 
-                          animationDelay: `${Math.min(index * 0.02, 1)}s`,
-                          aspectRatio: `${aspectW} / ${aspectH}`
-                        }}
-                      >
-                        {!isMediaLoaded && <div className="absolute inset-0 skeleton-static" />}
+                      style={{ 
+                        animationDelay: `${Math.min(index * 0.02, 1)}s`,
+                        aspectRatio: `${aspectW} / ${aspectH}`
+                      }}
+                    >
+                        {!isRenderReady && <div className="absolute inset-0 skeleton-static" />}
                         {mediaType === 'video' ? (
                           <InlineVideoPlayer
                             src={imageSrc}
@@ -631,7 +646,7 @@ const PostDetail = () => {
                             thumbnail={thumbSrc}
                             alt={`${collection.title} - Video ${index + 1}`}
                             className={`w-full h-full transition-all duration-500 ${
-                              isMediaLoaded ? 'opacity-100' : 'opacity-0'
+                              isRenderReady ? 'opacity-100' : 'opacity-0'
                             }`}
                             onLoad={() => setLoadedImages(prev => new Set([...prev, imageSrc]))}
                           />
@@ -642,12 +657,12 @@ const PostDetail = () => {
                               thumbnail={thumbSrc}
                               alt={`${collection.title} - Image ${index + 1}`}
                               className={`w-full h-full object-cover transition-all duration-500 hover:scale-105 ${
-                                isMediaLoaded ? 'opacity-100' : 'opacity-0'
+                                isRenderReady ? 'opacity-100' : 'opacity-0'
                               }`}
                               onLoad={() => setLoadedImages(prev => new Set([...prev, imageSrc]))}
                             />
                             <div className={`absolute inset-0 bg-black/20 transition-opacity duration-500 ${
-                              isMediaLoaded ? 'opacity-100' : 'opacity-0'
+                              isRenderReady ? 'opacity-100' : 'opacity-0'
                             }`} />
                           </>
                         )}
