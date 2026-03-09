@@ -31,20 +31,22 @@ const PublicPageSkeleton = ({
       className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}
       style={effectivePreviewMode ? { paddingTop: "2.25rem" } : undefined}
     >
-      <header className="sticky top-0 z-20 nav-elevated">
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="skeleton-shimmer h-8 w-36 rounded-full" />
-              <div className="skeleton-shimmer h-7 w-20 rounded-full" />
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="skeleton-shimmer h-8 w-8 rounded-full" />
-              <div className="skeleton-shimmer h-8 w-24 rounded-full" />
+      {!effectivePreviewMode && (
+        <header className="sticky top-0 z-20 nav-elevated">
+          <div className="max-w-7xl mx-auto px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="skeleton-shimmer h-8 w-36 rounded-full" />
+                <div className="skeleton-shimmer h-7 w-20 rounded-full" />
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="skeleton-shimmer h-8 w-8 rounded-full" />
+                <div className="skeleton-shimmer h-8 w-24 rounded-full" />
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       {!isLockedGrid && (
         <section className="max-w-[1600px] mx-auto px-4 pt-4">
