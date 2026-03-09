@@ -73,7 +73,6 @@ const Collections = () => {
   const isPreviewMode = searchParams.get('mode') === 'preview';
   const [showUnlockModal, setShowUnlockModal] = useState(true);
   const [loadedImages, setLoadedImages] = useState(new Set<string>());
-  const [dimensionReadyImages, setDimensionReadyImages] = useState(new Set<string>());
   const [isLoading, setIsLoading] = useState(false);
   const [measuredDims, setMeasuredDims] = useState({});
   const [customerEmail, setCustomerEmail] = useState("");
@@ -424,7 +423,6 @@ const Collections = () => {
 
   useEffect(() => {
     setLoadedImages(new Set());
-    setDimensionReadyImages(new Set());
     setMeasuredDims({});
     setRevealedCount(imagesPerPage);
     const firstBatch = allImages.slice(0, Math.min(imagesPerPage, allImages.length));
@@ -432,7 +430,7 @@ const Collections = () => {
       if (imageObj.mediaType === 'video') {
         const hasDims = Number.isFinite(Number(imageObj.width)) && Number(imageObj.width) > 0 && Number.isFinite(Number(imageObj.height)) && Number(imageObj.height) > 0;
         if (hasDims) {
-          setDimensionReadyImages(prev => new Set([...prev, imageObj.src]));
+          setLoadedImages(prev => new Set([...prev, imageObj.src]));
           return;
         }
         const video = document.createElement('video');
@@ -445,7 +443,7 @@ const Collections = () => {
               height: video.videoHeight || imageObj.height || 1080
             }
           }));
-          setDimensionReadyImages(prev => new Set([...prev, imageObj.src]));
+          setLoadedImages(prev => new Set([...prev, imageObj.src]));
         };
         video.onerror = () => {
           setMeasuredDims(prev => ({
@@ -455,7 +453,7 @@ const Collections = () => {
               height: Number(imageObj.height) || 1080
             }
           }));
-          setDimensionReadyImages(prev => new Set([...prev, imageObj.src]));
+          setLoadedImages(prev => new Set([...prev, imageObj.src]));
         };
         video.src = imageObj.src;
         return;
@@ -470,7 +468,7 @@ const Collections = () => {
             height: warmImg.naturalHeight || Number(imageObj.height) || 1000
           }
         }));
-        setDimensionReadyImages(prev => new Set([...prev, imageObj.src]));
+        setLoadedImages(prev => new Set([...prev, imageObj.src]));
       };
       warmImg.onerror = () => {
         setMeasuredDims(prev => ({
@@ -480,7 +478,7 @@ const Collections = () => {
             height: Number(imageObj.height) || 1000
           }
         }));
-        setDimensionReadyImages(prev => new Set([...prev, imageObj.src]));
+        setLoadedImages(prev => new Set([...prev, imageObj.src]));
       };
       warmImg.src = imageObj.thumb || imageObj.src;
     });
@@ -494,7 +492,7 @@ const Collections = () => {
         if (imageObj.mediaType === 'video') {
           const hasDims = Number.isFinite(Number(imageObj.width)) && Number(imageObj.width) > 0 && Number.isFinite(Number(imageObj.height)) && Number(imageObj.height) > 0;
           if (hasDims) {
-            setDimensionReadyImages(prev => new Set([...prev, imageObj.src]));
+            setLoadedImages(prev => new Set([...prev, imageObj.src]));
             return;
           }
           const video = document.createElement('video');
@@ -507,7 +505,7 @@ const Collections = () => {
                 height: video.videoHeight || 1080
               }
             }));
-            setDimensionReadyImages(prev => new Set([...prev, imageObj.src]));
+            setLoadedImages(prev => new Set([...prev, imageObj.src]));
           };
           video.onerror = () => {
             setMeasuredDims(prev => ({
@@ -517,7 +515,7 @@ const Collections = () => {
                 height: Number(imageObj.height) || 1080
               }
             }));
-            setDimensionReadyImages(prev => new Set([...prev, imageObj.src]));
+            setLoadedImages(prev => new Set([...prev, imageObj.src]));
           };
           video.src = imageObj.src;
           return;
@@ -533,7 +531,7 @@ const Collections = () => {
               height: warmImg.naturalHeight || Number(imageObj.height) || 1000
             }
           }));
-          setDimensionReadyImages(prev => new Set([...prev, imageObj.src]));
+          setLoadedImages(prev => new Set([...prev, imageObj.src]));
         };
         warmImg.onerror = () => {
           setMeasuredDims(prev => ({
@@ -543,7 +541,7 @@ const Collections = () => {
               height: Number(imageObj.height) || 1000
             }
           }));
-          setDimensionReadyImages(prev => new Set([...prev, imageObj.src]));
+          setLoadedImages(prev => new Set([...prev, imageObj.src]));
         };
         warmImg.src = imageObj.thumb || imageObj.src;
       });
@@ -670,8 +668,6 @@ const Collections = () => {
               <Masonry gutter="12px">
                 {visibleImages.map((mediaObj, index) => {
                   const isMediaLoaded = loadedImages.has(mediaObj.src);
-                  const hasDimensionData = mediaObj.hasStoredDims || dimensionReadyImages.has(mediaObj.src);
-                  const isRenderReady = isMediaLoaded && hasDimensionData;
                   const md = measuredDims[mediaObj.src];
                   const shouldUseMeasured = !mediaObj.hasStoredDims && md;
                   const aspectW = shouldUseMeasured ? md.width : mediaObj.width;
@@ -689,7 +685,7 @@ const Collections = () => {
                       }}
                       onClick={handleUnlockClick}
                     >
-                      {!isRenderReady && <div className="absolute inset-0 skeleton-static" />}
+                      {!isMediaLoaded && <div className="absolute inset-0 skeleton-static" />}
                       {mediaObj.mediaType === 'video' ? (
                         <InlineVideoPlayer
                           src={mediaObj.src}
@@ -697,12 +693,9 @@ const Collections = () => {
                           thumbnail={mediaObj.thumb}
                           alt={`${mediaObj.collectionTitle} - Video ${mediaObj.imageIndex + 1}`}
                           className={`w-full h-full transition-all duration-500 ${
-                            isRenderReady ? 'opacity-100' : 'opacity-0'
+                            isMediaLoaded ? 'opacity-100' : 'opacity-0'
                           }`}
-                          onLoad={() => {
-                            setLoadedImages(prev => new Set([...prev, mediaObj.src]));
-                            setDimensionReadyImages(prev => new Set([...prev, mediaObj.src]));
-                          }}
+                          onLoad={() => setLoadedImages(prev => new Set([...prev, mediaObj.src]))}
                           isBlurred={true}
                           onClick={handleUnlockClick}
                         />
@@ -713,15 +706,12 @@ const Collections = () => {
                             thumbnail={mediaObj.thumb}
                             alt={`${mediaObj.collectionTitle} - Image ${mediaObj.imageIndex + 1}`}
                             className={`w-full h-full object-cover transition-all duration-500 ${
-                              isRenderReady ? 'opacity-100' : 'opacity-0'
+                              isMediaLoaded ? 'opacity-100' : 'opacity-0'
                             }`}
-                            onLoad={() => {
-                              setLoadedImages(prev => new Set([...prev, mediaObj.src]));
-                              setDimensionReadyImages(prev => new Set([...prev, mediaObj.src]));
-                            }}
+                            onLoad={() => setLoadedImages(prev => new Set([...prev, mediaObj.src]))}
                           />
                           <div className={`absolute inset-0 bg-black/30 transition-opacity duration-500 ${
-                            isRenderReady ? 'opacity-100' : 'opacity-0'
+                            isMediaLoaded ? 'opacity-100' : 'opacity-0'
                           }`} />
                         </>
                       )}

@@ -73,7 +73,6 @@ const PostDetail = () => {
   const creatorParam = searchParams.get('creator') || '';
   const isPreviewMode = searchParams.get('mode') === 'preview';
   const [loadedImages, setLoadedImages] = useState(new Set<string>());
-  const [dimensionReadyImages, setDimensionReadyImages] = useState(new Set<string>());
   const [currentImagePage, setCurrentImagePage] = useState(1);
   const [isLoadingImages, setIsLoadingImages] = useState(false);
   const [measuredDims, setMeasuredDims] = useState({});
@@ -383,7 +382,7 @@ const PostDetail = () => {
 
       if (mediaType === 'video') {
         if (hasIntrinsicDims) {
-          setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+          setLoadedImages(prev => new Set([...prev, imageSrc]));
           return;
         }
         // For videos, load metadata to get actual dimensions
@@ -397,7 +396,7 @@ const PostDetail = () => {
               height: video.videoHeight || 1080 
             }
           }));
-          setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+          setLoadedImages(prev => new Set([...prev, imageSrc]));
         };
         video.onerror = () => {
           // Fallback to 16:9 aspect ratio for videos
@@ -405,14 +404,14 @@ const PostDetail = () => {
             ...prev,
             [imageSrc]: { width: 1920, height: 1080 }
           }));
-          setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+          setLoadedImages(prev => new Set([...prev, imageSrc]));
         };
         video.src = imageSrc;
         return;
       }
       
       if (hasIntrinsicDims) {
-        setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+        setLoadedImages(prev => new Set([...prev, imageSrc]));
         return;
       }
 
@@ -422,7 +421,7 @@ const PostDetail = () => {
           ...prev,
           [imageSrc]: { width: img.naturalWidth || 800, height: img.naturalHeight || 1000 }
         }));
-        setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+        setLoadedImages(prev => new Set([...prev, imageSrc]));
       };
       img.onerror = () => {
         setMeasuredDims(prev => ({
@@ -432,7 +431,7 @@ const PostDetail = () => {
             height: Number(intrinsicHeight) || 1000
           }
         }));
-        setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+        setLoadedImages(prev => new Set([...prev, imageSrc]));
       };
       const thumbCandidate = typeof imageData === 'string' ? imageSrc : (imageData.thumb || imageSrc);
       img.src = thumbCandidate;
@@ -453,7 +452,6 @@ const PostDetail = () => {
   useEffect(() => {
     if (collection) {
       setLoadedImages(new Set());
-      setDimensionReadyImages(new Set());
       setMeasuredDims({});
       setCurrentImagePage(1);
       const firstPageImages = collection.images.slice(0, imagesPerPage);
@@ -623,8 +621,6 @@ const PostDetail = () => {
                       Number(intrinsicWidth) > 0 &&
                       Number(intrinsicHeight) > 0;
                     const isMediaLoaded = loadedImages.has(imageSrc);
-                    const hasDimensionData = hasIntrinsicDims || dimensionReadyImages.has(imageSrc);
-                    const isRenderReady = isMediaLoaded && hasDimensionData;
                     const md = measuredDims[imageSrc];
                     const aspectW = hasIntrinsicDims ? Number(intrinsicWidth) : md ? md.width : 4;
                     const aspectH = hasIntrinsicDims ? Number(intrinsicHeight) : md ? md.height : 5;
@@ -638,7 +634,7 @@ const PostDetail = () => {
                         aspectRatio: `${aspectW} / ${aspectH}`
                       }}
                     >
-                        {!isRenderReady && <div className="absolute inset-0 skeleton-static" />}
+                        {!isMediaLoaded && <div className="absolute inset-0 skeleton-static" />}
                         {mediaType === 'video' ? (
                           <InlineVideoPlayer
                             src={imageSrc}
@@ -646,12 +642,9 @@ const PostDetail = () => {
                             thumbnail={thumbSrc}
                             alt={`${collection.title} - Video ${index + 1}`}
                             className={`w-full h-full transition-all duration-500 ${
-                              isRenderReady ? 'opacity-100' : 'opacity-0'
+                              isMediaLoaded ? 'opacity-100' : 'opacity-0'
                             }`}
-                            onLoad={() => {
-                              setLoadedImages(prev => new Set([...prev, imageSrc]));
-                              setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
-                            }}
+                            onLoad={() => setLoadedImages(prev => new Set([...prev, imageSrc]))}
                           />
                         ) : (
                           <>
@@ -660,15 +653,12 @@ const PostDetail = () => {
                               thumbnail={thumbSrc}
                               alt={`${collection.title} - Image ${index + 1}`}
                               className={`w-full h-full object-cover transition-all duration-500 hover:scale-105 ${
-                                isRenderReady ? 'opacity-100' : 'opacity-0'
+                                isMediaLoaded ? 'opacity-100' : 'opacity-0'
                               }`}
-                              onLoad={() => {
-                                setLoadedImages(prev => new Set([...prev, imageSrc]));
-                                setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
-                              }}
+                              onLoad={() => setLoadedImages(prev => new Set([...prev, imageSrc]))}
                             />
                             <div className={`absolute inset-0 bg-black/20 transition-opacity duration-500 ${
-                              isRenderReady ? 'opacity-100' : 'opacity-0'
+                              isMediaLoaded ? 'opacity-100' : 'opacity-0'
                             }`} />
                           </>
                         )}

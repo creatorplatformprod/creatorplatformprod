@@ -74,7 +74,6 @@ const PostDetailBlurred = () => {
   const creatorParam = searchParams.get('creator') || '';
   const isPreviewMode = searchParams.get('mode') === 'preview';
   const [loadedImages, setLoadedImages] = useState(new Set<string>());
-  const [dimensionReadyImages, setDimensionReadyImages] = useState(new Set<string>());
   const [measuredDims, setMeasuredDims] = useState({});
   const [paymentError, setPaymentError] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
@@ -462,7 +461,7 @@ const PostDetailBlurred = () => {
 
       if (mediaType === 'video') {
         if (hasIntrinsicDims) {
-          setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+          setLoadedImages(prev => new Set([...prev, imageSrc]));
           return;
         }
         const video = document.createElement('video');
@@ -475,21 +474,21 @@ const PostDetailBlurred = () => {
               height: video.videoHeight || 1080 
             }
           }));
-          setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+          setLoadedImages(prev => new Set([...prev, imageSrc]));
         };
         video.onerror = () => {
           setMeasuredDims(prev => ({
             ...prev,
             [imageSrc]: { width: 1920, height: 1080 }
           }));
-          setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+          setLoadedImages(prev => new Set([...prev, imageSrc]));
         };
         video.src = imageSrc;
         return;
       }
       
       if (hasIntrinsicDims) {
-        setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+        setLoadedImages(prev => new Set([...prev, imageSrc]));
         return;
       }
 
@@ -499,7 +498,7 @@ const PostDetailBlurred = () => {
           ...prev,
           [imageSrc]: { width: img.naturalWidth || 800, height: img.naturalHeight || 1000 }
         }));
-        setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+        setLoadedImages(prev => new Set([...prev, imageSrc]));
       };
       img.onerror = () => {
         setMeasuredDims(prev => ({
@@ -509,7 +508,7 @@ const PostDetailBlurred = () => {
             height: Number(intrinsicHeight) || 1000
           }
         }));
-        setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
+        setLoadedImages(prev => new Set([...prev, imageSrc]));
       };
       const thumbCandidate = typeof imageData === 'string' ? imageSrc : (imageData.thumb || imageSrc);
       img.src = thumbCandidate;
@@ -519,7 +518,6 @@ const PostDetailBlurred = () => {
   useEffect(() => {
     if (collection) {
       setLoadedImages(new Set());
-      setDimensionReadyImages(new Set());
       setMeasuredDims({});
       setRevealedCount(16);
       preloadImages(collection.images.slice(0, 16));
@@ -705,8 +703,6 @@ const PostDetailBlurred = () => {
                   Number(intrinsicWidth) > 0 &&
                   Number(intrinsicHeight) > 0;
                 const isMediaLoaded = loadedImages.has(imageSrc);
-                const hasDimensionData = hasIntrinsicDims || dimensionReadyImages.has(imageSrc);
-                const isRenderReady = isMediaLoaded && hasDimensionData;
                 const md = measuredDims[imageSrc];
                 const aspectW = hasIntrinsicDims ? Number(intrinsicWidth) : md ? md.width : 4;
                 const aspectH = hasIntrinsicDims ? Number(intrinsicHeight) : md ? md.height : 5;
@@ -723,18 +719,15 @@ const PostDetailBlurred = () => {
                     }}
                     onClick={handleUnlockClick}
                   >
-                    {!isRenderReady && <div className="absolute inset-0 skeleton-static" />}
+                    {!isMediaLoaded && <div className="absolute inset-0 skeleton-static" />}
                     {mediaType === 'video' ? (
                       <InlineVideoPlayer
                         src={imageSrc}
                         hlsSrc={hlsSrc}
                         thumbnail={thumbSrc}
                         alt=""
-                        className={`w-full h-full transition-all duration-500 ${isRenderReady ? 'opacity-100' : 'opacity-0'}`}
-                        onLoad={() => {
-                          setLoadedImages(prev => new Set([...prev, imageSrc]));
-                          setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
-                        }}
+                        className={`w-full h-full transition-all duration-500 ${isMediaLoaded ? 'opacity-100' : 'opacity-0'}`}
+                        onLoad={() => setLoadedImages(prev => new Set([...prev, imageSrc]))}
                         isBlurred={true}
                         onClick={handleUnlockClick}
                       />
@@ -744,13 +737,10 @@ const PostDetailBlurred = () => {
                           src={imageSrc}
                           thumbnail={thumbSrc}
                           alt={`${collection.title} - Image ${index + 1}`}
-                          className={`w-full h-full object-cover transition-all duration-500 ${isRenderReady ? 'opacity-100' : 'opacity-0'}`}
-                          onLoad={() => {
-                            setLoadedImages(prev => new Set([...prev, imageSrc]));
-                            setDimensionReadyImages(prev => new Set([...prev, imageSrc]));
-                          }}
+                          className={`w-full h-full object-cover transition-all duration-500 ${isMediaLoaded ? 'opacity-100' : 'opacity-0'}`}
+                          onLoad={() => setLoadedImages(prev => new Set([...prev, imageSrc]))}
                         />
-                        <div className={`absolute inset-0 bg-black/30 transition-opacity duration-500 ${isRenderReady ? 'opacity-100' : 'opacity-0'}`} />
+                        <div className={`absolute inset-0 bg-black/30 transition-opacity duration-500 ${isMediaLoaded ? 'opacity-100' : 'opacity-0'}`} />
                       </>
                     )}
                   </div>

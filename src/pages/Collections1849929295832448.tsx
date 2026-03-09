@@ -72,7 +72,6 @@ const Collections1849929295832448 = () => {
   const isPreviewMode = searchParams.get('mode') === 'preview';
   const [currentPage, setCurrentPage] = useState(1);
   const [loadedImages, setLoadedImages] = useState(new Set<string>());
-  const [dimensionReadyImages, setDimensionReadyImages] = useState(new Set<string>());
   const [isLoading, setIsLoading] = useState(false);
   const [measuredDims, setMeasuredDims] = useState({});
   const [accessVerified, setAccessVerified] = useState(false);
@@ -383,7 +382,7 @@ const Collections1849929295832448 = () => {
                 height: video.videoHeight || 1080 
               }
             }));
-            setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
+            setLoadedImages(prev => new Set([...prev, srcUrl]));
             resolve(srcUrl);
           };
           video.onerror = () => {
@@ -391,7 +390,7 @@ const Collections1849929295832448 = () => {
               ...prev,
               [srcUrl]: { width: 1920, height: 1080 }
             }));
-            setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
+            setLoadedImages(prev => new Set([...prev, srcUrl]));
             resolve(srcUrl);
           };
           video.src = srcUrl;
@@ -404,7 +403,7 @@ const Collections1849929295832448 = () => {
             ...prev,
             [srcUrl]: { width: img.naturalWidth, height: img.naturalHeight }
           }));
-          setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
+          setLoadedImages(prev => new Set([...prev, srcUrl]));
           resolve(srcUrl);
         };
         img.onerror = () => {
@@ -412,7 +411,7 @@ const Collections1849929295832448 = () => {
             ...prev,
             [srcUrl]: { width: imageObj.width, height: imageObj.height }
           }));
-          setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
+          setLoadedImages(prev => new Set([...prev, srcUrl]));
           resolve(srcUrl);
         };
         img.src = imageObj.thumb || srcUrl;
@@ -424,7 +423,6 @@ const Collections1849929295832448 = () => {
 
   useEffect(() => {
     setLoadedImages(new Set());
-    setDimensionReadyImages(new Set());
     setMeasuredDims({});
     setCurrentPage(1);
     preloadFirstPageImages();
@@ -439,7 +437,7 @@ const Collections1849929295832448 = () => {
       nextImages.forEach(imageObj => {
         const srcUrl = imageObj.src;
         
-        if (!dimensionReadyImages.has(srcUrl)) {
+        if (!loadedImages.has(srcUrl)) {
           if (imageObj.mediaType === 'video') {
             const video = document.createElement('video');
             video.preload = 'metadata';
@@ -451,14 +449,14 @@ const Collections1849929295832448 = () => {
                   height: video.videoHeight || 1080 
                 }
               }));
-              setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
+              setLoadedImages(prev => new Set([...prev, srcUrl]));
             };
             video.onerror = () => {
               setMeasuredDims(prev => ({
                 ...prev,
                 [srcUrl]: { width: 1920, height: 1080 }
               }));
-              setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
+              setLoadedImages(prev => new Set([...prev, srcUrl]));
             };
             video.src = srcUrl;
             return;
@@ -470,14 +468,14 @@ const Collections1849929295832448 = () => {
               ...prev,
               [srcUrl]: { width: img.naturalWidth, height: img.naturalHeight }
             }));
-            setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
+            setLoadedImages(prev => new Set([...prev, srcUrl]));
           };
           img.onerror = () => {
             setMeasuredDims(prev => ({
               ...prev,
               [srcUrl]: { width: imageObj.width, height: imageObj.height }
             }));
-            setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
+            setLoadedImages(prev => new Set([...prev, srcUrl]));
           };
           img.src = imageObj.thumb || srcUrl;
         }
@@ -514,14 +512,14 @@ const Collections1849929295832448 = () => {
                 height: video.videoHeight || 1080 
               }
             }));
-            setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
+            setLoadedImages(prev => new Set([...prev, srcUrl]));
           };
           video.onerror = () => {
             setMeasuredDims(prev => ({
               ...prev,
               [srcUrl]: { width: 1920, height: 1080 }
             }));
-            setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
+            setLoadedImages(prev => new Set([...prev, srcUrl]));
           };
           video.src = srcUrl;
           return;
@@ -533,14 +531,14 @@ const Collections1849929295832448 = () => {
             ...prev,
             [srcUrl]: { width: img.naturalWidth, height: img.naturalHeight }
           }));
-          setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
+          setLoadedImages(prev => new Set([...prev, srcUrl]));
         };
         img.onerror = () => {
           setMeasuredDims(prev => ({
             ...prev,
             [srcUrl]: { width: imageObj.width, height: imageObj.height }
           }));
-          setDimensionReadyImages(prev => new Set([...prev, srcUrl]));
+          setLoadedImages(prev => new Set([...prev, srcUrl]));
         };
         img.src = imageObj.thumb || srcUrl;
       });
@@ -632,8 +630,6 @@ const Collections1849929295832448 = () => {
                 {currentImages.map((mediaObj, index) => {
                   const globalIndex = startIndex + index;
                   const isMediaLoaded = loadedImages.has(mediaObj.src);
-                  const hasDimensionData = mediaObj.hasStoredDims || dimensionReadyImages.has(mediaObj.src);
-                  const isRenderReady = isMediaLoaded && hasDimensionData;
                   const md = measuredDims[mediaObj.src];
                   const shouldUseMeasured = !mediaObj.hasStoredDims && md;
                   const aspectW = shouldUseMeasured ? md.width : mediaObj.width;
@@ -648,7 +644,7 @@ const Collections1849929295832448 = () => {
                         aspectRatio: `${aspectW} / ${aspectH}`
                       }}
                     >
-                    {!isRenderReady && <div className="absolute inset-0 skeleton-static" />}
+                    {!isMediaLoaded && <div className="absolute inset-0 skeleton-static" />}
                     {mediaObj.mediaType === 'video' ? (
                         <InlineVideoPlayer
                           src={mediaObj.src}
@@ -656,12 +652,9 @@ const Collections1849929295832448 = () => {
                           thumbnail={mediaObj.thumb}
                           alt=""
                           className={`w-full h-full transition-all duration-500 ${
-                            isRenderReady ? 'opacity-100' : 'opacity-0'
+                            isMediaLoaded ? 'opacity-100' : 'opacity-0'
                           }`}
-                          onLoad={() => {
-                            setLoadedImages(prev => new Set([...prev, mediaObj.src]));
-                            setDimensionReadyImages(prev => new Set([...prev, mediaObj.src]));
-                          }}
+                          onLoad={() => setLoadedImages(prev => new Set([...prev, mediaObj.src]))}
                         />
                       ) : (
                         <>
@@ -670,15 +663,12 @@ const Collections1849929295832448 = () => {
                             thumbnail={mediaObj.thumb}
                             alt={`${mediaObj.collectionTitle} - Image ${mediaObj.imageIndex + 1}`}
                             className={`w-full h-full object-cover transition-all duration-500 hover:scale-105 ${
-                              isRenderReady ? 'opacity-100' : 'opacity-0'
+                              isMediaLoaded ? 'opacity-100' : 'opacity-0'
                             }`}
-                            onLoad={() => {
-                              setLoadedImages(prev => new Set([...prev, mediaObj.src]));
-                              setDimensionReadyImages(prev => new Set([...prev, mediaObj.src]));
-                            }}
+                            onLoad={() => setLoadedImages(prev => new Set([...prev, mediaObj.src]))}
                           />
                           <div className={`absolute inset-0 bg-black/20 transition-opacity duration-500 ${
-                            isRenderReady ? 'opacity-100' : 'opacity-0'
+                            isMediaLoaded ? 'opacity-100' : 'opacity-0'
                           }`} />
                         </>
                       )}
