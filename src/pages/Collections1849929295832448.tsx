@@ -644,6 +644,7 @@ const Collections1849929295832448 = () => {
                         aspectRatio: `${aspectW} / ${aspectH}`
                       }}
                     >
+                    {!isMediaLoaded && <div className="absolute inset-0 skeleton-static" />}
                     {mediaObj.mediaType === 'video' ? (
                         <InlineVideoPlayer
                           src={mediaObj.src}

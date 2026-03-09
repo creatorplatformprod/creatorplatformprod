@@ -716,6 +716,7 @@ const PostDetailBlurred = () => {
                     }}
                     onClick={handleUnlockClick}
                   >
+                    {!isMediaLoaded && <div className="absolute inset-0 skeleton-static" />}
                     {mediaType === 'video' ? (
                       <InlineVideoPlayer
                         src={imageSrc}

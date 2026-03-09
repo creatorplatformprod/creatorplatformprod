@@ -875,6 +875,23 @@
     background: #374151;
   }
 
+  .skeleton-static {
+    position: relative;
+    overflow: hidden;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%),
+      #ece8f3;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .theme-classic-dark .skeleton-static,
+  .dark .skeleton-static {
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%),
+      #111827;
+  }
+
   /* Image reveal transition */
   .image-loading {
     opacity: 0;

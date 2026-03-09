@@ -649,6 +649,7 @@ const Collections = () => {
                       }}
                       onClick={handleUnlockClick}
                     >
+                      {!isMediaLoaded && <div className="absolute inset-0 skeleton-static" />}
                       {mediaObj.mediaType === 'video' ? (
                         <InlineVideoPlayer
                           src={mediaObj.src}
