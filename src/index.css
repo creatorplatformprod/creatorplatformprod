@@ -389,6 +389,15 @@
   .creator-dashboard {
     position: relative;
     font-family: "Manrope", "Plus Jakarta Sans", "Segoe UI Variable", "Segoe UI", sans-serif;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  @supports not (overflow: clip) {
+    .creator-dashboard {
+      overflow-x: hidden;
+    }
   }
 
   .creator-dashboard::before {
@@ -446,6 +455,9 @@
 
   .creator-main {
     background: transparent;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
   }
 
   .creator-mobile-tabs {
@@ -454,7 +466,8 @@
   }
 
   .creator-content-shell {
-    max-width: 1150px;
+    width: 100%;
+    max-width: none;
   }
 
   .creator-dashboard .card-container,
@@ -1086,7 +1099,7 @@
 
   .landing-67-surface {
     position: relative;
-    transform: rotateX(8deg) translateX(2%) translateY(-4%);
+    transform: rotateX(8deg) translateX(-4%) translateY(-4%);
     transform-style: preserve-3d;
   }
 

@@ -2459,7 +2459,7 @@ const CreatorDashboard = () => {
             </div>
           </div>
 
-          <div className="creator-content-shell px-4 sm:px-6 lg:px-8 py-5 sm:py-6 max-w-5xl">
+          <div className="creator-content-shell w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
 
         {/* Messages */}
         {infoMessage && (
