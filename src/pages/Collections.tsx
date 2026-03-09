@@ -429,7 +429,10 @@ const Collections = () => {
     firstBatch.forEach((imageObj: any) => {
       if (imageObj.mediaType === 'video') {
         const hasDims = Number.isFinite(Number(imageObj.width)) && Number(imageObj.width) > 0 && Number.isFinite(Number(imageObj.height)) && Number(imageObj.height) > 0;
-        if (hasDims) return;
+        if (hasDims) {
+          setLoadedImages(prev => new Set([...prev, imageObj.src]));
+          return;
+        }
         const video = document.createElement('video');
         video.preload = 'metadata';
         video.onloadedmetadata = () => {
@@ -440,12 +443,25 @@ const Collections = () => {
               height: video.videoHeight || imageObj.height || 1080
             }
           }));
+          setLoadedImages(prev => new Set([...prev, imageObj.src]));
+        };
+        video.oncanplay = () => {
+          setLoadedImages(prev => new Set([...prev, imageObj.src]));
+        };
+        video.onerror = () => {
+          setLoadedImages(prev => new Set([...prev, imageObj.src]));
         };
         video.src = imageObj.src;
         return;
       }
       const warmImg = new Image();
       warmImg.decoding = 'async';
+      warmImg.onload = () => {
+        setLoadedImages(prev => new Set([...prev, imageObj.src]));
+      };
+      warmImg.onerror = () => {
+        setLoadedImages(prev => new Set([...prev, imageObj.src]));
+      };
       warmImg.src = imageObj.thumb || imageObj.src;
     });
 
@@ -457,7 +473,10 @@ const Collections = () => {
       nextBatch.forEach((imageObj: any) => {
         if (imageObj.mediaType === 'video') {
           const hasDims = Number.isFinite(Number(imageObj.width)) && Number(imageObj.width) > 0 && Number.isFinite(Number(imageObj.height)) && Number(imageObj.height) > 0;
-          if (hasDims) return;
+          if (hasDims) {
+            setLoadedImages(prev => new Set([...prev, imageObj.src]));
+            return;
+          }
           const video = document.createElement('video');
           video.preload = 'metadata';
           video.onloadedmetadata = () => {
@@ -468,6 +487,13 @@ const Collections = () => {
                 height: video.videoHeight || 1080
               }
             }));
+            setLoadedImages(prev => new Set([...prev, imageObj.src]));
+          };
+          video.oncanplay = () => {
+            setLoadedImages(prev => new Set([...prev, imageObj.src]));
+          };
+          video.onerror = () => {
+            setLoadedImages(prev => new Set([...prev, imageObj.src]));
           };
           video.src = imageObj.src;
           return;
@@ -475,6 +501,12 @@ const Collections = () => {
 
         const warmImg = new Image();
         warmImg.decoding = 'async';
+        warmImg.onload = () => {
+          setLoadedImages(prev => new Set([...prev, imageObj.src]));
+        };
+        warmImg.onerror = () => {
+          setLoadedImages(prev => new Set([...prev, imageObj.src]));
+        };
         warmImg.src = imageObj.thumb || imageObj.src;
       });
     }

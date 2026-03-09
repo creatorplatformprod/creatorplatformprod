@@ -474,12 +474,17 @@ const PostDetailBlurred = () => {
               height: video.videoHeight || 1080 
             }
           }));
+          setLoadedImages(prev => new Set([...prev, imageSrc]));
+        };
+        video.oncanplay = () => {
+          setLoadedImages(prev => new Set([...prev, imageSrc]));
         };
         video.onerror = () => {
           setMeasuredDims(prev => ({
             ...prev,
             [imageSrc]: { width: 1920, height: 1080 }
           }));
+          setLoadedImages(prev => new Set([...prev, imageSrc]));
         };
         video.src = imageSrc;
         return;
@@ -492,6 +497,7 @@ const PostDetailBlurred = () => {
             ...prev,
             [imageSrc]: { width: img.naturalWidth, height: img.naturalHeight }
           }));
+          setLoadedImages(prev => new Set([...prev, imageSrc]));
         };
         img.onerror = () => {
           const dimensions = getRandomDimensions(idx);
@@ -499,6 +505,7 @@ const PostDetailBlurred = () => {
             ...prev,
             [imageSrc]: { width: dimensions.width, height: dimensions.height }
           }));
+          setLoadedImages(prev => new Set([...prev, imageSrc]));
         };
         const thumbCandidate = typeof imageData === 'string' ? imageSrc : (imageData.thumb || imageSrc);
         img.src = thumbCandidate;
