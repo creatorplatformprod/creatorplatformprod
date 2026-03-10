@@ -1751,6 +1751,16 @@
     transition: transform 180ms ease, box-shadow 220ms ease, border-color 220ms ease, background-color 220ms ease;
   }
 
+  .public-preview-mode {
+    overflow-x: hidden;
+    scrollbar-gutter: auto;
+  }
+
+  .public-preview-mode .post-card {
+    border-radius: 1rem !important;
+    overflow: hidden;
+  }
+
   .public-template .post-card:hover {
     transform: translateY(-2px);
   }
