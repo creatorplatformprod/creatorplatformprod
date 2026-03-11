@@ -2080,7 +2080,8 @@ const CreatorDashboard = () => {
   } | null>(null);
 
   const handleStatusMediaPointerDown = (event: React.PointerEvent<HTMLElement>, key: string) => {
-    if (event.button !== 0) return;
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    event.preventDefault();
     const target = event.currentTarget;
     const rect = target.getBoundingClientRect();
     const current = statusCardForm.mediaPositions?.[key] || { x: 0, y: 0 };
@@ -2137,6 +2138,54 @@ const CreatorDashboard = () => {
     }
     candidates.push(url);
     return Array.from(new Set(candidates.filter(Boolean)));
+  };
+
+  const isProbablyVideoUrl = (value?: string) =>
+    /\.(mp4|webm|mov|ogg|avi|m3u8)(\?|#|$)/i.test(String(value || '').trim());
+
+  const deriveStreamThumbnailFromHls = (hlsUrl?: string) => {
+    const value = String(hlsUrl || '').trim();
+    if (!value) return '';
+    try {
+      const parsed = new URL(value);
+      const match = parsed.pathname.match(/\/([^/]+)\/manifest\/video\.m3u8$/i);
+      const uid = match?.[1];
+      if (!uid) return '';
+      return `https://videodelivery.net/${uid}/thumbnails/thumbnail.jpg?time=1s`;
+    } catch {
+      return '';
+    }
+  };
+
+  const deriveStreamThumbnailFromVideoUrl = (value?: string) => {
+    const url = String(value || '').trim();
+    if (!url) return '';
+    try {
+      const parsed = new URL(url);
+      if (!/videodelivery\.net$/i.test(parsed.hostname)) return '';
+      const uid = parsed.pathname.split('/').filter(Boolean)[0];
+      if (!uid) return '';
+      return `https://videodelivery.net/${uid}/thumbnails/thumbnail.jpg?time=1s`;
+    } catch {
+      return '';
+    }
+  };
+
+  const getCollectionListPreviewThumb = (media: any) => {
+    const rawThumb = String(media?.thumbnailUrl || '').trim();
+    if (rawThumb && !isProbablyVideoUrl(rawThumb)) {
+      return getMediaSrcCandidates(rawThumb)[0] || rawThumb;
+    }
+    const fromHls = deriveStreamThumbnailFromHls(String(media?.hlsUrl || '').trim());
+    if (fromHls) {
+      return getMediaSrcCandidates(fromHls)[0] || fromHls;
+    }
+    const fromUrl = deriveStreamThumbnailFromVideoUrl(String(media?.url || '').trim());
+    if (fromUrl) {
+      return getMediaSrcCandidates(fromUrl)[0] || fromUrl;
+    }
+    const fallback = rawThumb || String(media?.url || '').trim();
+    return getMediaSrcCandidates(fallback)[0] || fallback;
   };
 
   const isVideoMedia = (media: any) => {
@@ -3848,17 +3897,23 @@ const CreatorDashboard = () => {
                             const positionKey = getStatusMediaFileKey(preview.file);
                             const objectPosition = getStatusMediaObjectPosition(positionKey);
                             return (
-                          <div key={`${preview.url}-${idx}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20 h-24">
+                          <div
+                            key={`${preview.url}-${idx}`}
+                            className="relative border border-border rounded-md overflow-hidden bg-muted/20 h-24 cursor-grab active:cursor-grabbing select-none"
+                            style={{ touchAction: 'none' }}
+                            onPointerDown={(event) => handleStatusMediaPointerDown(event, positionKey)}
+                            onPointerMove={handleStatusMediaPointerMove}
+                            onPointerUp={handleStatusMediaPointerEnd}
+                            onPointerCancel={handleStatusMediaPointerEnd}
+                          >
                             {preview.file.type.startsWith('image/') ? (
                               <img
                                 src={preview.url}
                                 alt=""
-                                className="h-full w-full object-cover cursor-grab active:cursor-grabbing select-none"
+                                draggable={false}
+                                onDragStart={(event) => event.preventDefault()}
+                                className="h-full w-full object-cover select-none"
                                 style={{ objectPosition }}
-                                onPointerDown={(event) => handleStatusMediaPointerDown(event, positionKey)}
-                                onPointerMove={handleStatusMediaPointerMove}
-                                onPointerUp={handleStatusMediaPointerEnd}
-                                onPointerCancel={handleStatusMediaPointerEnd}
                               />
                             ) : (
                               <video src={preview.url} className="h-full w-full object-cover" muted controls preload="metadata" />
@@ -3875,7 +3930,15 @@ const CreatorDashboard = () => {
                             const positionKey = getStatusMediaUrlKey(url);
                             const objectPosition = getStatusMediaObjectPosition(positionKey);
                             return (
-                          <div key={`${url}-${idx}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20 h-24">
+                          <div
+                            key={`${url}-${idx}`}
+                            className="relative border border-border rounded-md overflow-hidden bg-muted/20 h-24 cursor-grab active:cursor-grabbing select-none"
+                            style={{ touchAction: 'none' }}
+                            onPointerDown={(event) => handleStatusMediaPointerDown(event, positionKey)}
+                            onPointerMove={handleStatusMediaPointerMove}
+                            onPointerUp={handleStatusMediaPointerEnd}
+                            onPointerCancel={handleStatusMediaPointerEnd}
+                          >
                             {isVideoMedia({ url }) ? (
                               <video
                                 src={getMediaSrcCandidates(url)[0] || url}
@@ -3888,12 +3951,10 @@ const CreatorDashboard = () => {
                               <img
                                 src={getMediaSrcCandidates(url)[0] || url}
                                 alt=""
-                                className="h-full w-full object-cover cursor-grab active:cursor-grabbing select-none"
+                                draggable={false}
+                                onDragStart={(event) => event.preventDefault()}
+                                className="h-full w-full object-cover select-none"
                                 style={{ objectPosition }}
-                                onPointerDown={(event) => handleStatusMediaPointerDown(event, positionKey)}
-                                onPointerMove={handleStatusMediaPointerMove}
-                                onPointerUp={handleStatusMediaPointerEnd}
-                                onPointerCancel={handleStatusMediaPointerEnd}
                               />
                             )}
                           </div>
@@ -3933,7 +3994,8 @@ const CreatorDashboard = () => {
                         timestamp={selectedPostCardId ? 'Previewing selected card' : 'Draft preview'}
                         likes={0}
                         comments={0}
-                        showViews={false}
+                        showViews
+                        hideViewCount
                         mediaItems={postCardEditorMedia.slice(0, 4).map((media: any, idx: number) => {
                           const candidates = getMediaSrcCandidates(media.thumbnailUrl || media.url);
                           const thumb = candidates[0] || media.thumbnailUrl || media.url;
@@ -3960,7 +4022,8 @@ const CreatorDashboard = () => {
                         timestamp={selectedPostCardId ? 'Previewing selected card' : 'Draft preview'}
                         likes={0}
                         comments={0}
-                        showViews={false}
+                        showViews
+                        hideViewCount
                       />
                     )}
                   </div>
@@ -4068,21 +4131,12 @@ const CreatorDashboard = () => {
                                 <div className="mt-2 flex items-center gap-1.5">
                                   {showcaseItems.map((media: any, mediaIndex: number) => {
                                     const isVideo = isVideoMedia(media);
-                                    const sources = getMediaSrcCandidates(media?.thumbnailUrl || media?.url);
-                                    const src = sources[0] || media?.thumbnailUrl || media?.url;
+                                    const src = isVideo
+                                      ? getCollectionListPreviewThumb(media)
+                                      : (getMediaSrcCandidates(media?.thumbnailUrl || media?.url)[0] || media?.thumbnailUrl || media?.url);
                                     return (
                                       <div key={`${collection._id}-media-${mediaIndex}`} className="h-14 w-14 overflow-hidden rounded-md border border-border bg-muted/20">
-                                        {isVideo ? (
-                                          <video
-                                            src={src}
-                                            poster={src}
-                                            className="h-full w-full object-cover"
-                                            muted
-                                            preload="metadata"
-                                          />
-                                        ) : (
-                                          <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
-                                        )}
+                                        <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
                                       </div>
                                     );
                                   })}

@@ -19,6 +19,7 @@ interface StatusCardWithMediaProps {
   likes: number;
   comments: number;
   showViews?: boolean;
+  hideViewCount?: boolean;
   media?: {
     type: "image" | "video";
     url: string;
@@ -46,7 +47,8 @@ const StatusCardWithMedia = ({
   likes,
   media,
   mediaItems,
-  showViews = true
+  showViews = true,
+  hideViewCount = false
 }: StatusCardWithMediaProps) => {
   const engagementId = `status:${id}`;
   const [isLiked, setIsLiked] = useState(false);
@@ -364,7 +366,7 @@ const StatusCardWithMedia = ({
             {showViews && (
               <div className="flex items-center gap-2 px-3 py-1.5 text-muted-foreground">
                 <Eye className="w-4 h-4" />
-                <span>{formatLikeCount(currentViews)}</span>
+                {!hideViewCount && <span>{formatLikeCount(currentViews)}</span>}
               </div>
             )}
             <button

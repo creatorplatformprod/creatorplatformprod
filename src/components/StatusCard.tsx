@@ -17,6 +17,7 @@ interface StatusCardProps {
   likes: number;
   comments: number;
   showViews?: boolean;
+  hideViewCount?: boolean;
 }
 
 const StatusCard = ({ 
@@ -26,7 +27,8 @@ const StatusCard = ({
   text,
   timestamp,
   likes,
-  showViews = true
+  showViews = true,
+  hideViewCount = false
 }: StatusCardProps) => {
   const engagementId = `status:${id}`;
   const [isLiked, setIsLiked] = useState(false);
@@ -196,7 +198,7 @@ const StatusCard = ({
             {showViews && (
               <div className="flex items-center gap-2 px-3 py-1.5 text-muted-foreground">
                 <Eye className="w-4 h-4" />
-                <span>{formatLikeCount(currentViews)}</span>
+                {!hideViewCount && <span>{formatLikeCount(currentViews)}</span>}
               </div>
             )}
             <button

@@ -39,17 +39,53 @@ const InlineVideoPlayer = ({
   const instanceIdRef = useRef(Math.random().toString(36));
   const readyNotifiedRef = useRef(false);
 
-  // Get video thumbnail - try to use .avif instead of video file for thumbnail
-  const getVideoThumbnail = () => {
-    let thumbSrc = thumbnail;
-    // For videos, try to get an avif thumbnail instead of the video file
-    if (src.match(/\.(mp4|webm|mov|ogg|avi|m3u8)$/i)) {
-      thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi|m3u8)$/i, '.avif');
+  const isProbablyVideoUrl = (value: string) =>
+    /\.(mp4|webm|mov|ogg|avi|m3u8)(\?|#|$)/i.test(String(value || '').trim());
+
+  const deriveStreamThumbnailFromHls = (value: string) => {
+    if (!value) return '';
+    try {
+      const parsed = new URL(value);
+      const match = parsed.pathname.match(/\/([^/]+)\/manifest\/video\.m3u8$/i);
+      const uid = match?.[1];
+      if (!uid) return '';
+      return `https://videodelivery.net/${uid}/thumbnails/thumbnail.jpg?time=1s`;
+    } catch {
+      return '';
     }
-    return thumbSrc;
+  };
+
+  const deriveStreamThumbnailFromVideoUrl = (value: string) => {
+    if (!value) return '';
+    try {
+      const parsed = new URL(value);
+      if (!/videodelivery\.net$/i.test(parsed.hostname)) return '';
+      const uid = parsed.pathname.split('/').filter(Boolean)[0];
+      if (!uid) return '';
+      return `https://videodelivery.net/${uid}/thumbnails/thumbnail.jpg?time=1s`;
+    } catch {
+      return '';
+    }
+  };
+
+  // Build a safe image thumbnail source for video cards.
+  const getVideoThumbnail = () => {
+    const rawThumb = String(thumbnail || '').trim();
+    if (rawThumb && !isProbablyVideoUrl(rawThumb)) {
+      return rawThumb;
+    }
+    const fromHls = deriveStreamThumbnailFromHls(String(hlsSrc || '').trim());
+    if (fromHls) return fromHls;
+    const fromSrc = deriveStreamThumbnailFromVideoUrl(String(src || '').trim());
+    if (fromSrc) return fromSrc;
+    return rawThumb;
   };
 
   const videoThumbnail = getVideoThumbnail();
+  const fallbackThumbnail = String(thumbnail || '').trim();
+  const canUseFallbackThumbnail = Boolean(
+    fallbackThumbnail && !isProbablyVideoUrl(fallbackThumbnail) && fallbackThumbnail !== videoThumbnail
+  );
 
   useEffect(() => {
     const video = videoRef.current;
@@ -301,7 +337,7 @@ const InlineVideoPlayer = ({
     >
       {/* Thumbnail Image - Progressive Loading */}
       <img
-        src={thumbnailError ? thumbnail : videoThumbnail}
+        src={thumbnailError && canUseFallbackThumbnail ? fallbackThumbnail : videoThumbnail}
         alt=""
         draggable={false}
         className={`w-full h-full object-cover absolute inset-0 ${isBlurred ? 'filter blur-sm' : ''} ${
@@ -310,8 +346,7 @@ const InlineVideoPlayer = ({
         style={{ touchAction: 'pan-y' }}
         onLoad={() => setThumbnailLoaded(true)}
         onError={(e) => {
-          if (!thumbnailError) {
-            // Try fallback to original thumbnail
+          if (!thumbnailError && canUseFallbackThumbnail) {
             setThumbnailError(true);
           } else {
             e.currentTarget.style.display = 'none';
