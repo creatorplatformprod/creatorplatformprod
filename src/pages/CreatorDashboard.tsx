@@ -15,7 +15,7 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
-import { eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval, format, parseISO } from 'date-fns';
+import { differenceInCalendarDays, eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval, format, parseISO, startOfDay, subDays } from 'date-fns';
 import { 
   Settings, 
   Image, 
@@ -84,11 +84,17 @@ const createEmptyPostCardForm = () => ({
   text: '',
   imageUrl: '',
   mediaUrls: [] as string[],
+  mediaPositions: {} as Record<string, { x: number; y: number }>,
   isLocked: false,
   order: 0
 });
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+const STATUS_CARD_MEDIA_POSITION_LIMIT = 40;
+const normalizeStatusMediaOffset = (value: number) =>
+  Number.isFinite(value) ? clamp(Math.round(value * 100) / 100, -STATUS_CARD_MEDIA_POSITION_LIMIT, STATUS_CARD_MEDIA_POSITION_LIMIT) : 0;
+const getStatusMediaUrlKey = (url: string) => `url:${String(url || '').trim()}`;
+const getStatusMediaFileKey = (file: File) => `file:${file.name}:${file.size}:${file.lastModified}`;
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TELEGRAM_USERNAME_REGEX = /^[A-Za-z0-9_]{5,32}$/;
@@ -367,10 +373,20 @@ const CreatorDashboard = () => {
   const [selectedPostCardId, setSelectedPostCardId] = useState('');
   const [postCardSearch, setPostCardSearch] = useState('');
   const [uploadingStatusCardMedia, setUploadingStatusCardMedia] = useState(false);
+  const [actionProgressModal, setActionProgressModal] = useState<{
+    open: boolean;
+    title: string;
+    description: string;
+  }>({
+    open: false,
+    title: 'Uploading...',
+    description: 'Please wait while we process your content.'
+  });
   const statusCardUploadInputRef = useRef<HTMLInputElement | null>(null);
   const profileBaselineRef = useRef('');
   const postCardBaselineRef = useRef('');
   const collectionBaselineRef = useRef('');
+  const hasHydratedEditorDraftsRef = useRef(false);
   const [isProfileDirty, setIsProfileDirty] = useState(false);
   const [isPostCardDirty, setIsPostCardDirty] = useState(false);
   const [isCollectionDirty, setIsCollectionDirty] = useState(false);
@@ -781,6 +797,10 @@ const CreatorDashboard = () => {
 
   const getProfileDraftKey = (username?: string) =>
     username ? `publicWebsiteProfileDraft:${username}` : '';
+  const getPostCardDraftKey = (username?: string) =>
+    username ? `dashboardPostCardDraft:${username}` : '';
+  const getCollectionDraftKey = (username?: string) =>
+    username ? `dashboardCollectionDraft:${username}` : '';
 
   const readProfileDraft = (username?: string) => {
     const key = getProfileDraftKey(username);
@@ -794,6 +814,18 @@ const CreatorDashboard = () => {
       // Template system disabled: ignore legacy draft field.
       delete (cleaned as any).websiteTemplate;
       return cleaned;
+    } catch {
+      return null;
+    }
+  };
+
+  const readDashboardDraft = (key: string) => {
+    if (!key) return null;
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : null;
     } catch {
       return null;
     }
@@ -886,6 +918,42 @@ const CreatorDashboard = () => {
       window.clearInterval(intervalId);
       window.removeEventListener('storage', handleStorage);
     };
+  }, [user?.username]);
+
+  useEffect(() => {
+    if (!user?.username) {
+      hasHydratedEditorDraftsRef.current = false;
+      return;
+    }
+    if (hasHydratedEditorDraftsRef.current) return;
+
+    const postCardDraft = readDashboardDraft(getPostCardDraftKey(user.username));
+    if (postCardDraft?.statusCardForm && typeof postCardDraft.statusCardForm === 'object') {
+      const nextPostCardForm = {
+        ...createEmptyPostCardForm(),
+        ...postCardDraft.statusCardForm
+      };
+      const nextSelectedPostCardId = String(postCardDraft.selectedPostCardId || '');
+      setStatusCardForm(nextPostCardForm);
+      setSelectedPostCardId(nextSelectedPostCardId);
+      postCardBaselineRef.current = serializeForDirtyCheck(nextPostCardForm);
+      setIsPostCardDirty(false);
+    }
+
+    const collectionDraft = readDashboardDraft(getCollectionDraftKey(user.username));
+    if (collectionDraft?.collectionForm && typeof collectionDraft.collectionForm === 'object') {
+      const nextCollectionForm = {
+        ...createEmptyCollectionForm(),
+        ...collectionDraft.collectionForm
+      };
+      const nextSelectedCollectionId = String(collectionDraft.selectedCollectionId || '');
+      setCollectionForm(nextCollectionForm);
+      setSelectedCollectionId(nextSelectedCollectionId);
+      collectionBaselineRef.current = serializeForDirtyCheck(nextCollectionForm);
+      setIsCollectionDirty(false);
+    }
+
+    hasHydratedEditorDraftsRef.current = true;
   }, [user?.username]);
 
   useEffect(() => {
@@ -1010,12 +1078,50 @@ const CreatorDashboard = () => {
     );
   }, [collectionForm]);
 
-  const hasUnsavedChanges =
-    isProfileDirty ||
-    isPostCardDirty ||
-    isCollectionDirty ||
+  useEffect(() => {
+    if (!user?.username) return;
+    const key = getPostCardDraftKey(user.username);
+    if (!key) return;
+    try {
+      localStorage.setItem(
+        key,
+        JSON.stringify({
+          selectedPostCardId,
+          statusCardForm
+        })
+      );
+      postCardBaselineRef.current = serializeForDirtyCheck(statusCardForm);
+      setIsPostCardDirty(false);
+    } catch {
+      // Keep in-memory form state if local storage is unavailable.
+    }
+  }, [user?.username, selectedPostCardId, statusCardForm]);
+
+  useEffect(() => {
+    if (!user?.username) return;
+    const key = getCollectionDraftKey(user.username);
+    if (!key) return;
+    try {
+      localStorage.setItem(
+        key,
+        JSON.stringify({
+          selectedCollectionId,
+          collectionForm
+        })
+      );
+      collectionBaselineRef.current = serializeForDirtyCheck(collectionForm);
+      setIsCollectionDirty(false);
+    } catch {
+      // Keep in-memory form state if local storage is unavailable.
+    }
+  }, [user?.username, selectedCollectionId, collectionForm]);
+
+  const hasPendingUploads =
+    !!avatarFile ||
+    !!coverImageFile ||
     collectionFiles.length > 0 ||
     statusCardFiles.length > 0;
+  const hasUnsavedChanges = hasPendingUploads;
 
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -1029,9 +1135,9 @@ const CreatorDashboard = () => {
 
   const requestTabChange = (nextTab: typeof activeTab) => {
     if (nextTab === activeTab) return;
-    if (hasUnsavedChanges) {
+    if (hasPendingUploads) {
       const confirmLeave = window.confirm(
-        'You have unsaved changes. Leave this tab and discard them?'
+        'You have selected files that are not uploaded yet. Leave this tab and discard them?'
       );
       if (!confirmLeave) return;
     }
@@ -1214,7 +1320,9 @@ const CreatorDashboard = () => {
         .map((item: any) => ({
           url: String(item?.url || '').trim(),
           thumbnailUrl: String(item?.thumbnailUrl || item?.url || '').trim(),
-          mediaType: String(item?.mediaType || (isVideoMedia(item) ? 'video' : 'image')).toLowerCase() === 'video' ? 'video' : 'image'
+          mediaType: String(item?.mediaType || (isVideoMedia(item) ? 'video' : 'image')).toLowerCase() === 'video' ? 'video' : 'image',
+          cropX: normalizeStatusMediaOffset(Number(item?.cropX) || 0),
+          cropY: normalizeStatusMediaOffset(Number(item?.cropY) || 0)
         }))
         .filter((item: any) => !!item.url);
     }
@@ -1223,7 +1331,9 @@ const CreatorDashboard = () => {
     return [{
       url: single,
       thumbnailUrl: single,
-      mediaType: isVideoMedia({ url: single }) ? 'video' : 'image'
+      mediaType: isVideoMedia({ url: single }) ? 'video' : 'image',
+      cropX: 0,
+      cropY: 0
     }];
   };
 
@@ -1233,7 +1343,9 @@ const CreatorDashboard = () => {
     media: (form.mediaUrls || []).map((url: string) => ({
       url,
       thumbnailUrl: url,
-      mediaType: isVideoMedia({ url }) ? 'video' : 'image'
+      mediaType: isVideoMedia({ url }) ? 'video' : 'image',
+      cropX: normalizeStatusMediaOffset(Number(form.mediaPositions?.[getStatusMediaUrlKey(url)]?.x) || 0),
+      cropY: normalizeStatusMediaOffset(Number(form.mediaPositions?.[getStatusMediaUrlKey(url)]?.y) || 0)
     })),
     isLocked: false,
     order: Number.isFinite(Number(form.order)) ? Number(form.order) : 0
@@ -1252,6 +1364,11 @@ const CreatorDashboard = () => {
       return;
     }
     try {
+      setActionProgressModal({
+        open: true,
+        title: 'Saving changes...',
+        description: 'Please wait while we save your post card.'
+      });
       setLoading(true);
       setError('');
       setSuccess('');
@@ -1278,6 +1395,7 @@ const CreatorDashboard = () => {
     } catch (err: any) {
       setError(err.message || 'Failed to save post card');
     } finally {
+      setActionProgressModal((prev) => ({ ...prev, open: false }));
       setLoading(false);
     }
   };
@@ -1318,10 +1436,19 @@ const CreatorDashboard = () => {
 
   const handleEditPostCard = (card: any) => {
     const mediaItems = normalizeStatusCardMediaItems(card);
+    const mediaPositions = mediaItems.reduce((acc: Record<string, { x: number; y: number }>, item: any) => {
+      const key = getStatusMediaUrlKey(item.url);
+      acc[key] = {
+        x: normalizeStatusMediaOffset(Number(item.cropX) || 0),
+        y: normalizeStatusMediaOffset(Number(item.cropY) || 0)
+      };
+      return acc;
+    }, {});
     const nextPostCard = {
       text: card.text || '',
       imageUrl: mediaItems[0]?.url || '',
       mediaUrls: mediaItems.map((item: any) => item.url),
+      mediaPositions,
       isLocked: false,
       order: Number(card.order) || 0
     };
@@ -1439,19 +1566,36 @@ const CreatorDashboard = () => {
     }
 
     try {
+      setActionProgressModal({
+        open: true,
+        title: 'Uploading...',
+        description: 'Please wait while we upload and save your post card media.'
+      });
       setUploadingStatusCardMedia(true);
       setError('');
       const uploadedUrls: string[] = [];
+      const uploadedMappings: Array<{ url: string; fileKey: string }> = [];
       for (const file of statusCardFiles) {
         const uploadResult = await api.uploadFile(file);
         if (!uploadResult?.url) {
           throw new Error(`Upload failed for ${file.name}`);
         }
         uploadedUrls.push(uploadResult.url);
+        uploadedMappings.push({
+          url: uploadResult.url,
+          fileKey: getStatusMediaFileKey(file)
+        });
       }
+      const nextMediaPositions = { ...(statusCardForm.mediaPositions || {}) };
+      uploadedMappings.forEach(({ url, fileKey }) => {
+        const fromPending = nextMediaPositions[fileKey];
+        nextMediaPositions[getStatusMediaUrlKey(url)] = fromPending || nextMediaPositions[getStatusMediaUrlKey(url)] || { x: 0, y: 0 };
+        delete nextMediaPositions[fileKey];
+      });
       const nextForm = {
         ...statusCardForm,
-        mediaUrls: [...statusCardForm.mediaUrls, ...uploadedUrls].filter(Boolean)
+        mediaUrls: [...statusCardForm.mediaUrls, ...uploadedUrls].filter(Boolean),
+        mediaPositions: nextMediaPositions
       };
       nextForm.imageUrl = nextForm.mediaUrls[0] || '';
 
@@ -1490,6 +1634,7 @@ const CreatorDashboard = () => {
     } catch (err: any) {
       setError(err.message || 'Upload failed');
     } finally {
+      setActionProgressModal((prev) => ({ ...prev, open: false }));
       setUploadingStatusCardMedia(false);
     }
   };
@@ -1501,6 +1646,11 @@ const CreatorDashboard = () => {
     }
 
     try {
+      setActionProgressModal({
+        open: true,
+        title: 'Uploading...',
+        description: 'Please wait while we upload your collection content.'
+      });
       setUploadingCollectionMedia(true);
       setError('');
       let targetCollectionId = selectedCollectionId;
@@ -1571,6 +1721,7 @@ const CreatorDashboard = () => {
     } catch (err: any) {
       setError(err.message || 'Failed to upload content');
     } finally {
+      setActionProgressModal((prev) => ({ ...prev, open: false }));
       setUploadingCollectionMedia(false);
     }
   };
@@ -1816,6 +1967,11 @@ const CreatorDashboard = () => {
       return;
     }
     try {
+      setActionProgressModal({
+        open: true,
+        title: 'Saving changes...',
+        description: 'Please wait while we save your collection settings.'
+      });
       setLoading(true);
       setError('');
       setSuccess('');
@@ -1845,6 +2001,7 @@ const CreatorDashboard = () => {
     } catch (err: any) {
       setError(err.message || 'Failed to update collection');
     } finally {
+      setActionProgressModal((prev) => ({ ...prev, open: false }));
       setLoading(false);
     }
   };
@@ -1884,6 +2041,75 @@ const CreatorDashboard = () => {
     const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
     const size = bytes / Math.pow(1024, index);
     return `${size.toFixed(size >= 10 || index === 0 ? 0 : 1)} ${units[index]}`;
+  };
+
+  const getStatusMediaObjectPosition = (key?: string) => {
+    const pos = key ? statusCardForm.mediaPositions?.[key] : null;
+    const x = normalizeStatusMediaOffset(Number(pos?.x) || 0);
+    const y = normalizeStatusMediaOffset(Number(pos?.y) || 0);
+    return `${50 + x}% ${50 + y}%`;
+  };
+
+  const setStatusMediaPosition = (key: string, x: number, y: number) => {
+    setStatusCardForm((prev: any) => {
+      const nextX = normalizeStatusMediaOffset(x);
+      const nextY = normalizeStatusMediaOffset(y);
+      const current = prev.mediaPositions?.[key];
+      if (current && current.x === nextX && current.y === nextY) {
+        return prev;
+      }
+      return {
+        ...prev,
+        mediaPositions: {
+          ...(prev.mediaPositions || {}),
+          [key]: { x: nextX, y: nextY }
+        }
+      };
+    });
+  };
+
+  const statusMediaDragRef = useRef<{
+    pointerId: number;
+    key: string;
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+    width: number;
+    height: number;
+  } | null>(null);
+
+  const handleStatusMediaPointerDown = (event: React.PointerEvent<HTMLElement>, key: string) => {
+    if (event.button !== 0) return;
+    const target = event.currentTarget;
+    const rect = target.getBoundingClientRect();
+    const current = statusCardForm.mediaPositions?.[key] || { x: 0, y: 0 };
+    statusMediaDragRef.current = {
+      pointerId: event.pointerId,
+      key,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: normalizeStatusMediaOffset(Number(current.x) || 0),
+      originY: normalizeStatusMediaOffset(Number(current.y) || 0),
+      width: rect.width || 1,
+      height: rect.height || 1
+    };
+    target.setPointerCapture?.(event.pointerId);
+  };
+
+  const handleStatusMediaPointerMove = (event: React.PointerEvent<HTMLElement>) => {
+    const drag = statusMediaDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const deltaX = ((event.clientX - drag.startX) / drag.width) * 100;
+    const deltaY = ((event.clientY - drag.startY) / drag.height) * 100;
+    setStatusMediaPosition(drag.key, drag.originX + deltaX, drag.originY + deltaY);
+  };
+
+  const handleStatusMediaPointerEnd = (event: React.PointerEvent<HTMLElement>) => {
+    const drag = statusMediaDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    event.currentTarget.releasePointerCapture?.(event.pointerId);
+    statusMediaDragRef.current = null;
   };
 
   const getMediaSrcCandidates = (url?: string) => {
@@ -1942,15 +2168,21 @@ const CreatorDashboard = () => {
 
   const postCardEditorMedia = useMemo(() => {
     const formMedia = (statusCardForm.mediaUrls || []).map((url) => ({
+      key: getStatusMediaUrlKey(url),
       url,
       thumbnailUrl: url,
-      mediaType: isVideoMedia({ url }) ? 'video' : 'image'
+      mediaType: isVideoMedia({ url }) ? 'video' : 'image',
+      cropX: normalizeStatusMediaOffset(Number(statusCardForm.mediaPositions?.[getStatusMediaUrlKey(url)]?.x) || 0),
+      cropY: normalizeStatusMediaOffset(Number(statusCardForm.mediaPositions?.[getStatusMediaUrlKey(url)]?.y) || 0)
     }));
 
     const pendingMedia = statusCardPreviews.map((preview) => ({
+      key: getStatusMediaFileKey(preview.file),
       url: preview.url,
       thumbnailUrl: preview.url,
-      mediaType: preview.file.type.startsWith('video/') ? 'video' : 'image'
+      mediaType: preview.file.type.startsWith('video/') ? 'video' : 'image',
+      cropX: normalizeStatusMediaOffset(Number(statusCardForm.mediaPositions?.[getStatusMediaFileKey(preview.file)]?.x) || 0),
+      cropY: normalizeStatusMediaOffset(Number(statusCardForm.mediaPositions?.[getStatusMediaFileKey(preview.file)]?.y) || 0)
     }));
 
     const deduped = [...formMedia, ...pendingMedia].filter((media) => !!media.url);
@@ -1960,7 +2192,7 @@ const CreatorDashboard = () => {
       seen.add(media.url);
       return true;
     });
-  }, [statusCardForm.mediaUrls, statusCardPreviews]);
+  }, [statusCardForm.mediaUrls, statusCardForm.mediaPositions, statusCardPreviews]);
   const isPostCardEditorBusy = loading || uploadingStatusCardMedia;
   const postCardPrimaryActionLabel = uploadingStatusCardMedia
     ? 'Uploading...'
@@ -2036,36 +2268,31 @@ const CreatorDashboard = () => {
     ));
   };
 
-  const buildCumulativeSparklineFromItems = (items: any[]) => {
-    const timestamps = items
-      .map((item) => {
-        const raw = item?.createdAt || item?.updatedAt || item?.publishedAt || item?.date;
-        const parsed = raw ? new Date(raw).getTime() : NaN;
-        return Number.isFinite(parsed) ? parsed : NaN;
-      })
-      .filter((ts: number) => Number.isFinite(ts) && ts > 0)
-      .sort((a: number, b: number) => a - b);
+  const buildRecentDailySparklineFromItems = (items: any[]) => {
+    const days = 30;
+    const points = 12;
+    const today = startOfDay(new Date());
+    const windowStart = subDays(today, days - 1);
+    const dailyCounts = Array.from({ length: days }, () => 0);
 
-    if (timestamps.length === 0) {
-      return normalizeSparklineHeights([], { minHeight: 18 });
-    }
-
-    const bucketCount = 12;
-    const start = timestamps[0];
-    const end = Math.max(Date.now(), timestamps[timestamps.length - 1]);
-    const bucketSize = Math.max((end - start) / bucketCount, 1);
-    const cumulative: number[] = [];
-    let pointer = 0;
-
-    for (let i = 0; i < bucketCount; i += 1) {
-      const threshold = start + bucketSize * (i + 1);
-      while (pointer < timestamps.length && timestamps[pointer] <= threshold) {
-        pointer += 1;
+    items.forEach((item) => {
+      const raw = item?.createdAt || item?.updatedAt || item?.publishedAt || item?.date;
+      if (!raw) return;
+      const eventDate = startOfDay(new Date(raw));
+      const dayIndex = differenceInCalendarDays(eventDate, windowStart);
+      if (dayIndex >= 0 && dayIndex < days) {
+        dailyCounts[dayIndex] += 1;
       }
-      cumulative.push(pointer);
-    }
+    });
 
-    return normalizeSparklineHeights(cumulative, { minHeight: 20 });
+    const groupedCounts = Array.from({ length: points }, (_, index) => {
+      const start = Math.floor((index * days) / points);
+      const end = Math.floor(((index + 1) * days) / points);
+      const slice = dailyCounts.slice(start, Math.max(start + 1, end));
+      return slice.reduce((sum, value) => sum + value, 0);
+    });
+
+    return normalizeSparklineHeights(groupedCounts, { minHeight: 20, points });
   };
 
   const revenueSparklineHeights = useMemo(
@@ -2079,14 +2306,25 @@ const CreatorDashboard = () => {
   );
 
   const collectionsSparklineHeights = useMemo(
-    () => buildCumulativeSparklineFromItems(collections),
+    () => buildRecentDailySparklineFromItems(collections),
     [collections]
   );
 
   const postsSparklineHeights = useMemo(
-    () => buildCumulativeSparklineFromItems(statusCards),
+    () => buildRecentDailySparklineFromItems(statusCards),
     [statusCards]
   );
+
+  const sparklineDateLabels = useMemo(() => {
+    const today = startOfDay(new Date());
+    const start = subDays(today, 29);
+    const middle = subDays(today, 14);
+    return {
+      start: format(start, 'MMM d'),
+      middle: format(middle, 'MMM d'),
+      end: `Today (${format(today, 'MMM d')})`
+    };
+  }, []);
 
   const revenueTrend = useMemo(() => {
     const values = analyticsSeries
@@ -2517,6 +2755,11 @@ const CreatorDashboard = () => {
                       <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
                     ))}
                   </div>
+                  <div className="mt-1 flex items-center justify-between text-[9px] text-muted-foreground">
+                    <span>{sparklineDateLabels.start}</span>
+                    <span>{sparklineDateLabels.middle}</span>
+                    <span>{sparklineDateLabels.end}</span>
+                  </div>
                 </div>
                 {/* Subtle gradient overlay */}
                 <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-emerald-500/[0.05] to-transparent rounded-tl-full pointer-events-none" />
@@ -2537,6 +2780,11 @@ const CreatorDashboard = () => {
                       <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
                     ))}
                   </div>
+                  <div className="mt-1 flex items-center justify-between text-[9px] text-muted-foreground">
+                    <span>{sparklineDateLabels.start}</span>
+                    <span>{sparklineDateLabels.middle}</span>
+                    <span>{sparklineDateLabels.end}</span>
+                  </div>
                 </div>
                 <div className="card-elevated p-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -2551,6 +2799,11 @@ const CreatorDashboard = () => {
                       <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
                     ))}
                   </div>
+                  <div className="mt-1 flex items-center justify-between text-[9px] text-muted-foreground">
+                    <span>{sparklineDateLabels.start}</span>
+                    <span>{sparklineDateLabels.middle}</span>
+                    <span>{sparklineDateLabels.end}</span>
+                  </div>
                 </div>
                 <div className="card-elevated p-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -2564,6 +2817,11 @@ const CreatorDashboard = () => {
                     {ordersSparklineHeights.map((h, i) => (
                       <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
                     ))}
+                  </div>
+                  <div className="mt-1 flex items-center justify-between text-[9px] text-muted-foreground">
+                    <span>{sparklineDateLabels.start}</span>
+                    <span>{sparklineDateLabels.middle}</span>
+                    <span>{sparklineDateLabels.end}</span>
                   </div>
                 </div>
               </div>
@@ -3498,7 +3756,15 @@ const CreatorDashboard = () => {
                         setStatusCardForm((prev) => {
                           if (prev.mediaUrls.includes(url)) return prev;
                           const nextMediaUrls = [...prev.mediaUrls, url];
-                          return { ...prev, imageUrl: nextMediaUrls[0] || '', mediaUrls: nextMediaUrls };
+                          return {
+                            ...prev,
+                            imageUrl: nextMediaUrls[0] || '',
+                            mediaUrls: nextMediaUrls,
+                            mediaPositions: {
+                              ...(prev.mediaPositions || {}),
+                              [getStatusMediaUrlKey(url)]: prev.mediaPositions?.[getStatusMediaUrlKey(url)] || { x: 0, y: 0 }
+                            }
+                          };
                         });
                         setStatusCardMediaInput('');
                       }}
@@ -3516,7 +3782,14 @@ const CreatorDashboard = () => {
                           onClick={() => {
                             setStatusCardForm((prev) => {
                               const nextMediaUrls = prev.mediaUrls.filter((_: string, mediaIdx: number) => mediaIdx !== idx);
-                              return { ...prev, imageUrl: nextMediaUrls[0] || '', mediaUrls: nextMediaUrls };
+                              const nextPositions = { ...(prev.mediaPositions || {}) };
+                              delete nextPositions[getStatusMediaUrlKey(url)];
+                              return {
+                                ...prev,
+                                imageUrl: nextMediaUrls[0] || '',
+                                mediaUrls: nextMediaUrls,
+                                mediaPositions: nextPositions
+                              };
                             });
                           }}
                           title="Remove media"
@@ -3571,18 +3844,37 @@ const CreatorDashboard = () => {
                     {statusCardPreviews.length > 0 ? (
                       <div className="grid grid-cols-2 gap-2">
                         {statusCardPreviews.slice(0, 4).map((preview, idx) => (
+                          (() => {
+                            const positionKey = getStatusMediaFileKey(preview.file);
+                            const objectPosition = getStatusMediaObjectPosition(positionKey);
+                            return (
                           <div key={`${preview.url}-${idx}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20 h-24">
                             {preview.file.type.startsWith('image/') ? (
-                              <img src={preview.url} alt="" className="h-full w-full object-cover" />
+                              <img
+                                src={preview.url}
+                                alt=""
+                                className="h-full w-full object-cover cursor-grab active:cursor-grabbing select-none"
+                                style={{ objectPosition }}
+                                onPointerDown={(event) => handleStatusMediaPointerDown(event, positionKey)}
+                                onPointerMove={handleStatusMediaPointerMove}
+                                onPointerUp={handleStatusMediaPointerEnd}
+                                onPointerCancel={handleStatusMediaPointerEnd}
+                              />
                             ) : (
                               <video src={preview.url} className="h-full w-full object-cover" muted controls preload="metadata" />
                             )}
                           </div>
+                            );
+                          })()
                         ))}
                       </div>
                     ) : statusCardForm.mediaUrls.length > 0 ? (
                       <div className="grid grid-cols-2 gap-2">
                         {statusCardForm.mediaUrls.slice(0, 4).map((url, idx) => (
+                          (() => {
+                            const positionKey = getStatusMediaUrlKey(url);
+                            const objectPosition = getStatusMediaObjectPosition(positionKey);
+                            return (
                           <div key={`${url}-${idx}`} className="relative border border-border rounded-md overflow-hidden bg-muted/20 h-24">
                             {isVideoMedia({ url }) ? (
                               <video
@@ -3596,16 +3888,26 @@ const CreatorDashboard = () => {
                               <img
                                 src={getMediaSrcCandidates(url)[0] || url}
                                 alt=""
-                                className="h-full w-full object-cover"
+                                className="h-full w-full object-cover cursor-grab active:cursor-grabbing select-none"
+                                style={{ objectPosition }}
+                                onPointerDown={(event) => handleStatusMediaPointerDown(event, positionKey)}
+                                onPointerMove={handleStatusMediaPointerMove}
+                                onPointerUp={handleStatusMediaPointerEnd}
+                                onPointerCancel={handleStatusMediaPointerEnd}
                               />
                             )}
                           </div>
+                            );
+                          })()
                         ))}
                       </div>
                     ) : (
                       <div className="border border-dashed border-border rounded-lg p-4 text-xs text-muted-foreground text-center">
                         Select or upload media to preview it here.
                       </div>
+                    )}
+                    {(statusCardPreviews.length > 0 || statusCardForm.mediaUrls.length > 0) && (
+                      <p className="text-[10px] text-muted-foreground">Tip: Drag images to adjust crop position. Saved cards keep this exact framing.</p>
                     )}
                   </div>
                 </div>
@@ -3631,11 +3933,14 @@ const CreatorDashboard = () => {
                         timestamp={selectedPostCardId ? 'Previewing selected card' : 'Draft preview'}
                         likes={0}
                         comments={0}
+                        showViews={false}
                         mediaItems={postCardEditorMedia.slice(0, 4).map((media: any, idx: number) => {
                           const candidates = getMediaSrcCandidates(media.thumbnailUrl || media.url);
                           const thumb = candidates[0] || media.thumbnailUrl || media.url;
                           return {
                             type: String(media.mediaType).includes('video') ? 'video' as const : 'image' as const,
+                            cropX: normalizeStatusMediaOffset(Number(media.cropX) || 0),
+                            cropY: normalizeStatusMediaOffset(Number(media.cropY) || 0),
                             url: getMediaSrcCandidates(media.url)[0] || media.url,
                             thumbnail: thumb,
                             alt: `Preview media ${idx + 1}`
@@ -3655,6 +3960,7 @@ const CreatorDashboard = () => {
                         timestamp={selectedPostCardId ? 'Previewing selected card' : 'Draft preview'}
                         likes={0}
                         comments={0}
+                        showViews={false}
                       />
                     )}
                   </div>
@@ -3767,7 +4073,13 @@ const CreatorDashboard = () => {
                                     return (
                                       <div key={`${collection._id}-media-${mediaIndex}`} className="h-14 w-14 overflow-hidden rounded-md border border-border bg-muted/20">
                                         {isVideo ? (
-                                          <video src={src} className="h-full w-full object-cover" muted preload="metadata" />
+                                          <video
+                                            src={src}
+                                            poster={src}
+                                            className="h-full w-full object-cover"
+                                            muted
+                                            preload="metadata"
+                                          />
                                         ) : (
                                           <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
                                         )}
@@ -4643,6 +4955,23 @@ const CreatorDashboard = () => {
                   >
                     Next
                   </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {actionProgressModal.open && (
+          <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+            <div className="relative w-full max-w-sm rounded-2xl border border-primary/20 bg-background/95 p-5 shadow-2xl">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary/25 border-t-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">{actionProgressModal.title}</p>
+                  <p className="text-xs text-muted-foreground">{actionProgressModal.description}</p>
                 </div>
               </div>
             </div>

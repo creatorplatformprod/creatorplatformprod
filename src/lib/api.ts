@@ -257,6 +257,8 @@ export const api = {
       thumbnailUrl?: string;
       hlsUrl?: string;
       mediaType?: string;
+      cropX?: number;
+      cropY?: number;
       size?: number;
       width?: number;
       height?: number;

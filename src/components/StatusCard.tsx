@@ -16,6 +16,7 @@ interface StatusCardProps {
   timestamp: string | number | Date;
   likes: number;
   comments: number;
+  showViews?: boolean;
 }
 
 const StatusCard = ({ 
@@ -24,7 +25,8 @@ const StatusCard = ({
   title,
   text,
   timestamp,
-  likes
+  likes,
+  showViews = true
 }: StatusCardProps) => {
   const engagementId = `status:${id}`;
   const [isLiked, setIsLiked] = useState(false);
@@ -191,6 +193,12 @@ const StatusCard = ({
       <div className="p-4 border-t border-border bg-post-bg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
+            {showViews && (
+              <div className="flex items-center gap-2 px-3 py-1.5 text-muted-foreground">
+                <Eye className="w-4 h-4" />
+                <span>{formatLikeCount(currentViews)}</span>
+              </div>
+            )}
             <button
               onClick={handleLike}
               className="flex items-center gap-2 px-3 py-1.5 rounded-md"
@@ -198,10 +206,6 @@ const StatusCard = ({
               <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground'}`} />
               <span className={isLiked ? 'text-rose-500' : 'text-muted-foreground'}>{formatLikeCount(currentLikes)}</span>
             </button>
-            <div className="flex items-center gap-2 px-3 py-1.5 text-muted-foreground">
-              <Eye className="w-4 h-4" />
-              <span>{formatLikeCount(currentViews)}</span>
-            </div>
           </div>
           
           <div className="flex items-center gap-1">

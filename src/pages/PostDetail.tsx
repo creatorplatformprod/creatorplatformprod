@@ -78,6 +78,7 @@ const PostDetail = () => {
   const [measuredDims, setMeasuredDims] = useState({});
   const [remoteCollection, setRemoteCollection] = useState<any>(null);
   const [remoteLoading, setRemoteLoading] = useState(false);
+  const [hasAttemptedRemoteLoad, setHasAttemptedRemoteLoad] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
   const themeClass = usePublicWebsiteTheme(creatorParam || undefined);
   const isDarkTheme = themeClass === 'theme-classic-dark';
@@ -180,8 +181,12 @@ const PostDetail = () => {
   };
 
   const loadRemoteCollection = async () => {
-    if (!secureId || isValidSecureId(secureId) || /^mock-collection-\d+$/i.test(secureId)) return;
+    if (!secureId || isValidSecureId(secureId) || /^mock-collection-\d+$/i.test(secureId)) {
+      setHasAttemptedRemoteLoad(false);
+      return;
+    }
     setRemoteLoading(true);
+    setHasAttemptedRemoteLoad(false);
     setAccessDenied(false);
 
     try {
@@ -315,6 +320,7 @@ const PostDetail = () => {
       setRemoteCollection(null);
     } finally {
       setRemoteLoading(false);
+      setHasAttemptedRemoteLoad(true);
     }
   };
 
@@ -324,6 +330,8 @@ const PostDetail = () => {
 
   const localCollection = getCollectionFromSecureId();
   const collection = remoteCollection || localCollection;
+  const needsRemoteCollection =
+    !!secureId && !isValidSecureId(secureId) && !/^mock-collection-\d+$/i.test(secureId);
   useSeo(
     {
       title: collection?.title
@@ -504,6 +512,16 @@ const PostDetail = () => {
     );
   }
 
+  if (!collection && needsRemoteCollection && (remoteLoading || !hasAttemptedRemoteLoad)) {
+    return (
+      <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
+        <div className="text-center">
+          <p className="text-muted-foreground">Loading collection...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!collection) {
     return (
       <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
@@ -634,7 +652,6 @@ const PostDetail = () => {
                         aspectRatio: `${aspectW} / ${aspectH}`
                       }}
                     >
-                        {!isMediaLoaded && <div className="absolute inset-0 skeleton-static" />}
                         {mediaType === 'video' ? (
                           <InlineVideoPlayer
                             src={imageSrc}

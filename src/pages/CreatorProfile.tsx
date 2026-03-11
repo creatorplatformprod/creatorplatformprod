@@ -456,6 +456,8 @@ const CreatorProfile = () => {
                 type: String(item?.mediaType || '').toLowerCase() === 'video' ? 'video' : 'image',
                 url: String(item?.url || '').trim(),
                 thumbnail: String(item?.thumbnailUrl || item?.url || '').trim(),
+                cropX: Number.isFinite(Number(item?.cropX)) ? Number(item.cropX) : 0,
+                cropY: Number.isFinite(Number(item?.cropY)) ? Number(item.cropY) : 0,
                 alt: card.text || 'Status media'
               }))
               .filter((item: any) => !!item.url)

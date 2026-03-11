@@ -1,5 +1,5 @@
 // src/components/ProgressiveImage.tsx
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type CSSProperties } from 'react';
 
 interface ProgressiveImageProps {
   src: string;
@@ -7,6 +7,7 @@ interface ProgressiveImageProps {
   alt: string;
   className?: string;
   onLoad?: () => void;
+  style?: CSSProperties;
 }
 
 const isLocalMockAssetUrl = (value: string) => {
@@ -22,7 +23,8 @@ const ProgressiveImage = ({
   thumbnail, 
   alt, 
   className = "",
-  onLoad 
+  onLoad,
+  style
 }: ProgressiveImageProps) => {
   const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
   const FALLBACK_IMAGE = '/placeholder.svg';
@@ -164,7 +166,7 @@ const ProgressiveImage = ({
       alt={alt}
       draggable={false}
       className={`${className} ${isLoading ? 'image-loading' : 'image-loaded'}`}
-      style={{ touchAction: 'pan-y' }}
+      style={{ touchAction: 'pan-y', ...style }}
       loading={useStableMockDecode ? "eager" : (hasDistinctThumbnail ? "lazy" : "eager")}
       decoding="async"
       onLoad={() => {

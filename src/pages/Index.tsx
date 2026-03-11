@@ -148,6 +148,10 @@ const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string 
       <div className="p-4 border-t border-border bg-post-bg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 px-3 py-1 text-muted-foreground">
+              <Eye className="w-4 h-4" />
+              <span>{formatCount(currentViews)}</span>
+            </div>
             <button
               onClick={handleLike}
               className="flex items-center gap-2 text-muted-foreground hover:text-like active:bg-transparent transition-colors px-3 py-1 hover:bg-secondary rounded-lg"
@@ -155,10 +159,6 @@ const TextPostCard = ({ post, engagementId }: { post: any; engagementId: string 
               <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground'}`} />
               <span className={isLiked ? 'text-rose-500' : 'text-muted-foreground'}>{formatCount(currentLikes)}</span>
             </button>
-            <div className="flex items-center gap-2 px-3 py-1 text-muted-foreground">
-              <Eye className="w-4 h-4" />
-              <span>{formatCount(currentViews)}</span>
-            </div>
           </div>
           <button
             onClick={handleShare}

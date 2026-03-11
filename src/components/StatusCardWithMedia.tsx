@@ -18,17 +18,22 @@ interface StatusCardWithMediaProps {
   timestamp: string | number | Date;
   likes: number;
   comments: number;
+  showViews?: boolean;
   media?: {
     type: "image" | "video";
     url: string;
     alt?: string;
     thumbnail?: string;
+    cropX?: number;
+    cropY?: number;
   };
   mediaItems?: Array<{
     type: "image" | "video";
     url: string;
     alt?: string;
     thumbnail?: string;
+    cropX?: number;
+    cropY?: number;
   }>;
 }
 
@@ -40,7 +45,8 @@ const StatusCardWithMedia = ({
   timestamp,
   likes,
   media,
-  mediaItems
+  mediaItems,
+  showViews = true
 }: StatusCardWithMediaProps) => {
   const engagementId = `status:${id}`;
   const [isLiked, setIsLiked] = useState(false);
@@ -274,6 +280,8 @@ const StatusCardWithMedia = ({
               <div className="grid grid-cols-2 gap-1">
                 {visibleMediaItems.map((item, idx) => {
                   const thumbnail = item.thumbnail || (item.type === 'image' ? getThumbnailUrl(item.url) : item.url);
+                  const cropX = Number.isFinite(Number(item.cropX)) ? Number(item.cropX) : 0;
+                  const cropY = Number.isFinite(Number(item.cropY)) ? Number(item.cropY) : 0;
                   return (
                     <div key={`${item.url}-${idx}`} className="relative h-40 overflow-hidden rounded-[10px] bg-muted/20">
                       <img
@@ -282,6 +290,7 @@ const StatusCardWithMedia = ({
                         className={`w-full h-full object-cover transition-opacity duration-500 transition-transform duration-300 post-card-media-img ${
                           mediaRevealReady ? 'opacity-100' : 'opacity-0'
                         }`}
+                        style={{ objectPosition: `${50 + cropX}% ${50 + cropY}%` }}
                         onLoad={handleMediaItemLoad}
                         onError={handleMediaItemLoad}
                       />
@@ -302,6 +311,9 @@ const StatusCardWithMedia = ({
                 className={`w-full h-auto max-h-96 object-cover transition-opacity duration-500 transition-transform duration-300 post-card-media-img ${
                   mediaRevealReady ? 'opacity-100' : 'opacity-0'
                 }`}
+                style={{
+                  objectPosition: `${50 + (Number.isFinite(Number(visibleMediaItems[0].cropX)) ? Number(visibleMediaItems[0].cropX) : 0)}% ${50 + (Number.isFinite(Number(visibleMediaItems[0].cropY)) ? Number(visibleMediaItems[0].cropY) : 0)}%`
+                }}
                 onLoad={() => setIsMediaLoaded(true)}
               />
             ) : (
@@ -315,6 +327,9 @@ const StatusCardWithMedia = ({
                     controls
                     className="w-full h-auto max-h-96 object-cover"
                     poster={visibleMediaItems[0].thumbnail}
+                    style={{
+                      objectPosition: `${50 + (Number.isFinite(Number(visibleMediaItems[0].cropX)) ? Number(visibleMediaItems[0].cropX) : 0)}% ${50 + (Number.isFinite(Number(visibleMediaItems[0].cropY)) ? Number(visibleMediaItems[0].cropY) : 0)}%`
+                    }}
                     onLoadedData={() => setIsMediaLoaded(true)}
                     onError={() => setIsMediaLoaded(true)}
                   />
@@ -324,6 +339,9 @@ const StatusCardWithMedia = ({
                       src={visibleMediaItems[0].thumbnail || visibleMediaItems[0].url}
                       alt={visibleMediaItems[0].alt || title}
                       className="w-full h-auto max-h-96 object-cover"
+                      style={{
+                        objectPosition: `${50 + (Number.isFinite(Number(visibleMediaItems[0].cropX)) ? Number(visibleMediaItems[0].cropX) : 0)}% ${50 + (Number.isFinite(Number(visibleMediaItems[0].cropY)) ? Number(visibleMediaItems[0].cropY) : 0)}%`
+                      }}
                       onLoad={() => setIsMediaLoaded(true)}
                       onError={() => setIsMediaLoaded(true)}
                     />
@@ -343,6 +361,12 @@ const StatusCardWithMedia = ({
       <div className="p-4 border-t border-border bg-post-bg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
+            {showViews && (
+              <div className="flex items-center gap-2 px-3 py-1.5 text-muted-foreground">
+                <Eye className="w-4 h-4" />
+                <span>{formatLikeCount(currentViews)}</span>
+              </div>
+            )}
             <button
               onClick={handleLike}
               className="btn-press flex items-center gap-2 px-3 py-1.5 rounded-md"
@@ -350,10 +374,6 @@ const StatusCardWithMedia = ({
               <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground'}`} />
               <span className={isLiked ? 'text-rose-500' : 'text-muted-foreground'}>{formatLikeCount(currentLikes)}</span>
             </button>
-            <div className="flex items-center gap-2 px-3 py-1.5 text-muted-foreground">
-              <Eye className="w-4 h-4" />
-              <span>{formatLikeCount(currentViews)}</span>
-            </div>
           </div>
           
           <div className="flex items-center gap-1">

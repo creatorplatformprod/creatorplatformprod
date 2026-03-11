@@ -1854,6 +1854,13 @@
     background: linear-gradient(to bottom right, hsl(200 100% 50% / 0.08), hsl(260 80% 60% / 0.06), transparent) !important;
   }
 
+  @media (max-width: 768px) {
+    .public-template .template-cover,
+    .theme-classic-dark .template-cover {
+      border-bottom: 0 !important;
+    }
+  }
+
   /* Profile shell */
   .theme-classic-dark .template-profile-shell {
     background: transparent !important;

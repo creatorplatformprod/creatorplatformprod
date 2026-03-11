@@ -32,6 +32,7 @@ const InlineVideoPlayer = ({
   const [showThumbnail, setShowThumbnail] = useState(true);
   const [thumbnailError, setThumbnailError] = useState(false);
   const [thumbnailLoaded, setThumbnailLoaded] = useState(false);
+  const [videoErrored, setVideoErrored] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout>();
@@ -118,6 +119,7 @@ const InlineVideoPlayer = ({
     const video = videoRef.current;
     if (!video) return;
 
+    setVideoErrored(false);
     readyNotifiedRef.current = false;
 
     const notifyReady = () => {
@@ -318,7 +320,7 @@ const InlineVideoPlayer = ({
       />
 
       {/* Loading Indicator */}
-      {!isVideoLoaded && (
+      {!isVideoLoaded && !videoErrored && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/10 z-5">
           <div className="w-8 h-8 border-3 border-gray-300 border-t-white rounded-full animate-spin" />
         </div>
@@ -337,6 +339,12 @@ const InlineVideoPlayer = ({
         muted={isMuted}
         onTimeUpdate={handleTimeUpdate}
         onEnded={() => setIsPlaying(false)}
+        onError={() => {
+          setVideoErrored(true);
+          setIsVideoLoaded(true);
+          setShowThumbnail(true);
+          if (onLoad) onLoad();
+        }}
         preload="metadata"
         controlsList="nodownload nofullscreen noremoteplayback"
         disablePictureInPicture

@@ -685,7 +685,6 @@ const Collections = () => {
                       }}
                       onClick={handleUnlockClick}
                     >
-                      {!isMediaLoaded && <div className="absolute inset-0 skeleton-static" />}
                       {mediaObj.mediaType === 'video' ? (
                         <InlineVideoPlayer
                           src={mediaObj.src}
@@ -736,7 +735,7 @@ const Collections = () => {
             {/* Payment Modal */}
             {showUnlockModal && (
               <div
-                className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
+                className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-3"
                 style={{
                   backgroundColor: 'rgba(0, 0, 0, 0.5)',
                   backdropFilter: 'blur(8px)',
@@ -746,7 +745,7 @@ const Collections = () => {
                 }}
               >
                 <div 
-                  className="bg-transparent rounded-2xl p-4 sm:p-6 w-full max-w-[340px] sm:max-w-sm"
+                  className="bg-transparent rounded-2xl p-3.5 sm:p-5 w-full max-w-[320px] sm:max-w-[22rem]"
                   style={{ maxHeight: '85vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
                 >
                   <div className="text-center">
