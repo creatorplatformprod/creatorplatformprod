@@ -163,7 +163,7 @@ const Landing = () => {
           <div className="text-center mb-12 sm:mb-16">
             <h1 className="landing-heading mx-auto">
               Create content. Get paid.<br />
-              <span className="bg-gradient-to-r from-purple-500 via-violet-500 to-sky-400 bg-clip-text text-transparent">Card to crypto, instantly.</span>
+              <span className="text-purple-500">Card to crypto, instantly.</span>
             </h1>
             <p className="landing-subheading mx-auto mt-4 sm:mt-5">
               The creator platform that lets your subscribers pay with card and sends you crypto in real-time. No middlemen, no delays.
@@ -434,7 +434,7 @@ const Landing = () => {
       <footer className="landing-footer">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="brand-wordmark">
-            <span className="brand-accent">Six</span><span className="text-gray-500">Seven</span><span className="brand-accent">Creator</span>
+            <span className="brand-accent">Six</span><span className="text-gray-900">Seven</span><span className="brand-accent">Creator</span>
           </div>
           <div className="flex items-center gap-5 text-xs text-gray-400">
             <span className="hover:text-gray-600 cursor-pointer transition-colors">Terms</span>

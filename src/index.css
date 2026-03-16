@@ -1289,7 +1289,7 @@
   }
 
   .landing-cta-glow {
-    background: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%) !important;
+    background: #8b5cf6 !important;
     color: white !important;
     border: none !important;
     box-shadow: 0 4px 24px -4px rgba(139,92,246,0.35);
@@ -1297,7 +1297,7 @@
   }
 
   .landing-cta-glow:hover {
-    background: linear-gradient(90deg, #7c3aed 0%, #0ea5e9 100%) !important;
+    background: #7c3aed !important;
     color: white !important;
     box-shadow: 0 6px 32px -4px rgba(139,92,246,0.45);
     transform: translateY(-1px);
