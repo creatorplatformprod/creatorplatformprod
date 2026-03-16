@@ -221,6 +221,7 @@ const PostDetailBlurred = () => {
     const index = Number.isNaN(parsed) ? 0 : Math.max(parsed - 1, 0) % localMockCollections.length;
     return localMockCollections[index];
   }, [id, localMockCollections]);
+  const fallbackMockCollection = localMockCollections[0];
 
   const loadRemoteCollection = async () => {
     if (!id || localCollection) return;
@@ -241,7 +242,7 @@ const PostDetailBlurred = () => {
           id: collectionResult.collection._id,
           title: collectionResult.collection.title,
           description: collectionResult.collection.description || '',
-          images: (collectionResult.collection.media || []).filter((media: any) => !!media?.url).map((media: any) => ({
+          images: (collectionResult.collection.media || []).map((media: any) => ({
             full: media.url,
             thumb: media.thumbnailUrl || media.url,
             hlsSrc: String(media.hlsUrl || '').trim(),
@@ -258,7 +259,7 @@ const PostDetailBlurred = () => {
           })),
           user: {
             name: creatorUser?.displayName || creatorUser?.username || 'Creator',
-            avatar: creatorUser?.avatar || '',
+            avatar: creatorUser?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop',
             verified: creatorUser?.isVerified || false
           },
           timestamp: collectionResult.collection.createdAt
@@ -284,7 +285,7 @@ const PostDetailBlurred = () => {
               id: ownCollection._id,
               title: ownCollection.title,
               description: ownCollection.description || '',
-              images: (ownCollection.media || []).filter((media: any) => !!media?.url).map((media: any) => ({
+              images: (ownCollection.media || []).map((media: any) => ({
                 full: media.url,
                 thumb: media.thumbnailUrl || media.url,
                 hlsSrc: String(media.hlsUrl || '').trim(),
@@ -301,7 +302,7 @@ const PostDetailBlurred = () => {
               })),
               user: {
                 name: me.user?.displayName || me.user?.username || 'Creator',
-                avatar: me.user?.avatar || '',
+                avatar: me.user?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop',
                 verified: me.user?.isVerified || false
               },
               timestamp: ownCollection.createdAt
@@ -327,7 +328,7 @@ const PostDetailBlurred = () => {
               id: ownCollection._id,
               title: ownCollection.title,
               description: ownCollection.description || '',
-              images: (ownCollection.media || []).filter((media: any) => !!media?.url).map((media: any) => ({
+              images: (ownCollection.media || []).map((media: any) => ({
                 full: media.url,
                 thumb: media.thumbnailUrl || media.url,
                 hlsSrc: String(media.hlsUrl || '').trim(),
@@ -344,7 +345,7 @@ const PostDetailBlurred = () => {
               })),
               user: {
                 name: me?.user?.displayName || me?.user?.username || 'Creator',
-                avatar: me?.user?.avatar || '',
+                avatar: me?.user?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400&fit=crop',
                 verified: me?.user?.isVerified || false
               },
               timestamp: ownCollection.createdAt
@@ -410,7 +411,7 @@ const PostDetailBlurred = () => {
     return `/post/${id}${query}`;
   };
 
-  const collection = remoteCollection || localCollection;
+  const collection = remoteCollection || localCollection || fallbackMockCollection;
   useSeo(
     {
       title: collection?.title
@@ -834,7 +835,7 @@ const PostDetailBlurred = () => {
             style={{ maxHeight: '85vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
           >
             <div className="text-center">
-              <h2 className="text-lg sm:text-2xl font-bold text-primary mb-1 sm:mb-1.5">
+              <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-1.5">
                 Unlock "{collection.title}"
               </h2>
 
@@ -880,18 +881,14 @@ const PostDetailBlurred = () => {
               <button
                 onClick={handleCardPaymentClick}
                 disabled={isCardPaymentLoading || remoteLoading}
-                className={`relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed border ${
-                  themeClass === 'theme-classic-dark'
-                    ? 'bg-[#273246]/90 border-white/10 text-white hover:bg-[#2d3950]'
-                    : 'bg-[#e5e7eb]/95 border-white/80 text-slate-700 hover:bg-[#eceef2]'
-                }`}
+                className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
               >
                 {isCardPaymentLoading || remoteLoading ? (
                   <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                 ) : (
                   <>
                     <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="relative">{`Pay by Card - ${formattedPrice}`}</span>
+                    <span className="relative">{`Unlock Now -- ${formattedPrice}`}</span>
                   </>
                 )}
               </button>

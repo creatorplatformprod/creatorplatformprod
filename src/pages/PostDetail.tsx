@@ -214,7 +214,7 @@ const PostDetail = () => {
                   id: ownCollection._id,
                   title: ownCollection.title,
                   description: ownCollection.description || '',
-                  images: (ownCollection.media || []).filter((media: any) => !!media?.url).map((media: any) => ({
+                  images: (ownCollection.media || []).map((media: any) => ({
                     full: media.url,
                     thumb: media.thumbnailUrl || media.url,
                     hlsSrc: String(media.hlsUrl || '').trim(),
@@ -231,7 +231,7 @@ const PostDetail = () => {
                   })),
                   user: {
                     name: me.user?.displayName || me.user?.username || 'Creator',
-                    avatar: me.user?.avatar || '',
+                    avatar: me.user?.avatar || '/placeholder.svg',
                     verified: me.user?.isVerified || false,
                     twitterUrl: me.user?.twitterUrl || '',
                     instagramUrl: me.user?.instagramUrl || '',
@@ -281,7 +281,7 @@ const PostDetail = () => {
           id: collectionResult.collection._id,
           title: collectionResult.collection.title,
           description: collectionResult.collection.description || '',
-          images: (collectionResult.collection.media || []).filter((media: any) => !!media?.url).map((media: any) => ({
+          images: (collectionResult.collection.media || []).map((media: any) => ({
             full: media.url,
             thumb: media.thumbnailUrl || media.url,
             hlsSrc: String(media.hlsUrl || '').trim(),
@@ -298,7 +298,7 @@ const PostDetail = () => {
           })),
           user: {
             name: creatorUser?.displayName || creatorUser?.username || 'Creator',
-            avatar: creatorUser?.avatar || '',
+            avatar: creatorUser?.avatar || '/placeholder.svg',
             verified: creatorUser?.isVerified || false,
             // Creator-specific branding data with fallbacks
             twitterUrl: creatorUser?.twitterUrl || '',

@@ -65,21 +65,6 @@ const seededShuffle = (items, seed) => {
   }
   return arr;
 };
-const getCollectionIdValue = (collection: any): string =>
-  String(collection?._id || collection?.id || collection?.collectionId || collection?.secureId || '').trim();
-const getCollectionMediaItems = (collection: any): any[] => {
-  if (!collection) return [];
-  const direct =
-    (Array.isArray(collection.media) && collection.media) ||
-    (Array.isArray(collection.images) && collection.images) ||
-    (Array.isArray(collection.previewMedia) && collection.previewMedia) ||
-    (Array.isArray(collection.items) && collection.items) ||
-    [];
-  if (direct.length > 0) return direct;
-
-  const fallbackUrl = String(collection.coverImage || collection.thumbnailUrl || collection.image || '').trim();
-  return fallbackUrl ? [{ url: fallbackUrl, thumbnailUrl: fallbackUrl, mediaType: 'image' }] : [];
-};
 
 const Collections = () => {
   const navigate = useNavigate();
@@ -104,7 +89,6 @@ const Collections = () => {
   const imagesPerPage = isMobileViewport ? 12 : 20;
   const [revealedCount, setRevealedCount] = useState(imagesPerPage);
   const revealSentinelRef = useRef<HTMLDivElement | null>(null);
-  const hydratedCollectionIdsRef = useRef<Set<string>>(new Set());
   const { fan } = useFanAuth();
   const activeFan = isPreviewMode ? null : fan;
   const themeClass = usePublicWebsiteTheme(creatorUsername || undefined);
@@ -282,70 +266,6 @@ const Collections = () => {
     resolveRevealAccess();
   }, [creatorUsername, isPreviewMode]);
 
-  useEffect(() => {
-    const collectionsNeedingHydration = (collectionsData || []).filter((collection: any) => {
-      const collectionId = getCollectionIdValue(collection);
-      if (!collection || collectionId === 'all' || collection.isBundle || !collectionId) return false;
-      const hasMedia = getCollectionMediaItems(collection).some((item: any) => {
-        const mediaUrl = String(item?.url || item?.full || item?.src || item?.imageUrl || '').trim();
-        return !!mediaUrl;
-      });
-      return !hasMedia && !hydratedCollectionIdsRef.current.has(collectionId);
-    });
-
-    if (collectionsNeedingHydration.length === 0) return;
-
-    let cancelled = false;
-    const hydrateCollections = async () => {
-      const resolved = await Promise.all(
-        collectionsNeedingHydration.map(async (collection: any) => {
-          const collectionId = getCollectionIdValue(collection);
-          if (!collectionId) return null;
-          try {
-            const detail = await api.getCollection(collectionId);
-            const resolvedMedia = getCollectionMediaItems(detail?.collection).filter((item: any) => {
-              const mediaUrl = String(item?.url || item?.full || item?.src || item?.imageUrl || '').trim();
-              return !!mediaUrl;
-            });
-            if (resolvedMedia.length === 0) return null;
-            return {
-              id: collectionId,
-              media: resolvedMedia
-            };
-          } catch {
-            return null;
-          } finally {
-            hydratedCollectionIdsRef.current.add(collectionId);
-          }
-        })
-      );
-
-      if (cancelled) return;
-      const resolvedMap = new Map(
-        resolved
-          .filter((entry: any) => !!entry?.id)
-          .map((entry: any) => [entry.id, entry.media])
-      );
-      if (resolvedMap.size === 0) return;
-
-      setCollectionsData((prev: any[]) =>
-        (prev || []).map((collection: any) => {
-          const collectionId = getCollectionIdValue(collection);
-          if (!resolvedMap.has(collectionId)) return collection;
-          return {
-            ...collection,
-            media: resolvedMap.get(collectionId)
-          };
-        })
-      );
-    };
-
-    hydrateCollections();
-    return () => {
-      cancelled = true;
-    };
-  }, [collectionsData]);
-
   function getRandomDimensions(index) {
     const ratios = [
       { width: 400, height: 600 },
@@ -395,23 +315,22 @@ const Collections = () => {
       };
     });
   }, [mockPhotos, mockSeed]);
+  const mockCollectionCount = localMockCollections.length;
+
   const allImages = useMemo(() => {
     const visibleApiCollections = (collectionsData || []).filter(
-      (col: any) => {
-        const collectionId = getCollectionIdValue(col);
-        return col && collectionId !== 'all' && !col.isBundle;
-      }
+      (col: any) => col && col._id !== 'all' && !col.isBundle
     );
 
     // If we have real API collections with actual media, use them.
     if (visibleApiCollections.length > 0) {
       const items: any[] = [];
       visibleApiCollections.forEach((collection: any) => {
-        const mediaItems = getCollectionMediaItems(collection);
+        const mediaItems = collection.media || [];
         mediaItems.forEach((mediaItem: any, index: number) => {
-          const imageSrc = String(mediaItem?.url || mediaItem?.full || mediaItem?.src || mediaItem?.imageUrl || '').trim();
-          if (!imageSrc) return;
-          let thumbSrc = String(mediaItem?.thumbnailUrl || mediaItem?.thumb || mediaItem?.preview || imageSrc).trim();
+          if (!mediaItem?.url) return;
+          const imageSrc = mediaItem.url;
+          let thumbSrc = mediaItem.thumbnailUrl || mediaItem.url;
           const mediaType = resolveMediaType({
             mediaType: mediaItem.mediaType,
             mimeType: mediaItem.mimeType,
@@ -430,7 +349,7 @@ const Collections = () => {
             src: imageSrc,
             thumb: thumbSrc,
             hlsSrc: String(mediaItem.hlsUrl || '').trim(),
-            collectionId: getCollectionIdValue(collection),
+            collectionId: collection._id,
             collectionTitle: collection.title,
             imageIndex: index,
             mediaType,
@@ -443,21 +362,30 @@ const Collections = () => {
       return items;
     }
 
-    // Do not render placeholder mock images when API media is missing.
-    return [];
-  }, [collectionsData]);
+    // Fallback: use same seeded pink mock universe as CreatorProfile.
+    const items: any[] = [];
+    localMockCollections.forEach((collection) => {
+      collection.images.forEach((mediaItem, index) => {
+        items.push({
+          src: mediaItem.src,
+          thumb: mediaItem.thumb,
+          collectionId: collection.id,
+          collectionTitle: collection.title,
+          imageIndex: index,
+          mediaType: mediaItem.mediaType,
+          hasStoredDims: false,
+          ...getRandomDimensions(items.length)
+        });
+      });
+    });
+    return items;
+  }, [collectionsData, localMockCollections]);
 
   const collectionCount = collectionsData.length > 0
-    ? collectionsData.filter((col: any) => {
-      const collectionId = getCollectionIdValue(col);
-      return col && collectionId !== 'all' && !col.isBundle;
-    }).length
-    : 0;
+    ? collectionsData.filter((col: any) => col && col._id !== 'all' && !col.isBundle).length
+    : mockCollectionCount;
   const footerCreatorName = useMemo(() => {
-    const firstCollection = (collectionsData || []).find((col: any) => {
-      const collectionId = getCollectionIdValue(col);
-      return col && collectionId !== 'all' && !col.isBundle;
-    }) as any;
+    const firstCollection = (collectionsData || []).find((col: any) => col && col._id !== 'all' && !col.isBundle) as any;
     const rawName =
       firstCollection?.creatorDisplayName ||
       firstCollection?.creatorName ||
@@ -470,9 +398,6 @@ const Collections = () => {
     return safeName || 'Creator';
   }, [collectionsData, creatorUsername]);
   const totalItems = allImages.length;
-  const formattedBundlePrice = Number.isFinite(Number(bundlePrice))
-    ? Number(bundlePrice).toFixed(2)
-    : String(bundlePrice);
   const videoCount = allImages.filter((item) => item.mediaType === 'video').length;
   const imageCount = totalItems - videoCount;
 
@@ -824,7 +749,7 @@ const Collections = () => {
                   style={{ maxHeight: '85vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
                 >
                   <div className="text-center">
-                    <h2 className="text-lg sm:text-2xl font-bold text-primary mb-1 sm:mb-1.5">
+                    <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-1.5">
                       Unlock Everything
                     </h2>
 
@@ -870,18 +795,14 @@ const Collections = () => {
                     <button
                       onClick={handleCardPaymentClick}
                       disabled={isCardPaymentLoading || isLoading}
-                      className={`relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed border ${
-                        themeClass === 'theme-classic-dark'
-                          ? 'bg-[#273246]/90 border-white/10 text-white hover:bg-[#2d3950]'
-                          : 'bg-[#e5e7eb]/95 border-white/80 text-slate-700 hover:bg-[#eceef2]'
-                      }`}
+                      className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
                     >
                       {isCardPaymentLoading || isLoading ? (
                         <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                       ) : (
                         <>
                           <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
-                          <span className="relative">{`Pay by Card - $${formattedBundlePrice}`}</span>
+                          <span className="relative">Unlock All -- ${bundlePrice}</span>
                         </>
                       )}
                     </button>
