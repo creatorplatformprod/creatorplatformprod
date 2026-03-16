@@ -880,11 +880,8 @@ const PostDetailBlurred = () => {
               <button
                 onClick={handleCardPaymentClick}
                 disabled={isCardPaymentLoading || remoteLoading}
-                className={`relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed border backdrop-blur-sm ${
-                  themeClass === 'theme-classic-dark'
-                    ? 'bg-slate-800/85 border-white/10 text-white hover:bg-slate-700/90'
-                    : 'bg-white/85 border-white/70 text-slate-700 hover:bg-white'
-                }`}
+                className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
+                style={{ fontFamily: "Montserrat, sans-serif" }}
               >
                 {isCardPaymentLoading || remoteLoading ? (
                   <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
