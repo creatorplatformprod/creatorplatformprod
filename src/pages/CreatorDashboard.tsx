@@ -2610,7 +2610,7 @@ const CreatorDashboard = () => {
     <div className="creator-dashboard min-h-screen feed-bg">
         {/* Top Navbar */}
         <nav className="creator-top-nav sticky top-0 z-50 nav-elevated">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="w-full px-4 sm:px-6">
             <div className="flex items-center justify-between h-14">
               {/* Left - Brand */}
               <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -2873,30 +2873,6 @@ const CreatorDashboard = () => {
                     <span>{sparklineDateLabels.end}</span>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Revenue Chart */}
-            <div className="card-elevated p-5">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-sm font-semibold text-foreground">Revenue Overview</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">Your earnings over the last 30 days</p>
-                </div>
-              </div>
-              <div className="h-[200px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={analyticsSeries}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.04)" />
-                    <XAxis dataKey="label" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} axisLine={false} tickLine={false} width={50} />
-                    <Tooltip
-                      contentStyle={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', fontSize: '12px' }}
-                      labelStyle={{ color: '#1f2937', marginBottom: '4px' }}
-                    />
-                    <Line type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={2} dot={false} />
-                  </LineChart>
-                </ResponsiveContainer>
               </div>
             </div>
 

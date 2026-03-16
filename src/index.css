@@ -1756,10 +1756,6 @@
     scrollbar-gutter: auto;
   }
 
-  .public-preview-mode .template-sidebar {
-    position: absolute !important;
-  }
-
   .public-preview-mode .post-card {
     border-radius: 1rem !important;
     overflow: hidden;
