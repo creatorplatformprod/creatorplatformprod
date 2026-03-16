@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -78,6 +78,7 @@ const Collections1849929295832448 = () => {
   const [accessDenied, setAccessDenied] = useState(false);
   const [remoteCollections, setRemoteCollections] = useState<any[]>([]);
   const [verifying, setVerifying] = useState(true);
+  const hydratedCollectionIdsRef = useRef<Set<string>>(new Set());
   const themeClass = usePublicWebsiteTheme(creatorParam || undefined);
   const isDarkTheme = themeClass === 'theme-classic-dark';
 
@@ -183,6 +184,63 @@ const Collections1849929295832448 = () => {
       document.body.classList.remove('no-bounce');
     };
   }, [secureId, accessToken, creatorParam, isPreviewMode]);
+
+  useEffect(() => {
+    const collectionsNeedingHydration = (remoteCollections || []).filter((collection: any) => {
+      if (!collection || collection._id === 'all' || collection.isBundle) return false;
+      const hasMedia = Array.isArray(collection.media) && collection.media.some((item: any) => !!item?.url);
+      return !hasMedia && !hydratedCollectionIdsRef.current.has(String(collection._id));
+    });
+
+    if (collectionsNeedingHydration.length === 0) return;
+
+    let cancelled = false;
+    const hydrateCollections = async () => {
+      const resolved = await Promise.all(
+        collectionsNeedingHydration.map(async (collection: any) => {
+          const collectionId = String(collection._id || '');
+          if (!collectionId) return null;
+          try {
+            const detail = await api.getCollection(collectionId);
+            const resolvedMedia = (detail?.collection?.media || []).filter((item: any) => !!item?.url);
+            if (resolvedMedia.length === 0) return null;
+            return {
+              id: collectionId,
+              media: resolvedMedia
+            };
+          } catch {
+            return null;
+          } finally {
+            hydratedCollectionIdsRef.current.add(collectionId);
+          }
+        })
+      );
+
+      if (cancelled) return;
+      const resolvedMap = new Map(
+        resolved
+          .filter((entry: any) => !!entry?.id)
+          .map((entry: any) => [entry.id, entry.media])
+      );
+      if (resolvedMap.size === 0) return;
+
+      setRemoteCollections((prev: any[]) =>
+        (prev || []).map((collection: any) => {
+          const collectionId = String(collection?._id || '');
+          if (!resolvedMap.has(collectionId)) return collection;
+          return {
+            ...collection,
+            media: resolvedMap.get(collectionId)
+          };
+        })
+      );
+    };
+
+    hydrateCollections();
+    return () => {
+      cancelled = true;
+    };
+  }, [remoteCollections]);
 
   const getProfileFallbackUrl = () => {
     if (!creatorParam) return '/';
