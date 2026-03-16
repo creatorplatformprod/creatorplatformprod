@@ -27,8 +27,8 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false, darkTh
     ? "text-blue-500 group-hover:text-blue-400 group-focus:text-blue-400 group-data-[highlighted]:text-blue-400"
     : "text-blue-500 group-hover:text-blue-400 group-focus:text-blue-400 group-data-[highlighted]:text-blue-400";
   const authTextClass = darkTheme
-    ? "bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-blue-400 group-focus:from-blue-400 group-focus:to-blue-400 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-blue-400"
-    : "bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent transition-all group-hover:from-blue-400 group-hover:to-blue-400 group-focus:from-blue-400 group-focus:to-blue-400 group-data-[highlighted]:from-blue-400 group-data-[highlighted]:to-blue-400";
+    ? "text-blue-500 transition-all group-hover:text-blue-400 group-focus:text-blue-400 group-data-[highlighted]:text-blue-400"
+    : "text-blue-500 transition-all group-hover:text-blue-400 group-focus:text-blue-400 group-data-[highlighted]:text-blue-400";
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

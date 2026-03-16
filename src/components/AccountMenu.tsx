@@ -35,7 +35,7 @@ const AccountMenu = ({ currentUser, align = "end" }: AccountMenuProps) => {
     ? `/preview/${currentUser.username}`
     : "/dashboard";
   const menuFocusClass =
-    "focus:bg-gradient-to-r focus:from-indigo-500 focus:to-sky-500 focus:text-white data-[highlighted]:bg-gradient-to-r data-[highlighted]:from-indigo-500 data-[highlighted]:to-sky-500 data-[highlighted]:text-white";
+    "focus:bg-indigo-500 focus:text-white data-[highlighted]:bg-indigo-500 data-[highlighted]:text-white";
 
   const copyPublicLink = async () => {
     if (!currentUser?.username || typeof window === "undefined") return;

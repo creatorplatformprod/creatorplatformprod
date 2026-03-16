@@ -554,7 +554,7 @@ const PublicWebsitePreview = () => {
           {activeDevice === 'desktop' && (
             <div className="w-full max-w-[1060px]">
               <div className="relative">
-                <div className="bg-gradient-to-b from-[#2d2d2d] to-[#1a1a1a] rounded-[20px] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)]">
+                <div className="bg-[#1f1f1f] rounded-[20px] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)]">
                   <div className="rounded-[14px] overflow-hidden" style={previewSurfaceStyle}>
                     {/* Browser Chrome */}
                     <div className={`browser-chrome ${isDarkPreviewTheme ? 'bg-black border-slate-800' : ''}`}>
@@ -599,10 +599,10 @@ const PublicWebsitePreview = () => {
                 </div>
                 {/* Laptop base — metallic */}
                 <div className="mt-4 hidden sm:flex justify-center">
-                  <div className="w-[88%] h-[18px] bg-gradient-to-b from-[#3a3a3a] via-[#4a4a4a] to-[#2a2a2a] rounded-[999px] shadow-[0_12px_32px_rgba(0,0,0,0.3)]" style={{boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1), 0 12px 32px rgba(0,0,0,0.3)'}} />
+                  <div className="w-[88%] h-[18px] bg-[#3b3b3b] rounded-[999px] shadow-[0_12px_32px_rgba(0,0,0,0.3)]" style={{boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1), 0 12px 32px rgba(0,0,0,0.3)'}} />
                 </div>
                 <div className="mt-1 hidden sm:flex justify-center">
-                  <div className="w-[72%] h-[10px] bg-gradient-to-b from-[#333] to-[#222] rounded-[999px] [transform:perspective(1200px)_rotateX(10deg)] shadow-[0_8px_20px_rgba(0,0,0,0.25)]" />
+                  <div className="w-[72%] h-[10px] bg-[#2a2a2a] rounded-[999px] [transform:perspective(1200px)_rotateX(10deg)] shadow-[0_8px_20px_rgba(0,0,0,0.25)]" />
                 </div>
                 {/* Ambient glow */}
                 <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-16 bg-indigo-500/[0.06] rounded-full blur-2xl pointer-events-none hidden sm:block" />
@@ -612,7 +612,7 @@ const PublicWebsitePreview = () => {
 
           {/* Mobile Frame */}
           {activeDevice === 'mobile' && (
-            <div className="relative bg-gradient-to-b from-[#2d2d2d] to-[#1a1a1a] rounded-[44px] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.08)] w-[300px] sm:w-[350px] md:w-[380px]">
+            <div className="relative bg-[#1f1f1f] rounded-[44px] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.08)] w-[300px] sm:w-[350px] md:w-[380px]">
               <div className="rounded-[36px] overflow-hidden relative" style={previewSurfaceStyle}>
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-10" />

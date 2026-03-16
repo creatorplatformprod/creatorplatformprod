@@ -1058,11 +1058,11 @@ const CreatorProfile = () => {
               onError={handleCoverImageError}
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
+            <div className="absolute inset-0 bg-indigo-600/15" />
           )}
           <div className="absolute inset-0" style={{ backgroundColor: `rgba(0, 0, 0, ${coverOverlay * 0.3})` }} />
           {useClassicTheme && (
-            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--feed-bg))] via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-[hsl(var(--feed-bg))]/35" />
           )}
           <div className="absolute top-4 right-4 z-20">
             <div className="flex flex-col gap-1 rounded-full bg-background/90 backdrop-blur-sm border border-border shadow-sm p-1">
@@ -1320,7 +1320,7 @@ const CreatorProfile = () => {
 
               {/* Mock Data Explanation Banner - Only in preview mode with mock data */}
               {isPreviewMode && shouldUseMockData && filteredFeedData.length > 0 && (
-                <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl p-4 mb-4 animate-fade-in">
+                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 mb-4 animate-fade-in">
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                       <Info className="w-4 h-4 text-primary" />

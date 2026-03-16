@@ -2656,7 +2656,7 @@ const CreatorDashboard = () => {
                 {profileData.avatar ? (
                   <img src={profileData.avatar} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs font-bold text-foreground bg-gradient-to-br from-indigo-500 to-sky-500">
+                  <div className="w-full h-full flex items-center justify-center text-xs font-bold text-foreground bg-indigo-500/20">
                     {(profileData.displayName || user?.username || '?')[0]?.toUpperCase()}
                   </div>
                 )}
@@ -2811,7 +2811,7 @@ const CreatorDashboard = () => {
                   </div>
                 </div>
                 {/* Subtle gradient overlay */}
-                <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-emerald-500/[0.05] to-transparent rounded-tl-full pointer-events-none" />
+                <div className="absolute bottom-0 right-0 w-32 h-32 bg-emerald-500/[0.05] rounded-tl-full pointer-events-none" />
               </div>
 
               {/* Other stats */}
@@ -2978,7 +2978,7 @@ const CreatorDashboard = () => {
                     {salesList.slice(0, 5).map((sale: any, i: number) => (
                       <div key={i} className="flex items-center justify-between py-2 border-b border-gray-200 last:border-0">
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-sky-500 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
+                          <div className="w-7 h-7 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
                             {(sale.buyerEmail || sale.buyer || '?')[0]?.toUpperCase()}
                           </div>
                           <div className="min-w-0">
@@ -3281,7 +3281,7 @@ const CreatorDashboard = () => {
                           <img src={coverPreviewUrl || profileData.coverImage} alt="Cover" className="w-full h-full object-cover" />
                         )
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-indigo-500/10 to-sky-500/20" />
+                        <div className="w-full h-full bg-indigo-500/15" />
                       )}
                     </div>
                   </div>
@@ -4590,7 +4590,7 @@ const CreatorDashboard = () => {
                             className="relative overflow-hidden bg-white/20 text-white border border-gray-300 backdrop-blur-sm px-5 py-1.5 rounded-full text-xs font-medium pointer-events-none"
                           >
                             <span
-                              className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-70"
+                              className="absolute inset-y-0 -left-1/3 w-1/3 bg-white/25 opacity-70"
                               style={{ animation: 'shimmer 2.6s ease-in-out infinite' }}
                             />
                             <Lock className="inline-block w-3.5 h-3.5 mr-1.5" />
@@ -4679,7 +4679,7 @@ const CreatorDashboard = () => {
             {analyticsTotals.orders === 0 && analyticsSeries.length === 0 && (
               <div className="card-elevated p-8">
                 <div className="flex flex-col items-center justify-center text-center py-8 px-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/15 to-teal-500/15 border border-gray-200 flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-gray-200 flex items-center justify-center mb-4">
                     <svg className="w-5 h-5 text-emerald-400/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
                   </div>
                   <p className="text-sm font-medium text-foreground mb-1">No analytics yet</p>

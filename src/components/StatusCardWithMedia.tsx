@@ -247,7 +247,7 @@ const StatusCardWithMedia = ({
                   }}
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-[10px] font-bold text-white">
+                <div className="w-full h-full bg-indigo-500 flex items-center justify-center text-[10px] font-bold text-white">
                   {(user.name || '?')[0]?.toUpperCase()}
                 </div>
               )}

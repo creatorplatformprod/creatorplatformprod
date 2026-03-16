@@ -100,7 +100,7 @@ const FeedHeader = ({
           {/* Center: Search (desktop) */}
           <div className="hidden md:flex items-center flex-1 max-w-lg lg:max-w-xl mx-3 lg:mx-8">
             <div className="relative w-full group">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <Input 
                 placeholder="Search..."
