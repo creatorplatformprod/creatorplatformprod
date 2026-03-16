@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Loader2, CheckCircle2, Lock, ChevronDown, ChevronUp, Clock, AlertCircle, CreditCard } from "lucide-react";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
+import { api } from "@/lib/api";
 
 const RAW_API_URL =
   import.meta.env.VITE_API_URL ||
@@ -36,9 +37,11 @@ const CheckoutPage = () => {
   const [sessionExpired, setSessionExpired] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
+  const [creatorAvatar, setCreatorAvatar] = useState("");
   const { fan } = useFanAuth();
   const params = new URLSearchParams(window.location.search);
   const creatorUsername = params.get('creator') || undefined;
+  const creatorIdFromUrl = params.get('creatorId') || '';
   const themeClass = usePublicWebsiteTheme(creatorUsername);
   const isPreviewMode = params.get('mode') === 'preview';
   const activeFanEmail = !isPreviewMode ? fan?.email : '';
@@ -105,6 +108,40 @@ const CheckoutPage = () => {
       setCustomerEmail(activeFanEmail);
     }
   }, [activeFanEmail]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadCreatorAvatar = async () => {
+      try {
+        if (creatorUsername) {
+          const result = await api.getUser(creatorUsername);
+          if (!cancelled) {
+            const avatar = String(result?.user?.avatar || '').trim();
+            if (avatar) setCreatorAvatar(avatar);
+          }
+          return;
+        }
+
+        if (creatorIdFromUrl) {
+          const result = await api.getUserById(creatorIdFromUrl);
+          if (!cancelled) {
+            const avatar = String(result?.user?.avatar || '').trim();
+            if (avatar) setCreatorAvatar(avatar);
+          }
+        }
+      } catch {
+        if (!cancelled) {
+          setCreatorAvatar('');
+        }
+      }
+    };
+
+    loadCreatorAvatar();
+    return () => {
+      cancelled = true;
+    };
+  }, [creatorUsername, creatorIdFromUrl]);
 
   // Fire purchase analytics event when payment succeeds
   useEffect(() => {
@@ -580,8 +617,17 @@ const CheckoutPage = () => {
               <div className={`space-y-5 ${showOrderDetails ? 'block' : 'hidden lg:block'}`}>
                 {/* Product Card */}
                 <div className="flex items-start gap-4 p-4 rounded-2xl bg-secondary/35 border border-border">
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500/20 via-indigo-500/15 to-sky-500/20 border border-border flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M3 9h18M9 21V9" /></svg>
+                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500/20 via-indigo-500/15 to-sky-500/20 border border-border flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {creatorAvatar ? (
+                      <img
+                        src={creatorAvatar}
+                        alt="Creator profile"
+                        className="w-full h-full object-cover"
+                        onError={() => setCreatorAvatar('')}
+                      />
+                    ) : (
+                      <svg className="w-6 h-6 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M3 9h18M9 21V9" /></svg>
+                    )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="font-semibold text-foreground text-sm truncate">{checkoutData.collectionTitle}</h3>

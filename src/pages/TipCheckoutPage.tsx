@@ -22,8 +22,8 @@ const getProviderEndpoints = (amount: string) => {
   return endpoints;
 };
 
-// Rosy pink color - matches TipButton in FeedHeader
-const ROSE_COLOR = "#db2777";
+// Primary purple accent for tip checkout
+const PURPLE_COLOR = "#7c3aed";
 
 const TipCheckoutPage = () => {
   const [customerEmail, setCustomerEmail] = useState("");
@@ -357,8 +357,8 @@ const TipCheckoutPage = () => {
           {redirecting && !paymentError ? (
             <>
               <div className="relative mb-3">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto animate-scale-in" style={{ backgroundColor: `${ROSE_COLOR}15` }}>
-                  <Gift className="w-6 h-6" style={{ color: ROSE_COLOR }} />
+                <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto animate-scale-in" style={{ backgroundColor: `${PURPLE_COLOR}15` }}>
+                  <Gift className="w-6 h-6" style={{ color: PURPLE_COLOR }} />
                 </div>
               </div>
 
@@ -370,15 +370,15 @@ const TipCheckoutPage = () => {
                 Your support means everything
               </p>
 
-              <div className="flex items-center justify-center gap-1.5 text-xs animate-fade-in" style={{ animationDelay: '0.4s', color: ROSE_COLOR }}>
+              <div className="flex items-center justify-center gap-1.5 text-xs animate-fade-in" style={{ animationDelay: '0.4s', color: PURPLE_COLOR }}>
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Payment confirmed</span>
               </div>
             </>
           ) : (
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto" style={{ backgroundColor: `${ROSE_COLOR}15` }}>
-                <AlertCircle className="w-6 h-6" style={{ color: ROSE_COLOR }} />
+              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto" style={{ backgroundColor: `${PURPLE_COLOR}15` }}>
+                <AlertCircle className="w-6 h-6" style={{ color: PURPLE_COLOR }} />
               </div>
               <div>
                 <h2 className="text-base font-semibold text-foreground mb-1">
@@ -390,7 +390,7 @@ const TipCheckoutPage = () => {
                 <button
                   onClick={() => window.location.href = CONFIG.CONTENT_URL}
                   className="px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors"
-                  style={{ backgroundColor: ROSE_COLOR }}
+                  style={{ backgroundColor: PURPLE_COLOR }}
                 >
                   Go to Homepage
                 </button>
@@ -421,7 +421,7 @@ const TipCheckoutPage = () => {
           <button
             onClick={handleBack}
             className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-white font-medium transition-colors"
-            style={{ backgroundColor: ROSE_COLOR }}
+            style={{ backgroundColor: PURPLE_COLOR }}
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Go Back</span>
@@ -450,23 +450,23 @@ const TipCheckoutPage = () => {
         <div className="card-elevated rounded-2xl p-5 sm:p-7">
           {/* Centered Tip Amount -- Hero */}
           <div className="text-center mb-6 pb-6 border-b border-gray-200">
-            <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ background: `${ROSE_COLOR}12` }}>
-              <Gift className="w-5 h-5" style={{ color: ROSE_COLOR }} />
+            <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ background: `${PURPLE_COLOR}12` }}>
+              <Gift className="w-5 h-5" style={{ color: PURPLE_COLOR }} />
             </div>
             <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Sending a tip</p>
-            <span className="text-3xl sm:text-4xl font-bold tracking-tight" style={{ color: ROSE_COLOR }}>${tipAmount}</span>
+            <span className="text-3xl sm:text-4xl font-bold tracking-tight" style={{ color: PURPLE_COLOR }}>${tipAmount}</span>
           </div>
 
           {paymentError && (
-            <div className="mb-5 p-3 rounded-xl flex items-start gap-2" style={{ backgroundColor: `${ROSE_COLOR}10`, border: `1px solid ${ROSE_COLOR}20` }}>
-              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: ROSE_COLOR }} />
-              <p className="text-sm" style={{ color: ROSE_COLOR }}>{paymentError}</p>
+            <div className="mb-5 p-3 rounded-xl flex items-start gap-2" style={{ backgroundColor: `${PURPLE_COLOR}10`, border: `1px solid ${PURPLE_COLOR}20` }}>
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: PURPLE_COLOR }} />
+              <p className="text-sm" style={{ color: PURPLE_COLOR }}>{paymentError}</p>
             </div>
           )}
 
           {isLoading ? (
             <div className="py-12 flex flex-col items-center justify-center">
-              <Loader2 className="w-10 h-10 animate-spin mb-4" style={{ color: ROSE_COLOR }} />
+              <Loader2 className="w-10 h-10 animate-spin mb-4" style={{ color: PURPLE_COLOR }} />
               <p className="text-muted-foreground">Loading payment options...</p>
             </div>
           ) : (
@@ -485,7 +485,7 @@ const TipCheckoutPage = () => {
                     }
                   }}
                   placeholder="name@example.com"
-                  className="w-full px-4 py-2.5 sm:py-3 bg-secondary/50 border-2 border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-rose-500/50 transition-all"
+                  className="w-full px-4 py-2.5 sm:py-3 bg-secondary/50 border-2 border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                   required
                   maxLength={254}
                 />
@@ -552,7 +552,7 @@ const TipCheckoutPage = () => {
                             </div>
                           </div>
                           {selectedProvider?.id === provider.id && (
-                            <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: ROSE_COLOR }} />
+                            <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: PURPLE_COLOR }} />
                           )}
                         </button>
                       ))}
@@ -567,7 +567,7 @@ const TipCheckoutPage = () => {
                 disabled={isProcessing || !customerEmail || !selectedProvider}
                 className="tip-pay-btn btn-press w-full"
                 style={{
-                  '--tip-color': ROSE_COLOR,
+                  '--tip-color': PURPLE_COLOR,
                 } as React.CSSProperties}
               >
                 {isProcessing ? (

@@ -89,6 +89,7 @@ const Collections = () => {
   const imagesPerPage = isMobileViewport ? 12 : 20;
   const [revealedCount, setRevealedCount] = useState(imagesPerPage);
   const revealSentinelRef = useRef<HTMLDivElement | null>(null);
+  const hydratedCollectionIdsRef = useRef<Set<string>>(new Set());
   const { fan } = useFanAuth();
   const activeFan = isPreviewMode ? null : fan;
   const themeClass = usePublicWebsiteTheme(creatorUsername || undefined);
@@ -265,6 +266,63 @@ const Collections = () => {
 
     resolveRevealAccess();
   }, [creatorUsername, isPreviewMode]);
+
+  useEffect(() => {
+    const collectionsNeedingHydration = (collectionsData || []).filter((collection: any) => {
+      if (!collection || collection._id === 'all' || collection.isBundle) return false;
+      const hasMedia = Array.isArray(collection.media) && collection.media.some((item: any) => !!item?.url);
+      return !hasMedia && !hydratedCollectionIdsRef.current.has(String(collection._id));
+    });
+
+    if (collectionsNeedingHydration.length === 0) return;
+
+    let cancelled = false;
+    const hydrateCollections = async () => {
+      const resolved = await Promise.all(
+        collectionsNeedingHydration.map(async (collection: any) => {
+          const collectionId = String(collection._id || '');
+          if (!collectionId) return null;
+          try {
+            const detail = await api.getCollection(collectionId);
+            const resolvedMedia = (detail?.collection?.media || []).filter((item: any) => !!item?.url);
+            if (resolvedMedia.length === 0) return null;
+            return {
+              id: collectionId,
+              media: resolvedMedia
+            };
+          } catch {
+            return null;
+          } finally {
+            hydratedCollectionIdsRef.current.add(collectionId);
+          }
+        })
+      );
+
+      if (cancelled) return;
+      const resolvedMap = new Map(
+        resolved
+          .filter((entry: any) => !!entry?.id)
+          .map((entry: any) => [entry.id, entry.media])
+      );
+      if (resolvedMap.size === 0) return;
+
+      setCollectionsData((prev: any[]) =>
+        (prev || []).map((collection: any) => {
+          const collectionId = String(collection?._id || '');
+          if (!resolvedMap.has(collectionId)) return collection;
+          return {
+            ...collection,
+            media: resolvedMap.get(collectionId)
+          };
+        })
+      );
+    };
+
+    hydrateCollections();
+    return () => {
+      cancelled = true;
+    };
+  }, [collectionsData]);
 
   function getRandomDimensions(index) {
     const ratios = [
