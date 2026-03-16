@@ -835,7 +835,7 @@ const PostDetailBlurred = () => {
             style={{ maxHeight: '85vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
           >
             <div className="text-center">
-              <h2 className="text-lg sm:text-2xl font-bold text-primary mb-1 sm:mb-1.5">
+              <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-1.5">
                 Unlock "{collection.title}"
               </h2>
 
@@ -881,7 +881,7 @@ const PostDetailBlurred = () => {
               <button
                 onClick={handleCardPaymentClick}
                 disabled={isCardPaymentLoading || remoteLoading}
-                className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-primary text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
+                className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
               >
                 {isCardPaymentLoading || remoteLoading ? (
                   <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />

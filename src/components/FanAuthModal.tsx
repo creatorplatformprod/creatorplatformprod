@@ -153,7 +153,7 @@ const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) =
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+            className="rounded-xl bg-gradient-to-r from-indigo-500 to-sky-500 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
           >
             {loading ? "Please wait..." : mode === "login" ? "Log In" : "Create Account"}
           </button>

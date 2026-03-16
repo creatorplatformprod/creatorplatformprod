@@ -2823,14 +2823,14 @@
   }
 
   .sky-action-btn {
-    background: #0ea5e9;
+    background: linear-gradient(90deg, #38bdf8 0%, #0ea5e9 100%);
     color: #ffffff;
     border: none;
     box-shadow: 0 8px 20px -10px rgba(14, 165, 233, 0.55);
   }
 
   .sky-action-btn:hover:not(:disabled) {
-    background: #0284c7;
+    background: linear-gradient(90deg, #38bdf8 0%, #0ea5e9 100%);
     box-shadow: 0 12px 26px -12px rgba(14, 165, 233, 0.65);
   }
 
@@ -2846,7 +2846,7 @@
     font-weight: 600;
     letter-spacing: -0.01em;
     color: #fff;
-    background: hsl(var(--primary));
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -2880,7 +2880,7 @@
     font-weight: 600;
     letter-spacing: -0.01em;
     color: #fff;
-    background: var(--tip-color, #db2777);
+    background: linear-gradient(135deg, var(--tip-color, #db2777), color-mix(in srgb, var(--tip-color, #db2777) 85%, black));
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -2899,56 +2899,6 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
-
-  /* Global gradient flattening: keep one logical brand color family everywhere */
-  :root {
-    --gradient-sky: hsl(var(--feed-bg));
-    --gradient-post: hsl(var(--post-bg));
-    --gradient-blur: hsl(var(--primary) / 0.2);
-  }
-
-  .theme-classic-dark {
-    --gradient-sky: hsl(var(--feed-bg));
-    --gradient-post: hsl(var(--post-bg));
-    --gradient-blur: hsl(var(--primary) / 0.2);
-  }
-
-  .btn-67 {
-    background: hsl(var(--primary)) !important;
-  }
-
-  .btn-67:hover {
-    background: hsl(var(--primary-dark)) !important;
-  }
-
-  .btn-collection-solid {
-    background: hsl(var(--primary)) !important;
-  }
-
-  .unlock-cta-brand-gradient {
-    background: none !important;
-    color: hsl(var(--primary)) !important;
-    -webkit-text-fill-color: currentColor !important;
-  }
-
-  [class*="bg-gradient-to-"] {
-    background-image: none !important;
-  }
-
-  [class*="bg-gradient-to-"][class*="text-white"],
-  [class*="bg-gradient-to-"][class*="text-primary-foreground"] {
-    background-color: hsl(var(--primary)) !important;
-  }
-
-  [class*="bg-gradient-to-"]:not([class*="text-white"]):not([class*="text-primary-foreground"]) {
-    background-color: hsl(var(--primary) / 0.12) !important;
-  }
-
-  [class*="bg-clip-text"][class*="text-transparent"] {
-    background: none !important;
-    color: hsl(var(--primary)) !important;
-    -webkit-text-fill-color: currentColor !important;
-  }
 
 /* Mobile viewport stability helpers */
 .mobile-stable-shell {
