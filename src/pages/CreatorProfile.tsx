@@ -1131,14 +1131,9 @@ const CreatorProfile = () => {
               {allCollections.length > 0 && (
                 <button
                   onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                  className="template-unlock-cta relative overflow-hidden mb-3 text-right text-xl xl:text-2xl font-bold tracking-tight text-white transition-all whitespace-nowrap leading-none rounded-xl bg-indigo-500 hover:bg-indigo-600 px-4 py-2 shadow-sm"
+                  className="template-unlock-cta relative overflow-hidden mb-3 text-right text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
                 >
-                  <span
-                    className="relative font-bold lg:font-extrabold"
-                    style={{ fontFamily: "Montserrat, sans-serif" }}
-                  >
-                    Unlock Everything
-                  </span>
+                  <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">Unlock Everything</span>
                 </button>
               )}
               {(isPreviewMode || hasAnySocialLinks) && (
@@ -1155,14 +1150,9 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-2xl sm:text-2xl md:text-2xl font-extrabold tracking-tight text-white transition-all lg:hidden rounded-xl bg-indigo-500 hover:bg-indigo-600 px-4 py-2 shadow-sm"
+                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-2xl sm:text-2xl md:text-2xl font-extrabold tracking-tight text-foreground transition-all lg:hidden"
               >
-                <span
-                  className="relative font-bold"
-                  style={{ fontFamily: "Montserrat, sans-serif" }}
-                >
-                  Unlock Everything
-                </span>
+                <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold">Unlock Everything</span>
               </button>
             )}
           </div>
@@ -1195,7 +1185,7 @@ const CreatorProfile = () => {
           className={`${showSidebar ? 'hidden lg:block' : 'hidden'} fixed left-0 z-20 transition-all duration-300 sidebar-glass template-sidebar ${
             sidebarOpen ? 'translate-x-0 w-[300px]' : '-translate-x-full w-[300px]'
           }`}
-          style={{ top: '0', height: '100vh' }}
+          style={{ top: '65px', height: 'calc(100vh - 65px)' }}
         >
           <div className="h-full flex flex-col">
             {/* Header Section with Close Button */}
