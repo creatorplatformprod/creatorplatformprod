@@ -1127,7 +1127,7 @@ const CreatorProfile = () => {
                 <span className="stat-pill">{(shouldUseMockData ? mockStatusCards.length : formattedStatusData.length)} Posts</span>
               </div>
             </div>
-            <div className="hidden lg:flex ml-auto mr-3 xl:mr-4 self-stretch w-[260px] flex-col justify-end">
+            <div className="hidden lg:flex ml-auto mr-5 xl:mr-6 self-stretch w-[270px] flex-col justify-end">
               {allCollections.length > 0 && (
                 <button
                   onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}

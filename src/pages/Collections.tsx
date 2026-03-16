@@ -65,6 +65,21 @@ const seededShuffle = (items, seed) => {
   }
   return arr;
 };
+const getCollectionIdValue = (collection: any): string =>
+  String(collection?._id || collection?.id || collection?.collectionId || collection?.secureId || '').trim();
+const getCollectionMediaItems = (collection: any): any[] => {
+  if (!collection) return [];
+  const direct =
+    (Array.isArray(collection.media) && collection.media) ||
+    (Array.isArray(collection.images) && collection.images) ||
+    (Array.isArray(collection.previewMedia) && collection.previewMedia) ||
+    (Array.isArray(collection.items) && collection.items) ||
+    [];
+  if (direct.length > 0) return direct;
+
+  const fallbackUrl = String(collection.coverImage || collection.thumbnailUrl || collection.image || '').trim();
+  return fallbackUrl ? [{ url: fallbackUrl, thumbnailUrl: fallbackUrl, mediaType: 'image' }] : [];
+};
 
 const Collections = () => {
   const navigate = useNavigate();
@@ -269,9 +284,13 @@ const Collections = () => {
 
   useEffect(() => {
     const collectionsNeedingHydration = (collectionsData || []).filter((collection: any) => {
-      if (!collection || collection._id === 'all' || collection.isBundle) return false;
-      const hasMedia = Array.isArray(collection.media) && collection.media.some((item: any) => !!item?.url);
-      return !hasMedia && !hydratedCollectionIdsRef.current.has(String(collection._id));
+      const collectionId = getCollectionIdValue(collection);
+      if (!collection || collectionId === 'all' || collection.isBundle || !collectionId) return false;
+      const hasMedia = getCollectionMediaItems(collection).some((item: any) => {
+        const mediaUrl = String(item?.url || item?.full || item?.src || item?.imageUrl || '').trim();
+        return !!mediaUrl;
+      });
+      return !hasMedia && !hydratedCollectionIdsRef.current.has(collectionId);
     });
 
     if (collectionsNeedingHydration.length === 0) return;
@@ -280,11 +299,14 @@ const Collections = () => {
     const hydrateCollections = async () => {
       const resolved = await Promise.all(
         collectionsNeedingHydration.map(async (collection: any) => {
-          const collectionId = String(collection._id || '');
+          const collectionId = getCollectionIdValue(collection);
           if (!collectionId) return null;
           try {
             const detail = await api.getCollection(collectionId);
-            const resolvedMedia = (detail?.collection?.media || []).filter((item: any) => !!item?.url);
+            const resolvedMedia = getCollectionMediaItems(detail?.collection).filter((item: any) => {
+              const mediaUrl = String(item?.url || item?.full || item?.src || item?.imageUrl || '').trim();
+              return !!mediaUrl;
+            });
             if (resolvedMedia.length === 0) return null;
             return {
               id: collectionId,
@@ -308,7 +330,7 @@ const Collections = () => {
 
       setCollectionsData((prev: any[]) =>
         (prev || []).map((collection: any) => {
-          const collectionId = String(collection?._id || '');
+          const collectionId = getCollectionIdValue(collection);
           if (!resolvedMap.has(collectionId)) return collection;
           return {
             ...collection,
@@ -375,18 +397,21 @@ const Collections = () => {
   }, [mockPhotos, mockSeed]);
   const allImages = useMemo(() => {
     const visibleApiCollections = (collectionsData || []).filter(
-      (col: any) => col && col._id !== 'all' && !col.isBundle
+      (col: any) => {
+        const collectionId = getCollectionIdValue(col);
+        return col && collectionId !== 'all' && !col.isBundle;
+      }
     );
 
     // If we have real API collections with actual media, use them.
     if (visibleApiCollections.length > 0) {
       const items: any[] = [];
       visibleApiCollections.forEach((collection: any) => {
-        const mediaItems = collection.media || [];
+        const mediaItems = getCollectionMediaItems(collection);
         mediaItems.forEach((mediaItem: any, index: number) => {
-          if (!mediaItem?.url) return;
-          const imageSrc = mediaItem.url;
-          let thumbSrc = mediaItem.thumbnailUrl || mediaItem.url;
+          const imageSrc = String(mediaItem?.url || mediaItem?.full || mediaItem?.src || mediaItem?.imageUrl || '').trim();
+          if (!imageSrc) return;
+          let thumbSrc = String(mediaItem?.thumbnailUrl || mediaItem?.thumb || mediaItem?.preview || imageSrc).trim();
           const mediaType = resolveMediaType({
             mediaType: mediaItem.mediaType,
             mimeType: mediaItem.mimeType,
@@ -405,7 +430,7 @@ const Collections = () => {
             src: imageSrc,
             thumb: thumbSrc,
             hlsSrc: String(mediaItem.hlsUrl || '').trim(),
-            collectionId: collection._id,
+            collectionId: getCollectionIdValue(collection),
             collectionTitle: collection.title,
             imageIndex: index,
             mediaType,
@@ -423,10 +448,16 @@ const Collections = () => {
   }, [collectionsData]);
 
   const collectionCount = collectionsData.length > 0
-    ? collectionsData.filter((col: any) => col && col._id !== 'all' && !col.isBundle).length
+    ? collectionsData.filter((col: any) => {
+      const collectionId = getCollectionIdValue(col);
+      return col && collectionId !== 'all' && !col.isBundle;
+    }).length
     : 0;
   const footerCreatorName = useMemo(() => {
-    const firstCollection = (collectionsData || []).find((col: any) => col && col._id !== 'all' && !col.isBundle) as any;
+    const firstCollection = (collectionsData || []).find((col: any) => {
+      const collectionId = getCollectionIdValue(col);
+      return col && collectionId !== 'all' && !col.isBundle;
+    }) as any;
     const rawName =
       firstCollection?.creatorDisplayName ||
       firstCollection?.creatorName ||
@@ -839,8 +870,11 @@ const Collections = () => {
                     <button
                       onClick={handleCardPaymentClick}
                       disabled={isCardPaymentLoading || isLoading}
-                      className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
-                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                      className={`relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed border ${
+                        themeClass === 'theme-classic-dark'
+                          ? 'bg-[#273246]/90 border-white/10 text-white hover:bg-[#2d3950]'
+                          : 'bg-[#e5e7eb]/95 border-white/80 text-slate-700 hover:bg-[#eceef2]'
+                      }`}
                     >
                       {isCardPaymentLoading || isLoading ? (
                         <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
