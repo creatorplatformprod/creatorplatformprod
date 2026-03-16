@@ -305,24 +305,9 @@ const Collections1849929295832448 = () => {
       return items;
     }
 
-    // Fallback: use seeded mock collections aligned with profile/detail routes.
-    localMockCollections.forEach((collection) => {
-      collection.images.forEach((imageData: any, index: number) => {
-        const imageSrc = imageData.full;
-        items.push({
-          src: imageSrc,
-          thumb: imageData.thumb,
-          collectionId: collection.id,
-          collectionTitle: collection.title,
-          imageIndex: index,
-          mediaType: 'image',
-          hasStoredDims: false,
-          ...getRandomDimensions(items.length)
-        });
-      });
-    });
+    // Do not render placeholder mock images when API media is missing.
     return items;
-  }, [remoteCollections, localMockCollections]);
+  }, [remoteCollections]);
 
   const footerCreatorName = useMemo(() => {
     const firstCollection = (remoteCollections || [])[0] as any;
@@ -713,7 +698,7 @@ const Collections1849929295832448 = () => {
             <div className="flex justify-center mt-4">
               <div className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-full backdrop-blur-sm">
                 <span className="text-xs sm:text-sm text-muted-foreground">
-                  Showing {Math.min(endIndex, allImages.length)} of {allImages.length} exclusive items from {remoteCollections.length || localMockCollections.length} collections
+                  Showing {Math.min(endIndex, allImages.length)} of {allImages.length} exclusive items from {remoteCollections.length} collections
                 </span>
               </div>
             </div>

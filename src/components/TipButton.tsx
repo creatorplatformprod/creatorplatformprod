@@ -124,19 +124,18 @@ const TipButton = ({ onTipClick }: TipButtonProps) => {
     if (onTipClick) onTipClick();
   };
 
-  // Softer rosy pink color
-  const roseColor = "#db2777";
+  const brandColor = "#8b5cf6";
 
   return (
     <div className="relative">
-      {/* Minimalistic Tip Button - no border, rose color */}
+      {/* Minimalistic Tip Button - no border, brand purple */}
       <button
         ref={buttonRef}
         onClick={handleButtonClick}
-        className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-rose-500/10 transition-colors duration-200 text-sm font-semibold"
-        style={{ color: roseColor }}
+        className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-indigo-500/10 transition-colors duration-200 text-sm font-semibold"
+        style={{ color: brandColor }}
       >
-        <Gift className="w-4 h-4" style={{ color: roseColor }} />
+        <Gift className="w-4 h-4" style={{ color: brandColor }} />
         <span>Tip</span>
       </button>
 
@@ -166,13 +165,13 @@ const TipButton = ({ onTipClick }: TipButtonProps) => {
 
             {/* Header - Minimalistic */}
             <div className="mb-4 pr-6">
-              <h3 className="text-sm font-semibold" style={{ color: roseColor }}>Send a Tip</h3>
+              <h3 className="text-sm font-semibold" style={{ color: brandColor }}>Send a Tip</h3>
               <p className="text-xs text-muted-foreground mt-0.5">Support my work</p>
             </div>
             
             {tipError && (
-              <div className="mb-3 p-2 bg-rose-500/10 rounded-lg">
-                <p className="text-xs" style={{ color: roseColor }}>{tipError}</p>
+              <div className="mb-3 p-2 bg-indigo-500/10 rounded-lg">
+                <p className="text-xs" style={{ color: brandColor }}>{tipError}</p>
               </div>
             )}
             
@@ -192,7 +191,7 @@ const TipButton = ({ onTipClick }: TipButtonProps) => {
                   }
                 }}
                 className="w-full px-3 py-2 text-sm bg-secondary/50 border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:border-transparent transition-all"
-                style={{ "--tw-ring-color": roseColor } as React.CSSProperties}
+                style={{ "--tw-ring-color": brandColor } as React.CSSProperties}
                 required
                 maxLength={254}
               />
@@ -205,11 +204,11 @@ const TipButton = ({ onTipClick }: TipButtonProps) => {
                   key={amount}
                   onClick={() => handleTipSelect(amount)}
                   disabled={loadingAmount !== null}
-                  className="py-2 bg-secondary/50 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 rounded-lg text-foreground font-medium transition-all text-xs disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1"
+                  className="py-2 bg-secondary/50 hover:bg-indigo-500/10 border border-transparent hover:border-indigo-500/20 rounded-lg text-foreground font-medium transition-all text-xs disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1"
                 >
                   {loadingAmount === amount ? (
                     <>
-                      <Loader2 className="w-3 h-3 animate-spin" style={{ color: roseColor }} />
+                      <Loader2 className="w-3 h-3 animate-spin" style={{ color: brandColor }} />
                       <span>${amount}</span>
                     </>
                   ) : (

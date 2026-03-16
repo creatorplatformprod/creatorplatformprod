@@ -315,8 +315,6 @@ const Collections = () => {
       };
     });
   }, [mockPhotos, mockSeed]);
-  const mockCollectionCount = localMockCollections.length;
-
   const allImages = useMemo(() => {
     const visibleApiCollections = (collectionsData || []).filter(
       (col: any) => col && col._id !== 'all' && !col.isBundle
@@ -362,28 +360,13 @@ const Collections = () => {
       return items;
     }
 
-    // Fallback: use same seeded pink mock universe as CreatorProfile.
-    const items: any[] = [];
-    localMockCollections.forEach((collection) => {
-      collection.images.forEach((mediaItem, index) => {
-        items.push({
-          src: mediaItem.src,
-          thumb: mediaItem.thumb,
-          collectionId: collection.id,
-          collectionTitle: collection.title,
-          imageIndex: index,
-          mediaType: mediaItem.mediaType,
-          hasStoredDims: false,
-          ...getRandomDimensions(items.length)
-        });
-      });
-    });
-    return items;
-  }, [collectionsData, localMockCollections]);
+    // Do not render placeholder mock images when API media is missing.
+    return [];
+  }, [collectionsData]);
 
   const collectionCount = collectionsData.length > 0
     ? collectionsData.filter((col: any) => col && col._id !== 'all' && !col.isBundle).length
-    : mockCollectionCount;
+    : 0;
   const footerCreatorName = useMemo(() => {
     const firstCollection = (collectionsData || []).find((col: any) => col && col._id !== 'all' && !col.isBundle) as any;
     const rawName =
@@ -398,6 +381,9 @@ const Collections = () => {
     return safeName || 'Creator';
   }, [collectionsData, creatorUsername]);
   const totalItems = allImages.length;
+  const formattedBundlePrice = Number.isFinite(Number(bundlePrice))
+    ? Number(bundlePrice).toFixed(2)
+    : String(bundlePrice);
   const videoCount = allImages.filter((item) => item.mediaType === 'video').length;
   const imageCount = totalItems - videoCount;
 
@@ -749,7 +735,7 @@ const Collections = () => {
                   style={{ maxHeight: '85vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
                 >
                   <div className="text-center">
-                    <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-1.5">
+                    <h2 className="text-lg sm:text-2xl font-bold text-primary mb-1 sm:mb-1.5">
                       Unlock Everything
                     </h2>
 
@@ -795,14 +781,18 @@ const Collections = () => {
                     <button
                       onClick={handleCardPaymentClick}
                       disabled={isCardPaymentLoading || isLoading}
-                      className="relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:scale-[1.02]"
+                      className={`relative overflow-hidden w-full py-2.5 sm:py-3.5 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed border backdrop-blur-sm ${
+                        themeClass === 'theme-classic-dark'
+                          ? 'bg-slate-800/85 border-white/10 text-white hover:bg-slate-700/90'
+                          : 'bg-white/85 border-white/70 text-slate-700 hover:bg-white'
+                      }`}
                     >
                       {isCardPaymentLoading || isLoading ? (
                         <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                       ) : (
                         <>
                           <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
-                          <span className="relative">Unlock All -- ${bundlePrice}</span>
+                          <span className="relative">{`Pay by Card - $${formattedBundlePrice}`}</span>
                         </>
                       )}
                     </button>

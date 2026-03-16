@@ -1072,8 +1072,8 @@ const CreatorProfile = () => {
                 }}
                 className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
                   !useClassicTheme
-                    ? 'bg-blue-500/15 text-blue-500'
-                    : 'text-muted-foreground hover:bg-background hover:text-blue-500'
+                    ? 'bg-indigo-500/15 text-indigo-500'
+                    : 'text-muted-foreground hover:bg-background hover:text-indigo-500'
                 }`}
                 title="Use Modern theme"
                 aria-label="Use Modern theme"
@@ -1086,8 +1086,8 @@ const CreatorProfile = () => {
                 }}
                 className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
                   useClassicTheme
-                    ? 'bg-blue-500/15 text-blue-500'
-                    : 'text-muted-foreground hover:bg-background hover:text-blue-500'
+                    ? 'bg-indigo-500/15 text-indigo-500'
+                    : 'text-muted-foreground hover:bg-background hover:text-indigo-500'
                 }`}
                 title="Use Classic theme"
                 aria-label="Use Classic theme"
@@ -1131,9 +1131,9 @@ const CreatorProfile = () => {
               {allCollections.length > 0 && (
                 <button
                   onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                  className="template-unlock-cta relative overflow-hidden mb-3 text-right text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
+                  className="template-unlock-cta relative overflow-hidden mb-3 text-right text-xl xl:text-2xl font-bold tracking-tight text-white transition-all whitespace-nowrap leading-none rounded-xl bg-indigo-500 hover:bg-indigo-600 px-4 py-2 shadow-sm"
                 >
-                  <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">Unlock Everything</span>
+                  <span className="relative unlock-cta-font font-bold lg:font-extrabold">Unlock Everything</span>
                 </button>
               )}
               {(isPreviewMode || hasAnySocialLinks) && (
@@ -1150,9 +1150,9 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-2xl sm:text-2xl md:text-2xl font-extrabold tracking-tight text-foreground transition-all lg:hidden"
+                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-2xl sm:text-2xl md:text-2xl font-extrabold tracking-tight text-white transition-all lg:hidden rounded-xl bg-indigo-500 hover:bg-indigo-600 px-4 py-2 shadow-sm"
               >
-                <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold">Unlock Everything</span>
+                <span className="relative unlock-cta-font font-bold">Unlock Everything</span>
               </button>
             )}
           </div>
