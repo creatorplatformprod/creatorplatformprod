@@ -1129,15 +1129,12 @@ const CreatorProfile = () => {
             </div>
             <div className="hidden lg:flex ml-auto self-stretch w-[220px] flex-col justify-end">
               {allCollections.length > 0 && (
-                <>
-                  <p className="mb-1 text-xs text-muted-foreground text-right">Click to</p>
-                  <button
-                    onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                    className="template-unlock-cta relative overflow-hidden mb-3 text-right text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
-                  >
-                    <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">Unlock Everything</span>
-                  </button>
-                </>
+                <button
+                  onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
+                  className="template-unlock-cta relative overflow-hidden mb-3 text-right text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
+                >
+                  <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">Click to Unlock Everything</span>
+                </button>
               )}
               {(isPreviewMode || hasAnySocialLinks) && (
                 <div className="flex flex-col items-center gap-2 pb-1">
@@ -1151,15 +1148,12 @@ const CreatorProfile = () => {
               )}
             </div>
             {allCollections.length > 0 && (
-              <>
-                <p className="mt-3 text-xs text-muted-foreground text-center lg:hidden">Click to</p>
-                <button
-                  onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                  className="template-unlock-cta relative overflow-hidden mt-2 sm:mt-2 ml-0 md:ml-auto self-center md:self-center text-2xl sm:text-2xl md:text-2xl font-extrabold tracking-tight text-foreground transition-all lg:hidden"
-                >
-                  <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold">Unlock Everything</span>
-                </button>
-              </>
+              <button
+                onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
+                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-2xl sm:text-2xl md:text-2xl font-extrabold tracking-tight text-foreground transition-all lg:hidden"
+              >
+                <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold">Click to Unlock Everything</span>
+              </button>
             )}
           </div>
 
