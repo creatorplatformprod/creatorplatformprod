@@ -1185,7 +1185,7 @@ const CreatorProfile = () => {
           className={`${showSidebar ? 'hidden lg:block' : 'hidden'} fixed left-0 z-20 transition-all duration-300 sidebar-glass template-sidebar ${
             sidebarOpen ? 'translate-x-0 w-[300px]' : '-translate-x-full w-[300px]'
           }`}
-          style={{ top: '65px', height: 'calc(100vh - 65px)' }}
+          style={{ top: '0', height: '100vh' }}
         >
           <div className="h-full flex flex-col">
             {/* Header Section with Close Button */}
