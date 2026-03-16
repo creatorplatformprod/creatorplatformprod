@@ -208,6 +208,7 @@ const CreatorProfile = () => {
       : "") || mockPack.cover;
   const resolvedCreatorAvatarImage = mockAvatar;
   const getProfileDraft = (targetUsername?: string) => {
+    if (!hasDraftCapablePreview) return null;
     if (!targetUsername) return null;
     try {
       const raw = localStorage.getItem(`publicWebsiteProfileDraft:${targetUsername}`);
@@ -328,6 +329,7 @@ const CreatorProfile = () => {
   }, [username, isPreviewMode]);
 
   useEffect(() => {
+    if (!hasDraftCapablePreview) return;
     if (!username) return;
     const draftKey = `publicWebsiteProfileDraft:${username}`;
 
@@ -349,7 +351,7 @@ const CreatorProfile = () => {
 
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
-  }, [username, mockProfileDefaults]);
+  }, [username, hasDraftCapablePreview, mockProfileDefaults]);
 
   const creatorName = creatorData?.displayName || creatorData?.username || username || "Creator";
   const creatorBio = typeof creatorData?.bio === "string" ? creatorData.bio.trim() : "";
@@ -422,19 +424,19 @@ const CreatorProfile = () => {
 
       const data = await api.getCreatorProfile(safeUsername);
       if (data.success) {
-        const profileDraft = getProfileDraft(safeUsername);
+        const profileDraft = hasDraftCapablePreview ? getProfileDraft(safeUsername) : null;
         setCreatorData(withMockProfileDefaults(profileDraft ? { ...data.user, ...profileDraft } : data.user));
         setCollections(data.collections || []);
         setStatusCards(data.statusCards || []);
       } else {
-        const profileDraft = getProfileDraft(safeUsername);
+        const profileDraft = hasDraftCapablePreview ? getProfileDraft(safeUsername) : null;
         setCreatorData(withMockProfileDefaults(profileDraft || undefined));
         setCollections([]);
         setStatusCards([]);
       }
     } catch (error) {
       console.error('Error loading creator profile:', error);
-      const profileDraft = getProfileDraft(username || '');
+      const profileDraft = hasDraftCapablePreview ? getProfileDraft(username || '') : null;
       setCreatorData(withMockProfileDefaults(profileDraft || undefined));
       setCollections([]);
       setStatusCards([]);
