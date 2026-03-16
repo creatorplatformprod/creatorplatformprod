@@ -1133,7 +1133,7 @@ const CreatorProfile = () => {
                   onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
                   className="template-unlock-cta relative overflow-hidden mb-3 text-right text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
                 >
-                  <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">UNLOCK EVERYTHING</span>
+                  <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">Unlock Everything</span>
                 </button>
               )}
               {(isPreviewMode || hasAnySocialLinks) && (
@@ -1152,7 +1152,7 @@ const CreatorProfile = () => {
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
                 className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-2xl sm:text-2xl md:text-2xl font-extrabold tracking-tight text-foreground transition-all lg:hidden"
               >
-                <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold">UNLOCK EVERYTHING</span>
+                <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold">Unlock Everything</span>
               </button>
             )}
           </div>
