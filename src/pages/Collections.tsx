@@ -745,11 +745,11 @@ const Collections = () => {
                 }}
               >
                 <div 
-                  className="bg-transparent rounded-2xl p-3 sm:p-4 w-full max-w-[288px] sm:max-w-[19rem]"
+                  className="bg-transparent rounded-2xl p-3 sm:p-3.5 w-full max-w-[280px] sm:max-w-[18rem]"
                   style={{ maxHeight: '85vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
                 >
                   <div className="text-center">
-                    <h2 className="text-lg sm:text-xl font-bold text-violet-500 mb-1 sm:mb-1.5">
+                    <h2 className="text-lg sm:text-lg font-bold text-violet-500 mb-1 sm:mb-1.5">
                       Unlock Everything
                     </h2>
 
@@ -785,7 +785,7 @@ const Collections = () => {
                               handleCardPaymentClick();
                             }
                           }}
-                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-base bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          className="w-[92%] mx-auto block px-3 sm:px-3.5 py-2.5 sm:py-2.5 text-xs sm:text-sm bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                           required
                           maxLength={254}
                         />
@@ -795,7 +795,7 @@ const Collections = () => {
                     <button
                       onClick={handleCardPaymentClick}
                       disabled={isCardPaymentLoading || isLoading}
-                      className="relative overflow-hidden w-full py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-violet-600 text-primary-foreground hover:bg-violet-700 hover:shadow-lg hover:scale-[1.02]"
+                      className="relative overflow-hidden w-[92%] mx-auto py-2.5 sm:py-2.5 px-3 sm:px-3.5 rounded-xl text-sm sm:text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-violet-600 text-primary-foreground hover:bg-violet-700 hover:shadow-lg hover:scale-[1.02]"
                     >
                       {isCardPaymentLoading || isLoading ? (
                         <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />

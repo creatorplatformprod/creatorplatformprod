@@ -1131,17 +1131,17 @@ const CreatorProfile = () => {
               {allCollections.length > 0 && (
                 <button
                   onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                  className="template-unlock-cta relative overflow-hidden mb-3 w-[170px] mx-auto text-center text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
+                  className="template-unlock-cta relative mb-3 w-[190px] ml-0 mr-auto text-left text-lg xl:text-xl font-bold tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
                 >
                   <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">Unlock Everything</span>
                 </button>
               )}
               {(isPreviewMode || hasAnySocialLinks) && (
                 <div className="flex flex-col items-center gap-2 pb-1">
-                  <p className={`w-[170px] text-[11px] ${useClassicTheme ? 'text-white/65' : 'text-gray-500'} text-center`}>
+                  <p className={`w-[190px] text-[11px] ${useClassicTheme ? 'text-white/65' : 'text-gray-500'} text-left`}>
                     Follow for more
                   </p>
-                  <div className="flex w-[170px] items-center justify-between opacity-85">
+                  <div className="flex w-[190px] items-center justify-between opacity-85">
                     {socialIconSet}
                   </div>
                 </div>
