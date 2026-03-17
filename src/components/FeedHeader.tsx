@@ -33,6 +33,7 @@ const FeedHeader = ({
     return () => window.removeEventListener('resize', checkDesktop);
   }, []);
 
+  const shouldFixDesktopPreviewHeader = isPreviewMode && isDesktop;
 
   const defaultSearchSuggestions = [
     // Collection Titles
@@ -82,8 +83,14 @@ const FeedHeader = ({
   };
 
   return (
-    <header className={`sticky top-0 z-50 nav-elevated ${isPreviewMode ? "mobile-preview-navbar-offset" : ""}`}>
-      <div className="max-w-none mx-auto px-3 sm:px-4 lg:px-6 py-2.5">
+    <>
+      {shouldFixDesktopPreviewHeader && <div className="hidden lg:block h-[58px]" aria-hidden />}
+      <header
+        className={`${shouldFixDesktopPreviewHeader ? "fixed inset-x-0 top-0" : "sticky top-0"} z-50 nav-elevated ${
+          isPreviewMode ? "mobile-preview-navbar-offset" : ""
+        }`}
+      >
+        <div className="max-w-none mx-auto px-3 sm:px-4 lg:px-6 py-2.5">
         <div className={`flex items-center justify-between ${isPreviewMode ? 'gap-1.5' : 'gap-2'} lg:gap-6`}>
           {/* Left: Logo + Creator Name */}
           <div 
@@ -171,8 +178,9 @@ const FeedHeader = ({
             )}
           </div>
         )}
-      </div>
-    </header>
+        </div>
+      </header>
+    </>
   );
 };
 

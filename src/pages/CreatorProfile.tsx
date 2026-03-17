@@ -1127,21 +1127,21 @@ const CreatorProfile = () => {
                 <span className="stat-pill">{(shouldUseMockData ? mockStatusCards.length : formattedStatusData.length)} Posts</span>
               </div>
             </div>
-            <div className="hidden lg:flex ml-auto mr-5 xl:mr-6 self-center w-[270px] flex-col items-center justify-center gap-2">
+            <div className="hidden lg:flex ml-auto mr-0 xl:mr-0 self-center w-[270px] flex-col items-end justify-center gap-2">
               {allCollections.length > 0 && (
                 <button
                   onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                  className="template-unlock-cta relative overflow-hidden text-right text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
+                  className="template-unlock-cta relative overflow-hidden self-end text-right text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
                 >
                   <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">Unlock Everything</span>
                 </button>
               )}
               {(isPreviewMode || hasAnySocialLinks) && (
-                <div className="flex flex-col items-center gap-2">
-                  <p className={`text-[11px] ${useClassicTheme ? 'text-white/65' : 'text-gray-500'} text-center`}>
+                <div className="flex w-full flex-col items-end gap-2">
+                  <p className={`w-full text-[11px] ${useClassicTheme ? 'text-white/65' : 'text-gray-500'} text-right`}>
                     Follow for more
                   </p>
-                  <div className="flex items-center justify-center gap-4 opacity-85">
+                  <div className="flex w-full items-center justify-end gap-4 opacity-85">
                     {socialIconSet}
                   </div>
                 </div>
