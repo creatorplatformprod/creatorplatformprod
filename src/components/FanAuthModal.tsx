@@ -53,7 +53,7 @@ const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) =
         aria-label="Close auth modal background"
       />
       <div
-        className={`absolute bottom-0 left-0 right-0 mx-auto w-full max-w-2xl rounded-t-3xl p-5 sm:p-6 shadow-2xl ${
+        className={`absolute bottom-3 left-0 right-0 mx-auto w-full max-w-[20.5rem] sm:bottom-6 sm:max-w-md rounded-2xl p-4 sm:p-5 shadow-2xl ${
           darkTheme
             ? "border-slate-700 bg-slate-950 text-slate-100"
             : "border-gray-200 bg-white"
@@ -153,7 +153,7 @@ const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) =
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="rounded-xl bg-gradient-to-r from-indigo-500 to-sky-500 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+            className="rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-700 disabled:opacity-60"
           >
             {loading ? "Please wait..." : mode === "login" ? "Log In" : "Create Account"}
           </button>
