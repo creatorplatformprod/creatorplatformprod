@@ -831,7 +831,7 @@ const PostDetailBlurred = () => {
           }}
         >
           <div 
-            className="bg-transparent rounded-2xl p-3 sm:p-4 w-full max-w-[288px] sm:max-w-[20rem]"
+            className="bg-transparent rounded-2xl p-3 sm:p-4 w-full max-w-[288px] sm:max-w-[19rem]"
             style={{ maxHeight: '85vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
           >
             <div className="text-center">
