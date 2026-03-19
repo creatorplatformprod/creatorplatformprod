@@ -188,6 +188,34 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* Thin modern scrollbar (light + dark) */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(240 8% 62% / 0.65) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, hsl(240 8% 70% / 0.85), hsl(240 8% 58% / 0.85));
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, hsl(240 8% 64% / 0.95), hsl(240 8% 50% / 0.95));
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.025em;
   }
@@ -227,6 +255,22 @@
   .theme-classic-dark input::placeholder,
   .theme-classic-dark textarea::placeholder {
     color: hsl(var(--muted-foreground) / 0.9);
+  }
+
+  .theme-classic-dark {
+    scrollbar-color: hsl(215 18% 36% / 0.85) transparent;
+  }
+
+  .theme-classic-dark ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, hsl(215 20% 28% / 0.9), hsl(215 20% 20% / 0.9));
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .theme-classic-dark ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, hsl(215 20% 33% / 0.95), hsl(215 20% 24% / 0.95));
+    border: 2px solid transparent;
+    background-clip: padding-box;
   }
 }
 
@@ -2016,21 +2060,6 @@
     color: hsl(200 100% 60%);
   }
 
-  /* Scrollbar in dark mode */
-  .theme-classic-dark ::-webkit-scrollbar {
-    width: 6px;
-  }
-  .theme-classic-dark ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .theme-classic-dark ::-webkit-scrollbar-thumb {
-    background: hsl(215 20% 20%);
-    border-radius: 3px;
-  }
-  .theme-classic-dark ::-webkit-scrollbar-thumb:hover {
-    background: hsl(215 20% 28%);
-  }
-
   /* ── Template Variants ── */
 
   /* Midnight Glass — dark purple/blue glass */
@@ -2958,3 +2987,4 @@
   }
 }
 }
+

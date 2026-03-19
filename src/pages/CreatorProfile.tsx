@@ -1100,7 +1100,7 @@ const CreatorProfile = () => {
 
         {/* Profile Info */}
         <div className={`template-profile-shell relative max-w-[1600px] mx-auto px-4 -mt-10 sm:-mt-14 pb-3 sm:pb-4 transition-all duration-300 ${mainOffsetClass}`}>
-          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 lg:flex-wrap lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background lg:px-5 lg:py-4">
+          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 lg:flex-nowrap lg:items-center lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background lg:px-5 lg:py-3.5">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
                 src={profileAvatarImage}
@@ -1127,26 +1127,8 @@ const CreatorProfile = () => {
                 <span className="stat-pill">{(shouldUseMockData ? mockStatusCards.length : formattedStatusData.length)} Posts</span>
               </div>
 
-              {/* Content Filter Tabs - Centered inside profile header card */}
-              <div className="w-full flex justify-center pt-3 sm:pt-4">
-                <div className={`template-filter-shell template-filter-container mx-auto flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
-                  {(['all', 'collections', 'posts'] as const).map(filter => (
-                    <button
-                      key={filter}
-                      onClick={() => setFeedFilter(filter)}
-                      className={`template-filter-tab px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
-                        feedFilter === filter
-                          ? 'template-filter-tab-active bg-gray-100 text-foreground shadow-sm'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-gray-100'
-                      }`}
-                    >
-                      {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
-            <div className="hidden lg:flex ml-auto self-stretch w-[220px] flex-col justify-end">
+            <div className="hidden lg:flex ml-auto self-center w-[220px] flex-col items-center justify-center">
               {allCollections.length > 0 && (
                 <button
                   onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
@@ -1175,6 +1157,25 @@ const CreatorProfile = () => {
               </button>
             )}
 
+          </div>
+
+          {/* Content Filter Tabs - Moved below profile card */}
+          <div className="max-w-4xl mx-auto mt-4 sm:mt-5 flex justify-center">
+            <div className={`template-filter-shell template-filter-container mx-auto flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
+              {(['all', 'collections', 'posts'] as const).map(filter => (
+                <button
+                  key={filter}
+                  onClick={() => setFeedFilter(filter)}
+                  className={`template-filter-tab px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+                    feedFilter === filter
+                      ? 'template-filter-tab-active bg-gray-100 text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-gray-100'
+                  }`}
+                >
+                  {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
