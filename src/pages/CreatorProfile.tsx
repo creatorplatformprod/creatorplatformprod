@@ -14,6 +14,7 @@ import { useFanAuth } from "@/contexts/FanAuthContext";
 import { useSeo } from "@/hooks/use-seo";
 import { useSkeletonGate } from "@/hooks/useSkeletonGate";
 import { buildCardLayout, parseLayoutTag, type CollectionCardTemplate } from "@/lib/collectionLayout";
+import { resolveMediaType } from "@/utils/mediaType";
 type MockSourcePack = {
   key: string;
   avatar: string;
@@ -498,9 +499,16 @@ const CreatorProfile = () => {
       creatorUsername: username || creatorData?.username || "",
       previewMode: isPreviewMode,
       images: (col.media || []).map((media: any) => ({
-        full: media.url,
-        thumb: media.thumbnailUrl || media.url,
-        mediaType: String(media?.mediaType || '').toLowerCase() === 'video' ? 'video' : 'image',
+        full: String(media?.url || media?.hlsUrl || media?.thumbnailUrl || '').trim(),
+        thumb: String(media?.thumbnailUrl || media?.url || '').trim(),
+        mediaType: resolveMediaType({
+          mediaType: media?.mediaType,
+          mimeType: media?.mimeType,
+          contentType: media?.contentType,
+          type: media?.type,
+          url: media?.url,
+          hlsUrl: media?.hlsUrl
+        }),
         hlsSrc: String(media?.hlsUrl || '').trim(),
         width: Number.isFinite(Number(media?.width)) && Number(media.width) > 0 ? Number(media.width) : null,
         height: Number.isFinite(Number(media?.height)) && Number(media.height) > 0 ? Number(media.height) : null

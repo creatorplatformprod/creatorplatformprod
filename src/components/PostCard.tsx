@@ -5,6 +5,7 @@ import { Heart, Share2, Check, Lock, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Collection } from "@/collections/collectionsData";
 import ProgressiveImage from "@/components/ProgressiveImage";
+import InlineVideoPlayer from "@/components/InlineVideoPlayer";
 import { fetchEngagement, registerEngagementShare, registerEngagementView, setEngagementLike } from "@/lib/engagement";
 import { buildCardLayout } from "@/lib/collectionLayout";
 import { resolveMediaType } from "@/utils/mediaType";
@@ -291,17 +292,13 @@ const PostCard = ({ collection }: PostCardProps) => {
                 className={`relative overflow-hidden ${spanClasses}`}
               >
                 {image.mediaType === 'video' ? (
-                  <video
+                  <InlineVideoPlayer
                     src={image.full}
-                    poster={image.thumb || '/placeholder.svg'}
+                    hlsSrc={image.hlsSrc}
+                    thumbnail={image.thumb || '/placeholder.svg'}
+                    alt={`${collection.title} - ${index + 1}`}
                     className="w-full h-full object-cover group-hover:scale-100 transition-transform duration-500"
-                    muted
-                    loop
-                    autoPlay
-                    playsInline
-                    preload="metadata"
-                    onLoadedData={handleImageLoad}
-                    onError={handleImageLoad}
+                    onLoad={handleImageLoad}
                   />
                 ) : (
                   <ProgressiveImage
