@@ -548,11 +548,7 @@ const PostDetail = () => {
               onClick={handleBackNavigation} 
               variant="ghost" 
               size="sm"
-              className={
-                isDarkTheme
-                  ? "!text-white border border-border bg-secondary/55"
-                  : "bg-transparent"
-              }
+              className="!text-white border border-violet-400/40 bg-violet-600 hover:!bg-violet-700 focus-visible:!ring-violet-300 shadow-sm rounded-xl"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back

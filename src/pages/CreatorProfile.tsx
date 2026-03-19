@@ -1099,7 +1099,7 @@ const CreatorProfile = () => {
         </div>
 
         {/* Profile Info */}
-        <div className={`template-profile-shell relative max-w-[1600px] mx-auto px-4 -mt-10 sm:-mt-14 pb-6 sm:pb-8 transition-all duration-300 ${mainOffsetClass}`}>
+        <div className={`template-profile-shell relative max-w-[1600px] mx-auto px-4 -mt-10 sm:-mt-14 pb-3 sm:pb-4 transition-all duration-300 ${mainOffsetClass}`}>
           <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 lg:flex-wrap lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background lg:px-5 lg:py-4">
             <div className="profile-avatar-ring flex-shrink-0">
               <img
@@ -1125,6 +1125,25 @@ const CreatorProfile = () => {
               <div className="template-stats flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-3">
                 <span className="stat-pill">{allCollections.length} Collections</span>
                 <span className="stat-pill">{(shouldUseMockData ? mockStatusCards.length : formattedStatusData.length)} Posts</span>
+              </div>
+
+              {/* Content Filter Tabs - Centered inside profile header card */}
+              <div className="w-full flex justify-center pt-3 sm:pt-4">
+                <div className={`template-filter-shell template-filter-container mx-auto flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
+                  {(['all', 'collections', 'posts'] as const).map(filter => (
+                    <button
+                      key={filter}
+                      onClick={() => setFeedFilter(filter)}
+                      className={`template-filter-tab px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+                        feedFilter === filter
+                          ? 'template-filter-tab-active bg-gray-100 text-foreground shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-gray-100'
+                      }`}
+                    >
+                      {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
             <div className="hidden lg:flex ml-auto self-stretch w-[220px] flex-col justify-end">
@@ -1155,25 +1174,7 @@ const CreatorProfile = () => {
                 <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold">Unlock Everything</span>
               </button>
             )}
-          </div>
 
-          {/* Content Filter Tabs - Integrated into hero */}
-          <div className="max-w-4xl mx-auto">
-            <div className={`template-filter-shell template-filter-container mt-5 mx-auto flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
-            {(['all', 'collections', 'posts'] as const).map(filter => (
-              <button
-                key={filter}
-                onClick={() => setFeedFilter(filter)}
-                className={`template-filter-tab px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
-                  feedFilter === filter
-                      ? 'template-filter-tab-active bg-gray-100 text-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-gray-100'
-                }`}
-              >
-                {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
-              </button>
-            ))}
-            </div>
           </div>
         </div>
       </div>
@@ -1300,7 +1301,7 @@ const CreatorProfile = () => {
 
         {/* Main Content */}
         <div className={`template-main-column flex-1 transition-all duration-300 ${mainOffsetClass}`} style={{ marginTop: '0px' }}>
-          <main className="template-main-shell max-w-4xl mx-auto px-4 py-6">
+          <main className="template-main-shell max-w-4xl mx-auto px-4 pt-3 pb-6">
             <div className="template-main-stack space-y-6">
               {searchQuery && (
                 <div className="post-card rounded-xl p-4 animate-fade-in">
