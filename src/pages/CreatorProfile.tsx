@@ -1146,7 +1146,7 @@ const CreatorProfile = () => {
                 </div>
               </div>
             </div>
-            <div className="hidden lg:flex ml-auto self-center w-[220px] flex-col items-center justify-center">
+            <div className="hidden lg:flex ml-auto self-stretch w-[220px] flex-col justify-end">
               {allCollections.length > 0 && (
                 <button
                   onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}

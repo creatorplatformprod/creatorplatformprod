@@ -20,6 +20,8 @@ type FanAccountMenuProps = {
 const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false, darkTheme = false }: FanAccountMenuProps) => {
   const { fan, logoutFan } = useFanAuth();
   const effectiveFan = previewMode ? null : fan;
+  const menuFocusClass =
+    "focus:bg-gradient-to-r focus:from-indigo-500 focus:to-sky-500 focus:text-white data-[highlighted]:bg-gradient-to-r data-[highlighted]:from-indigo-500 data-[highlighted]:to-sky-500 data-[highlighted]:text-white";
   const authIconClass = darkTheme
     ? "text-indigo-500 group-hover:text-indigo-400 group-focus-visible:text-indigo-400"
     : "text-indigo-500 group-hover:text-indigo-400 group-focus-visible:text-indigo-400";
@@ -33,10 +35,14 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false, darkTh
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="group flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-transparent hover:bg-transparent transition-none text-sm font-medium outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className={`group w-9 h-9 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-200 border text-sm font-medium outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+            darkTheme
+              ? "bg-slate-900/70 border-slate-700/70 hover:bg-indigo-500/15 hover:border-indigo-400/35"
+              : "bg-secondary/70 border-border hover:bg-indigo-500/10 hover:border-indigo-400/30"
+          }`}
         >
           {effectiveFan?.avatar ? (
-            <Avatar className="h-5 w-5 border border-indigo-400/50">
+            <Avatar className="w-8 h-8 border border-indigo-400/45">
               <AvatarImage src={effectiveFan.avatar} alt={effectiveFan.displayName || effectiveFan.email} />
               <AvatarFallback className="bg-indigo-500/25 text-indigo-100">
                 {(effectiveFan.displayName || effectiveFan.email || "F").slice(0, 1).toUpperCase()}
@@ -60,17 +66,17 @@ const FanAccountMenu = ({ onOpenAuth, align = "end", previewMode = false, darkTh
             <DropdownMenuLabel className="px-2 py-1.5 text-xs text-muted-foreground">
               {effectiveFan.displayName || effectiveFan.email}
             </DropdownMenuLabel>
-            <DropdownMenuItem className="hover:bg-rose-500/10 focus:bg-rose-500/10" onClick={() => (window.location.href = "/fan/unlocks")}>
+            <DropdownMenuItem className={menuFocusClass} onClick={() => (window.location.href = "/fan/unlocks")}>
               <Unlock className="mr-2 h-4 w-4" />
               Unlocked Content
             </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-rose-500/10 focus:bg-rose-500/10" onClick={() => (window.location.href = "/fan/account")}>
+            <DropdownMenuItem className={menuFocusClass} onClick={() => (window.location.href = "/fan/account")}>
               <Shield className="mr-2 h-4 w-4" />
               Account Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="hover:bg-rose-500/10 focus:bg-rose-500/10 text-rose-300 focus:text-rose-200"
+              className={menuFocusClass}
               onClick={() => {
                 logoutFan();
                 window.location.reload();

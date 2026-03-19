@@ -4,6 +4,25 @@ import { api } from "@/lib/api";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
 
+const isGoogleFanAccount = (fanLike: any) => {
+  if (!fanLike) return false;
+  const provider = String(fanLike?.provider || fanLike?.authProvider || fanLike?.loginProvider || "").toLowerCase();
+  const authType = String(fanLike?.authType || fanLike?.authMethod || "").toLowerCase();
+  const hasGoogleId = Boolean(fanLike?.googleId || fanLike?.googleSub || fanLike?.googleUid);
+  const avatar = String(fanLike?.avatar || "").toLowerCase();
+  const email = String(fanLike?.email || "").toLowerCase();
+  return (
+    provider.includes("google") ||
+    authType.includes("google") ||
+    hasGoogleId ||
+    avatar.includes("googleusercontent.com") ||
+    email.endsWith("@gmail.com") && provider === "oauth"
+  );
+};
+
+const isGoogleHostedAvatar = (value: string) =>
+  String(value || "").toLowerCase().includes("googleusercontent.com");
+
 const FanAccount = () => {
   const { fan, refreshFan } = useFanAuth();
   const [loading, setLoading] = useState(true);
@@ -12,8 +31,9 @@ const FanAccount = () => {
   const [unlocks, setUnlocks] = useState<any[]>([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [meFan, setMeFan] = useState<any>(null);
   const [profile, setProfile] = useState({ displayName: "", bio: "", avatar: "" });
-  const [passwordData, setPasswordData] = useState({ currentPassword: "", newPassword: "" });
+  const [passwordData, setPasswordData] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
   useFeedbackToasts({ success: message, error });
 
   useEffect(() => {
@@ -27,6 +47,7 @@ const FanAccount = () => {
       try {
         const [me, unlocksResult] = await Promise.all([api.getCurrentFan(), api.getFanUnlocks()]);
         if (me?.success && me.fan) {
+          setMeFan(me.fan);
           setProfile({
             displayName: me.fan.displayName || "",
             bio: me.fan.bio || "",
@@ -45,7 +66,11 @@ const FanAccount = () => {
     load();
   }, []);
 
-  const hasPassword = useMemo(() => !!fan?.email, [fan?.email]);
+  const hasPassword = useMemo(() => !isGoogleFanAccount(meFan || fan), [meFan, fan]);
+  const googleAvatarManaged = useMemo(
+    () => isGoogleFanAccount(meFan || fan) && isGoogleHostedAvatar(profile.avatar),
+    [meFan, fan, profile.avatar]
+  );
 
   const saveProfile = async () => {
     setSaving(true);
@@ -66,6 +91,19 @@ const FanAccount = () => {
   };
 
   const savePassword = async () => {
+    if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+      setError("Please fill in all password fields.");
+      return;
+    }
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setError("New password and confirmation do not match.");
+      return;
+    }
+    if (passwordData.newPassword.length < 8) {
+      setError("New password must be at least 8 characters.");
+      return;
+    }
+
     setPasswordSaving(true);
     setError("");
     setMessage("");
@@ -74,7 +112,7 @@ const FanAccount = () => {
       if (!result?.success) {
         throw new Error(result?.error || "Failed to change password");
       }
-      setPasswordData({ currentPassword: "", newPassword: "" });
+      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
       setMessage("Password updated.");
     } catch (err: any) {
       setError(err?.message || "Failed to change password");
@@ -103,7 +141,7 @@ const FanAccount = () => {
         </button>
 
         <div className="post-card rounded-xl p-5">
-          <h1 className="text-xl font-semibold text-foreground">Fan Account</h1>
+          <h1 className="text-xl font-semibold text-foreground">Account Settings</h1>
           <p className="text-sm text-muted-foreground mt-1">{fan?.email || "Account"}</p>
         </div>
 
@@ -121,12 +159,18 @@ const FanAccount = () => {
             placeholder="Display name"
             className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-foreground"
           />
-          <input
-            value={profile.avatar}
-            onChange={(e) => setProfile((prev) => ({ ...prev, avatar: e.target.value }))}
-            placeholder="Profile image URL"
-            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-foreground"
-          />
+          {googleAvatarManaged ? (
+            <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-muted-foreground">
+              Profile image is currently synced from your Google account.
+            </div>
+          ) : (
+            <input
+              value={profile.avatar}
+              onChange={(e) => setProfile((prev) => ({ ...prev, avatar: e.target.value }))}
+              placeholder="Profile image URL"
+              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-foreground"
+            />
+          )}
           <textarea
             value={profile.bio}
             onChange={(e) => setProfile((prev) => ({ ...prev, bio: e.target.value }))}
@@ -165,6 +209,13 @@ const FanAccount = () => {
                 placeholder="New password"
                 className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-foreground"
               />
+              <input
+                type="password"
+                value={passwordData.confirmPassword}
+                onChange={(e) => setPasswordData((prev) => ({ ...prev, confirmPassword: e.target.value }))}
+                placeholder="Confirm new password"
+                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-foreground"
+              />
               <button
                 onClick={savePassword}
                 disabled={passwordSaving}
@@ -174,7 +225,7 @@ const FanAccount = () => {
               </button>
             </>
           ) : (
-            <p className="text-sm text-muted-foreground">Password login is not enabled for this account.</p>
+            <p className="text-sm text-muted-foreground">This account uses Google sign-in. Password changes are managed through your Google account.</p>
           )}
         </section>
 

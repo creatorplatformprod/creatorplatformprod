@@ -642,9 +642,7 @@ const PostDetail = () => {
                     return (
                       <div 
                         key={`${imageSrc}-${index}`}
-                        className={`relative overflow-hidden rounded-lg animate-fade-in ${
-                          isDarkTheme && !isMediaLoaded ? 'skeleton-shimmer' : ''
-                        }`}
+                        className="relative overflow-hidden rounded-lg animate-fade-in"
                       style={{ 
                         animationDelay: `${Math.min(index * 0.02, 1)}s`,
                         aspectRatio: `${aspectW} / ${aspectH}`

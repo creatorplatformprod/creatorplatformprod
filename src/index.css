@@ -912,32 +912,6 @@
     background: #374151;
   }
 
-  .unlock-overlay-btn {
-    background: #e5e7eb;
-    color: #4b5563;
-    border: 1px solid #d1d5db;
-  }
-
-  .unlock-overlay-btn:hover {
-    background: #d1d5db;
-    color: #374151;
-    border-color: #cbd5e1;
-  }
-
-  .theme-classic-dark .unlock-overlay-btn,
-  .dark .unlock-overlay-btn {
-    background: #111827;
-    color: #9ca3af;
-    border-color: #374151;
-  }
-
-  .theme-classic-dark .unlock-overlay-btn:hover,
-  .dark .unlock-overlay-btn:hover {
-    background: #1f2937;
-    color: #d1d5db;
-    border-color: #4b5563;
-  }
-
   .skeleton-static {
     position: relative;
     overflow: hidden;
@@ -958,11 +932,6 @@
   /* Image reveal transition */
   .image-loading {
     opacity: 0;
-  }
-
-  .theme-classic-dark .image-loading,
-  .dark .image-loading {
-    background-color: #1f2937;
   }
 
   .image-loaded {

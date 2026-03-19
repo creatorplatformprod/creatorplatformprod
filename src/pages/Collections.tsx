@@ -92,7 +92,6 @@ const Collections = () => {
   const { fan } = useFanAuth();
   const activeFan = isPreviewMode ? null : fan;
   const themeClass = usePublicWebsiteTheme(creatorUsername || undefined);
-  const isDarkTheme = themeClass === 'theme-classic-dark';
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -677,9 +676,7 @@ const Collections = () => {
                   return (
                     <div 
                       key={`${mediaObj.src}-${index}`}
-                      className={`relative overflow-hidden rounded-lg animate-fade-in cursor-pointer group ${mediaObj.mediaType === 'video' ? 'video-container' : ''} ${
-                        isDarkTheme && !isMediaLoaded ? 'skeleton-shimmer' : ''
-                      }`}
+                      className={`relative overflow-hidden rounded-lg animate-fade-in cursor-pointer group ${mediaObj.mediaType === 'video' ? 'video-container' : ''}`}
                       style={{ 
                         animationDelay: `${Math.min(index * 0.01, 2)}s`,
                         aspectRatio: `${aspectW} / ${aspectH}`,
