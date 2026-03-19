@@ -38,6 +38,7 @@ const InlineVideoPlayer = ({
   const controlsTimeoutRef = useRef<NodeJS.Timeout>();
   const instanceIdRef = useRef(Math.random().toString(36));
   const readyNotifiedRef = useRef(false);
+  const triedMp4FallbackRef = useRef(false);
 
   const isProbablyVideoUrl = (value: string) =>
     /\.(mp4|webm|mov|ogg|avi|m3u8)(\?|#|$)/i.test(String(value || '').trim());
@@ -93,9 +94,13 @@ const InlineVideoPlayer = ({
 
     let isMounted = true;
     let hlsInstance: any = null;
+    let hlsFallbackTimer: ReturnType<typeof setTimeout> | null = null;
+    triedMp4FallbackRef.current = false;
 
     const useMp4Fallback = () => {
       if (!isMounted) return;
+      if (!src) return;
+      triedMp4FallbackRef.current = true;
       if (video.src !== src) {
         video.src = src;
         video.load();
@@ -142,9 +147,17 @@ const InlineVideoPlayer = ({
     };
 
     setupSource();
+    if (hlsSrc && src && hlsSrc !== src) {
+      hlsFallbackTimer = setTimeout(() => {
+        if (!isMounted || triedMp4FallbackRef.current) return;
+        if (video.readyState >= 1) return;
+        useMp4Fallback();
+      }, 6000);
+    }
 
     return () => {
       isMounted = false;
+      if (hlsFallbackTimer) clearTimeout(hlsFallbackTimer);
       if (hlsInstance) {
         hlsInstance.destroy();
       }
@@ -375,6 +388,18 @@ const InlineVideoPlayer = ({
         onTimeUpdate={handleTimeUpdate}
         onEnded={() => setIsPlaying(false)}
         onError={() => {
+          if (
+            hlsSrc &&
+            src &&
+            hlsSrc !== src &&
+            !triedMp4FallbackRef.current &&
+            videoRef.current
+          ) {
+            triedMp4FallbackRef.current = true;
+            videoRef.current.src = src;
+            videoRef.current.load();
+            return;
+          }
           setVideoErrored(true);
           setIsVideoLoaded(true);
           setShowThumbnail(true);
