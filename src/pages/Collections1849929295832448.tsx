@@ -634,7 +634,9 @@ const Collections1849929295832448 = () => {
                   return (
                     <div 
                       key={`${mediaObj.src}-${globalIndex}`}
-                      className="relative overflow-hidden rounded-lg animate-fade-in"
+                      className={`relative overflow-hidden rounded-lg animate-fade-in ${
+                        isDarkTheme && !isMediaLoaded ? 'skeleton-shimmer' : ''
+                      }`}
                       style={{ 
                         animationDelay: `${Math.min(index * 0.02, 1)}s`,
                         aspectRatio: `${aspectW} / ${aspectH}`

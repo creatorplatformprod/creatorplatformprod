@@ -87,6 +87,7 @@ const PostDetailBlurred = () => {
   const { fan } = useFanAuth();
   const activeFan = isPreviewMode ? null : fan;
   const themeClass = usePublicWebsiteTheme(creatorParam || undefined);
+  const isDarkTheme = themeClass === 'theme-classic-dark';
   const mockSeed = useMemo(
     () => hashString((creatorParam || 'creator').toLowerCase()),
     [creatorParam]
@@ -710,7 +711,9 @@ const PostDetailBlurred = () => {
                 return (
                   <div 
                     key={`${imageSrc}-${index}`}
-                    className={`relative overflow-hidden rounded-lg animate-fade-in cursor-pointer ${mediaType === 'video' ? 'video-container' : ''}`}
+                    className={`relative overflow-hidden rounded-lg animate-fade-in cursor-pointer ${mediaType === 'video' ? 'video-container' : ''} ${
+                      isDarkTheme && !isMediaLoaded ? 'skeleton-shimmer' : ''
+                    }`}
                     style={{ 
                       animationDelay: `${Math.min(index * 0.02, 1)}s`,
                       aspectRatio: `${aspectW} / ${aspectH}`,

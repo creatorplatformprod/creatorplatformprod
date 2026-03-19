@@ -934,6 +934,11 @@
     opacity: 0;
   }
 
+  .theme-classic-dark .image-loading,
+  .dark .image-loading {
+    background-color: #1f2937;
+  }
+
   .image-loaded {
     opacity: 1;
     transition: opacity 0.35s ease-out;
