@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Loader2, CheckCircle2, Gift, AlertCircle, Clock, ChevronDown, CreditCard } from "lucide-react";
 import { api } from "@/lib/api";
+import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
 
 const RAW_API_URL =
   import.meta.env.VITE_API_URL ||
@@ -26,6 +27,10 @@ const getProviderEndpoints = (amount: string) => {
 const PURPLE_COLOR = "#7c3aed";
 
 const TipCheckoutPage = () => {
+  const queryParams = new URLSearchParams(window.location.search);
+  const creatorFromUrl = queryParams.get('creator') || undefined;
+  const themeClass = usePublicWebsiteTheme(creatorFromUrl);
+  const isDarkTheme = themeClass === 'theme-classic-dark';
   const [customerEmail, setCustomerEmail] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState("");
@@ -339,7 +344,7 @@ const TipCheckoutPage = () => {
   // Success screen (shown when redirected with access token)
   if (paymentSuccess) {
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center p-4">
+      <div className={`min-h-screen feed-bg flex items-center justify-center p-4 ${themeClass}`}>
         <div className="p-4 max-w-xs w-full text-center">
           <style>{`
             @keyframes scale-in {
@@ -405,7 +410,7 @@ const TipCheckoutPage = () => {
   // Session expired screen
   if (sessionExpired || (!tipAmount && !isLoading)) {
     return (
-      <div className="min-h-screen feed-bg flex items-center justify-center p-4">
+      <div className={`min-h-screen feed-bg flex items-center justify-center p-4 ${themeClass}`}>
         <div className="post-card rounded-xl p-6 max-w-sm w-full text-center space-y-4">
           <div className="w-14 h-14 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto">
             <Clock className="w-7 h-7 text-amber-500" />
@@ -432,7 +437,7 @@ const TipCheckoutPage = () => {
   }
 
   return (
-    <div className="min-h-screen feed-bg">
+    <div className={`min-h-screen feed-bg ${themeClass}`}>
       <header className="sticky top-0 z-10 nav-elevated">
         <div className="max-w-lg mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button
@@ -449,7 +454,7 @@ const TipCheckoutPage = () => {
       <main className="max-w-lg mx-auto px-3 sm:px-4 py-8 sm:py-12">
         <div className="card-elevated rounded-2xl p-5 sm:p-7">
           {/* Centered Tip Amount -- Hero */}
-          <div className="text-center mb-6 pb-6 border-b border-gray-200">
+          <div className={`text-center mb-6 pb-6 border-b ${isDarkTheme ? 'border-slate-700/70' : 'border-gray-200'}`}>
             <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ background: `${PURPLE_COLOR}12` }}>
               <Gift className="w-5 h-5" style={{ color: PURPLE_COLOR }} />
             </div>
@@ -485,7 +490,11 @@ const TipCheckoutPage = () => {
                     }
                   }}
                   placeholder="name@example.com"
-                  className="w-full px-4 py-2.5 sm:py-3 bg-secondary/50 border-2 border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  className={`w-full px-4 py-2.5 sm:py-3 rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
+                    isDarkTheme
+                      ? 'bg-slate-900 border border-slate-700'
+                      : 'bg-secondary/50 border-2 border-border'
+                  }`}
                   required
                   maxLength={254}
                 />
@@ -503,7 +512,11 @@ const TipCheckoutPage = () => {
                   <button
                     type="button"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className={`w-full px-4 py-2.5 sm:py-3 bg-secondary/30 border border-border rounded-xl text-foreground flex items-center justify-between hover:bg-secondary/50 transition-all ${isDropdownOpen ? 'rounded-b-none border-b-0' : ''}`}
+                    className={`w-full px-4 py-2.5 sm:py-3 rounded-xl text-foreground flex items-center justify-between transition-all ${
+                      isDarkTheme
+                        ? 'bg-slate-900 border border-slate-700 hover:bg-slate-800'
+                        : 'bg-secondary/30 border border-border hover:bg-secondary/50'
+                    } ${isDropdownOpen ? 'rounded-b-none border-b-0' : ''}`}
                   >
                     <div className="flex items-center gap-3">
                       <CreditCard className="w-5 h-5 text-muted-foreground" />
@@ -527,7 +540,9 @@ const TipCheckoutPage = () => {
 
                   {/* Dropdown options - flows in document, pushing content down */}
                   <div className={`overflow-hidden transition-all duration-200 ${isDropdownOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                    <div className="bg-background border border-t-0 border-border rounded-b-xl overflow-hidden">
+                    <div className={`border border-t-0 rounded-b-xl overflow-hidden ${
+                      isDarkTheme ? 'bg-slate-900 border-slate-700' : 'bg-background border-border'
+                    }`}>
                       {availableProviders.map((provider: any, index: number) => (
                         <button
                           key={provider.id}
@@ -535,9 +550,13 @@ const TipCheckoutPage = () => {
                             setSelectedProvider(provider);
                             setIsDropdownOpen(false);
                           }}
-                          className={`w-full px-4 py-3 text-left hover:bg-secondary/50 transition-colors flex items-center justify-between ${
-                            selectedProvider?.id === provider.id ? 'bg-secondary/30' : ''
-                          } ${index !== availableProviders.length - 1 ? 'border-b border-border' : ''}`}
+                          className={`w-full px-4 py-3 text-left transition-colors flex items-center justify-between ${
+                            isDarkTheme ? 'hover:bg-slate-800/80' : 'hover:bg-secondary/50'
+                          } ${
+                            selectedProvider?.id === provider.id
+                              ? (isDarkTheme ? 'bg-slate-800/70' : 'bg-secondary/30')
+                              : ''
+                          } ${index !== availableProviders.length - 1 ? (isDarkTheme ? 'border-b border-slate-700' : 'border-b border-border') : ''}`}
                         >
                           <div>
                             <div className="font-medium text-foreground text-sm mb-1.5">

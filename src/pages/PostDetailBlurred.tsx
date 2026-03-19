@@ -874,7 +874,7 @@ const PostDetailBlurred = () => {
                         handleCardPaymentClick();
                       }
                     }}
-                    className="w-[92%] mx-auto block px-3 sm:px-3.5 py-2.5 sm:py-2.5 text-xs sm:text-sm bg-transparent border border-white/40 rounded-xl text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white/40 focus:border-white/70"
+                    className="w-[92%] mx-auto block px-3 sm:px-3.5 py-2.5 sm:py-2.5 text-xs sm:text-sm bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     required
                     maxLength={254}
                   />
@@ -884,7 +884,7 @@ const PostDetailBlurred = () => {
               <button
                 onClick={handleCardPaymentClick}
                 disabled={isCardPaymentLoading || remoteLoading}
-                className="relative overflow-hidden w-[92%] mx-auto py-2.5 sm:py-2.5 px-3 sm:px-3.5 rounded-xl text-sm sm:text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-transparent border border-violet-400/90 text-white hover:bg-violet-500/20 hover:shadow-lg hover:scale-[1.02]"
+                className="relative overflow-hidden w-[92%] mx-auto py-2.5 sm:py-2.5 px-3 sm:px-3.5 rounded-xl text-sm sm:text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed !text-white bg-[linear-gradient(135deg,#c084fc_0%,#8b5cf6_45%,#38bdf8_100%)] hover:brightness-105 hover:shadow-lg hover:scale-[1.02]"
               >
                 {isCardPaymentLoading || remoteLoading ? (
                   <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />

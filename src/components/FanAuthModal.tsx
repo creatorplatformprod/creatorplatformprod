@@ -55,7 +55,7 @@ const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) =
       <div
         className={`absolute bottom-3 left-0 right-0 mx-auto w-full max-w-[20.5rem] sm:bottom-6 sm:max-w-md rounded-2xl p-4 sm:p-5 shadow-2xl ${
           darkTheme
-            ? "border-slate-700 bg-slate-950 text-slate-100"
+            ? "border border-[#1e2b45] bg-[#0b1220] text-slate-100"
             : "border-gray-200 bg-white"
         }`}
       >
@@ -69,7 +69,7 @@ const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) =
           <button
             onClick={onClose}
             className={`rounded-full p-1.5 text-muted-foreground hover:text-foreground ${
-              darkTheme ? "hover:bg-slate-800" : "hover:bg-gray-100"
+              darkTheme ? "hover:bg-[#152238]" : "hover:bg-gray-100"
             }`}
             aria-label="Close auth modal"
           >
@@ -77,16 +77,16 @@ const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) =
           </button>
         </div>
 
-        <div className={`mb-3 grid grid-cols-2 rounded-xl p-1 ${darkTheme ? "bg-slate-900 border border-slate-800" : "bg-gray-50"}`}>
+        <div className={`mb-3 grid grid-cols-2 rounded-xl p-1 ${darkTheme ? "bg-[#0f1a2e] border border-[#22314f]" : "bg-gray-50"}`}>
           <button
             onClick={() => setMode("login")}
-            className={`rounded-lg px-3 py-2 text-xs font-medium ${mode === "login" ? (darkTheme ? "bg-slate-800 text-foreground" : "bg-gray-100 text-foreground") : "text-muted-foreground"}`}
+            className={`rounded-lg px-3 py-2 text-xs font-medium ${mode === "login" ? (darkTheme ? "bg-[#1f2f4a] text-slate-100" : "bg-gray-100 text-foreground") : "text-muted-foreground"}`}
           >
             Log In
           </button>
           <button
             onClick={() => setMode("register")}
-            className={`rounded-lg px-3 py-2 text-xs font-medium ${mode === "register" ? (darkTheme ? "bg-slate-800 text-foreground" : "bg-gray-100 text-foreground") : "text-muted-foreground"}`}
+            className={`rounded-lg px-3 py-2 text-xs font-medium ${mode === "register" ? (darkTheme ? "bg-[#1f2f4a] text-slate-100" : "bg-gray-100 text-foreground") : "text-muted-foreground"}`}
           >
             Register
           </button>
@@ -96,7 +96,7 @@ const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) =
           onClick={() => api.fanGoogleAuth(returnTo)}
           className={`mb-4 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-foreground ${
             darkTheme
-              ? "border border-slate-700 bg-slate-900 hover:bg-slate-800"
+              ? "border border-[#2a3a58] bg-[#0f1a2e] hover:bg-[#152238]"
               : "border border-gray-200 bg-gray-50 hover:bg-gray-100"
           }`}
         >
@@ -107,7 +107,7 @@ const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) =
         {mode === "register" && (
           <label className="mb-2 block text-xs text-muted-foreground">
             Display Name
-            <div className={`mt-1 flex items-center gap-2 rounded-xl px-3 py-2.5 ${darkTheme ? "border border-slate-700 bg-slate-900" : "border border-gray-200 bg-gray-50"}`}>
+            <div className={`mt-1 flex items-center gap-2 rounded-xl px-3 py-2.5 ${darkTheme ? "border border-[#2a3a58] bg-[#0f1a2e]" : "border border-gray-200 bg-gray-50"}`}>
               <User className="h-4 w-4" style={{ color: skyUserColor }} />
               <input
                 className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
@@ -121,7 +121,7 @@ const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) =
 
         <label className="mb-2 block text-xs text-muted-foreground">
           Email
-          <div className={`mt-1 flex items-center gap-2 rounded-xl px-3 py-2.5 ${darkTheme ? "border border-slate-700 bg-slate-900" : "border border-gray-200 bg-gray-50"}`}>
+          <div className={`mt-1 flex items-center gap-2 rounded-xl px-3 py-2.5 ${darkTheme ? "border border-[#2a3a58] bg-[#0f1a2e]" : "border border-gray-200 bg-gray-50"}`}>
             <Mail className="h-4 w-4 text-muted-foreground" />
             <input
               type="email"
@@ -135,7 +135,7 @@ const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) =
 
         <label className="mb-3 block text-xs text-muted-foreground">
           Password
-          <div className={`mt-1 flex items-center gap-2 rounded-xl px-3 py-2.5 ${darkTheme ? "border border-slate-700 bg-slate-900" : "border border-gray-200 bg-gray-50"}`}>
+          <div className={`mt-1 flex items-center gap-2 rounded-xl px-3 py-2.5 ${darkTheme ? "border border-[#2a3a58] bg-[#0f1a2e]" : "border border-gray-200 bg-gray-50"}`}>
             <Lock className="h-4 w-4 text-muted-foreground" />
             <input
               type="password"
@@ -153,7 +153,11 @@ const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) =
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-700 disabled:opacity-60"
+            className={`rounded-xl px-4 py-2.5 text-sm font-semibold disabled:opacity-60 ${
+              darkTheme
+                ? "bg-violet-500/85 text-white hover:bg-violet-500"
+                : "bg-violet-600 text-white hover:bg-violet-700"
+            }`}
           >
             {loading ? "Please wait..." : mode === "login" ? "Log In" : "Create Account"}
           </button>
@@ -164,7 +168,7 @@ const FanAuthModal = ({ open, onClose, darkTheme = false }: FanAuthModalProps) =
             }}
             className={`rounded-xl px-4 py-2.5 text-sm font-semibold text-foreground ${
               darkTheme
-                ? "border border-slate-700 bg-slate-900 hover:bg-slate-800"
+                ? "border border-[#2a3a58] bg-[#0f1a2e] hover:bg-[#152238]"
                 : "border border-gray-200 bg-gray-50 hover:bg-gray-100"
             }`}
           >

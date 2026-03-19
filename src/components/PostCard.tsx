@@ -337,7 +337,7 @@ const PostCard = ({ collection }: PostCardProps) => {
             />
           ) : (
             <Button
-              className="relative overflow-hidden bg-gray-200 hover:bg-gray-300 text-gray-900 border border-gray-300 backdrop-blur-sm px-6 py-2 rounded-full font-medium"
+              className="unlock-overlay-btn relative overflow-hidden backdrop-blur-sm px-6 py-2 rounded-full font-medium"
               onClick={(e) => {
                 e.stopPropagation();
                 navigate(getBlurredTarget());
