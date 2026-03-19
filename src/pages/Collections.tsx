@@ -749,7 +749,7 @@ const Collections = () => {
                   style={{ maxHeight: '85vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
                 >
                   <div className="text-center">
-                    <h2 className="text-lg sm:text-lg font-bold text-violet-500 mb-1 sm:mb-1.5">
+                    <h2 className="text-lg sm:text-lg font-bold mb-1 sm:mb-1.5 bg-[linear-gradient(135deg,#8b5cf6_0%,#7c3aed_45%,#38bdf8_100%)] bg-clip-text text-transparent">
                       Unlock Everything
                     </h2>
 
@@ -795,7 +795,7 @@ const Collections = () => {
                     <button
                       onClick={handleCardPaymentClick}
                       disabled={isCardPaymentLoading || isLoading}
-                      className="relative overflow-hidden w-[92%] mx-auto py-2.5 sm:py-2.5 px-3 sm:px-3.5 rounded-xl text-sm sm:text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed !text-white bg-[linear-gradient(135deg,#c084fc_0%,#8b5cf6_45%,#38bdf8_100%)] hover:brightness-105 hover:shadow-lg hover:scale-[1.02]"
+                      className="relative overflow-hidden w-[92%] mx-auto py-2.5 sm:py-2.5 px-3 sm:px-3.5 rounded-xl text-sm sm:text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed !text-white bg-[linear-gradient(135deg,#8b5cf6_0%,#7c3aed_45%,#38bdf8_100%)] hover:brightness-105 hover:shadow-lg hover:scale-[1.02]"
                     >
                       {isCardPaymentLoading || isLoading ? (
                         <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
