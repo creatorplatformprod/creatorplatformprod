@@ -112,6 +112,12 @@ const parseUrl = (value: string) => {
   }
 };
 
+const isBlankLikeValue = (value: unknown) => {
+  if (typeof value !== 'string') return false;
+  const normalized = value.trim().toLowerCase();
+  return normalized === '' || normalized === 'null' || normalized === 'undefined';
+};
+
 const validateSocialUrl = (value: string, hosts: string[]) => {
   const trimmed = value.trim();
   if (!trimmed) return '';
@@ -885,6 +891,17 @@ const CreatorDashboard = () => {
           ? (() => {
               const copy: any = { ...draft };
               delete copy._draftSavedAt;
+              const serverAvatar = String(nextProfileData.avatar || '').trim();
+              const serverCoverImage = String(nextProfileData.coverImage || '').trim();
+              const draftAvatar = typeof copy.avatar === 'string' ? copy.avatar.trim() : '';
+              const draftCoverImage = typeof copy.coverImage === 'string' ? copy.coverImage.trim() : '';
+              // Drafts are preview-only; never let stale/blank local draft media override persisted server media.
+              if ((isBlankLikeValue(draftAvatar) || draftAvatar.startsWith('blob:')) && serverAvatar) {
+                delete copy.avatar;
+              }
+              if ((isBlankLikeValue(draftCoverImage) || draftCoverImage.startsWith('blob:')) && serverCoverImage) {
+                delete copy.coverImage;
+              }
               return copy;
             })()
           : null;
@@ -1216,11 +1233,17 @@ const CreatorDashboard = () => {
     if (typeof payload.telegramUsername === 'string') {
       payload.telegramUsername = payload.telegramUsername.trim().replace(/^@/, '');
     }
-    if (typeof payload.avatar === 'string' && payload.avatar.trim() === '') {
-      payload.avatar = '';
+    if (typeof payload.avatar === 'string') {
+      const avatarValue = payload.avatar.trim();
+      if (avatarValue === '' || avatarValue.startsWith('blob:')) {
+        delete payload.avatar;
+      }
     }
-    if (typeof payload.coverImage === 'string' && payload.coverImage.trim() === '') {
-      payload.coverImage = '';
+    if (typeof payload.coverImage === 'string') {
+      const coverValue = payload.coverImage.trim();
+      if (coverValue === '' || coverValue.startsWith('blob:')) {
+        delete payload.coverImage;
+      }
     }
     const result = await api.updateProfile(payload);
     if (!result?.success) {

@@ -351,11 +351,17 @@ const PublicWebsitePreview = () => {
     if (!draft || typeof draft !== "object") return;
     delete draft.websiteTemplate;
 
-    if (typeof draft.avatar === 'string' && draft.avatar.trim() === '') {
-      draft.avatar = '';
+    if (typeof draft.avatar === 'string') {
+      const avatarValue = draft.avatar.trim();
+      if (avatarValue === '' || avatarValue.startsWith('blob:')) {
+        delete draft.avatar;
+      }
     }
-    if (typeof draft.coverImage === 'string' && draft.coverImage.trim() === '') {
-      draft.coverImage = '';
+    if (typeof draft.coverImage === 'string') {
+      const coverValue = draft.coverImage.trim();
+      if (coverValue === '' || coverValue.startsWith('blob:')) {
+        delete draft.coverImage;
+      }
     }
 
     const result = await api.updateProfile(draft);

@@ -220,6 +220,21 @@ const CreatorProfile = () => {
       return null;
     }
   };
+  const mergeDraftWithPersistedProfile = (persistedProfile: any, draftProfile: any) => {
+    if (!draftProfile || typeof draftProfile !== 'object') return persistedProfile;
+    const merged = { ...(persistedProfile || {}), ...draftProfile };
+    const persistedAvatar = String(persistedProfile?.avatar || '').trim();
+    const persistedCoverImage = String(persistedProfile?.coverImage || '').trim();
+    const draftAvatar = typeof draftProfile.avatar === 'string' ? draftProfile.avatar.trim() : '';
+    const draftCoverImage = typeof draftProfile.coverImage === 'string' ? draftProfile.coverImage.trim() : '';
+    if ((isBlankLike(draftAvatar) || draftAvatar.startsWith('blob:')) && !isBlankLike(persistedAvatar)) {
+      merged.avatar = persistedAvatar;
+    }
+    if ((isBlankLike(draftCoverImage) || draftCoverImage.startsWith('blob:')) && !isBlankLike(persistedCoverImage)) {
+      merged.coverImage = persistedCoverImage;
+    }
+    return merged;
+  };
   
   useEffect(() => {
     if (isPreviewMode || fanLoading) return;
@@ -411,7 +426,7 @@ const CreatorProfile = () => {
             const profileDraft = getProfileDraft(safeUsername);
             setCreatorData(
               withMockProfileDefaults(
-                profileDraft ? { ...baseUser, ...profileDraft } : baseUser
+                profileDraft ? mergeDraftWithPersistedProfile(baseUser, profileDraft) : baseUser
               )
             );
             setCollections(privateCollectionsResult?.success ? (privateCollectionsResult.collections || []) : []);
@@ -426,7 +441,11 @@ const CreatorProfile = () => {
       const data = await api.getCreatorProfile(safeUsername);
       if (data.success) {
         const profileDraft = hasDraftCapablePreview ? getProfileDraft(safeUsername) : null;
-        setCreatorData(withMockProfileDefaults(profileDraft ? { ...data.user, ...profileDraft } : data.user));
+        setCreatorData(
+          withMockProfileDefaults(
+            profileDraft ? mergeDraftWithPersistedProfile(data.user, profileDraft) : data.user
+          )
+        );
         setCollections(data.collections || []);
         setStatusCards(data.statusCards || []);
       } else {
