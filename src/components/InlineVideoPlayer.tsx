@@ -41,6 +41,7 @@ const InlineVideoPlayer = ({
   isBlurred = false,
   onClick
 }: InlineVideoPlayerProps) => {
+  const DEFAULT_VIDEO_THUMBNAIL = '/placeholder.svg';
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [showControls, setShowControls] = useState(false);
@@ -98,7 +99,7 @@ const InlineVideoPlayer = ({
     if (fromHls) return fromHls;
     const fromSrc = deriveStreamThumbnailFromVideoUrl(String(src || '').trim());
     if (fromSrc) return fromSrc;
-    return rawThumb;
+    return rawThumb || DEFAULT_VIDEO_THUMBNAIL;
   };
 
   const videoThumbnail = getVideoThumbnail();
@@ -381,7 +382,8 @@ const InlineVideoPlayer = ({
           if (!thumbnailError && canUseFallbackThumbnail) {
             setThumbnailError(true);
           } else {
-            e.currentTarget.style.display = 'none';
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = DEFAULT_VIDEO_THUMBNAIL;
           }
         }}
       />
