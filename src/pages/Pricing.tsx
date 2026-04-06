@@ -4,17 +4,21 @@ import { ArrowLeft, Check, Sparkles, Zap } from 'lucide-react';
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const proCheckoutUrl = String(import.meta.env.VITE_BILLING_PRO_URL || '').trim();
+  const businessCheckoutUrl = String(import.meta.env.VITE_BILLING_BUSINESS_URL || '').trim();
 
   const handleStartTrial = () => {
     navigate('/');
   };
 
   const handleCheckoutPro = () => {
-    window.open('https://checkout.example.com', '_blank');
+    if (!proCheckoutUrl) return;
+    window.open(proCheckoutUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleCheckoutBusiness = () => {
-    window.open('https://checkout.example.com/business', '_blank');
+    if (!businessCheckoutUrl) return;
+    window.open(businessCheckoutUrl, '_blank', 'noopener,noreferrer');
   };
 
   const freeFeatures = [
@@ -136,6 +140,7 @@ const Pricing = () => {
 
             <Button 
               onClick={handleCheckoutPro}
+              disabled={!proCheckoutUrl}
               className="w-full mb-6 h-11 rounded-xl font-semibold shadow-sm bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-600 hover:to-sky-600 text-white border-0"
             >
               Get Pro
@@ -170,6 +175,7 @@ const Pricing = () => {
 
             <Button 
               onClick={handleCheckoutBusiness}
+              disabled={!businessCheckoutUrl}
               variant="outline"
               className="w-full mb-6 h-11 rounded-xl border-border hover:border-primary/40 text-foreground hover:text-primary font-semibold transition-all"
             >

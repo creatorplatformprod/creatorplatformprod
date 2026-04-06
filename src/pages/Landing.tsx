@@ -67,6 +67,8 @@ const Landing = () => {
   const [showCookies, setShowCookies] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const proCheckoutUrl = String(import.meta.env.VITE_BILLING_PRO_URL || '').trim();
+  const businessCheckoutUrl = String(import.meta.env.VITE_BILLING_BUSINESS_URL || '').trim();
   useFeedbackToasts({ error });
 
   /* Nav scroll detection */
@@ -104,11 +106,21 @@ const Landing = () => {
         if (r.success && r.token) { localStorage.setItem('token', r.token); navigate('/dashboard'); }
         else setError(r.error || 'Registration failed');
       }
-    } catch (err: any) { setError(err.message || 'An error occurred'); }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An error occurred';
+      setError(message);
+    }
     finally { setLoading(false); }
   };
 
   const handleGoogleAuth = () => { api.googleAuth(); };
+  const openPlanCheckout = (url: string) => {
+    if (!url) {
+      setError('Billing checkout URL is not configured yet.');
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
   const renderSignupFields = () => {
     switch (signupStep) {
@@ -369,7 +381,7 @@ const Landing = () => {
                 <span className="text-gray-400 text-sm ml-1">/ month</span>
               </div>
               <p className="text-gray-400 text-xs mb-6">After free trial</p>
-              <button onClick={() => window.open('https://checkout.example.com', '_blank')} className="w-full h-11 rounded-xl landing-cta-glow btn-press font-semibold text-sm mb-6">Get Pro</button>
+              <button onClick={() => openPlanCheckout(proCheckoutUrl)} className="w-full h-11 rounded-xl landing-cta-glow btn-press font-semibold text-sm mb-6">Get Pro</button>
               <div className="space-y-3 flex-1">
                 {PRO_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
@@ -389,7 +401,7 @@ const Landing = () => {
                 <span className="text-gray-400 text-sm ml-1">/ month</span>
               </div>
               <p className="text-gray-400 text-xs mb-6">12-month commitment</p>
-              <button onClick={() => window.open('https://checkout.example.com/business', '_blank')} className="w-full h-11 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6 btn-press">Get Business</button>
+              <button onClick={() => openPlanCheckout(businessCheckoutUrl)} className="w-full h-11 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6 btn-press">Get Business</button>
               <div className="space-y-3 flex-1">
                 {BIZ_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">

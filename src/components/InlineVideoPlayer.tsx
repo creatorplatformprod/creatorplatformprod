@@ -12,6 +12,25 @@ interface InlineVideoPlayerProps {
   onClick?: () => void;
 }
 
+type HlsErrorPayload = {
+  fatal?: boolean;
+};
+
+type HlsInstanceLike = {
+  loadSource: (src: string) => void;
+  attachMedia: (media: HTMLMediaElement) => void;
+  on: (event: string, handler: (event: string, data: HlsErrorPayload) => void) => void;
+  destroy: () => void;
+};
+
+type HlsConstructorLike = {
+  new (config: { enableWorker: boolean; backBufferLength: number }): HlsInstanceLike;
+  isSupported: () => boolean;
+  Events: {
+    ERROR: string;
+  };
+};
+
 const InlineVideoPlayer = ({ 
   src, 
   hlsSrc = "",
@@ -93,11 +112,11 @@ const InlineVideoPlayer = ({
     if (!video) return;
 
     let isMounted = true;
-    let hlsInstance: any = null;
+    let hlsInstance: HlsInstanceLike | null = null;
     let hlsFallbackTimer: ReturnType<typeof setTimeout> | null = null;
     triedMp4FallbackRef.current = false;
 
-    const useMp4Fallback = () => {
+    const activateMp4Fallback = () => {
       if (!isMounted) return;
       if (!src) return;
       triedMp4FallbackRef.current = true;
@@ -109,7 +128,7 @@ const InlineVideoPlayer = ({
 
     const setupSource = async () => {
       if (!hlsSrc) {
-        useMp4Fallback();
+        activateMp4Fallback();
         return;
       }
 
@@ -123,9 +142,9 @@ const InlineVideoPlayer = ({
       try {
         const module = await import('hls.js');
         if (!isMounted) return;
-        const Hls = module.default;
+        const Hls = module.default as unknown as HlsConstructorLike;
         if (!Hls?.isSupported?.()) {
-          useMp4Fallback();
+          activateMp4Fallback();
           return;
         }
         hlsInstance = new Hls({
@@ -134,15 +153,15 @@ const InlineVideoPlayer = ({
         });
         hlsInstance.loadSource(hlsSrc);
         hlsInstance.attachMedia(video);
-        hlsInstance.on(Hls.Events.ERROR, (_evt: any, data: any) => {
+        hlsInstance.on(Hls.Events.ERROR, (_evt: string, data: HlsErrorPayload) => {
           if (data?.fatal) {
-            hlsInstance?.destroy?.();
+            hlsInstance?.destroy();
             hlsInstance = null;
-            useMp4Fallback();
+            activateMp4Fallback();
           }
         });
       } catch {
-        useMp4Fallback();
+        activateMp4Fallback();
       }
     };
 
@@ -151,7 +170,7 @@ const InlineVideoPlayer = ({
       hlsFallbackTimer = setTimeout(() => {
         if (!isMounted || triedMp4FallbackRef.current) return;
         if (video.readyState >= 1) return;
-        useMp4Fallback();
+        activateMp4Fallback();
       }, 6000);
     }
 

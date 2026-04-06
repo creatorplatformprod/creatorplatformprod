@@ -9,7 +9,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "npm run build && npx wrangler deploy"
+    "deploy:backend": "npx wrangler deploy --config backend/wrangler.toml --env production",
+    "deploy": "npm run build && npm run deploy:backend"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",

@@ -49,6 +49,7 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
+import InlineVideoPlayer from '@/components/InlineVideoPlayer';
 import { useFeedbackToasts } from '@/hooks/useFeedbackToasts';
 import { toast } from '@/components/ui/sonner';
 import {
@@ -101,6 +102,7 @@ const TELEGRAM_USERNAME_REGEX = /^[A-Za-z0-9_]{5,32}$/;
 const TELEGRAM_BOT_TOKEN_REGEX = /^\d{6,}:[A-Za-z0-9_-]{20,}$/;
 const TELEGRAM_CHAT_ID_REGEX = /^-?\d{5,20}$/;
 const ETH_WALLET_REGEX = /^0x[a-fA-F0-9]{40}$/;
+const nowIso = () => new Date().toISOString();
 
 const parseUrl = (value: string) => {
   try {
@@ -475,10 +477,30 @@ const CreatorDashboard = () => {
 
   const serializeForDirtyCheck = (value: any) => JSON.stringify(value ?? {});
 
+  const toProfileDataFromUser = (source: any) => ({
+    displayName: source?.displayName || '',
+    bio: source?.bio || '',
+    avatar: source?.avatar || '',
+    coverImage: source?.coverImage || '',
+    coverOverlay: DEFAULT_COVER_OVERLAY,
+    walletAddress: source?.walletAddress || '',
+    telegramUsername: source?.telegramUsername || '',
+    telegramBotToken: source?.telegramBotToken || '',
+    telegramChatId: source?.telegramChatId || '',
+    twitterUrl: source?.twitterUrl || '',
+    instagramUrl: source?.instagramUrl || '',
+    tiktokUrl: source?.tiktokUrl || '',
+    twitchUrl: source?.twitchUrl || '',
+    domainEmail: source?.domainEmail || '',
+    unlockAllPrice: source?.unlockAllPrice || 0,
+    unlockAllCurrency: source?.unlockAllCurrency || 'USD'
+  });
+
   const buildProfileDraftSnapshot = () => {
     const snapshot: any = {
       ...profileData,
-      telegramUsername: profileData.telegramUsername.trim().replace(/^@/, '')
+      telegramUsername: profileData.telegramUsername.trim().replace(/^@/, ''),
+      _draftSavedAt: nowIso()
     };
     if (!telegramAlertsEnabled) {
       snapshot.telegramBotToken = '';
@@ -838,27 +860,36 @@ const CreatorDashboard = () => {
       if (userResult.success && userResult.user) {
         setUser(userResult.user);
         refreshPublicWebsiteState(userResult.user.username);
-        const nextProfileData = {
-          displayName: userResult.user.displayName || '',
-          bio: userResult.user.bio || '',
-          avatar: userResult.user.avatar || '',
-          coverImage: userResult.user.coverImage || '',
-          coverOverlay: DEFAULT_COVER_OVERLAY,
-          walletAddress: userResult.user.walletAddress || '',
-          telegramUsername: userResult.user.telegramUsername || '',
-          telegramBotToken: userResult.user.telegramBotToken || '',
-          telegramChatId: userResult.user.telegramChatId || '',
-          twitterUrl: userResult.user.twitterUrl || '',
-          instagramUrl: userResult.user.instagramUrl || '',
-          tiktokUrl: userResult.user.tiktokUrl || '',
-          twitchUrl: userResult.user.twitchUrl || '',
-          domainEmail: userResult.user.domainEmail || '',
-          unlockAllPrice: userResult.user.unlockAllPrice || 0,
-          unlockAllCurrency: userResult.user.unlockAllCurrency || 'USD'
-        };
+        const nextProfileData = toProfileDataFromUser(userResult.user);
         const draft = readProfileDraft(userResult.user.username);
+        const getMillis = (value: any) => {
+          const ms = Date.parse(String(value || ''));
+          return Number.isFinite(ms) ? ms : null;
+        };
+        const draftSavedAtMs = getMillis((draft as any)?._draftSavedAt);
+        const serverUpdatedAtMs = getMillis(userResult.user.updatedAt);
+        const shouldApplyDraft =
+          !!draft &&
+          (
+            !draftSavedAtMs ||
+            !serverUpdatedAtMs ||
+            draftSavedAtMs >= serverUpdatedAtMs
+          );
+        if (draft && !shouldApplyDraft) {
+          const staleDraftKey = getProfileDraftKey(userResult.user.username);
+          if (staleDraftKey) {
+            localStorage.removeItem(staleDraftKey);
+          }
+        }
+        const cleanedDraft = shouldApplyDraft && draft
+          ? (() => {
+              const copy: any = { ...draft };
+              delete copy._draftSavedAt;
+              return copy;
+            })()
+          : null;
         const mergedProfileData = {
-          ...(draft ? { ...nextProfileData, ...draft } : nextProfileData),
+          ...(cleanedDraft ? { ...nextProfileData, ...cleanedDraft } : nextProfileData),
           coverOverlay: DEFAULT_COVER_OVERLAY
         };
         const hasTokenConfigured =
@@ -1181,6 +1212,7 @@ const CreatorDashboard = () => {
     const payload = { ...draft };
     // Template system disabled: do not publish template field.
     delete payload.websiteTemplate;
+    delete payload._draftSavedAt;
     if (typeof payload.telegramUsername === 'string') {
       payload.telegramUsername = payload.telegramUsername.trim().replace(/^@/, '');
     }
@@ -1209,25 +1241,60 @@ const CreatorDashboard = () => {
     markPublicWebsiteDirty();
   };
 
-  const persistProfileDraftSnapshotFrom = (nextProfileData: typeof profileData) => {
-    if (!user?.username) return;
-    const key = getProfileDraftKey(user.username);
-    if (!key) return;
-    const snapshot: any = {
+  const saveProfileDataToBackend = async (
+    nextProfileData: typeof profileData,
+    successMessage = 'Profile saved.',
+    enforceValidation = true
+  ) => {
+    if (!user?.username) return false;
+    if (enforceValidation && Object.keys(profileValidationErrors).length > 0) {
+      throw new Error('Fix invalid profile fields before saving.');
+    }
+
+    const payload: any = {
       ...nextProfileData,
       telegramUsername: String(nextProfileData.telegramUsername || '').trim().replace(/^@/, '')
     };
+    delete payload.coverOverlay;
+    delete payload._draftSavedAt;
+
     if (!telegramAlertsEnabled) {
-      snapshot.telegramBotToken = '';
-      snapshot.telegramChatId = '';
-    } else if (telegramBotTokenConfigured && !isEditingTelegramToken && !String(snapshot.telegramBotToken || '').trim()) {
-      delete snapshot.telegramBotToken;
+      payload.telegramBotToken = '';
+      payload.telegramChatId = '';
+    } else if (telegramBotTokenConfigured && !isEditingTelegramToken && !String(payload.telegramBotToken || '').trim()) {
+      delete payload.telegramBotToken;
     }
-    localStorage.setItem(key, JSON.stringify(snapshot));
-    profileBaselineRef.current = serializeForDirtyCheck(nextProfileData);
+
+    const result = await api.updateProfile(payload);
+    if (!result?.success) {
+      throw new Error(result?.error || 'Failed to save profile');
+    }
+
+    const nextServerProfileData = result?.user
+      ? toProfileDataFromUser(result.user)
+      : toProfileDataFromUser({ ...user, ...payload });
+    setProfileData(nextServerProfileData);
+    profileBaselineRef.current = serializeForDirtyCheck(nextServerProfileData);
     setIsProfileDirty(false);
     setProfileAutoSaveState('saved');
+
+    const draftKey = getProfileDraftKey(user.username);
+    if (draftKey) {
+      localStorage.removeItem(draftKey);
+    }
+
+    if (telegramAlertsEnabled && String(nextServerProfileData.telegramBotToken || '').trim()) {
+      setIsEditingTelegramToken(false);
+      setTelegramBotTokenConfigured(true);
+    }
+
+    if (result?.user) {
+      setUser(result.user);
+    }
+
     markPublicWebsiteDirty();
+    setSuccess(successMessage);
+    return true;
   };
 
   const handleUpdateWebsite = async () => {
@@ -1257,29 +1324,13 @@ const CreatorDashboard = () => {
     try {
       setError('');
       setSuccess('');
-      if (Object.keys(profileValidationErrors).length > 0) {
-        setError('Fix invalid profile fields before saving.');
-        return;
-      }
-      if (!user?.username) return;
-      const key = getProfileDraftKey(user.username);
-      if (!key) return;
-      const snapshot = buildProfileDraftSnapshot();
-      localStorage.setItem(key, JSON.stringify(snapshot));
-      profileBaselineRef.current = serializeForDirtyCheck(profileData);
-      setIsProfileDirty(false);
-      setProfileAutoSaveState('saved');
-      markPublicWebsiteDirty();
-      if (telegramAlertsEnabled && profileData.telegramBotToken.trim()) {
-        setIsEditingTelegramToken(false);
-        setTelegramBotTokenConfigured(true);
-      }
-      toast.success('Draft saved to preview page.', {
+      await saveProfileDataToBackend(profileData, 'Profile saved successfully.', true);
+      toast.success('Profile saved and synced to your account.', {
         id: 'profile-draft-saved',
         duration: 2600
       });
     } catch (err: any) {
-      setError(err.message || 'Failed to save profile draft');
+      setError(err.message || 'Failed to save profile');
     }
   };
 
@@ -1298,12 +1349,10 @@ const CreatorDashboard = () => {
       const uploadResult = await api.uploadFile(editedAvatar);
       if (uploadResult?.url) {
         const nextProfileData = { ...profileData, avatar: uploadResult.url };
-        setProfileData(nextProfileData);
-        persistProfileDraftSnapshotFrom(nextProfileData);
+        await saveProfileDataToBackend(nextProfileData, 'Avatar uploaded and saved.', false);
         setAvatarFile(null);
         setAvatarDimensions(null);
         setAvatarEditor(createDefaultCropEditorState());
-        setSuccess('Avatar uploaded. Profile will auto-save.');
       } else {
         setError('Failed to upload avatar');
       }
@@ -1415,15 +1464,13 @@ const CreatorDashboard = () => {
       const uploadResult = await api.uploadFile(editedCover);
       if (uploadResult?.url) {
         const nextProfileData = { ...profileData, coverImage: uploadResult.url };
-        setProfileData(nextProfileData);
-        persistProfileDraftSnapshotFrom(nextProfileData);
+        await saveProfileDataToBackend(nextProfileData, 'Cover image uploaded and saved.', false);
         setCoverImageFile(null);
         setCoverDimensions(null);
         setCoverEditor(createDefaultCropEditorState());
         if (coverInputRef.current) {
           coverInputRef.current.value = '';
         }
-        setSuccess('Cover image uploaded. Profile draft will auto-save.');
       } else {
         setError('Failed to upload cover image');
       }
@@ -3153,16 +3200,20 @@ const CreatorDashboard = () => {
                     </Button>
                     <Button
                       onClick={() => {
+                        void (async () => {
+                          try {
+                            const nextProfileData = { ...profileData, avatar: '' };
+                            await saveProfileDataToBackend(nextProfileData, 'Avatar removed and saved.', false);
+                          } catch (err: any) {
+                            setError(err.message || 'Failed to remove avatar');
+                          }
+                        })();
                         setAvatarFile(null);
                         setAvatarDimensions(null);
                         setAvatarEditor(createDefaultCropEditorState());
                         if (avatarInputRef.current) {
                           avatarInputRef.current.value = '';
                         }
-                        const nextProfileData = { ...profileData, avatar: '' };
-                        setProfileData(nextProfileData);
-                        persistProfileDraftSnapshotFrom(nextProfileData);
-                        setSuccess('Avatar removed. Draft updated.');
                       }}
                       disabled={!profileData.avatar}
                       size="sm"
@@ -3284,16 +3335,20 @@ const CreatorDashboard = () => {
                     </Button>
                     <Button
                       onClick={() => {
+                        void (async () => {
+                          try {
+                            const nextProfileData = { ...profileData, coverImage: '' };
+                            await saveProfileDataToBackend(nextProfileData, 'Cover removed and saved.', false);
+                          } catch (err: any) {
+                            setError(err.message || 'Failed to remove cover');
+                          }
+                        })();
                         setCoverImageFile(null);
                         setCoverDimensions(null);
                         setCoverEditor(createDefaultCropEditorState());
                         if (coverInputRef.current) {
                           coverInputRef.current.value = '';
                         }
-                        const nextProfileData = { ...profileData, coverImage: '' };
-                        setProfileData(nextProfileData);
-                        persistProfileDraftSnapshotFrom(nextProfileData);
-                        setSuccess('Cover removed. Draft updated.');
                       }}
                       disabled={!profileData.coverImage}
                       size="sm"
@@ -4340,6 +4395,7 @@ const CreatorDashboard = () => {
                               const originalFull = media.url;
                               const imageSources = getMediaSrcCandidates(originalThumb || originalFull);
                               const videoSources = getMediaSrcCandidates(originalFull);
+                              const hlsSources = getMediaSrcCandidates(String(media.hlsUrl || ''));
                               const posterSources = getMediaSrcCandidates(originalThumb || originalFull);
                               const isVideo = isVideoMedia(media);
                               return (
@@ -4374,26 +4430,12 @@ const CreatorDashboard = () => {
                                   </button>
                                   {isVideo ? (
                                     videoSources.length > 0 ? (
-                                      <video
+                                      <InlineVideoPlayer
                                         src={videoSources[0]}
-                                        poster={posterSources[0] || undefined}
-                                        data-src-index="0"
+                                        hlsSrc={hlsSources[0] || ''}
+                                        thumbnail={posterSources[0] || videoSources[0]}
+                                        alt="Collection video"
                                         className="h-20 w-full object-cover relative z-10"
-                                        muted
-                                        preload="metadata"
-                                        onError={(e) => {
-                                          const target = e.currentTarget as HTMLVideoElement;
-                                          const nextIndex = Number(target.dataset.srcIndex || '0') + 1;
-                                          if (nextIndex < videoSources.length) {
-                                            target.dataset.srcIndex = String(nextIndex);
-                                            target.src = videoSources[nextIndex];
-                                            if (posterSources[nextIndex]) {
-                                              target.poster = posterSources[nextIndex];
-                                            }
-                                          } else {
-                                            target.style.display = 'none';
-                                          }
-                                        }}
                                       />
                                     ) : null
                                   ) : (

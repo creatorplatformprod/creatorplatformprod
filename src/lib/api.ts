@@ -427,6 +427,7 @@ export const api = {
     provider: string;
     email: string;
     creatorId?: string;
+    creator?: string;
   }) => {
     return apiRequest('/api/payment/create-session', {
       method: 'POST',
