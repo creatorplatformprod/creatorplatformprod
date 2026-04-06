@@ -339,9 +339,6 @@ const Collections = () => {
             url: imageSrc,
             hlsUrl: mediaItem.hlsUrl
           });
-          if (mediaType === 'video') {
-            thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi|m3u8)$/i, '.avif');
-          }
           const parsedWidth = Number(mediaItem.width);
           const parsedHeight = Number(mediaItem.height);
           const fallbackDims = getRandomDimensions(items.length);

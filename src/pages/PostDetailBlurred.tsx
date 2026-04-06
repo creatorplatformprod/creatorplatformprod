@@ -691,10 +691,6 @@ const PostDetailBlurred = () => {
                       hlsSrc
                     });
                 
-                // For videos, try to get an avif thumbnail instead of the video file
-                if (mediaType === 'video') {
-                  thumbSrc = thumbSrc.replace(/\.(mp4|webm|mov|ogg|avi|m3u8)$/i, '.avif');
-                }
                 const intrinsicWidth = typeof imageData === 'string' ? null : Number(imageData?.width);
                 const intrinsicHeight = typeof imageData === 'string' ? null : Number(imageData?.height);
                 const hasIntrinsicDims =
