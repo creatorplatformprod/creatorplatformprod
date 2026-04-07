@@ -49,7 +49,6 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import AccountMenu from '@/components/AccountMenu';
-import InlineVideoPlayer from '@/components/InlineVideoPlayer';
 import { useFeedbackToasts } from '@/hooks/useFeedbackToasts';
 import { toast } from '@/components/ui/sonner';
 import {
@@ -4289,15 +4288,22 @@ const CreatorDashboard = () => {
                                     const src = isVideo
                                       ? getCollectionListPreviewThumb(media)
                                       : (getMediaSrcCandidates(media?.thumbnailUrl || media?.url)[0] || media?.thumbnailUrl || media?.url);
-                                    const hasImagePoster = !!src && !isProbablyVideoUrl(src);
+                                    const videoSrc = getMediaSrcCandidates(media?.url)[0] || media?.url || '';
                                     return (
                                       <div key={`${collection._id}-media-${mediaIndex}`} className="h-14 w-14 overflow-hidden rounded-md border border-border bg-muted/20">
-                                        {isVideo && !hasImagePoster ? (
-                                          <div className="h-full w-full flex items-center justify-center bg-muted/40">
-                                            <div className="h-6 w-6 rounded-full bg-white/85 text-foreground text-[11px] leading-none flex items-center justify-center">
-                                              ▶
-                                            </div>
-                                          </div>
+                                        {isVideo ? (
+                                          <video
+                                            src={videoSrc}
+                                            className="h-full w-full object-cover"
+                                            muted
+                                            playsInline
+                                            preload="metadata"
+                                            onError={(e) => {
+                                              const fallback = e.currentTarget.nextElementSibling as HTMLImageElement | null;
+                                              if (fallback) fallback.classList.remove('hidden');
+                                              e.currentTarget.classList.add('hidden');
+                                            }}
+                                          />
                                         ) : (
                                           <img
                                             src={src || '/placeholder.svg'}
@@ -4308,6 +4314,14 @@ const CreatorDashboard = () => {
                                               e.currentTarget.onerror = null;
                                               e.currentTarget.src = '/placeholder.svg';
                                             }}
+                                          />
+                                        )}
+                                        {isVideo && (
+                                          <img
+                                            src={src || '/placeholder.svg'}
+                                            alt=""
+                                            className="hidden h-full w-full object-cover"
+                                            loading="lazy"
                                           />
                                         )}
                                       </div>
@@ -4537,7 +4551,6 @@ const CreatorDashboard = () => {
                               const originalFull = media.url;
                               const imageSources = getMediaSrcCandidates(originalThumb || originalFull);
                               const videoSources = getMediaSrcCandidates(originalFull);
-                              const hlsSources = getMediaSrcCandidates(String(media.hlsUrl || ''));
                               const posterSources = getMediaSrcCandidates(originalThumb || originalFull);
                               const isVideo = isVideoMedia(media);
                               return (
@@ -4572,13 +4585,32 @@ const CreatorDashboard = () => {
                                   </button>
                                   {isVideo ? (
                                     videoSources.length > 0 ? (
-                                      <InlineVideoPlayer
-                                        src={videoSources[0]}
-                                        hlsSrc={hlsSources[0] || ''}
-                                        thumbnail={posterSources[0] || videoSources[0]}
-                                        alt="Collection video"
-                                        className="h-20 w-full object-cover relative z-10"
-                                      />
+                                      <>
+                                        <video
+                                          src={videoSources[0]}
+                                          poster={posterSources[0] && !isProbablyVideoUrl(posterSources[0]) ? posterSources[0] : undefined}
+                                          className="h-20 w-full object-cover relative z-10"
+                                          muted
+                                          playsInline
+                                          controls
+                                          preload="metadata"
+                                          onError={(e) => {
+                                            const fallback = e.currentTarget.nextElementSibling as HTMLImageElement | null;
+                                            if (fallback) fallback.classList.remove('hidden');
+                                            e.currentTarget.classList.add('hidden');
+                                          }}
+                                        />
+                                        <img
+                                          src={posterSources[0] || '/placeholder.svg'}
+                                          alt=""
+                                          className="hidden h-20 w-full object-cover relative z-10"
+                                          loading="lazy"
+                                          onError={(e) => {
+                                            e.currentTarget.onerror = null;
+                                            e.currentTarget.src = '/placeholder.svg';
+                                          }}
+                                        />
+                                      </>
                                     ) : null
                                   ) : (
                                     imageSources.length > 0 ? (
