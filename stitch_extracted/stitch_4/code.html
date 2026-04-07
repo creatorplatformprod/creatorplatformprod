@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CreatorHub Storefront</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-container": "#b31cff",
+                        "inverse-on-surface": "#eff0f6",
+                        "tertiary": "#9100d2",
+                        "inverse-surface": "#2e3135",
+                        "on-surface-variant": "#484555",
+                        "on-secondary-container": "#00686f",
+                        "inverse-primary": "#c9bfff",
+                        "on-primary-fixed": "#1a0063",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#fffbff",
+                        "surface-container-high": "#e7e8ee",
+                        "on-tertiary-fixed-variant": "#7100a5",
+                        "secondary": "#006970",
+                        "surface-variant": "#e1e2e8",
+                        "background": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#eceef3",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#c9bfff",
+                        "primary": "#5b3cdd",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f8f9ff",
+                        "secondary-fixed-dim": "#00dbe9",
+                        "surface-container-low": "#f2f3f9",
+                        "primary-container": "#7459f7",
+                        "on-tertiary-fixed": "#30004a",
+                        "outline-variant": "#c9c4d8",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#7df4ff",
+                        "surface-container-highest": "#e1e2e8",
+                        "surface-dim": "#d8dae0",
+                        "primary-fixed": "#e5deff",
+                        "surface": "#f8f9ff",
+                        "on-tertiary-container": "#fffbff",
+                        "tertiary-fixed": "#f5d9ff",
+                        "tertiary-fixed-dim": "#e6b4ff",
+                        "secondary-container": "#00eefc",
+                        "on-background": "#191c20",
+                        "on-secondary": "#ffffff",
+                        "outline": "#797587",
+                        "on-error": "#ffffff",
+                        "on-surface": "#191c20",
+                        "on-primary-fixed-variant": "#441cc8",
+                        "on-secondary-fixed-variant": "#004f54",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#5d3fe0",
+                        "on-secondary-fixed": "#002022"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-surface selection:bg-secondary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-[0px_20px_48px_rgba(91,60,221,0.08)]">
+<div class="flex justify-between items-center px-8 h-20 w-full">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-black italic text-indigo-600 dark:text-indigo-400 plusJakartaSans font-bold tracking-tight">CreatorHub</span>
+<div class="hidden md:flex gap-8">
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-cyan-500 transition-colors" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-cyan-500 transition-colors" href="#">Editor</a>
+<a class="text-indigo-700 dark:text-cyan-400 border-b-2 border-cyan-400 pb-1 font-medium" href="#">Store</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-cyan-500 transition-colors" href="#">Previews</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">notifications</button>
+<button class="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold active:scale-95 duration-200 shadow-lg shadow-indigo-500/20">Create New</button>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a digital creator with colorful lighting and minimalist background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuutPVUNe-3MepcksGxUOTEaWGe7BtO86VwKgHzJvhgw4iSM3hfVLNV4jYNsMLXfoKXPJ2gB5dhXsbwjwLhnAr_O7FNXZvauvGug7Nco7k7FnyEv2QzVzk78yFhMOO6JeLhEKx4ufTsw5c4yje3TQ72zGQw_YkCIXiMJnHytqSd-kZrOlH24Frx9a7kSiLqPzp4FNFhQSvSMD2A6xl2ljOahTAO7BE8pF8y9-b-0xaXNGn7-ADY3Sn2VV-DeS33ATciaKihUz81_E"/>
+</div>
+</div>
+</div>
+<div class="bg-slate-200/50 dark:bg-slate-800/50 h-[1px]"></div>
+</nav>
+<main class="pt-32 pb-24 px-8 max-w-7xl mx-auto">
+<!-- Hero Section: Membership Focus -->
+<section class="relative mb-20">
+<div class="bg-gradient-to-br from-primary to-primary-container rounded-lg p-12 overflow-hidden relative group">
+<!-- Background Decorative Elements -->
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-secondary-container opacity-20 blur-[100px] rounded-full group-hover:scale-110 transition-transform duration-700"></div>
+<div class="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+<div class="space-y-8">
+<span class="inline-block py-1.5 px-4 bg-white/20 text-white rounded-full text-xs font-bold tracking-widest uppercase">The Curator's Circle</span>
+<h1 class="text-5xl lg:text-7xl font-extrabold text-white leading-tight -tracking-[0.03em]">Unlock Your Elite <span class="text-secondary-container">Creative</span> Potential</h1>
+<p class="text-primary-fixed text-lg leading-relaxed max-w-md">Join the Inner Circle and get instant access to 250+ premium assets, weekly workshops, and the exclusive Crypto-tip ecosystem.</p>
+<div class="flex flex-wrap gap-4">
+<button class="bg-white text-primary px-8 py-4 rounded-full font-extrabold text-lg hover:shadow-xl hover:-translate-y-1 transition-all active:scale-95">Upgrade to Elite</button>
+<button class="flex items-center gap-3 px-8 py-4 bg-white/10 text-white rounded-full font-bold hover:bg-white/20 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                                AI Coach
+                            </button>
+</div>
+</div>
+<div class="relative flex justify-center">
+<div class="w-full max-w-sm aspect-square bg-white/5 backdrop-blur-md rounded-lg p-4 border border-white/10 shadow-2xl rotate-3 group-hover:rotate-0 transition-all duration-500">
+<img class="w-full h-full object-cover rounded-DEFAULT" data-alt="abstract 3d fluid shapes in deep purple and vibrant cyan floating in a white void with soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx4G5T-ffWMrI0cF2kb0xt-EHIfoMAf0v0Xg-yHzTNxoxPpkOs0cGTXKgb3dP3ACOxNJoNzl3qXV9jdlUJ8IUMisI2ZiYJdpXmW5qk_9tp-pQLuje2wZaRuUa5R6x18vBbNZaC1HkDAdh8rc7JZbGELX1GmjL_3xXg1Y-LLeU_24UNxiOvPmcm3HqS_RStnT1NOfTw9aVIAY_scDFGRcEb3UDu_CSZOpP1UM_-66d2Q-23m8bylcV5clIcokY_kdpO6LPeE5mDqvQ"/>
+</div>
+<div class="absolute -bottom-6 -left-6 bg-secondary-container text-on-secondary-fixed p-6 rounded-lg shadow-xl -rotate-6 animate-pulse">
+<p class="text-xs font-bold uppercase tracking-widest">Active Members</p>
+<p class="text-3xl font-black">12.4k+</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Dynamic Asset Grid -->
+<div class="mb-12 flex justify-between items-end">
+<div class="space-y-2">
+<h2 class="text-4xl font-extrabold -tracking-tight text-on-surface">Storefront Gallery</h2>
+<p class="text-on-surface-variant font-medium">Browse premium content lockers and digital assets.</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-secondary text-white p-3 rounded-full shadow-lg">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<div class="bg-surface-container-high p-1 rounded-full flex">
+<button class="bg-white text-primary p-2 px-4 rounded-full shadow-sm text-sm font-bold">Trending</button>
+<button class="p-2 px-4 text-sm font-bold text-on-surface-variant">Newest</button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Featured Content Locker (Bento Style) -->
+<div class="md:col-span-8 bg-surface-container-lowest rounded-lg overflow-hidden group shadow-[0px_20px_48px_rgba(91,60,221,0.04)] hover:shadow-xl transition-all border border-transparent hover:border-outline-variant/10">
+<div class="aspect-video relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="modern 3d desktop setup with vibrant neon lighting and floating holographic icons in a dark sleek environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAU9xcuJCwyWdmFowyk6rRDJsTQ6rjFvR4epbiYXGxh9qUQiTU-cn4csNAXYWilhrwpXaNVSBF4rmYHt8GHlsM4DF336Aoiko8L91y6HcUqE9fvXBuCMfqeLgtrvo2y7C3nPNZMQt7ttM1jNB7SHGbd3CTyILZ57UBcry_huib2yAiNkFnG4UDpmzEw3B9x7hLfLncOcdgTCfoJeg_HYS45dxzIfL_p2YfyrewepsVqoXjImHbBqf21qzV64yBL_d_9AvO8gxWczOI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
+<div class="absolute top-6 right-6">
+<span class="bg-tertiary text-white px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase">Premium Locker</span>
+</div>
+<div class="absolute bottom-8 left-8 right-8 flex justify-between items-end">
+<div class="text-white">
+<h3 class="text-3xl font-extrabold mb-1">Creator Workflow OS v2</h3>
+<p class="text-white/70 font-medium">Includes 50+ Notion templates and asset packs.</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-white/20 backdrop-blur-md p-2 rounded-full border border-white/20">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-8 flex justify-between items-center">
+<div class="flex gap-4">
+<div class="flex -space-x-3">
+<div class="w-10 h-10 rounded-full border-2 border-white bg-slate-200"></div>
+<div class="w-10 h-10 rounded-full border-2 border-white bg-slate-300"></div>
+<div class="w-10 h-10 rounded-full border-2 border-white bg-slate-400"></div>
+</div>
+<div class="text-sm font-bold self-center">
+<span class="text-on-surface">4.8k Purchases</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-2xl font-black text-primary">$49.00</span>
+<button class="bg-secondary-container text-on-secondary-container px-6 py-2.5 rounded-full font-black active:scale-95 transition-all shadow-md">Unlock Access</button>
+</div>
+</div>
+</div>
+<!-- Tipping Sidebar -->
+<div class="md:col-span-4 space-y-6">
+<div class="bg-surface-container-low rounded-lg p-8 flex flex-col gap-6 border-outline-variant/10 border">
+<div class="flex items-center gap-4">
+<div class="p-3 bg-secondary-container rounded-full text-on-secondary-container">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<h3 class="text-xl font-extrabold">Instant Tipping</h3>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed font-medium">Support the curation directly using your favorite digital currencies.</p>
+<div class="grid grid-cols-2 gap-3">
+<button class="bg-surface-container-lowest p-4 rounded-lg text-center hover:bg-secondary-fixed transition-colors active:scale-95 shadow-sm">
+<span class="material-symbols-outlined block mb-2 text-secondary">currency_bitcoin</span>
+<span class="text-xs font-black uppercase tracking-wider">BTC</span>
+</button>
+<button class="bg-surface-container-lowest p-4 rounded-lg text-center hover:bg-secondary-fixed transition-colors active:scale-95 shadow-sm">
+<span class="material-symbols-outlined block mb-2 text-tertiary">diamond</span>
+<span class="text-xs font-black uppercase tracking-wider">ETH</span>
+</button>
+</div>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-0 rounded-lg p-4 font-bold focus:ring-2 focus:ring-secondary-container transition-all" placeholder="Custom Amount" type="text"/>
+<button class="absolute right-2 top-2 bottom-2 bg-primary text-white px-4 rounded-full text-xs font-bold">Send</button>
+</div>
+</div>
+<div class="bg-gradient-to-tr from-tertiary to-primary p-1 rounded-lg">
+<div class="bg-surface-container-lowest rounded-DEFAULT p-8 text-center space-y-4">
+<span class="material-symbols-outlined text-4xl text-tertiary" style="font-variation-settings: 'FILL' 1;">star</span>
+<h4 class="text-lg font-black italic">Creator Of The Month</h4>
+<p class="text-sm text-on-surface-variant">Nominated for exceptional digital curation in the lifestyle niche.</p>
+<button class="text-primary font-bold text-sm border-b-2 border-secondary-container pb-1 hover:border-primary transition-all">View Spotlight</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Asset Grid -->
+<div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
+<div class="group bg-surface-container-lowest p-4 rounded-lg shadow-sm hover:shadow-lg transition-all">
+<div class="aspect-square rounded-DEFAULT bg-surface-container mb-4 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform" data-alt="vintage retro tech items like gameboys and cameras arranged neatly on a pastel blue surface with clean lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWKysguA7BHTKCQGpLnDNe_stHmRZyGhwyoABevioTsVJBTjlBBjBa_RJth5oLNhU1ghWMHtOhDITgD317lxhQf3FtGV5tvu-K7FmAr92EQmD65QTptP5vjRC-VV6wi8W_SC7xJMNLAeEtoZWm4u1mDLOaiGgEWVFzpBe3YebzFrtGzC_217jUmXHgraokPnCjQEnZhZMwRcWo0T0maPmvomisLDDYK8AIJsWm1Pbg9IjjcUKYbNFwBeBvPW2lfLefq7JqSNZdyek"/>
+</div>
+<h4 class="font-bold text-on-surface truncate">Retro UI Pack</h4>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs font-black text-secondary uppercase">$12.00</span>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary">add_shopping_cart</button>
+</div>
+</div>
+<div class="group bg-surface-container-lowest p-4 rounded-lg shadow-sm hover:shadow-lg transition-all">
+<div class="aspect-square rounded-DEFAULT bg-surface-container mb-4 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform" data-alt="vibrant neon lights in a futuristic cyber city setting with heavy rain and atmospheric fog" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoGdkP2-FGSdmuYr5qX18wYekaC5MJCiCbY1r8NraWZ96y00ZNCrFUmFb1AFsBsX6x6FmoLjhzlNRxdN6EgiLp8GjYfA3LhWdWAmEujfuR11AqeVQfnPFy_eHW0ZKa3omK5Q1gAhIy2TCGH3zVUfx2muzmnFaWvDb3WFdrmzfJi5GRfCjq1vg9mxCK6jSDbpgor7fSf-EGOUKKqacFkrOIYyhPYFZ0yMFfD5bPXuUcHqYsmieGh-NA_Ti_waNU3ZJfYBNi0XheG2M"/>
+</div>
+<h4 class="font-bold text-on-surface truncate">Cyber Lights Preset</h4>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs font-black text-secondary uppercase">$8.00</span>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary">add_shopping_cart</button>
+</div>
+</div>
+<div class="group bg-surface-container-lowest p-4 rounded-lg shadow-sm hover:shadow-lg transition-all">
+<div class="aspect-square rounded-DEFAULT bg-surface-container mb-4 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform" data-alt="iridescent holographic paper texture with soft ripples and beautiful rainbow color shifts" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSsQSTI6n3p5yF7brKOHPy2hO3yqbxeLrfHZq77_QXbMjcB2yB_mpuykiCCUrCHwGwqalUUUjkIJdzu7PJZkzxG3j4l0cuFS9Mjoq5zGHbSyUXZ9d9KKgnn7_14FgUP3ZJlOx0_FYjJSl6v2smQIjSHn-zEOhxqEzRWv8mi6ETNW1jVBZBbNzzGWU2lWWhMUBS2_Wnlia1MdQA7Zer4koGZzmyd3L5I3onsZxnphBsbAO9dlVoLG0-2-5Rxz5_dqhLxT3J31xwno0"/>
+</div>
+<h4 class="font-bold text-on-surface truncate">Prism Textures</h4>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs font-black text-secondary uppercase">$15.00</span>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary">add_shopping_cart</button>
+</div>
+</div>
+<div class="group bg-surface-container-lowest p-4 rounded-lg shadow-sm hover:shadow-lg transition-all">
+<div class="aspect-square rounded-DEFAULT bg-surface-container mb-4 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform" data-alt="minimalist workspace with a white laptop and high-end tech accessories on a light gray desk with natural morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEp3WCdke-N4mODQiIEH-gTHpojpvxS2ppAMu_teBmZ-HgYuSkI5o_YuyyF8hFeJ1vQ5ZmgV1d4Vh-JxzTkGuD5LD1RKPsXmHP2ue8PNF4QRc2aOdGZ2sgFcTBDnwTEc00OGcr3c8VQgnFPGW7f5GW0nFNiROYXBLPmdbvXH0sGb48PlBW6HKMrOS5vAvqK4mSyaSN_ervbecNoIN8ueDh3COHoLJrDW_STrsRxNzbPUkzl0oB_As8g0leX9Ha5u-PdgyLEMsD20I"/>
+</div>
+<h4 class="font-bold text-on-surface truncate">Minimalist Kit</h4>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs font-black text-secondary uppercase">Free</span>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary">download</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-end pb-6 px-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl shadow-[0px_-10px_40px_rgba(91,60,221,0.12)] z-50 rounded-t-[2rem]">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="plusJakartaSans text-[10px] uppercase tracking-widest font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2" href="#">
+<span class="material-symbols-outlined">edit_note</span>
+<span class="plusJakartaSans text-[10px] uppercase tracking-widest font-bold">Edit</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-indigo-600 text-white rounded-full p-3 mb-2 scale-110 shadow-lg shadow-indigo-500/50" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storefront</span>
+<span class="plusJakartaSans text-[10px] uppercase tracking-widest font-bold">Shop</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2" href="#">
+<span class="material-symbols-outlined">show_chart</span>
+<span class="plusJakartaSans text-[10px] uppercase tracking-widest font-bold">Analytics</span>
+</a>
+</nav>
+</body></html>

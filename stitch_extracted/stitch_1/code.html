@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#ffffff",
+                    "surface-dim": "#d8dae0",
+                    "surface": "#f8f9ff",
+                    "tertiary": "#9100d2",
+                    "tertiary-fixed-dim": "#e6b4ff",
+                    "on-primary-fixed": "#1a0063",
+                    "primary-fixed": "#e5deff",
+                    "primary-container": "#7459f7",
+                    "on-primary-fixed-variant": "#441cc8",
+                    "surface-tint": "#5d3fe0",
+                    "outline": "#797587",
+                    "on-secondary-fixed": "#002022",
+                    "inverse-on-surface": "#eff0f6",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-primary": "#c9bfff",
+                    "secondary-fixed-dim": "#00dbe9",
+                    "on-surface": "#191c20",
+                    "tertiary-fixed": "#f5d9ff",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#004f54",
+                    "error-container": "#ffdad6",
+                    "on-tertiary": "#ffffff",
+                    "inverse-surface": "#2e3135",
+                    "secondary": "#006970",
+                    "primary-fixed-dim": "#c9bfff",
+                    "primary": "#5b3cdd",
+                    "on-primary-container": "#fffbff",
+                    "surface-container": "#eceef3",
+                    "background": "#f8f9ff",
+                    "surface-container-low": "#f2f3f9",
+                    "secondary-fixed": "#7df4ff",
+                    "on-background": "#191c20",
+                    "on-secondary-container": "#00686f",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#484555",
+                    "error": "#ba1a1a",
+                    "secondary-container": "#00eefc",
+                    "on-tertiary-container": "#fffbff",
+                    "tertiary-container": "#b31cff",
+                    "surface-container-high": "#e7e8ee",
+                    "on-tertiary-fixed-variant": "#7100a5",
+                    "outline-variant": "#c9c4d8",
+                    "surface-bright": "#f8f9ff",
+                    "surface-container-highest": "#e1e2e8",
+                    "on-tertiary-fixed": "#30004a",
+                    "surface-variant": "#e1e2e8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface">
+<!-- Top Navigation Bar -->
+<nav class="bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl docked full-width top-0 sticky z-50 shadow-[0px_20px_48px_rgba(91,60,221,0.08)]">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-[1440px] mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black tracking-tighter text-indigo-600 dark:text-indigo-400">CreatorFlow</span>
+<div class="hidden md:flex gap-6">
+<a class="text-indigo-600 dark:text-indigo-400 font-bold border-b-2 border-indigo-500 pb-1" href="#">Features</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors" href="#">Pricing</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors" href="#">Storefront</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-slate-500 hover:text-indigo-600 transition-colors">notifications</button>
+<button class="material-symbols-outlined text-slate-500 hover:text-indigo-600 transition-colors">bolt</button>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded-full font-bold scale-95 active:scale-90 transition-transform duration-200 shadow-lg">Go Live</button>
+</div>
+</div>
+</nav>
+<main class="max-w-7xl mx-auto px-6 pt-12 pb-24">
+<!-- Hero Section -->
+<header class="mb-20">
+<div class="grid lg:grid-cols-2 gap-12 items-center">
+<div class="space-y-8">
+<span class="inline-block px-4 py-1.5 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold uppercase tracking-widest">Version 2.0 Alpha</span>
+<h1 class="font-headline text-6xl md:text-7xl font-extrabold tracking-tight text-on-surface leading-[1.1]">
+                        Your Content. <br/>
+<span class="text-primary">Your Rules.</span> <br/>
+                        Our Engine.
+                    </h1>
+<p class="text-on-surface-variant text-lg max-w-lg leading-relaxed">
+                        The world's first high-octane creator operating system. Monetize faster, automate your growth with AI coaching, and keep 100% of your earnings.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-4 pt-4">
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-8 py-4 rounded-full font-bold text-lg shadow-xl shadow-primary/20 flex items-center justify-center gap-2">
+                            Start Building 
+                            <span class="material-symbols-outlined">rocket_launch</span>
+</button>
+<button class="bg-surface-container-high text-primary px-8 py-4 rounded-full font-bold text-lg hover:bg-surface-container-highest transition-colors">
+                            Watch Demo
+                        </button>
+</div>
+</div>
+<!-- One-Tap Login Box (Glassmorphic) -->
+<div class="glass-card p-8 rounded-lg border border-white/20 shadow-2xl space-y-6">
+<h3 class="font-headline text-2xl font-bold text-center">Claim Your Handle</h3>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-none rounded-full py-4 pl-12 pr-6 focus:ring-2 focus:ring-secondary-container transition-all" placeholder="yourname" type="text"/>
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">@</span>
+</div>
+<div class="space-y-3">
+<button class="w-full flex items-center justify-center gap-3 py-3 rounded-full bg-white border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition-colors">
+<img alt="Google Logo" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnTQjrP97vAIRBGewKNb24cTmHNVPk1eVCL6HGjPDnVi43_Fe_AWxhliaXlq6tWw5xDKtaThnCKgNwFMaxNDfO__CuYfMTU3t6PZF6khNHflVJug6aJFz1OFbVbHA-oH92Era47H3puiNiUimYJn8o1rBtc8pKSpzrPz5XTkAknlCDeGQHm4n6-OzZe2MQ0BwbBhcHr8eOSMknCuJkMbaOnYmWv111HLsfNB6Ksax6Kxd-528kfooGsG8T64nBovcuBO99c0N8c00"/>
+                            Continue with Google
+                        </button>
+<button class="w-full flex items-center justify-center gap-3 py-3 rounded-full bg-black text-white font-semibold hover:bg-slate-900 transition-colors">
+<img alt="Apple Logo" class="w-5 h-5 invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzQvLlZt1dHRuX7JD5N9I6ZiWMwVG1OAUj5MezRBoNHqMx7poYxjuDgwVChQOi2diFd_DO9q-kDsJWBR8LH5OxPWASul1MJ8vmXqg57oKKbyUNfNaS5kdLi6LwKucD1QhYH5j0UXu4ImCVGDdNG94nI0Jg3k3EAxIgX0WuETTS37QzGN6BvKJBPnsoXkigfSLO0-MOSGtviD324uxmOu9nVXsaARSgoQ7N0sQ1B0Ae9Zxsd30j8o3rSdKlb76sIelwdzfyZ2jDYUM"/>
+                            Continue with Apple
+                        </button>
+<button class="w-full flex items-center justify-center gap-3 py-3 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 text-white font-semibold shadow-lg">
+<span class="material-symbols-outlined text-sm">photo_camera</span>
+                            Sync Instagram Profile
+                        </button>
+</div>
+<p class="text-center text-xs text-on-surface-variant font-medium">Join 45,000+ creators launching today</p>
+</div>
+</div>
+</header>
+<!-- Bento Grid Features -->
+<section class="grid grid-cols-1 md:grid-cols-3 grid-rows-2 gap-6 mb-24">
+<!-- Large Feature Card -->
+<div class="md:col-span-2 md:row-span-1 bg-primary text-on-primary p-10 rounded-lg relative overflow-hidden flex flex-col justify-end min-h-[320px]">
+<img class="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay" data-alt="Futuristic digital dashboard with glowing neon purple data visualizations and abstract 3D floating nodes on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGLkYw9VpRPb-mjjsEFcHIFZ-60UjE08J5061OE_pyXwp9f9P3ImyklOD-nDJyxciFCYlHCzzKBi2C-D7LY50Y-uM9i0biUJ1ZANTnm4VZKq4LSfup9RFr4YPj4zcZsefQ6xiS46RSMX4nRI9fz242BEpX1q95J5RCfe-8ZIW5hqOu3empIh7OG4KIFPiitLUD5rW8RR4hbGuYxpNUUTzcEbD8T30H6teWyh8VQ_wE0VVV2YtwBV7tOXGsZJhpwgIEgkwnoKJqyVw"/>
+<div class="relative z-10">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-black uppercase mb-4 inline-block">The Foundation</span>
+<h2 class="text-4xl font-headline font-bold mb-2">0% Transaction Fees</h2>
+<p class="text-primary-fixed max-w-md">Stop giving away 30%. Our engine runs on a flat subscription model. What you earn is yours to keep, forever.</p>
+</div>
+</div>
+<!-- AI Coaching Card -->
+<div class="bg-surface-container-lowest p-8 rounded-lg flex flex-col justify-between shadow-sm hover:shadow-xl transition-shadow border border-outline-variant/10">
+<div class="w-12 h-12 rounded-xl bg-tertiary/10 text-tertiary flex items-center justify-center mb-6">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<div>
+<h3 class="text-2xl font-headline font-bold mb-2">AI Coaching</h3>
+<p class="text-on-surface-variant text-sm">Real-time script optimization and audience sentiment analysis powered by specialized creator LLMs.</p>
+</div>
+</div>
+<!-- Instant Crypto Payouts -->
+<div class="bg-surface-container-lowest p-8 rounded-lg flex flex-col justify-between shadow-sm hover:shadow-xl transition-shadow border border-outline-variant/10">
+<div class="w-12 h-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center mb-6">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">currency_bitcoin</span>
+</div>
+<div>
+<h3 class="text-2xl font-headline font-bold mb-2">Instant Payouts</h3>
+<p class="text-on-surface-variant text-sm">Withdraw earnings in USDC or USD instantly. No 30-day holds. Your liquidity, your rules.</p>
+</div>
+</div>
+<!-- Storefront Preview -->
+<div class="md:col-span-2 bg-surface-container-low p-8 rounded-lg flex flex-col md:flex-row items-center gap-8 border border-outline-variant/20">
+<div class="flex-1">
+<h3 class="text-3xl font-headline font-bold mb-4">Kinetic Storefronts</h3>
+<p class="text-on-surface-variant mb-6">Dynamic product pages that evolve based on user behavior. Sell digital goods, courses, or physical merch in one click.</p>
+<button class="text-primary font-bold flex items-center gap-2 group">
+                        Explore Storefront Engine 
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+<div class="flex-1 w-full h-48 bg-white rounded-lg shadow-inner overflow-hidden flex items-center justify-center p-4">
+<img class="w-full h-full object-cover rounded shadow-md" data-alt="Minimalist luxury storefront interface for digital products with clean typography and soft aesthetic product mockups" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBseCPy30G4bTZeZei0DFz0Qq71frdgulIqTuiy0olkUqDaAQATRaLPSxy_JS6MLPnh9F_prXDmnsAabrPUOtLXogpIMzV7hNyoFCEaBLdLrCCq97akJK8OiIAwBDjUEL9M8jI1vuN4Ac1rPrOCm8w8ARzQan2qf684goW5FA_AyQAcEWid4C0TJSFPnncOzmvAjLNvmNiz590W2OgJC5W1MB12lfTI396CmtmORN8HbioWknoJo1YDR_o6xypb-uMBawBglrwFMFw"/>
+</div>
+</div>
+</section>
+<!-- Dynamic Creator Spotlight -->
+<section class="space-y-12">
+<div class="flex flex-col md:flex-row justify-between items-end gap-4">
+<div>
+<span class="text-secondary font-bold tracking-widest uppercase text-xs">Live Spotlight</span>
+<h2 class="font-headline text-5xl font-extrabold mt-2">The Vanguard</h2>
+</div>
+<p class="text-on-surface-variant max-w-sm text-right">Top performers using the SixSeven engine to redefine digital ownership.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Creator Card 1 -->
+<div class="group relative overflow-hidden rounded-lg bg-surface-container-lowest border border-outline-variant/10">
+<div class="h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Portrait of a fashionable digital creator in a neon-lit studio setting with high contrast lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPj62_dSnEp5sCeVMUy7L1OpK4mOQj5BdR0PFQLQA-XfKmlKF0bCvuNe-b21gfrxCYpALUZE_0VwaNDY5U4WSn96BWItNZOU_EFGQavP5Rte-Uotlt_nTVAOQIp61RNn-wK5ccmijj4M1V1jBOfpzvaOeJaFJupDf6Y5mplukmC4JTSWnyLSQbkTG6SidnZ_AeKuU7zUcPfsaiB1JXOLYTWN5rnRejxjSRpr3tqhZBSoj1uVXNnOorQgE7YqMNCuD9Ithrn0tCTnE"/>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-bold text-lg">Alex River</h4>
+<p class="text-xs text-on-surface-variant">Digital Artist</p>
+</div>
+<span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded-full">LIVE NOW</span>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-4 border-t border-surface-container">
+<div>
+<p class="text-[10px] uppercase font-bold text-slate-400">Growth</p>
+<p class="text-sm font-bold text-primary">+240%</p>
+</div>
+<div>
+<p class="text-[10px] uppercase font-bold text-slate-400">Revenue</p>
+<p class="text-sm font-bold text-on-surface">$12.4k</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Creator Card 2 -->
+<div class="group relative overflow-hidden rounded-lg bg-surface-container-lowest border border-outline-variant/10">
+<div class="h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="High-energy fitness influencer during an outdoor workout at sunrise with cinematic warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDItrCI0a5ReJWc9FDv3wVKZnEwCwr1RfzHXltLYwDcP66eoJTghnfIV19CVcMTCSkfMcZa458VWmERh3LB1PgCoEpK7QNsTphb2fLl9fKcHD7RdZp6PqPYzGIB86neaj_s7_PGb6rno-Pnj4JcvD27j-gtkzROU2NJqx6WXWHsxJXHb5tZ_PpXOssatrQ0iWfcdi7PUdnFab-JAisrPYyPK-LxfReO5wOMisngo6617cWVjcXX3nw4ckHbeUl1oBh6s2WKZzGyRxw"/>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-bold text-lg">Jordan Fit</h4>
+<p class="text-xs text-on-surface-variant">Athletic Coach</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-4 border-t border-surface-container">
+<div>
+<p class="text-[10px] uppercase font-bold text-slate-400">Followers</p>
+<p class="text-sm font-bold text-primary">1.2M</p>
+</div>
+<div>
+<p class="text-[10px] uppercase font-bold text-slate-400">Active subs</p>
+<p class="text-sm font-bold text-on-surface">4,500</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Creator Card 3 -->
+<div class="group relative overflow-hidden rounded-lg bg-surface-container-lowest border border-outline-variant/10">
+<div class="h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Tech reviewer sitting at a clean desk with modern computer setup and soft blue ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvryNwGCgIBoT5hz5K0qT4CqkuT4Zy0Rlh-x0UY4GotG-TQyosdvjmI2bWIeKkYw6UOMOUamN8ne6UlSnQS6tXQWQK0C-dbFeq7DP58yrSsDRypP5iBga-6d8ylq5A1Uznx4JXP4owni6xMDHMyotLNpJyOxLfr1Dn_Prwh-Erea_SDAoZx6FAHX4vpJG1ytWERU0HE-PSaCizGtRUXlKMO36LIh9ovXP6BJUURnfYonmbLVvVrViMXdBCkrcQy7ftpe1J-greeS8"/>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-bold text-lg">TechNova</h4>
+<p class="text-xs text-on-surface-variant">Reviews &amp; Insights</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-4 border-t border-surface-container">
+<div>
+<p class="text-[10px] uppercase font-bold text-slate-400">Retention</p>
+<p class="text-sm font-bold text-primary">94%</p>
+</div>
+<div>
+<p class="text-[10px] uppercase font-bold text-slate-400">Conversion</p>
+<p class="text-sm font-bold text-on-surface">8.2%</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Creator Card 4 -->
+<div class="group relative overflow-hidden rounded-lg bg-primary text-on-primary flex flex-col items-center justify-center text-center p-8">
+<div class="mb-6">
+<div class="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl">add</span>
+</div>
+</div>
+<h4 class="font-headline text-xl font-bold mb-2">Your Name Here</h4>
+<p class="text-primary-fixed text-sm mb-6">Launch your kinetic channel in under 2 minutes.</p>
+<button class="bg-secondary-container text-on-secondary-container px-6 py-2 rounded-full font-bold text-sm">Apply Now</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950">
+<div class="w-full px-8 py-12 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
+<div class="mb-8 md:mb-0">
+<span class="text-lg font-black text-indigo-600">CreatorFlow</span>
+<p class="text-[10px] uppercase tracking-widest text-slate-400 mt-2">© 2024 CreatorFlow. The Kinetic Curator System.</p>
+</div>
+<div class="flex gap-8">
+<a class="text-slate-400 text-xs uppercase tracking-widest hover:text-cyan-500 transition-colors" href="#">Privacy</a>
+<a class="text-slate-400 text-xs uppercase tracking-widest hover:text-cyan-500 transition-colors" href="#">Terms</a>
+<a class="text-slate-400 text-xs uppercase tracking-widest hover:text-cyan-500 transition-colors" href="#">API Status</a>
+<a class="text-slate-400 text-xs uppercase tracking-widest hover:text-cyan-500 transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+</body></html>

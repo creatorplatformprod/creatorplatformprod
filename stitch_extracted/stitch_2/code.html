@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CreatorFlow | Content Manager</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d8dae0",
+                        "surface": "#f8f9ff",
+                        "tertiary": "#9100d2",
+                        "tertiary-fixed-dim": "#e6b4ff",
+                        "on-primary-fixed": "#1a0063",
+                        "primary-fixed": "#e5deff",
+                        "primary-container": "#7459f7",
+                        "on-primary-fixed-variant": "#441cc8",
+                        "surface-tint": "#5d3fe0",
+                        "outline": "#797587",
+                        "on-secondary-fixed": "#002022",
+                        "inverse-on-surface": "#eff0f6",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#c9bfff",
+                        "secondary-fixed-dim": "#00dbe9",
+                        "on-surface": "#191c20",
+                        "tertiary-fixed": "#f5d9ff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#004f54",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2e3135",
+                        "secondary": "#006970",
+                        "primary-fixed-dim": "#c9bfff",
+                        "primary": "#5b3cdd",
+                        "on-primary-container": "#fffbff",
+                        "surface-container": "#eceef3",
+                        "background": "#f8f9ff",
+                        "surface-container-low": "#f2f3f9",
+                        "secondary-fixed": "#7df4ff",
+                        "on-background": "#191c20",
+                        "on-secondary-container": "#00686f",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#484555",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#00eefc",
+                        "on-tertiary-container": "#fffbff",
+                        "tertiary-container": "#b31cff",
+                        "surface-container-high": "#e7e8ee",
+                        "on-tertiary-fixed-variant": "#7100a5",
+                        "outline-variant": "#c9c4d8",
+                        "surface-bright": "#f8f9ff",
+                        "surface-container-highest": "#e1e2e8",
+                        "on-tertiary-fixed": "#30004a",
+                        "surface-variant": "#e1e2e8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .plusJakartaSans { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .Inter { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- TopNavBar (JSON Immutable Content & Styles) -->
+<nav class="bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl docked full-width top-0 sticky z-50 no-border bg-slate-50 shadow-[0px_20px_48px_rgba(91,60,221,0.08)]">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-[1440px] mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black tracking-tighter text-indigo-600 dark:text-indigo-400">CreatorFlow</span>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-slate-500 font-medium hover:text-indigo-500 transition-colors" href="#">Features</a>
+<a class="text-slate-500 font-medium hover:text-indigo-500 transition-colors" href="#">Pricing</a>
+<a class="text-indigo-600 font-bold border-b-2 border-indigo-500 pb-1" href="#">Dashboard</a>
+<a class="text-slate-500 font-medium hover:text-indigo-500 transition-colors" href="#">Storefront</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden lg:flex items-center gap-2 text-slate-500 font-medium hover:text-indigo-500 transition-colors">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+                    Analytics
+                </button>
+<button class="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold scale-95 active:scale-90 transition-transform duration-200">
+                    Go Live
+                </button>
+<div class="flex items-center gap-3 ml-2 border-l border-surface-container-high pl-4">
+<span class="material-symbols-outlined text-slate-500">notifications</span>
+<img alt="Creator Profile" class="w-10 h-10 rounded-full object-cover border-2 border-primary/20" data-alt="Portrait of a young creative professional with a friendly expression in a modern studio setting with warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxNJsPmNeylzpF7TTKVpcySQ3TlgoN6jZLenm3LH8pY0fnlB1_vROCAA7inUmbJ29qxIarUHYY0mzOlf2HKw8cursbeOiivG76apLzhg6SM5bI7QAibJuJcwFbpD1f1P6zgdtWIpiTab7Uy1xIWRsO6IS7aSeoqrUHMg4o-0rxVzZZuLeKkoN-568FqA6_7hrr3jt508BGWI7I8Lh2_CIUgiTpPbeAWS_mCCF-OF2Ak0TnH5gp63HKlX99Je27pu7it36wxVTSxxc"/>
+</div>
+</div>
+</div>
+</nav>
+<div class="flex max-w-[1440px] mx-auto min-h-[calc(100vh-80px)]">
+<!-- SideNavBar (JSON Content & Mapping) -->
+<aside class="h-screen w-64 fixed left-0 top-18 hidden lg:flex flex-col bg-slate-50 bg-gradient-to-r from-slate-50 to-slate-100 py-8 space-y-2">
+<div class="px-6 mb-8">
+<h2 class="text-xl font-bold text-slate-900">Creator Hub</h2>
+<p class="text-xs uppercase tracking-widest text-primary/70 font-semibold mt-1">Kinetic Mode Active</p>
+</div>
+<nav class="flex flex-col flex-1">
+<a class="bg-indigo-50 text-indigo-700 rounded-full mx-2 px-4 py-3 flex items-center gap-3 font-medium translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">dashboard</span> Overview
+                </a>
+<a class="text-slate-600 mx-2 px-4 py-3 flex items-center gap-3 font-medium hover:bg-slate-200/50 rounded-full transition-all" href="#">
+<span class="material-symbols-outlined">movie</span> Content
+                </a>
+<a class="text-slate-600 mx-2 px-4 py-3 flex items-center gap-3 font-medium hover:bg-slate-200/50 rounded-full transition-all" href="#">
+<span class="material-symbols-outlined">payments</span> Revenue
+                </a>
+<a class="text-slate-600 mx-2 px-4 py-3 flex items-center gap-3 font-medium hover:bg-slate-200/50 rounded-full transition-all" href="#">
+<span class="material-symbols-outlined">group</span> Audience
+                </a>
+<a class="text-slate-600 mx-2 px-4 py-3 flex items-center gap-3 font-medium hover:bg-slate-200/50 rounded-full transition-all" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+                </a>
+</nav>
+<div class="px-4 mt-auto">
+<div class="bg-gradient-to-br from-primary to-primary-container p-4 rounded-xl text-white mb-6 shadow-lg shadow-primary/20">
+<p class="text-xs opacity-80 uppercase tracking-tighter mb-1">Unleash the Potential</p>
+<p class="font-bold mb-3">Upgrade to Pro</p>
+<button class="w-full bg-white text-primary py-2 rounded-full text-sm font-bold active:scale-95 transition-transform">Unlock Tools</button>
+</div>
+<div class="flex flex-col gap-1 border-t border-slate-200 pt-4">
+<a class="text-slate-500 px-4 py-2 flex items-center gap-3 text-sm hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">help</span> Help
+                    </a>
+<a class="text-slate-500 px-4 py-2 flex items-center gap-3 text-sm hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">logout</span> Logout
+                    </a>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-1 lg:ml-64 p-8 bg-surface">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
+<div>
+<h1 class="text-4xl md:text-5xl font-extrabold font-headline tracking-tighter text-on-surface">Content Studio</h1>
+<p class="text-on-surface-variant font-body mt-2">Managing: <span class="font-semibold text-secondary">"The Future of Web 4.0"</span> (VOD-882)</p>
+</div>
+<div class="flex gap-4">
+<button class="bg-surface-container-high text-primary px-8 py-3 rounded-full font-bold hover:bg-surface-container-highest transition-all">Discard Draft</button>
+<button class="bg-gradient-to-r from-primary to-primary-container text-white px-10 py-3 rounded-full font-bold shadow-lg shadow-primary/25 hover:scale-105 active:scale-95 transition-all">Save Changes</button>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Left Column: Previews -->
+<div class="col-span-12 xl:col-span-8 flex flex-col gap-6">
+<!-- Preview Toggle & Mockups -->
+<section class="bg-surface-container-lowest p-8 rounded-lg shadow-[0px_20px_48px_rgba(91,60,221,0.05)] overflow-hidden">
+<div class="flex justify-between items-center mb-8">
+<h3 class="text-lg font-bold font-headline flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">visibility</span>
+                                Real-time Multi-Device Preview
+                            </h3>
+<div class="flex bg-surface-container rounded-full p-1">
+<button class="px-4 py-1 rounded-full text-xs font-bold bg-white shadow-sm text-primary">DESKTOP</button>
+<button class="px-4 py-1 rounded-full text-xs font-bold text-on-surface-variant">MOBILE</button>
+</div>
+</div>
+<div class="relative group">
+<!-- Main Desktop Video Mockup -->
+<div class="w-full aspect-video bg-surface-container-low rounded-xl overflow-hidden relative border border-outline-variant/10">
+<img alt="Dashboard Preview" class="w-full h-full object-cover filter blur-[2px] opacity-60" data-alt="Futuristic digital workspace with code and data visualizations on multiple high-resolution screens in a dark room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAj1g2nMHbSh0Pq26cfHArKX4L45jaNaTPCin4V7oKtfUHRLlcKGB8buHNpbUa8S6zqgm5POKLCm_uiojNxG1RQIqqMdiPitLycVIkP8EX7AzaG7x0i9e-Aa-I3foylsMzCaZXNhNCsXe8gW_jNNFslD3ofxnqn6cG-l9KYV7J9xTVq9T2zR5ZgP51i-O48fKMA3alYxOJmgfd9bmKods8wmwSsfSZnBFljbfeK56AUrlimmbww3DX9KGvHJPnvvvj2o4vWicvZsP4"/>
+<!-- Content Lock Overlay -->
+<div class="absolute inset-0 flex flex-col items-center justify-center bg-primary/10 backdrop-blur-sm">
+<div class="bg-white p-8 rounded-lg shadow-2xl flex flex-col items-center max-w-sm text-center">
+<div class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<h4 class="text-xl font-bold font-headline mb-2">Premium Content Locked</h4>
+<p class="text-sm text-on-surface-variant mb-6">This section contains high-fidelity 4K master files and raw data analytics available only to Pro Members.</p>
+<button class="w-full bg-primary text-white py-3 rounded-full font-bold hover:bg-primary-container transition-all">Unlock Full Master Preview</button>
+</div>
+</div>
+</div>
+<!-- Floating Mobile Preview Mockup -->
+<div class="absolute -right-4 -bottom-4 w-48 aspect-[9/19] bg-white rounded-[2rem] shadow-2xl p-2 border-4 border-surface-container-highest hidden md:block">
+<div class="w-full h-full bg-surface-container rounded-[1.8rem] overflow-hidden">
+<img alt="Mobile Preview" class="w-full h-full object-cover" data-alt="A smartphone screen displaying a vibrant social media feed with colorful travel photos and sleek typography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb0QWNgCnYk_JpB6y0GUyBgU743wJP12QOxTTYV7C9aO2AOytaYtZkY6kkXxglSCur7BgT2dAEIdpJFDnjLXoEwsF85sAbsZWt1IPA8-MNHzAud54827INhWPsmD0jtT6JD4nN5BS01NPDW1UK7aK5-2JAjcrCxKiqrRp6zc0c5RVUROhTyV23ICHFNixC-NIrSeF2twO2-15HpEl9GQSnfWj39OZQA7qfDbyI7hPmxNWoG0RCrx5J598UkS-ZgEXsGhzZXZ8z65Y"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Data Viz Bento Section -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm">
+<p class="text-xs font-label uppercase tracking-widest text-on-surface-variant mb-4">Avg. Retention</p>
+<div class="flex items-end gap-2">
+<span class="text-3xl font-black text-on-surface">82%</span>
+<span class="text-green-600 text-xs font-bold mb-1 flex items-center">
+<span class="material-symbols-outlined text-sm">trending_up</span> +12%
+                                </span>
+</div>
+<div class="mt-4 flex gap-1 h-12 items-end">
+<div class="w-full bg-primary-fixed h-4 rounded-full"></div>
+<div class="w-full bg-primary-fixed h-8 rounded-full"></div>
+<div class="w-full bg-primary-container h-12 rounded-full"></div>
+<div class="w-full bg-primary-fixed h-10 rounded-full"></div>
+<div class="w-full bg-primary-fixed h-6 rounded-full"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm">
+<p class="text-xs font-label uppercase tracking-widest text-on-surface-variant mb-4">Estimated Earnings</p>
+<div class="flex items-end gap-2">
+<span class="text-3xl font-black text-on-surface">$1,420</span>
+<span class="text-on-surface-variant text-xs font-bold mb-1">Today</span>
+</div>
+<div class="mt-4 flex justify-between items-center text-xs text-on-surface-variant font-medium">
+<span>0</span>
+<div class="h-1 flex-1 mx-3 bg-surface-container rounded-full overflow-hidden">
+<div class="w-3/4 h-full bg-secondary"></div>
+</div>
+<span>2K</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm border-2 border-secondary-container/20 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2">
+<span class="flex h-2 w-2 rounded-full bg-secondary animate-pulse"></span>
+</div>
+<p class="text-xs font-label uppercase tracking-widest text-secondary font-bold mb-4">AI Insight</p>
+<p class="text-sm font-medium leading-relaxed">Engagement peaks at 02:45. Consider adding a CTA overlay here.</p>
+</div>
+</div>
+</div>
+<!-- Right Column: Pro-Editor Sidebar -->
+<div class="col-span-12 xl:col-span-4 flex flex-col gap-6">
+<section class="bg-white rounded-lg p-8 shadow-xl border border-surface-container flex flex-col h-full">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<h3 class="font-bold text-xl font-headline tracking-tight">Pro-Editor AI</h3>
+<p class="text-xs text-on-surface-variant font-medium">Powered by Kinetic Mind v4</p>
+</div>
+</div>
+<!-- Tool 1: Hook Generator -->
+<div class="mb-8">
+<label class="block text-xs font-label uppercase tracking-widest text-on-surface-variant mb-4 font-bold">Hook Generator</label>
+<div class="space-y-3">
+<div class="p-4 bg-surface-container-low rounded-xl cursor-pointer hover:bg-primary-fixed/30 transition-all border border-transparent hover:border-primary-container/20 group">
+<p class="text-sm font-medium text-on-surface group-hover:text-primary transition-colors">"Stop making this 1 mistake with your Web 4.0 strategy..."</p>
+<div class="flex gap-2 mt-3">
+<span class="text-[10px] px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-bold">98% Viral Prob</span>
+<span class="text-[10px] px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-bold">Aggressive</span>
+</div>
+</div>
+<div class="p-4 bg-surface-container-low rounded-xl cursor-pointer opacity-70">
+<p class="text-sm font-medium">"The truth about the next digital revolution."</p>
+</div>
+<button class="w-full py-2 flex items-center justify-center gap-2 text-primary font-bold text-sm border-2 border-dashed border-primary/20 rounded-xl hover:bg-primary-fixed/10">
+<span class="material-symbols-outlined text-sm">refresh</span> Regenerate Hooks
+                                </button>
+</div>
+</div>
+<!-- Tool 2: Thumbnail Optimizer -->
+<div class="mb-8">
+<label class="block text-xs font-label uppercase tracking-widest text-on-surface-variant mb-4 font-bold">Thumbnail Optimizer</label>
+<div class="relative rounded-xl overflow-hidden aspect-[16/9] mb-4">
+<img alt="Thumbnail A/B" class="w-full h-full object-cover" data-alt="Close up of high-tech retro gaming console with vibrant neon lighting and 80s synthwave aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbfrxhj8dG1GM2UPe4IzhrbXOalAbRG-5xIJx-508-l3vZvPOGlmuU07deHyOjrYmjH476IjJHwB0K1b9MmMUtMxZEf6PHjpfaU6TTl4SlG5btaKPxf9K3TzXZ1uzPWfIgLFOzReOkPVLx0k3FRoeIjDJDBDMG87-SsjnIK00IzyGo7WhD5s9mhqOHNCxmInymuVHzG_2rJxALIYR67MVGpEUcvzL1YObV5axkH0O4l0c96W6y8eIz1n0FAQpdXiYVOlCz1dt7uRk"/>
+<div class="absolute top-2 left-2 bg-secondary text-white px-3 py-1 rounded-full text-[10px] font-black uppercase">Variation A</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+<p class="text-white text-xs font-bold">Suggested: Increase face saturation by 15%</p>
+</div>
+</div>
+</div>
+<!-- Tool 3: Platform Distribution -->
+<div class="mt-auto">
+<label class="block text-xs font-label uppercase tracking-widest text-on-surface-variant mb-4 font-bold">Platform Distribution</label>
+<div class="flex justify-between gap-2">
+<div class="flex-1 p-3 bg-surface-container-high rounded-xl flex flex-col items-center gap-2 opacity-50">
+<span class="material-symbols-outlined">video_library</span>
+<span class="text-[10px] font-bold">YT</span>
+</div>
+<div class="flex-1 p-3 bg-secondary-container rounded-xl flex flex-col items-center gap-2 border-2 border-secondary">
+<span class="material-symbols-outlined text-secondary">movie_filter</span>
+<span class="text-[10px] font-bold text-secondary">TIKTOK</span>
+</div>
+<div class="flex-1 p-3 bg-surface-container-high rounded-xl flex flex-col items-center gap-2 opacity-50">
+<span class="material-symbols-outlined">photo_camera</span>
+<span class="text-[10px] font-bold">REELS</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer (JSON Content & Mapping) -->
+<footer class="w-full border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950">
+<div class="w-full px-8 py-12 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
+<div class="mb-6 md:mb-0">
+<span class="text-lg font-black text-indigo-600">CreatorFlow</span>
+<p class="Inter text-xs uppercase tracking-widest text-slate-400 mt-2">© 2024 CreatorFlow. The Kinetic Curator System.</p>
+</div>
+<div class="flex gap-8">
+<a class="Inter text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-500 transition-colors" href="#">Privacy</a>
+<a class="Inter text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-500 transition-colors" href="#">Terms</a>
+<a class="Inter text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-500 transition-colors" href="#">API Status</a>
+<a class="Inter text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-500 transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+</body></html>

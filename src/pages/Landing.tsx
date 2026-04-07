@@ -22,6 +22,37 @@ const SPOTLIGHTS = [
   { name: 'Rosie',  img: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=120' },
 ];
 
+const VANGUARD_FEMALES = [
+  {
+    name: 'Aria Lane',
+    role: 'Digital Artist',
+    metricA: '+240%',
+    metricB: '$12.4k',
+    image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=700'
+  },
+  {
+    name: 'Elena Voss',
+    role: 'Fitness Creator',
+    metricA: '1.2M',
+    metricB: '4,500',
+    image: 'https://images.pexels.com/photos/3775534/pexels-photo-3775534.jpeg?auto=compress&cs=tinysrgb&w=700'
+  },
+  {
+    name: 'Maya Quinn',
+    role: 'Lifestyle Curator',
+    metricA: '94%',
+    metricB: '8.2%',
+    image: 'https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?auto=compress&cs=tinysrgb&w=700'
+  },
+  {
+    name: 'Nova Blair',
+    role: 'Beauty Creator',
+    metricA: '+180%',
+    metricB: '$9.8k',
+    image: 'https://images.pexels.com/photos/1542085/pexels-photo-1542085.jpeg?auto=compress&cs=tinysrgb&w=700'
+  }
+];
+
 const CHART_DATA = [
   { month: 'Jan', value: 420 },  { month: 'Feb', value: 610 },
   { month: 'Mar', value: 580 },  { month: 'Apr', value: 890 },
@@ -180,6 +211,25 @@ const Landing = () => {
             <p className="landing-subheading mx-auto mt-4 sm:mt-5">
               The creator platform that lets your subscribers pay with card and sends you crypto in real-time. No middlemen, no delays.
             </p>
+            <div className="elite-title-modal mt-6 sm:mt-8 max-w-3xl mx-auto">
+              <div className="elite-title-modal-inner">
+                <span className="elite-title-badge">The Curator&apos;s Circle</span>
+                <h2 className="elite-title-heading">
+                  Unlock Your Elite <span>Creative</span> Potential
+                </h2>
+                <p className="elite-title-copy">
+                  Join the inner circle for premium assets, weekly workshops, and advanced monetization tools.
+                </p>
+                <div className="elite-title-actions">
+                  <button type="button" onClick={() => scrollToHero(false)} className="elite-title-btn-primary btn-press">
+                    Upgrade to Elite
+                  </button>
+                  <button type="button" className="elite-title-btn-secondary">
+                    AI Coach
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Glass card */}
@@ -306,34 +356,45 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* ━━━━━━━━━━ 4. SOCIAL PROOF ━━━━━━━━━━ */}
+      {/* ━━━━━━━━━━ 4. VANGUARD ━━━━━━━━━━ */}
       <section ref={revealSocial} className="landing-section pt-0 sm:pt-0 reveal">
-        <div className="max-w-5xl mx-auto">
-          <div className="landing-feature-card flex flex-col sm:flex-row items-center gap-8 sm:gap-12 py-8 px-8 sm:px-12">
-            {/* Avatar stack */}
-            <div className="flex items-center flex-shrink-0">
-              <div className="flex -space-x-3">
-                {SPOTLIGHTS.map((s, i) => (
-                  <div key={s.name} className="w-10 h-10 rounded-full border-2 border-white overflow-hidden" style={{ zIndex: 5 - i }}>
-                    <img src={s.img} alt={s.name} className="w-full h-full object-cover" />
-                  </div>
-                ))}
-              </div>
-              <span className="ml-3 text-gray-500 text-sm font-medium">Trusted by creators worldwide</span>
-            </div>
-            {/* Stats */}
-            <div className="flex items-center gap-8 sm:gap-12">
-              {[
-                { val: '1M+', label: 'Creators' },
-                { val: '150+', label: 'Countries' },
-                { val: '$10M+', label: 'Earned' },
-              ].map((s) => (
-                <div key={s.label} className="text-center">
-                  <p className="text-gray-900 text-2xl sm:text-3xl font-bold tracking-tight">{s.val}</p>
-                  <p className="text-gray-400 text-xs mt-0.5">{s.label}</p>
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-8 text-center sm:text-left">
+            <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-2">Live Spotlight</p>
+            <h2 className="landing-heading">The Vanguard</h2>
+            <p className="text-gray-500 text-sm mt-2 max-w-xl mx-auto sm:mx-0">
+              Top female creators using SixSevenCreator to scale audience, retention, and recurring income.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {VANGUARD_FEMALES.map((creator, idx) => (
+              <article key={creator.name} className="vanguard-card">
+                <div className="vanguard-image-wrap">
+                  <img src={creator.image} alt={creator.name} className="vanguard-image" />
                 </div>
-              ))}
-            </div>
+                <div className="p-5">
+                  <div className="flex items-start justify-between gap-2 mb-3">
+                    <div>
+                      <h3 className="text-gray-900 font-bold text-base">{creator.name}</h3>
+                      <p className="text-[11px] text-gray-500">{creator.role}</p>
+                    </div>
+                    {idx === 0 && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">LIVE NOW</span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 pt-3 border-t border-gray-200">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Growth</p>
+                      <p className="text-sm font-bold text-indigo-600">{creator.metricA}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Revenue</p>
+                      <p className="text-sm font-bold text-gray-900">{creator.metricB}</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -343,20 +404,20 @@ const Landing = () => {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-3">Pricing</p>
-            <h2 className="landing-heading">Start free, upgrade anytime</h2>
-            <p className="landing-subheading mx-auto mt-3">Every plan includes a 1-month free trial. No credit card required.</p>
+            <h2 className="landing-heading">Scale your vision, keep your profit.</h2>
+            <p className="landing-subheading mx-auto mt-3">Simple pricing built for high-growth creators and networks.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
+          <div className="pricing-studio-grid max-w-5xl mx-auto">
             {/* Free */}
-            <div className="landing-price-card">
-              <h3 className="text-gray-900 font-semibold text-lg">Free Trial</h3>
-              <p className="text-gray-400 text-xs mt-1 mb-6">Try it out</p>
+            <div className="landing-price-card studio-pricing-card">
+              <h3 className="text-gray-900 font-semibold text-lg">Essential</h3>
+              <p className="text-gray-400 text-xs mt-1 mb-6">Perfect for getting started</p>
               <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900 tracking-tight">$0</span>
-                <span className="text-gray-400 text-sm ml-1">/ 1 month</span>
+                <span className="text-4xl font-bold text-gray-900 tracking-tight">$29</span>
+                <span className="text-gray-400 text-sm ml-1">/ mo</span>
               </div>
-              <button onClick={() => scrollToHero(false)} className="w-full h-11 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6 btn-press">Start Free Trial</button>
+              <button onClick={() => scrollToHero(false)} className="w-full h-11 rounded-full border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6 btn-press">Get Started</button>
               <div className="space-y-3 flex-1">
                 {FREE_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
@@ -368,20 +429,20 @@ const Landing = () => {
             </div>
 
             {/* Pro (featured) */}
-            <div className="landing-price-card featured relative">
+            <div className="landing-price-card featured relative studio-pricing-card studio-pricing-featured">
               <div className="absolute -top-3 left-4">
                 <span className="inline-flex items-center gap-1 text-white text-[11px] font-semibold px-3 py-1 rounded-full landing-cta-glow">
                   Recommended
                 </span>
               </div>
-              <h3 className="text-gray-900 font-semibold text-lg">Pro</h3>
-              <p className="text-gray-400 text-xs mt-1 mb-6">Everything included</p>
+              <h3 className="text-gray-900 font-semibold text-lg">Elite Creator</h3>
+              <p className="text-gray-400 text-xs mt-1 mb-6">Automation + revenue max</p>
               <div className="mb-1">
-                <span className="text-4xl font-bold text-gray-900 tracking-tight">$9.99</span>
-                <span className="text-gray-400 text-sm ml-1">/ month</span>
+                <span className="text-4xl font-bold text-gray-900 tracking-tight">$89</span>
+                <span className="text-gray-400 text-sm ml-1">/ mo</span>
               </div>
-              <p className="text-gray-400 text-xs mb-6">After free trial</p>
-              <button onClick={() => openPlanCheckout(proCheckoutUrl)} className="w-full h-11 rounded-xl landing-cta-glow btn-press font-semibold text-sm mb-6">Get Pro</button>
+              <p className="text-gray-400 text-xs mb-6">Most chosen plan</p>
+              <button onClick={() => openPlanCheckout(proCheckoutUrl)} className="w-full h-11 rounded-full landing-cta-glow btn-press font-semibold text-sm mb-6">Upgrade to Elite</button>
               <div className="space-y-3 flex-1">
                 {PRO_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
@@ -393,15 +454,15 @@ const Landing = () => {
             </div>
 
             {/* Business */}
-            <div className="landing-price-card">
-              <h3 className="text-gray-900 font-semibold text-lg">Business</h3>
-              <p className="text-gray-400 text-xs mt-1 mb-6">$4.99/mo for 12 months</p>
+            <div className="landing-price-card studio-pricing-card">
+              <h3 className="text-gray-900 font-semibold text-lg">Network</h3>
+              <p className="text-gray-400 text-xs mt-1 mb-6">For teams and agencies</p>
               <div className="mb-1">
-                <span className="text-4xl font-bold text-gray-900 tracking-tight">$4.99</span>
-                <span className="text-gray-400 text-sm ml-1">/ month</span>
+                <span className="text-4xl font-bold text-gray-900 tracking-tight">$249</span>
+                <span className="text-gray-400 text-sm ml-1">/ mo</span>
               </div>
-              <p className="text-gray-400 text-xs mb-6">12-month commitment</p>
-              <button onClick={() => openPlanCheckout(businessCheckoutUrl)} className="w-full h-11 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6 btn-press">Get Business</button>
+              <p className="text-gray-400 text-xs mb-6">Collaborator-ready billing</p>
+              <button onClick={() => openPlanCheckout(businessCheckoutUrl)} className="w-full h-11 rounded-full border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6 btn-press">Contact Sales</button>
               <div className="space-y-3 flex-1">
                 {BIZ_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
@@ -410,6 +471,20 @@ const Landing = () => {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+
+          <div className="split-pay-studio mt-8 max-w-5xl mx-auto">
+            <div>
+              <h3>Work together, <span>split the cost.</span></h3>
+              <p>
+                Divide Elite or Network costs with collaborators and keep the growth engine moving.
+              </p>
+            </div>
+            <div className="split-pay-panel">
+              <p className="split-pay-label">Each person pays only</p>
+              <p className="split-pay-value">$29.66<span>/mo</span></p>
+              <button type="button" className="split-pay-action">Invite Collaborators</button>
             </div>
           </div>
         </div>

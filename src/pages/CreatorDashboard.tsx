@@ -2928,220 +2928,285 @@ const CreatorDashboard = () => {
 
         {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â Overview Tab Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
         {activeTab === 'overview' && (
-          <div className="space-y-6">
-            {/* Welcome header */}
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
-                  Welcome back{profileData.displayName ? `, ${profileData.displayName}` : ''}
-                </h2>
-                <p className="text-sm text-muted-foreground mt-1">Here's how your platform is performing</p>
-              </div>
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                <div className="dot-live" />
-                <span className="text-[10px] font-medium text-emerald-400">Live</span>
-              </div>
-            </div>
-
-            {/* North Star Metric + Stats */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              {/* Revenue - North Star (larger card) */}
-              <div className="lg:col-span-1 card-elevated p-5 relative overflow-hidden">
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Revenue</span>
-                    <div
-                      className={`flex items-center gap-1 ${
-                        revenueTrend.direction === 'down'
-                          ? 'text-rose-400'
-                          : revenueTrend.direction === 'up'
-                            ? 'text-emerald-400'
-                            : 'text-muted-foreground'
-                      }`}
-                    >
-                      {revenueTrend.direction === 'down' ? (
-                        <ChevronDown className="w-3 h-3" />
-                      ) : (
-                        <ChevronUp className="w-3 h-3" />
-                      )}
-                      <span className="text-[10px] font-semibold">{revenueTrend.label}</span>
-                    </div>
-                  </div>
-                  <p className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">${analyticsTotals.revenue.toFixed(2)}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Last 30 days</p>
-                  <div className="sparkline" aria-hidden="true">
-                    {revenueSparklineHeights.map((h, i) => (
-                      <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
-                    ))}
-                  </div>
-                  <div className="mt-1 flex items-center justify-between text-[9px] text-muted-foreground">
-                    <span>{sparklineDateLabels.start}</span>
-                    <span>{sparklineDateLabels.middle}</span>
-                    <span>{sparklineDateLabels.end}</span>
-                  </div>
+          <div className="creator-overview-studio space-y-6">
+            <section className="card-elevated p-5 sm:p-6 studio-command-hero">
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.22em] text-primary/70 font-semibold">Content Studio</p>
+                  <h2 className="mt-1 text-2xl sm:text-3xl font-black text-foreground tracking-tight">
+                    Welcome back{profileData.displayName ? `, ${profileData.displayName}` : ''}
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-2">Control your content, sales, and public page performance from one command center.</p>
                 </div>
-                {/* Subtle gradient overlay */}
-                <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-emerald-500/[0.05] to-transparent rounded-tl-full pointer-events-none" />
-              </div>
-
-              {/* Other stats */}
-              <div className="lg:col-span-2 grid grid-cols-3 gap-3">
-                <div className="card-elevated p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-7 h-7 rounded-lg bg-indigo-500/10 flex items-center justify-center">
-                      <Layers className="w-3.5 h-3.5 text-indigo-400" />
-                    </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                    <div className="dot-live" />
+                    <span className="text-[10px] font-medium text-emerald-500">Live</span>
                   </div>
-                  <p className="text-xl font-bold text-foreground">{collections.length}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Collections</p>
-                  <div className="sparkline" aria-hidden="true">
-                    {collectionsSparklineHeights.map((h, i) => (
-                      <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
-                    ))}
-                  </div>
-                  <div className="mt-1 flex items-center justify-between text-[9px] text-muted-foreground">
-                    <span>{sparklineDateLabels.start}</span>
-                    <span>{sparklineDateLabels.middle}</span>
-                    <span>{sparklineDateLabels.end}</span>
-                  </div>
-                </div>
-                <div className="card-elevated p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                      <FileText className="w-3.5 h-3.5 text-blue-400" />
-                    </div>
-                  </div>
-                  <p className="text-xl font-bold text-foreground">{statusCards.length}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Posts</p>
-                  <div className="sparkline" aria-hidden="true">
-                    {postsSparklineHeights.map((h, i) => (
-                      <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
-                    ))}
-                  </div>
-                  <div className="mt-1 flex items-center justify-between text-[9px] text-muted-foreground">
-                    <span>{sparklineDateLabels.start}</span>
-                    <span>{sparklineDateLabels.middle}</span>
-                    <span>{sparklineDateLabels.end}</span>
-                  </div>
-                </div>
-                <div className="card-elevated p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-7 h-7 rounded-lg bg-indigo-500/10 flex items-center justify-center">
-                      <TrendingUp className="w-3.5 h-3.5 text-indigo-400" />
-                    </div>
-                  </div>
-                  <p className="text-xl font-bold text-foreground">{analyticsTotals.orders}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Orders</p>
-                  <div className="sparkline" aria-hidden="true">
-                    {ordersSparklineHeights.map((h, i) => (
-                      <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
-                    ))}
-                  </div>
-                  <div className="mt-1 flex items-center justify-between text-[9px] text-muted-foreground">
-                    <span>{sparklineDateLabels.start}</span>
-                    <span>{sparklineDateLabels.middle}</span>
-                    <span>{sparklineDateLabels.end}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Actions + Recent Activity */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* Quick Actions */}
-              <div className="card-elevated p-5">
-                <h3 className="text-sm font-semibold text-foreground mb-4">Quick Actions</h3>
-                <div className="space-y-2">
                   <button
-                    onClick={() => requestTabChange('collections')}
-                    className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all group cursor-pointer"
+                    onClick={() => requestTabChange('analytics')}
+                    className="studio-action-pill"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center">
-                        <Plus className="w-4 h-4 text-indigo-400" />
-                      </div>
-                      <div className="text-left">
-                        <p className="text-xs font-semibold text-foreground">Create Collection</p>
-                        <p className="text-[10px] text-muted-foreground">Upload premium content</p>
-                      </div>
-                    </div>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                  </button>
-                  <button
-                    onClick={() => requestTabChange('status-cards')}
-                    className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all group cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center">
-                        <Edit className="w-4 h-4 text-indigo-400" />
-                      </div>
-                      <div className="text-left">
-                        <p className="text-xs font-semibold text-foreground">New Post Card</p>
-                        <p className="text-[10px] text-muted-foreground">Share an update with fans</p>
-                      </div>
-                    </div>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    Analytics
                   </button>
                   <button
                     onClick={handlePreviewPublic}
-                    className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all group cursor-pointer"
+                    className="studio-action-pill"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center">
-                        <Eye className="w-4 h-4 text-indigo-400" />
-                      </div>
-                      <div className="text-left">
-                        <p className="text-xs font-semibold text-foreground">Preview Public Site</p>
-                        <p className="text-[10px] text-muted-foreground">See how fans see your page</p>
-                      </div>
-                    </div>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    Preview Site
+                  </button>
+                  <button
+                    onClick={handlePublicWebsite}
+                    className="studio-action-pill studio-action-pill-primary"
+                  >
+                    {isPublicPublished ? 'Open Public Website' : 'Publish Website'}
                   </button>
                 </div>
               </div>
+            </section>
 
-              {/* Recent Sales */}
-              <div className="card-elevated p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-semibold text-foreground">Recent Sales</h3>
-                  <button
-                    onClick={() => requestTabChange('analytics')}
-                    className="dashboard-link-btn text-[10px] text-primary hover:text-primary/80 font-medium cursor-pointer bg-transparent border-none"
-                  >
-                    View all
-                  </button>
-                </div>
-                {salesList.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center mb-3">
-                      <Clock className="w-4 h-4 text-muted-foreground" />
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
+              <div className="xl:col-span-8 space-y-4">
+                <section className="card-elevated p-4 sm:p-5 studio-preview-shell">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                      <Eye className="w-4 h-4 text-primary" />
+                      Real-time Multi-Device Preview
+                    </h3>
+                    <div className="hidden sm:flex items-center gap-1 bg-secondary/60 p-1 rounded-full">
+                      <span className="px-3 py-1 text-[10px] font-semibold rounded-full bg-background text-primary">Desktop</span>
+                      <span className="px-3 py-1 text-[10px] font-semibold text-muted-foreground">Mobile</span>
                     </div>
-                    <p className="text-xs text-muted-foreground">No sales yet</p>
-                    <p className="text-[10px] text-muted-foreground/60 mt-1">Sales will appear here as they come in</p>
                   </div>
-                ) : (
-                  <div className="space-y-2">
-                    {salesList.slice(0, 5).map((sale: any, i: number) => (
-                      <div key={i} className="flex items-center justify-between py-2 border-b border-gray-200 last:border-0">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-sky-500 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
-                            {(sale.buyerEmail || sale.buyer || '?')[0]?.toUpperCase()}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-xs font-medium text-foreground truncate">{sale.collectionTitle || 'Collection'}</p>
-                            <p className="text-[10px] text-muted-foreground truncate">{sale.buyerEmail || sale.buyer || 'Anonymous'}</p>
-                          </div>
+
+                  <div className="studio-preview-canvas">
+                    {profileData.coverImage ? (
+                      <img
+                        src={profileData.coverImage}
+                        alt="Profile cover preview"
+                        className="studio-preview-bg"
+                      />
+                    ) : (
+                      <div className="studio-preview-gradient" />
+                    )}
+
+                    <div className="studio-preview-lock-layer">
+                      <div className="studio-lock-card">
+                        <div className="studio-lock-icon-wrap">
+                          <Lock className="w-5 h-5 text-primary" />
                         </div>
-                        <span className="text-xs font-semibold text-emerald-400 flex-shrink-0">+${(sale.amount || 0).toFixed(2)}</span>
+                        <h4 className="text-base sm:text-lg font-bold text-foreground">Premium Content Locked</h4>
+                        <p className="text-xs text-muted-foreground mt-1 mb-4">
+                          Use your Unlock tab to gate premium previews and convert more fans to paid members.
+                        </p>
+                        <button
+                          onClick={() => requestTabChange('unlock')}
+                          className="studio-action-pill studio-action-pill-primary w-full"
+                        >
+                          Open Unlock Controls
+                        </button>
                       </div>
-                    ))}
+                    </div>
+
+                    <div className="studio-mobile-preview hidden md:block">
+                      <div className="studio-mobile-screen" />
+                    </div>
                   </div>
-                )}
+                </section>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="card-elevated p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-7 h-7 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                        <Layers className="w-3.5 h-3.5 text-indigo-500" />
+                      </div>
+                    </div>
+                    <p className="text-xl font-bold text-foreground">{collections.length}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">Collections</p>
+                    <div className="sparkline" aria-hidden="true">
+                      {collectionsSparklineHeights.map((h, i) => (
+                        <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
+                      ))}
+                    </div>
+                    <div className="mt-1 flex items-center justify-between text-[9px] text-muted-foreground">
+                      <span>{sparklineDateLabels.start}</span>
+                      <span>{sparklineDateLabels.middle}</span>
+                      <span>{sparklineDateLabels.end}</span>
+                    </div>
+                  </div>
+
+                  <div className="card-elevated p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                        <FileText className="w-3.5 h-3.5 text-blue-500" />
+                      </div>
+                    </div>
+                    <p className="text-xl font-bold text-foreground">{statusCards.length}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">Posts</p>
+                    <div className="sparkline" aria-hidden="true">
+                      {postsSparklineHeights.map((h, i) => (
+                        <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
+                      ))}
+                    </div>
+                    <div className="mt-1 flex items-center justify-between text-[9px] text-muted-foreground">
+                      <span>{sparklineDateLabels.start}</span>
+                      <span>{sparklineDateLabels.middle}</span>
+                      <span>{sparklineDateLabels.end}</span>
+                    </div>
+                  </div>
+
+                  <div className="card-elevated p-4 studio-ai-insight">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">AI Insight</p>
+                      <TrendingUp className="w-3.5 h-3.5 text-primary" />
+                    </div>
+                    <p className="text-sm font-semibold text-foreground">{analyticsTotals.orders} orders in the selected range</p>
+                    <p className="text-[11px] text-muted-foreground mt-2">
+                      Best lift usually comes from pairing a fresh post card with a locked teaser in your top collection.
+                    </p>
+                    <button
+                      onClick={() => requestTabChange('status-cards')}
+                      className="mt-4 text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors"
+                    >
+                      Create post card
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="xl:col-span-4 space-y-4">
+                <section className="card-elevated p-5 relative overflow-hidden">
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Revenue</span>
+                      <div
+                        className={`flex items-center gap-1 ${
+                          revenueTrend.direction === 'down'
+                            ? 'text-rose-500'
+                            : revenueTrend.direction === 'up'
+                              ? 'text-emerald-500'
+                              : 'text-muted-foreground'
+                        }`}
+                      >
+                        {revenueTrend.direction === 'down' ? (
+                          <ChevronDown className="w-3 h-3" />
+                        ) : (
+                          <ChevronUp className="w-3 h-3" />
+                        )}
+                        <span className="text-[10px] font-semibold">{revenueTrend.label}</span>
+                      </div>
+                    </div>
+                    <p className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">${analyticsTotals.revenue.toFixed(2)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Last 30 days</p>
+                    <div className="sparkline" aria-hidden="true">
+                      {revenueSparklineHeights.map((h, i) => (
+                        <div key={i} className="sparkline-bar" style={{ height: `${h}%` }} />
+                      ))}
+                    </div>
+                    <div className="mt-1 flex items-center justify-between text-[9px] text-muted-foreground">
+                      <span>{sparklineDateLabels.start}</span>
+                      <span>{sparklineDateLabels.middle}</span>
+                      <span>{sparklineDateLabels.end}</span>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-emerald-500/[0.08] to-transparent rounded-tl-full pointer-events-none" />
+                </section>
+
+                <section className="card-elevated p-5">
+                  <h3 className="text-sm font-semibold text-foreground mb-4">Quick Actions</h3>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => requestTabChange('collections')}
+                      className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all group cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center">
+                          <Plus className="w-4 h-4 text-indigo-500" />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-xs font-semibold text-foreground">Create Collection</p>
+                          <p className="text-[10px] text-muted-foreground">Upload premium content</p>
+                        </div>
+                      </div>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    </button>
+
+                    <button
+                      onClick={() => requestTabChange('status-cards')}
+                      className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all group cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center">
+                          <Edit className="w-4 h-4 text-indigo-500" />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-xs font-semibold text-foreground">New Post Card</p>
+                          <p className="text-[10px] text-muted-foreground">Share an update with fans</p>
+                        </div>
+                      </div>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    </button>
+
+                    <button
+                      onClick={handlePreviewPublic}
+                      className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all group cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center">
+                          <Eye className="w-4 h-4 text-indigo-500" />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-xs font-semibold text-foreground">Preview Public Site</p>
+                          <p className="text-[10px] text-muted-foreground">See how fans see your page</p>
+                        </div>
+                      </div>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    </button>
+                  </div>
+                </section>
+
+                <section className="card-elevated p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-semibold text-foreground">Recent Sales</h3>
+                    <button
+                      onClick={() => requestTabChange('analytics')}
+                      className="dashboard-link-btn text-[10px] text-primary hover:text-primary/80 font-medium cursor-pointer bg-transparent border-none"
+                    >
+                      View all
+                    </button>
+                  </div>
+
+                  {salesList.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-8 text-center">
+                      <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center mb-3">
+                        <Clock className="w-4 h-4 text-muted-foreground" />
+                      </div>
+                      <p className="text-xs text-muted-foreground">No sales yet</p>
+                      <p className="text-[10px] text-muted-foreground/60 mt-1">Sales will appear here as they come in</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {salesList.slice(0, 5).map((sale: any, i: number) => (
+                        <div key={i} className="flex items-center justify-between py-2 border-b border-gray-200 last:border-0">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-sky-500 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
+                              {(sale.buyerEmail || sale.buyer || '?')[0]?.toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-xs font-medium text-foreground truncate">{sale.collectionTitle || 'Collection'}</p>
+                              <p className="text-[10px] text-muted-foreground truncate">{sale.buyerEmail || sale.buyer || 'Anonymous'}</p>
+                            </div>
+                          </div>
+                          <span className="text-xs font-semibold text-emerald-500 flex-shrink-0">+${(sale.amount || 0).toFixed(2)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
               </div>
             </div>
 
-            {/* Getting Started Checklist */}
-            <div className="card-elevated p-5">
+            <section className="card-elevated p-5">
               <h3 className="text-sm font-semibold text-foreground mb-1">Getting Started</h3>
               <p className="text-xs text-muted-foreground mb-4">Complete these steps to launch your creator page</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -3164,19 +3229,18 @@ const CreatorDashboard = () => {
                       step.done ? 'bg-emerald-500/20' : 'bg-gray-100'
                     }`}>
                       {step.done ? (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                       ) : (
                         <span className="text-[10px] font-bold text-muted-foreground">{i + 1}</span>
                       )}
                     </div>
-                    <span className={`text-xs font-medium ${step.done ? 'text-emerald-400' : 'text-foreground'}`}>{step.label}</span>
+                    <span className={`text-xs font-medium ${step.done ? 'text-emerald-600' : 'text-foreground'}`}>{step.label}</span>
                   </button>
                 ))}
               </div>
-            </div>
+            </section>
           </div>
         )}
-
         {/* Profile Tab */}
         {activeTab === 'profile' && (
           <div className="card-elevated p-5 sm:p-7 space-y-6">
@@ -5230,4 +5294,5 @@ const CreatorDashboard = () => {
 };
 
 export default CreatorDashboard;
+
 
