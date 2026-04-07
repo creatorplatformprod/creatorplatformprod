@@ -7,6 +7,7 @@ const RAW_API_BASE_URL =
   import.meta.env.VITE_API_URL ||
   'https://creator-platform-api-production.creatorplatformprod.workers.dev';
 const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '');
+const CREATOR_LIVE_PROFILE_KEY_PREFIX = 'creatorLiveProfile:';
 const FAN_GOOGLE_AUTH_PATH =
   (import.meta.env.VITE_FAN_GOOGLE_AUTH_PATH || '/api/fans/auth/google').trim() || '/api/fans/auth/google';
 let myCollectionsInFlight: Promise<any> | null = null;
@@ -20,6 +21,43 @@ const getToken = (): string | null => {
 
 const getFanToken = (): string | null => {
   return localStorage.getItem('fan_token');
+};
+
+const readCreatorLiveProfileSnapshot = (username?: string) => {
+  const safeUsername = String(username || '').trim();
+  if (!safeUsername || typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(`${CREATOR_LIVE_PROFILE_KEY_PREFIX}${safeUsername}`);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch {
+    return null;
+  }
+};
+
+const mergeCreatorLiveProfile = (user: any) => {
+  if (!user || typeof user !== 'object') return user;
+  const snapshot = readCreatorLiveProfileSnapshot(user.username);
+  if (!snapshot) return user;
+
+  const getMillis = (value: any) => {
+    const ms = Date.parse(String(value || ''));
+    return Number.isFinite(ms) ? ms : null;
+  };
+  const snapshotMs = getMillis(snapshot._updatedAt);
+  const serverMs = getMillis(user.updatedAt);
+  if (snapshotMs !== null && serverMs !== null && snapshotMs < serverMs) {
+    return user;
+  }
+
+  return {
+    ...user,
+    ...(snapshot.avatar !== undefined ? { avatar: snapshot.avatar } : {}),
+    ...(snapshot.coverImage !== undefined ? { coverImage: snapshot.coverImage } : {}),
+    ...(snapshot.displayName !== undefined ? { displayName: snapshot.displayName } : {}),
+    ...(snapshot.bio !== undefined ? { bio: snapshot.bio } : {})
+  };
 };
 
 // Helper for API requests
@@ -128,7 +166,11 @@ export const api = {
    * Get current authenticated user
    */
   getCurrentUser: async () => {
-    return apiRequest('/api/auth/me');
+    const result = await apiRequest('/api/auth/me');
+    if (result?.success && result.user) {
+      return { ...result, user: mergeCreatorLiveProfile(result.user) };
+    }
+    return result;
   },
 
   /**

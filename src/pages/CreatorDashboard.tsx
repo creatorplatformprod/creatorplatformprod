@@ -103,6 +103,7 @@ const TELEGRAM_BOT_TOKEN_REGEX = /^\d{6,}:[A-Za-z0-9_-]{20,}$/;
 const TELEGRAM_CHAT_ID_REGEX = /^-?\d{5,20}$/;
 const ETH_WALLET_REGEX = /^0x[a-fA-F0-9]{40}$/;
 const nowIso = () => new Date().toISOString();
+const CREATOR_LIVE_PROFILE_KEY_PREFIX = 'creatorLiveProfile:';
 
 const parseUrl = (value: string) => {
   try {
@@ -825,6 +826,8 @@ const CreatorDashboard = () => {
 
   const getProfileDraftKey = (username?: string) =>
     username ? `publicWebsiteProfileDraft:${username}` : '';
+  const getCreatorLiveProfileKey = (username?: string) =>
+    username ? `${CREATOR_LIVE_PROFILE_KEY_PREFIX}${username}` : '';
   const getPostCardDraftKey = (username?: string) =>
     username ? `dashboardPostCardDraft:${username}` : '';
   const getCollectionDraftKey = (username?: string) =>
@@ -913,6 +916,18 @@ const CreatorDashboard = () => {
           Boolean((userResult.user as any).hasTelegramBotToken) ||
           !!String(mergedProfileData.telegramBotToken || '').trim();
         setProfileData(mergedProfileData);
+        const liveProfileKey = getCreatorLiveProfileKey(userResult.user.username);
+        if (liveProfileKey) {
+          const snapshot = {
+            username: userResult.user.username,
+            displayName: mergedProfileData.displayName || '',
+            bio: mergedProfileData.bio || '',
+            avatar: mergedProfileData.avatar || '',
+            coverImage: mergedProfileData.coverImage || '',
+            _updatedAt: userResult.user.updatedAt || nowIso()
+          };
+          localStorage.setItem(liveProfileKey, JSON.stringify(snapshot));
+        }
         setTelegramBotTokenConfigured(hasTokenConfigured);
         setTelegramAlertsEnabled(
           hasTokenConfigured ||
@@ -944,6 +959,64 @@ const CreatorDashboard = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!user?.username) return;
+    const liveKey = getCreatorLiveProfileKey(user.username);
+    if (!liveKey) return;
+
+    const applySnapshot = (snapshot: any) => {
+      if (!snapshot || snapshot.username !== user.username) return;
+      setProfileData((prev) => ({
+        ...prev,
+        displayName: snapshot.displayName ?? prev.displayName,
+        bio: snapshot.bio ?? prev.bio,
+        avatar: snapshot.avatar ?? prev.avatar,
+        coverImage: snapshot.coverImage ?? prev.coverImage
+      }));
+      setUser((prev: any) =>
+        prev
+          ? {
+              ...prev,
+              displayName: snapshot.displayName ?? prev.displayName,
+              bio: snapshot.bio ?? prev.bio,
+              avatar: snapshot.avatar ?? prev.avatar,
+              coverImage: snapshot.coverImage ?? prev.coverImage
+            }
+          : prev
+      );
+    };
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== liveKey || !event.newValue) return;
+      try {
+        applySnapshot(JSON.parse(event.newValue));
+      } catch {
+        // ignore malformed payload
+      }
+    };
+
+    const onProfileUpdated = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      applySnapshot(customEvent.detail);
+    };
+
+    const initialSnapshot = localStorage.getItem(liveKey);
+    if (initialSnapshot) {
+      try {
+        applySnapshot(JSON.parse(initialSnapshot));
+      } catch {
+        // ignore malformed payload
+      }
+    }
+
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('creator-profile-updated', onProfileUpdated as EventListener);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('creator-profile-updated', onProfileUpdated as EventListener);
+    };
+  }, [user?.username]);
 
   useEffect(() => {
     if (!user?.username) return;
@@ -1313,6 +1386,20 @@ const CreatorDashboard = () => {
 
     if (result?.user) {
       setUser(result.user);
+    }
+
+    const liveProfileKey = getCreatorLiveProfileKey(user.username);
+    if (liveProfileKey) {
+      const snapshot = {
+        username: user.username,
+        displayName: nextServerProfileData.displayName || '',
+        bio: nextServerProfileData.bio || '',
+        avatar: nextServerProfileData.avatar || '',
+        coverImage: nextServerProfileData.coverImage || '',
+        _updatedAt: result?.user?.updatedAt || nowIso()
+      };
+      localStorage.setItem(liveProfileKey, JSON.stringify(snapshot));
+      window.dispatchEvent(new CustomEvent('creator-profile-updated', { detail: snapshot }));
     }
 
     markPublicWebsiteDirty();
@@ -2710,7 +2797,17 @@ const CreatorDashboard = () => {
                   <ArrowUpRight className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Public Website</span>
                 </Button>
-                <AccountMenu currentUser={user} />
+                <AccountMenu
+                  currentUser={
+                    user
+                      ? {
+                          ...user,
+                          displayName: profileData.displayName || user.displayName || user.username,
+                          avatar: profileData.avatar || user.avatar || ''
+                        }
+                      : null
+                  }
+                />
               </div>
             </div>
           </div>
