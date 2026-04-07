@@ -2342,7 +2342,11 @@ const CreatorDashboard = () => {
       return getMediaSrcCandidates(fromUrl)[0] || fromUrl;
     }
     const fallback = rawThumb || String(media?.url || '').trim();
-    return getMediaSrcCandidates(fallback)[0] || fallback;
+    const resolvedFallback = getMediaSrcCandidates(fallback)[0] || fallback;
+    if (!resolvedFallback || isProbablyVideoUrl(resolvedFallback)) {
+      return '';
+    }
+    return resolvedFallback;
   };
 
   const isVideoMedia = (media: any) => {
@@ -4285,9 +4289,27 @@ const CreatorDashboard = () => {
                                     const src = isVideo
                                       ? getCollectionListPreviewThumb(media)
                                       : (getMediaSrcCandidates(media?.thumbnailUrl || media?.url)[0] || media?.thumbnailUrl || media?.url);
+                                    const hasImagePoster = !!src && !isProbablyVideoUrl(src);
                                     return (
                                       <div key={`${collection._id}-media-${mediaIndex}`} className="h-14 w-14 overflow-hidden rounded-md border border-border bg-muted/20">
-                                        <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
+                                        {isVideo && !hasImagePoster ? (
+                                          <div className="h-full w-full flex items-center justify-center bg-muted/40">
+                                            <div className="h-6 w-6 rounded-full bg-white/85 text-foreground text-[11px] leading-none flex items-center justify-center">
+                                              ▶
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          <img
+                                            src={src || '/placeholder.svg'}
+                                            alt=""
+                                            className="h-full w-full object-cover"
+                                            loading="lazy"
+                                            onError={(e) => {
+                                              e.currentTarget.onerror = null;
+                                              e.currentTarget.src = '/placeholder.svg';
+                                            }}
+                                          />
+                                        )}
                                       </div>
                                     );
                                   })}
