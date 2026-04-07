@@ -100,14 +100,14 @@ const FeedHeader = ({
             }`}
           >
             <div className="brand-wordmark"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
-            <div className="hidden sm:block w-px h-5 bg-gray-200" />
+            <div className="hidden sm:block w-px h-5 bg-gradient-to-b from-rose-200 via-orange-200 to-rose-200" />
             <span className="hidden sm:block text-sm font-medium text-foreground/80 tracking-tight">{title}</span>
           </div>
 
           {/* Center: Search (desktop) */}
           <div className="hidden md:flex items-center flex-1 max-w-lg lg:max-w-xl mx-3 lg:mx-8">
             <div className="relative w-full group">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/15 to-accent/15 rounded-full blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <Input 
                 placeholder="Search..."
@@ -115,7 +115,7 @@ const FeedHeader = ({
                 onChange={handleSearchChange}
                 onFocus={() => setShowSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                className="relative pl-10 pr-4 py-2 h-9 bg-secondary/50 border-0 rounded-full text-sm focus:bg-secondary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+                className="relative pl-10 pr-4 py-2 h-9 bg-secondary/65 border border-border/70 rounded-full text-sm focus:bg-secondary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
               />
               {showSuggestions && searchQuery && filteredSuggestions.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-post-bg border border-border rounded-xl shadow-lg z-50 max-h-64 overflow-y-auto">
@@ -139,7 +139,7 @@ const FeedHeader = ({
             {!isPreviewMode && (
               <button
                 onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-                className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-secondary/50 text-muted-foreground hover:text-foreground transition-colors"
+                className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-secondary/65 border border-border/70 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Search className="w-4 h-4" />
               </button>

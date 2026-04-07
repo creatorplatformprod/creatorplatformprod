@@ -24,7 +24,7 @@ const getProviderEndpoints = (amount: string) => {
 };
 
 // Primary purple accent for tip checkout
-const PURPLE_COLOR = "#7c3aed";
+const PURPLE_COLOR = "#db2777";
 
 const TipCheckoutPage = () => {
   const queryParams = new URLSearchParams(window.location.search);
@@ -437,7 +437,7 @@ const TipCheckoutPage = () => {
   }
 
   return (
-    <div className={`min-h-screen feed-bg ${themeClass}`}>
+    <div className={`tip-checkout-page min-h-screen feed-bg ${themeClass}`}>
       <header className="sticky top-0 z-10 nav-elevated">
         <div className="max-w-lg mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button

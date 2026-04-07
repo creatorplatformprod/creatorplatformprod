@@ -883,6 +883,12 @@ const CreatorProfile = () => {
   const mainOffsetClass = showSidebar && sidebarOpen ? 'lg:ml-[300px]' : 'lg:ml-0';
   const heroCoverImage = resolvedCreatorCoverImage;
   const profileAvatarImage = resolvedCreatorAvatarImage;
+  const modernShellClass = useClassicTheme
+    ? ""
+    : "bg-[radial-gradient(1200px_520px_at_15%_-20%,rgba(236,72,153,0.18),transparent_60%),radial-gradient(980px_460px_at_88%_0%,rgba(249,115,22,0.14),transparent_66%)]";
+  const modernCardClass = useClassicTheme
+    ? ""
+    : "lg:border-rose-100/80 lg:bg-white/90 lg:backdrop-blur-md lg:shadow-[0_20px_54px_rgba(131,24,67,0.12)]";
   const shouldStabilizeHeroCover = isLocalMockAssetUrl(heroCoverImage);
 
   useEffect(() => {
@@ -962,7 +968,7 @@ const CreatorProfile = () => {
         rel="noopener noreferrer"
         aria-label={label}
         title={label}
-        className={`${baseClass} no-underline`}
+        className={`${baseClass} no-underline cursor-pointer transition-colors duration-200 hover:text-rose-500`}
       >
         {iconNode}
       </a>
@@ -1054,7 +1060,7 @@ const CreatorProfile = () => {
   }
 
   return (
-    <div className={`min-h-screen feed-bg ${isPreviewMode ? 'public-preview-mode' : 'scrollbar-gutter-balanced'} public-template${templateStyleClass ? ` public-template-${templateStyleClass} template-layout template-layout-${templateStyleClass}` : ''} ${classicDarkClass} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
+    <div className={`min-h-screen feed-bg ${modernShellClass} ${isPreviewMode ? 'public-preview-mode' : 'scrollbar-gutter-balanced'} public-template${templateStyleClass ? ` public-template-${templateStyleClass} template-layout template-layout-${templateStyleClass}` : ''} ${classicDarkClass} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
       {/* Full Width Navbar - Always on top */}
       <FeedHeader 
         onSearch={handleSearch} 
@@ -1085,22 +1091,22 @@ const CreatorProfile = () => {
               onError={handleCoverImageError}
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-indigo-600/10 to-sky-600/15" />
+            <div className="absolute inset-0 bg-gradient-to-br from-rose-300/40 via-rose-100/30 to-orange-200/35" />
           )}
           <div className="absolute inset-0" style={{ backgroundColor: `rgba(0, 0, 0, ${coverOverlay * 0.3})` }} />
           {useClassicTheme && (
             <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--feed-bg))] via-transparent to-transparent" />
           )}
           <div className="absolute top-4 right-4 z-20">
-            <div className="flex flex-col gap-1 rounded-full bg-background/90 backdrop-blur-sm border border-border shadow-sm p-1">
+            <div className={`flex flex-col gap-1 rounded-full backdrop-blur-sm border shadow-sm p-1 ${useClassicTheme ? 'bg-background/90 border-border' : 'bg-white/85 border-rose-100/90'}`}>
               <button
                 onClick={() => {
                   applyPublicThemeSelection(false);
                 }}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200 cursor-pointer ${
                   !useClassicTheme
-                    ? 'bg-indigo-500/15 text-indigo-500'
-                    : 'text-muted-foreground hover:bg-background hover:text-indigo-500'
+                    ? 'bg-rose-500/15 text-rose-600'
+                    : 'text-muted-foreground hover:bg-background hover:text-rose-500'
                 }`}
                 title="Use Modern theme"
                 aria-label="Use Modern theme"
@@ -1111,10 +1117,10 @@ const CreatorProfile = () => {
                 onClick={() => {
                   applyPublicThemeSelection(true);
                 }}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200 cursor-pointer ${
                   useClassicTheme
-                    ? 'bg-indigo-500/15 text-indigo-500'
-                    : 'text-muted-foreground hover:bg-background hover:text-indigo-500'
+                    ? 'bg-rose-500/15 text-rose-600'
+                    : 'text-muted-foreground hover:bg-background hover:text-rose-500'
                 }`}
                 title="Use Classic theme"
                 aria-label="Use Classic theme"
@@ -1127,7 +1133,7 @@ const CreatorProfile = () => {
 
         {/* Profile Info */}
         <div className={`template-profile-shell relative max-w-[1600px] mx-auto px-4 -mt-10 sm:-mt-14 pb-3 sm:pb-4 transition-all duration-300 ${mainOffsetClass}`}>
-          <div className="template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 lg:flex-nowrap lg:items-center lg:rounded-2xl lg:border lg:border-border/70 lg:bg-background lg:px-5 lg:py-3.5">
+          <div className={`template-profile-row flex flex-col sm:flex-row items-center sm:items-start gap-5 lg:flex-nowrap lg:items-center lg:rounded-2xl lg:border lg:px-5 lg:py-4 ${modernCardClass} ${useClassicTheme ? 'lg:border-border/70 lg:bg-background' : ''}`}>
             <div className="profile-avatar-ring flex-shrink-0">
               <img
                 src={profileAvatarImage}
@@ -1137,8 +1143,11 @@ const CreatorProfile = () => {
               />
             </div>
             <div className="flex-1 min-w-0 pt-1 sm:pt-4 text-center sm:text-left">
+              <p className={`mb-1 text-[11px] uppercase tracking-[0.2em] ${useClassicTheme ? 'text-muted-foreground' : 'text-rose-500/80'}`}>
+                Creator Profile
+              </p>
               <div className="flex items-center justify-center sm:justify-start gap-2">
-                <h1 className="template-display-name text-xl sm:text-2xl font-bold text-foreground truncate">
+                <h1 className={`template-display-name font-black tracking-[-0.04em] leading-[0.9] text-[clamp(2rem,7vw,4.4rem)] truncate ${useClassicTheme ? 'text-foreground' : 'text-rose-950'}`}>
                   {creatorData?.displayName || creatorData?.username || 'Creator'}
                 </h1>
                 <svg className="w-5 h-5 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
@@ -1147,11 +1156,11 @@ const CreatorProfile = () => {
                 </svg>
               </div>
               {creatorData?.bio && (
-                <p className="template-bio text-sm text-muted-foreground mt-1 line-clamp-3 break-words max-w-2xl">{creatorData.bio}</p>
+                <p className={`template-bio text-sm mt-2 line-clamp-3 break-words max-w-2xl ${useClassicTheme ? 'text-muted-foreground' : 'text-rose-900/80'}`}>{creatorData.bio}</p>
               )}
               <div className="template-stats flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-3">
-                <span className="stat-pill">{allCollections.length} Collections</span>
-                <span className="stat-pill">{(shouldUseMockData ? mockStatusCards.length : formattedStatusData.length)} Posts</span>
+                <span className={`stat-pill ${!useClassicTheme ? 'bg-rose-50 text-rose-800 border border-rose-100' : ''}`}>{allCollections.length} Collections</span>
+                <span className={`stat-pill ${!useClassicTheme ? 'bg-orange-50 text-orange-800 border border-orange-100' : ''}`}>{(shouldUseMockData ? mockStatusCards.length : formattedStatusData.length)} Posts</span>
               </div>
 
             </div>
@@ -1159,7 +1168,7 @@ const CreatorProfile = () => {
               {allCollections.length > 0 && (
                 <button
                   onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                  className="template-unlock-cta relative mb-3 w-[190px] mx-auto text-center text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
+                  className={`template-unlock-cta relative mb-3 w-[190px] mx-auto text-center text-xl xl:text-2xl font-bold tracking-tight transition-all duration-200 whitespace-nowrap leading-none cursor-pointer ${useClassicTheme ? 'text-foreground' : 'rounded-full px-3 py-2 bg-gradient-to-r from-rose-500 to-orange-500 text-white shadow-[0_10px_28px_rgba(249,115,22,0.35)] hover:from-rose-600 hover:to-orange-600'}`}
                 >
                   <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">Unlock Everything</span>
                 </button>
@@ -1178,7 +1187,7 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-2xl sm:text-2xl md:text-2xl font-extrabold tracking-tight text-foreground transition-all lg:hidden"
+                className={`template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-2xl sm:text-2xl md:text-2xl font-extrabold tracking-tight transition-all duration-200 lg:hidden cursor-pointer ${useClassicTheme ? 'text-foreground' : 'rounded-full px-5 py-2 bg-gradient-to-r from-rose-500 to-orange-500 text-white shadow-[0_10px_24px_rgba(249,115,22,0.35)]'}`}
               >
                 <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold">Unlock Everything</span>
               </button>
@@ -1188,15 +1197,15 @@ const CreatorProfile = () => {
 
           {/* Content Filter Tabs - Moved below profile card */}
           <div className="max-w-4xl mx-auto mt-4 sm:mt-5 flex justify-center">
-            <div className={`template-filter-shell template-filter-container mx-auto flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-200 w-fit`}>
+            <div className={`template-filter-shell template-filter-container mx-auto flex items-center gap-1 p-1 rounded-xl border w-fit ${useClassicTheme ? 'bg-gray-50 border-gray-200' : 'bg-white/85 border-rose-100/90 shadow-[0_10px_30px_rgba(131,24,67,0.08)] backdrop-blur-sm'}`}>
               {(['all', 'collections', 'posts'] as const).map(filter => (
                 <button
                   key={filter}
                   onClick={() => setFeedFilter(filter)}
-                  className={`template-filter-tab px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+                  className={`template-filter-tab px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer ${
                     feedFilter === filter
-                      ? 'template-filter-tab-active bg-gray-100 text-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-gray-100'
+                      ? `${useClassicTheme ? 'template-filter-tab-active bg-gray-100 text-foreground shadow-sm' : 'bg-gradient-to-r from-rose-500 to-orange-500 text-white shadow-sm'}`
+                      : `${useClassicTheme ? 'text-muted-foreground hover:text-foreground hover:bg-gray-100' : 'text-rose-700/75 hover:text-rose-900 hover:bg-rose-50/80'}`
                   }`}
                 >
                   {filter === 'all' ? 'All' : filter === 'collections' ? 'Collections' : 'Posts'}
