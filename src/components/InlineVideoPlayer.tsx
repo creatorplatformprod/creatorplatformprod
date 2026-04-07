@@ -185,6 +185,18 @@ const InlineVideoPlayer = ({
   }, [src, hlsSrc]);
 
   useEffect(() => {
+    // Reset visual state when source changes.
+    setIsPlaying(false);
+    setIsVideoLoaded(false);
+    setVideoErrored(false);
+    setThumbnailError(false);
+    setThumbnailLoaded(false);
+    setShowThumbnail(true);
+    setCurrentTime(0);
+    setDuration(0);
+  }, [src, hlsSrc, thumbnail]);
+
+  useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
@@ -199,12 +211,16 @@ const InlineVideoPlayer = ({
 
     const handleCanPlay = () => {
       setIsVideoLoaded(true);
+      // Always reveal the real paused frame once the video is ready.
+      setShowThumbnail(false);
       notifyReady();
     };
 
     const handleLoadedMetadata = () => {
       setDuration(video.duration);
       setIsVideoLoaded(true);
+      // Always reveal the real paused frame once metadata is available.
+      setShowThumbnail(false);
       notifyReady();
     };
 
