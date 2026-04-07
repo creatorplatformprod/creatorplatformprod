@@ -218,15 +218,15 @@ const Landing = () => {
                     <AreaChart data={CHART_DATA}>
                       <defs>
                         <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#ec4899" stopOpacity={0.3} />
-                          <stop offset="100%" stopColor="#ec4899" stopOpacity={0.0} />
+                          <stop offset="0%" stopColor="#6366f1" stopOpacity={0.3} />
+                          <stop offset="100%" stopColor="#6366f1" stopOpacity={0.0} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid stroke="rgba(0,0,0,0.04)" strokeDasharray="3 3" />
                       <XAxis dataKey="month" tick={{ fill: 'rgba(0,0,0,0.35)', fontSize: 10 }} axisLine={false} tickLine={false} />
                       <YAxis tick={{ fill: 'rgba(0,0,0,0.35)', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v: number) => `$${v >= 1000 ? `${(v/1000).toFixed(1)}k` : v}`} />
-                      <Tooltip contentStyle={{ background: 'white', border: '1px solid #fbcfe8', borderRadius: 8, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} itemStyle={{ color: '#db2777' }} labelStyle={{ color: '#6b7280' }} formatter={(v: number) => [`$${v.toLocaleString()}`, 'Avg. Income']} />
-                      <Area type="monotone" dataKey="value" stroke="#ec4899" strokeWidth={2} fill="url(#chartGlow)" name="Income" />
+                      <Tooltip contentStyle={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} itemStyle={{ color: '#7c3aed' }} labelStyle={{ color: '#6b7280' }} formatter={(v: number) => [`$${v.toLocaleString()}`, 'Avg. Income']} />
+                      <Area type="monotone" dataKey="value" stroke="#6366f1" strokeWidth={2} fill="url(#chartGlow)" name="Income" />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>

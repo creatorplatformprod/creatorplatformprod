@@ -582,7 +582,7 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className={`checkout-page min-h-screen feed-bg ${themeClass}`}>
+    <div className={`min-h-screen feed-bg ${themeClass}`}>
       <header className="sticky top-0 z-10 nav-elevated">
         <div className="max-w-5xl mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button 
