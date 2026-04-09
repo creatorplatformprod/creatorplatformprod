@@ -204,20 +204,14 @@ const Landing = () => {
         <div className="max-w-6xl mx-auto">
           {/* Headline */}
           <div className="text-center mb-12 sm:mb-16">
-            <h1 className="landing-heading mx-auto">
-              Create content. Get paid.<br />
-              <span className="text-purple-500">Card to crypto, instantly.</span>
-            </h1>
-            <p className="landing-subheading mx-auto mt-4 sm:mt-5">
-              The creator platform that lets your subscribers pay with card and sends you crypto in real-time. No middlemen, no delays.
-            </p>
             <div className="elite-title-modal mt-6 sm:mt-8 max-w-5xl mx-auto">
               <div className="elite-title-modal-inner">
                 <div className="elite-title-layout">
                   <div>
                     <span className="elite-title-badge">SixSevenCreator Platform</span>
                     <h2 className="elite-title-heading">
-                      Create content. Get paid. <span>Card to crypto, instantly.</span>
+                      <span className="elite-title-main-line">Create content. Get paid.</span>
+                      <span className="elite-title-highlight-line">Card to crypto, instantly.</span>
                     </h2>
                     <p className="elite-title-copy">
                       Your fans pay with cards, and you receive crypto in real time. Launch collections, gated drops, and subscriptions without middlemen.

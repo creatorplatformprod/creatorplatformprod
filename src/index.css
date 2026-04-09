@@ -2999,15 +2999,21 @@
 
 .elite-title-heading {
   margin-top: 0.9rem;
-  font-size: clamp(2rem, 4.2vw, 4.25rem);
-  line-height: 1.06;
+  font-size: clamp(1.75rem, 3.15vw, 3.45rem);
+  line-height: 1.1;
   font-weight: 900;
   letter-spacing: -0.03em;
   max-width: 17ch;
 }
 
-.elite-title-heading span {
+.elite-title-main-line,
+.elite-title-highlight-line {
+  display: block;
+}
+
+.elite-title-highlight-line {
   color: #7df4ff;
+  margin-top: 0.08em;
 }
 
 .elite-title-copy {
