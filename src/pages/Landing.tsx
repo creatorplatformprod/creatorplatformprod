@@ -211,22 +211,39 @@ const Landing = () => {
             <p className="landing-subheading mx-auto mt-4 sm:mt-5">
               The creator platform that lets your subscribers pay with card and sends you crypto in real-time. No middlemen, no delays.
             </p>
-            <div className="elite-title-modal mt-6 sm:mt-8 max-w-3xl mx-auto">
+            <div className="elite-title-modal mt-6 sm:mt-8 max-w-5xl mx-auto">
               <div className="elite-title-modal-inner">
-                <span className="elite-title-badge">The Curator&apos;s Circle</span>
-                <h2 className="elite-title-heading">
-                  Unlock Your Elite <span>Creative</span> Potential
-                </h2>
-                <p className="elite-title-copy">
-                  Join the inner circle for premium assets, weekly workshops, and advanced monetization tools.
-                </p>
-                <div className="elite-title-actions">
-                  <button type="button" onClick={() => scrollToHero(false)} className="elite-title-btn-primary btn-press">
-                    Upgrade to Elite
-                  </button>
-                  <button type="button" className="elite-title-btn-secondary">
-                    AI Coach
-                  </button>
+                <div className="elite-title-layout">
+                  <div>
+                    <span className="elite-title-badge">The Curator&apos;s Circle</span>
+                    <h2 className="elite-title-heading">
+                      Unlock Your Elite <span>Creative</span> Potential
+                    </h2>
+                    <p className="elite-title-copy">
+                      Join the inner circle for premium assets, weekly workshops, and advanced monetization tools.
+                    </p>
+                    <div className="elite-title-actions">
+                      <button type="button" onClick={() => scrollToHero(false)} className="elite-title-btn-primary btn-press">
+                        Upgrade to Elite
+                      </button>
+                      <button type="button" className="elite-title-btn-secondary">
+                        AI Coach
+                      </button>
+                    </div>
+                  </div>
+                  <div className="elite-title-art-shell" aria-hidden="true">
+                    <div className="elite-title-art-card">
+                      <div className="elite-title-art-canvas">
+                        <div className="elite-title-art-blob elite-title-art-blob-a" />
+                        <div className="elite-title-art-blob elite-title-art-blob-b" />
+                        <div className="elite-title-art-blob elite-title-art-blob-c" />
+                      </div>
+                    </div>
+                    <div className="elite-title-members-chip">
+                      <p>Active Members</p>
+                      <strong>12.4k+</strong>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

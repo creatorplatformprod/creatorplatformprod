@@ -2964,11 +2964,26 @@
 
 .elite-title-modal-inner {
   border-radius: calc(2rem - 1px);
-  padding: 1.75rem;
+  padding: 1.4rem;
   color: white;
   background:
     radial-gradient(500px 240px at 85% -20%, rgba(0, 238, 252, 0.26), transparent 62%),
     linear-gradient(135deg, rgba(91, 60, 221, 0.94), rgba(116, 89, 247, 0.94));
+}
+
+.elite-title-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  text-align: left;
+}
+
+@media (min-width: 960px) {
+  .elite-title-layout {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+    gap: 2rem;
+  }
 }
 
 .elite-title-badge {
@@ -2984,10 +2999,11 @@
 
 .elite-title-heading {
   margin-top: 0.9rem;
-  font-size: clamp(1.8rem, 3.8vw, 3.25rem);
+  font-size: clamp(2rem, 4.2vw, 4.25rem);
   line-height: 1.06;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: -0.03em;
+  max-width: 13ch;
 }
 
 .elite-title-heading span {
@@ -2997,15 +3013,15 @@
 .elite-title-copy {
   margin-top: 0.7rem;
   color: hsl(var(--primary-fixed));
-  font-size: 0.95rem;
-  max-width: 56ch;
+  font-size: 1rem;
+  max-width: 46ch;
 }
 
 .elite-title-actions {
   margin-top: 1.1rem;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.6rem;
 }
 
@@ -3013,8 +3029,8 @@
 .elite-title-btn-secondary {
   border: 0;
   border-radius: 9999px;
-  padding: 0.72rem 1.2rem;
-  font-weight: 700;
+  padding: 0.76rem 1.35rem;
+  font-weight: 800;
   transition: all 0.2s ease;
   cursor: pointer;
 }
@@ -3031,6 +3047,101 @@
 .elite-title-btn-secondary {
   background: rgba(255, 255, 255, 0.12);
   color: white;
+}
+
+.elite-title-art-shell {
+  position: relative;
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+.elite-title-art-card {
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 26px 54px rgba(34, 21, 101, 0.35);
+  padding: 0.8rem;
+  transform: rotate(3.6deg);
+}
+
+.elite-title-art-canvas {
+  aspect-ratio: 1 / 1;
+  border-radius: 0.9rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(246, 248, 255, 0.98));
+  position: relative;
+  overflow: hidden;
+}
+
+.elite-title-art-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(0.2px);
+}
+
+.elite-title-art-blob-a {
+  width: 46%;
+  height: 46%;
+  left: 27%;
+  top: 24%;
+  background: radial-gradient(circle at 30% 30%, #8b3fff 0%, #4e2fc8 58%, #25115d 100%);
+}
+
+.elite-title-art-blob-b {
+  width: 30%;
+  height: 30%;
+  left: 49%;
+  top: 30%;
+  background: radial-gradient(circle at 32% 32%, #75f5ff 0%, #17c9e5 58%, #0d6a7d 100%);
+}
+
+.elite-title-art-blob-c {
+  width: 26%;
+  height: 26%;
+  left: 20%;
+  top: 42%;
+  background: radial-gradient(circle at 30% 30%, #7e2fff 0%, #541ca8 62%, #2d0d61 100%);
+}
+
+.elite-title-members-chip {
+  position: absolute;
+  left: -0.65rem;
+  bottom: -0.8rem;
+  border-radius: 0.95rem;
+  padding: 0.62rem 0.9rem;
+  background: #00eefc;
+  color: #00363a;
+  box-shadow: 0 16px 30px rgba(0, 105, 112, 0.35);
+  transform: rotate(-7deg);
+}
+
+.elite-title-members-chip p {
+  margin: 0;
+  font-size: 0.52rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 800;
+}
+
+.elite-title-members-chip strong {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 1.35rem;
+  line-height: 1;
+  font-weight: 900;
+}
+
+@media (max-width: 959px) {
+  .elite-title-modal-inner {
+    padding: 1.25rem;
+  }
+
+  .elite-title-heading {
+    font-size: clamp(1.95rem, 10vw, 3.1rem);
+  }
+
+  .elite-title-art-shell {
+    max-width: 250px;
+  }
 }
 
 .vanguard-card {
