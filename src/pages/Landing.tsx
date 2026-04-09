@@ -215,19 +215,19 @@ const Landing = () => {
               <div className="elite-title-modal-inner">
                 <div className="elite-title-layout">
                   <div>
-                    <span className="elite-title-badge">The Curator&apos;s Circle</span>
+                    <span className="elite-title-badge">SixSevenCreator Platform</span>
                     <h2 className="elite-title-heading">
-                      Unlock Your Elite <span>Creative</span> Potential
+                      Create content. Get paid. <span>Card to crypto, instantly.</span>
                     </h2>
                     <p className="elite-title-copy">
-                      Join the inner circle for premium assets, weekly workshops, and advanced monetization tools.
+                      Your fans pay with cards, and you receive crypto in real time. Launch collections, gated drops, and subscriptions without middlemen.
                     </p>
                     <div className="elite-title-actions">
                       <button type="button" onClick={() => scrollToHero(false)} className="elite-title-btn-primary btn-press">
-                        Upgrade to Elite
+                        Start Creating
                       </button>
-                      <button type="button" className="elite-title-btn-secondary">
-                        AI Coach
+                      <button type="button" onClick={() => scrollTo('pricing')} className="elite-title-btn-secondary">
+                        View Pricing
                       </button>
                     </div>
                   </div>
@@ -242,8 +242,8 @@ const Landing = () => {
                       </div>
                     </div>
                     <div className="elite-title-members-chip">
-                      <p>Active Members</p>
-                      <strong>12.4k+</strong>
+                      <p>Instant Payouts</p>
+                      <strong>24/7</strong>
                     </div>
                   </div>
                 </div>
