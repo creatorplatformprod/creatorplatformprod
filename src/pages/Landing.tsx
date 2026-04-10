@@ -15,43 +15,20 @@ import {
 /* ─────────────────── Data ─────────────────── */
 
 const SPOTLIGHTS = [
-  { name: 'Grace',  img: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=120' },
-  { name: 'Samy',   img: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=120' },
-  { name: 'Sose',   img: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=120' },
-  { name: 'Sany',   img: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=120' },
-  { name: 'Rosie',  img: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=120' },
+  { name: 'Nia',    img: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=120' },
+  { name: 'Elena',  img: 'https://images.pexels.com/photos/3775534/pexels-photo-3775534.jpeg?auto=compress&cs=tinysrgb&w=120' },
+  { name: 'Maya',   img: 'https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?auto=compress&cs=tinysrgb&w=120' },
+  { name: 'Nova',   img: 'https://images.pexels.com/photos/1542085/pexels-photo-1542085.jpeg?auto=compress&cs=tinysrgb&w=120' },
+  { name: 'Aria',   img: 'https://images.pexels.com/photos/1386604/pexels-photo-1386604.jpeg?auto=compress&cs=tinysrgb&w=120' },
 ];
 
-const VANGUARD_FEMALES = [
-  {
-    name: 'Aria Lane',
-    role: 'Digital Artist',
-    metricA: '+240%',
-    metricB: '$12.4k',
-    image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=700'
-  },
-  {
-    name: 'Elena Voss',
-    role: 'Fitness Creator',
-    metricA: '1.2M',
-    metricB: '4,500',
-    image: 'https://images.pexels.com/photos/3775534/pexels-photo-3775534.jpeg?auto=compress&cs=tinysrgb&w=700'
-  },
-  {
-    name: 'Maya Quinn',
-    role: 'Lifestyle Curator',
-    metricA: '94%',
-    metricB: '8.2%',
-    image: 'https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?auto=compress&cs=tinysrgb&w=700'
-  },
-  {
-    name: 'Nova Blair',
-    role: 'Beauty Creator',
-    metricA: '+180%',
-    metricB: '$9.8k',
-    image: 'https://images.pexels.com/photos/1542085/pexels-photo-1542085.jpeg?auto=compress&cs=tinysrgb&w=700'
-  }
-];
+const VANGUARD_FEMALES = SPOTLIGHTS.slice(0, 4).map((creator, idx) => ({
+  name: creator.name,
+  role: ['Beauty Creator', 'Lifestyle Creator', 'Fashion Creator', 'Premium Creator'][idx] || 'Creator',
+  metricA: ['+240%', '1.2M', '94%', '+180%'][idx] || '+120%',
+  metricB: ['$12.4k', '4,500', '8.2%', '$9.8k'][idx] || '$7.4k',
+  image: creator.img.replace('w=120', 'w=700')
+}));
 
 const CHART_DATA = [
   { month: 'Jan', value: 420 },  { month: 'Feb', value: 610 },
@@ -69,9 +46,7 @@ const FEATURES = [
   { icon: ShieldCheck, title: 'Secure Platform', desc: 'End-to-end encryption, 2FA, and DMCA protection for your content.' },
 ];
 
-const FREE_FEATURES = ['Unlimited uploads', 'Creator profile', 'Basic analytics', 'Email support'];
-const PRO_FEATURES = ['Unlimited uploads', 'Creator profile', 'Card to crypto payments', 'Real-time analytics', 'Priority support', 'Custom domain', 'No transaction fees', 'Cancel anytime'];
-const BIZ_FEATURES = ['Everything in Pro', 'Billed monthly for 12 months', 'Lower monthly rate', 'Card to crypto payments', 'Priority support', 'Cancel anytime'];
+const ALL_PLAN_FEATURES = ['Unlimited uploads', 'Creator profile', 'Card to crypto payments', 'Real-time analytics', 'Priority support', 'Custom domain', 'No transaction fees', 'Cancel anytime'];
 
 const FAQS = [
   { q: 'Is SixSevenCreator really free to start?', a: 'Yes. Every account starts with a full 1-month free trial on the Pro plan. No credit card required. You only pay when you choose to continue.' },
@@ -304,12 +279,6 @@ const Landing = () => {
                     <svg className="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                     One-Tap Login
                   </button>
-                  <button className="h-10 w-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
-                    <svg viewBox="0 0 24 24" className="w-4.5 h-4.5 fill-gray-700"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 21.99 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09997 21.99C7.78997 22.03 6.79997 20.68 5.95997 19.47C4.24997 17 2.93997 12.45 4.69997 9.39C5.56997 7.87 7.12997 6.91 8.81997 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
-                  </button>
-                  <button className="h-10 w-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
-                    <svg viewBox="0 0 24 24" className="w-4.5 h-4.5 fill-gray-700"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-                  </button>
                 </div>
 
                 <h2 className="text-gray-900 text-2xl font-bold tracking-tight mb-1">
@@ -376,9 +345,9 @@ const Landing = () => {
         <div className="max-w-6xl mx-auto">
           <div className="mb-8 text-center sm:text-left">
             <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-2">Live Spotlight</p>
-            <h2 className="landing-heading">The Vanguard</h2>
+            <h2 className="landing-heading">SixSevenCreator Spotlight</h2>
             <p className="text-gray-500 text-sm mt-2 max-w-xl mx-auto sm:mx-0">
-              Top female creators using SixSevenCreator to scale audience, retention, and recurring income.
+              Featured creators on SixSevenCreator growing audience, retention, and recurring income.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -424,42 +393,23 @@ const Landing = () => {
           </div>
 
           <div className="pricing-studio-grid max-w-5xl mx-auto">
-            {/* Free */}
-            <div className="landing-price-card studio-pricing-card">
-              <h3 className="text-gray-900 font-semibold text-lg">Essential</h3>
-              <p className="text-gray-400 text-xs mt-1 mb-6">Perfect for getting started</p>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900 tracking-tight">$29</span>
-                <span className="text-gray-400 text-sm ml-1">/ mo</span>
-              </div>
-              <button onClick={() => scrollToHero(false)} className="w-full h-11 rounded-full border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6 btn-press">Get Started</button>
-              <div className="space-y-3 flex-1">
-                {FREE_FEATURES.map((f, i) => (
-                  <div key={i} className="flex items-center gap-2.5">
-                    <div className="w-4 h-4 rounded-full bg-indigo-500/10 flex items-center justify-center flex-shrink-0"><svg className="w-2.5 h-2.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg></div>
-                    <span className="text-sm text-gray-500">{f}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Pro (featured) */}
+            {/* Free Trial */}
             <div className="landing-price-card featured relative studio-pricing-card studio-pricing-featured">
               <div className="absolute -top-3 left-4">
                 <span className="inline-flex items-center gap-1 text-white text-[11px] font-semibold px-3 py-1 rounded-full landing-cta-glow">
                   Recommended
                 </span>
               </div>
-              <h3 className="text-gray-900 font-semibold text-lg">Elite Creator</h3>
-              <p className="text-gray-400 text-xs mt-1 mb-6">Automation + revenue max</p>
+              <h3 className="text-gray-900 font-semibold text-lg">Basic</h3>
+              <p className="text-gray-400 text-xs mt-1 mb-6">1 month free, full access</p>
               <div className="mb-1">
-                <span className="text-4xl font-bold text-gray-900 tracking-tight">$89</span>
-                <span className="text-gray-400 text-sm ml-1">/ mo</span>
+                <span className="text-4xl font-bold text-gray-900 tracking-tight">$0</span>
+                <span className="text-gray-400 text-sm ml-1">/ first month</span>
               </div>
-              <p className="text-gray-400 text-xs mb-6">Most chosen plan</p>
-              <button onClick={() => openPlanCheckout(proCheckoutUrl)} className="w-full h-11 rounded-full landing-cta-glow btn-press font-semibold text-sm mb-6">Upgrade to Elite</button>
+              <p className="text-gray-400 text-xs mb-6">Then $19.99 / month</p>
+              <button onClick={() => scrollToHero(false)} className="w-full h-11 rounded-full landing-cta-glow btn-press font-semibold text-sm mb-6">Start Free</button>
               <div className="space-y-3 flex-1">
-                {PRO_FEATURES.map((f, i) => (
+                {ALL_PLAN_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
                     <div className="w-4 h-4 rounded-full bg-indigo-500/10 flex items-center justify-center flex-shrink-0"><svg className="w-2.5 h-2.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg></div>
                     <span className="text-sm text-gray-500">{f}</span>
@@ -468,18 +418,18 @@ const Landing = () => {
               </div>
             </div>
 
-            {/* Business */}
+            {/* Monthly */}
             <div className="landing-price-card studio-pricing-card">
-              <h3 className="text-gray-900 font-semibold text-lg">Network</h3>
-              <p className="text-gray-400 text-xs mt-1 mb-6">For teams and agencies</p>
+              <h3 className="text-gray-900 font-semibold text-lg">Monthly</h3>
+              <p className="text-gray-400 text-xs mt-1 mb-6">Pay month to month</p>
               <div className="mb-1">
-                <span className="text-4xl font-bold text-gray-900 tracking-tight">$249</span>
+                <span className="text-4xl font-bold text-gray-900 tracking-tight">$19.99</span>
                 <span className="text-gray-400 text-sm ml-1">/ mo</span>
               </div>
-              <p className="text-gray-400 text-xs mb-6">Collaborator-ready billing</p>
-              <button onClick={() => openPlanCheckout(businessCheckoutUrl)} className="w-full h-11 rounded-full border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6 btn-press">Contact Sales</button>
+              <p className="text-gray-400 text-xs mb-6">Cancel anytime</p>
+              <button onClick={() => openPlanCheckout(proCheckoutUrl)} className="w-full h-11 rounded-full border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6 btn-press">Choose Monthly</button>
               <div className="space-y-3 flex-1">
-                {BIZ_FEATURES.map((f, i) => (
+                {ALL_PLAN_FEATURES.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
                     <div className="w-4 h-4 rounded-full bg-indigo-500/10 flex items-center justify-center flex-shrink-0"><svg className="w-2.5 h-2.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg></div>
                     <span className="text-sm text-gray-500">{f}</span>
@@ -487,19 +437,25 @@ const Landing = () => {
                 ))}
               </div>
             </div>
-          </div>
 
-          <div className="split-pay-studio mt-8 max-w-5xl mx-auto">
-            <div>
-              <h3>Work together, <span>split the cost.</span></h3>
-              <p>
-                Divide Elite or Network costs with collaborators and keep the growth engine moving.
-              </p>
-            </div>
-            <div className="split-pay-panel">
-              <p className="split-pay-label">Each person pays only</p>
-              <p className="split-pay-value">$29.66<span>/mo</span></p>
-              <button type="button" className="split-pay-action">Invite Collaborators</button>
+            {/* Yearly */}
+            <div className="landing-price-card studio-pricing-card">
+              <h3 className="text-gray-900 font-semibold text-lg">Yearly</h3>
+              <p className="text-gray-400 text-xs mt-1 mb-6">Best value for long-term creators</p>
+              <div className="mb-1">
+                <span className="text-4xl font-bold text-gray-900 tracking-tight">$159</span>
+                <span className="text-gray-400 text-sm ml-1">/ year</span>
+              </div>
+              <p className="text-gray-400 text-xs mb-6">Save $80.88 per year (33.7%)</p>
+              <button onClick={() => openPlanCheckout(businessCheckoutUrl || proCheckoutUrl)} className="w-full h-11 rounded-full border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-semibold text-sm transition-all mb-6 btn-press">Choose Yearly</button>
+              <div className="space-y-3 flex-1">
+                {ALL_PLAN_FEATURES.map((f, i) => (
+                  <div key={i} className="flex items-center gap-2.5">
+                    <div className="w-4 h-4 rounded-full bg-indigo-500/10 flex items-center justify-center flex-shrink-0"><svg className="w-2.5 h-2.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg></div>
+                    <span className="text-sm text-gray-500">{f}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
