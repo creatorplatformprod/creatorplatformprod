@@ -15,11 +15,11 @@ import {
 /* ─────────────────── Data ─────────────────── */
 
 const SPOTLIGHTS = [
-  { name: 'Nia',    img: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=120' },
-  { name: 'Elena',  img: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=120' },
-  { name: 'Maya',   img: 'https://images.pexels.com/photos/1858175/pexels-photo-1858175.jpeg?auto=compress&cs=tinysrgb&w=120' },
-  { name: 'Nova',   img: 'https://images.pexels.com/photos/1825130/pexels-photo-1825130.jpeg?auto=compress&cs=tinysrgb&w=120' },
-  { name: 'Aria',   img: 'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=120' },
+  { name: 'Nia',    img: '/spotlight/model-1.jpg' },
+  { name: 'Elena',  img: '/spotlight/model-2.jpg' },
+  { name: 'Maya',   img: '/spotlight/model-3.jpg' },
+  { name: 'Nova',   img: '/spotlight/model-4.jpg' },
+  { name: 'Aria',   img: '/spotlight/model-5.jpg' },
 ];
 
 const VANGUARD_FEMALES = SPOTLIGHTS.slice(0, 4).map((creator, idx) => ({
@@ -27,7 +27,7 @@ const VANGUARD_FEMALES = SPOTLIGHTS.slice(0, 4).map((creator, idx) => ({
   role: ['Beauty Creator', 'Lifestyle Creator', 'Fashion Creator', 'Premium Creator'][idx] || 'Creator',
   metricA: ['+240%', '1.2M', '94%', '+180%'][idx] || '+120%',
   metricB: ['$12.4k', '4,500', '8.2%', '$9.8k'][idx] || '$7.4k',
-  image: creator.img.replace('w=120', 'w=700')
+  image: creator.img
 }));
 
 const CHART_DATA = [
@@ -166,10 +166,10 @@ const Landing = () => {
             <span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span>
           </div>
           <div className="flex items-center gap-1 sm:gap-4">
-            <button onClick={() => scrollTo('features')} className="text-gray-500 hover:text-gray-900 text-xs sm:text-base font-medium transition-colors px-2 sm:px-2.5 py-1">Features</button>
-            <button onClick={() => scrollTo('pricing')} className="text-gray-500 hover:text-gray-900 text-xs sm:text-base font-medium transition-colors px-2 sm:px-2.5 py-1">Pricing</button>
-            <button onClick={() => scrollToHero(true)} className="text-gray-500 hover:text-gray-900 text-xs sm:text-base font-medium transition-colors px-2 sm:px-2.5 py-1">Login</button>
-            <button onClick={() => scrollToHero(false)} className="landing-cta-glow btn-press h-8 sm:h-9 px-3.5 sm:px-5 rounded-full text-xs sm:text-sm font-semibold ml-0.5 sm:ml-1">Get Started</button>
+            <button onClick={() => scrollTo('features')} className="text-gray-500 hover:text-gray-900 text-[11px] sm:text-sm font-medium transition-colors px-2 sm:px-2.5 py-1">Features</button>
+            <button onClick={() => scrollTo('pricing')} className="text-gray-500 hover:text-gray-900 text-[11px] sm:text-sm font-medium transition-colors px-2 sm:px-2.5 py-1">Pricing</button>
+            <button onClick={() => scrollToHero(true)} className="text-gray-500 hover:text-gray-900 text-[11px] sm:text-sm font-medium transition-colors px-2 sm:px-2.5 py-1">Login</button>
+            <button onClick={() => scrollToHero(false)} className="landing-cta-glow btn-press h-8 sm:h-9 px-3.5 sm:px-5 rounded-full text-[11px] sm:text-xs font-semibold ml-0.5 sm:ml-1">Get Started</button>
           </div>
         </div>
       </nav>

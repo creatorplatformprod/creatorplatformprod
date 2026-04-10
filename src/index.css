@@ -59,6 +59,13 @@
    ═══════════════════════════════════════════════════ */
 
 @layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+    overscroll-behavior-y: none;
+  }
+
   :root {
     /* White + Purple Theme */
     --background: 0 0% 100%;
@@ -186,6 +193,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
   }
 
   /* Thin modern scrollbar (light + dark) */
@@ -1115,6 +1123,7 @@
     overflow-x: clip;
     overflow-y: visible;
     overscroll-behavior-x: none;
+    overscroll-behavior-y: none;
     touch-action: pan-y pinch-zoom;
     -webkit-overflow-scrolling: touch;
   }
