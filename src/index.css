@@ -3059,9 +3059,43 @@
   position: relative;
   max-width: 340px;
   margin: 0 auto;
+  min-height: 320px;
+}
+
+.elite-title-card-ghost {
+  position: absolute;
+  border-radius: 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.2), rgba(165, 150, 255, 0.16));
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 22px 44px rgba(29, 16, 90, 0.22);
+  transform: rotate(4deg);
+  pointer-events: none;
+}
+
+.elite-title-card-ghost-back {
+  width: 86%;
+  height: 86%;
+  right: -0.4rem;
+  top: -0.35rem;
+  opacity: 0.62;
+}
+
+.elite-title-card-ghost-mid {
+  width: 90%;
+  height: 90%;
+  right: -0.05rem;
+  top: 0.15rem;
+  opacity: 0.78;
 }
 
 .elite-title-art-card {
+  position: absolute;
+  right: 0.6rem;
+  top: 0.8rem;
+  width: 88%;
+  height: 88%;
   border-radius: 1.2rem;
   background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.24);
@@ -3088,7 +3122,7 @@
 .elite-title-members-chip {
   position: absolute;
   left: -0.9rem;
-  bottom: 1.1rem;
+  bottom: 0.55rem;
   border-radius: 0.95rem;
   padding: 0.62rem 0.9rem;
   background: #00eefc;
@@ -3124,6 +3158,22 @@
 
   .elite-title-art-shell {
     max-width: 250px;
+    min-height: 240px;
+  }
+
+  .elite-title-art-card {
+    right: 0.35rem;
+    top: 0.55rem;
+  }
+
+  .elite-title-card-ghost-back {
+    right: -0.25rem;
+    top: -0.15rem;
+  }
+
+  .elite-title-card-ghost-mid {
+    right: -0.02rem;
+    top: 0.15rem;
   }
 }
 

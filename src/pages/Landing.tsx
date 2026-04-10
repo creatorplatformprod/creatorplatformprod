@@ -226,6 +226,8 @@ const Landing = () => {
                     </div>
                   </div>
                   <div className="elite-title-art-shell" aria-hidden="true">
+                    <div className="elite-title-card-ghost elite-title-card-ghost-back" />
+                    <div className="elite-title-card-ghost elite-title-card-ghost-mid" />
                     <div className="elite-title-art-card">
                       <div className="elite-title-art-canvas">
                         <img
