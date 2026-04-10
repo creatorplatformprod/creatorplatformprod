@@ -206,7 +206,7 @@ const Landing = () => {
                     <div className="elite-title-art-card">
                       <div className="elite-title-art-canvas">
                         <img
-                          src="/elite-shape-stitch.png"
+                          src="/hero-dashboard-stack-v3.png"
                           alt=""
                           className="elite-title-art-image"
                         />
