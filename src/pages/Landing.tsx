@@ -190,21 +190,21 @@ const Landing = () => {
           <div className="brand-wordmark">
             <span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span>
           </div>
-          <div className="flex items-center gap-0.5 sm:gap-4">
-            <button onClick={() => scrollTo('features')} className="text-gray-500 hover:text-gray-900 text-[10px] sm:text-sm font-medium transition-colors px-1.5 sm:px-2 py-1">Features</button>
-            <button onClick={() => scrollTo('pricing')} className="text-gray-500 hover:text-gray-900 text-[10px] sm:text-sm font-medium transition-colors px-1.5 sm:px-2 py-1">Pricing</button>
-            <button onClick={() => scrollToHero(true)} className="text-gray-500 hover:text-gray-900 text-[10px] sm:text-sm font-medium transition-colors px-1.5 sm:px-2 py-1">Login</button>
-            <button onClick={() => scrollToHero(false)} className="landing-cta-glow btn-press h-7 sm:h-8 px-3 sm:px-4 rounded-full text-[10px] sm:text-xs font-semibold ml-0.5 sm:ml-1">Get Started</button>
+          <div className="flex items-center gap-1 sm:gap-4">
+            <button onClick={() => scrollTo('features')} className="text-gray-500 hover:text-gray-900 text-xs sm:text-base font-medium transition-colors px-2 sm:px-2.5 py-1">Features</button>
+            <button onClick={() => scrollTo('pricing')} className="text-gray-500 hover:text-gray-900 text-xs sm:text-base font-medium transition-colors px-2 sm:px-2.5 py-1">Pricing</button>
+            <button onClick={() => scrollToHero(true)} className="text-gray-500 hover:text-gray-900 text-xs sm:text-base font-medium transition-colors px-2 sm:px-2.5 py-1">Login</button>
+            <button onClick={() => scrollToHero(false)} className="landing-cta-glow btn-press h-8 sm:h-9 px-3.5 sm:px-5 rounded-full text-xs sm:text-sm font-semibold ml-0.5 sm:ml-1">Get Started</button>
           </div>
         </div>
       </nav>
 
       {/* ━━━━━━━━━━ 2. HERO ━━━━━━━━━━ */}
-      <section className="relative z-10 pt-28 sm:pt-36 pb-8 sm:pb-12 px-4 page-enter">
+      <section className="relative z-10 pt-16 sm:pt-20 pb-8 sm:pb-12 px-4 page-enter">
         <div className="max-w-6xl mx-auto">
           {/* Headline */}
-          <div className="text-center mb-12 sm:mb-16">
-            <div className="elite-title-modal mt-6 sm:mt-8 max-w-5xl mx-auto">
+          <div className="text-center mb-8 sm:mb-10">
+            <div className="elite-title-modal w-full max-w-none mx-auto">
               <div className="elite-title-modal-inner">
                 <div className="elite-title-layout">
                   <div>
