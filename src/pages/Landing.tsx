@@ -15,11 +15,11 @@ import {
 /* ─────────────────── Data ─────────────────── */
 
 const SPOTLIGHTS = [
-  { name: 'Nia',    img: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=120' },
-  { name: 'Elena',  img: 'https://images.pexels.com/photos/3775534/pexels-photo-3775534.jpeg?auto=compress&cs=tinysrgb&w=120' },
-  { name: 'Maya',   img: 'https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?auto=compress&cs=tinysrgb&w=120' },
-  { name: 'Nova',   img: 'https://images.pexels.com/photos/1542085/pexels-photo-1542085.jpeg?auto=compress&cs=tinysrgb&w=120' },
-  { name: 'Aria',   img: 'https://images.pexels.com/photos/1386604/pexels-photo-1386604.jpeg?auto=compress&cs=tinysrgb&w=120' },
+  { name: 'Nia',    img: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=120' },
+  { name: 'Elena',  img: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=120' },
+  { name: 'Maya',   img: 'https://images.pexels.com/photos/1858175/pexels-photo-1858175.jpeg?auto=compress&cs=tinysrgb&w=120' },
+  { name: 'Nova',   img: 'https://images.pexels.com/photos/1825130/pexels-photo-1825130.jpeg?auto=compress&cs=tinysrgb&w=120' },
+  { name: 'Aria',   img: 'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=120' },
 ];
 
 const VANGUARD_FEMALES = SPOTLIGHTS.slice(0, 4).map((creator, idx) => ({
@@ -206,7 +206,7 @@ const Landing = () => {
                     <div className="elite-title-art-card">
                       <div className="elite-title-art-canvas">
                         <img
-                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx4G5T-ffWMrI0cF2kb0xt-EHIfoMAf0v0Xg-yHzTNxoxPpkOs0cGTXKgb3dP3ACOxNJoNzl3qXV9jdlUJ8IUMisI2ZiYJdpXmW5qk_9tp-pQLuje2wZaRuUa5R6x18vBbNZaC1HkDAdh8rc7JZbGELX1GmjL_3xXg1Y-LLeU_24UNxiOvPmcm3HqS_RStnT1NOfTw9aVIAY_scDFGRcEb3UDu_CSZOpP1UM_-66d2Q-23m8bylcV5clIcokY_kdpO6LPeE5mDqvQ"
+                          src="/elite-shape.png"
                           alt=""
                           className="elite-title-art-image"
                         />
