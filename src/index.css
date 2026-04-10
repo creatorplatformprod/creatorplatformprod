@@ -3066,11 +3066,9 @@
 
 .elite-title-art-shell {
   position: relative;
-  width: min(100%, 340px);
   max-width: 340px;
   margin: 0 auto;
-  aspect-ratio: 1 / 1;
-  min-height: 0;
+  min-height: 320px;
 }
 
 .elite-title-card-ghost {
@@ -3088,34 +3086,31 @@
 .elite-title-card-ghost-back {
   width: 86%;
   height: 86%;
-  right: -1.2rem;
-  top: -1.45rem;
-  opacity: 0.55;
-  z-index: 1;
+  right: -0.4rem;
+  top: -0.35rem;
+  opacity: 0.62;
 }
 
 .elite-title-card-ghost-mid {
   width: 90%;
   height: 90%;
-  right: -0.28rem;
-  top: -0.7rem;
-  opacity: 0.72;
-  z-index: 2;
+  right: -0.05rem;
+  top: 0.15rem;
+  opacity: 0.78;
 }
 
 .elite-title-art-card {
   position: absolute;
-  right: 0.8rem;
-  top: 0.2rem;
-  width: calc(100% - 1.6rem);
-  height: calc(100% - 1.1rem);
+  right: 0.6rem;
+  top: 0.8rem;
+  width: 88%;
+  height: 88%;
   border-radius: 1.2rem;
   background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.24);
   box-shadow: 0 26px 54px rgba(34, 21, 101, 0.35);
   padding: 0.85rem;
   transform: rotate(3.6deg);
-  z-index: 3;
 }
 
 .elite-title-art-canvas {
@@ -3127,12 +3122,10 @@
 }
 
 .elite-title-art-image {
-  display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
-  transform: scale(1.08);
 }
 
 .elite-title-members-chip {
@@ -3145,7 +3138,6 @@
   color: #00363a;
   box-shadow: 0 16px 30px rgba(0, 105, 112, 0.35);
   transform: rotate(-7deg);
-  z-index: 4;
 }
 
 .elite-title-members-chip p {
@@ -3174,25 +3166,23 @@
   }
 
   .elite-title-art-shell {
-    width: min(100%, 250px);
     max-width: 250px;
-    aspect-ratio: 1 / 1;
-    min-height: 0;
+    min-height: 240px;
   }
 
   .elite-title-art-card {
-    right: 0.45rem;
-    top: 0.45rem;
+    right: 0.35rem;
+    top: 0.55rem;
   }
 
   .elite-title-card-ghost-back {
-    right: -0.65rem;
-    top: -0.5rem;
+    right: -0.25rem;
+    top: -0.15rem;
   }
 
   .elite-title-card-ghost-mid {
-    right: -0.2rem;
-    top: 0.02rem;
+    right: -0.02rem;
+    top: 0.15rem;
   }
 }
 

@@ -206,7 +206,7 @@ const Landing = () => {
                     <div className="elite-title-art-card">
                       <div className="elite-title-art-canvas">
                         <img
-                          src="/hero-dashboard-stack-v3.png"
+                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx4G5T-ffWMrI0cF2kb0xt-EHIfoMAf0v0Xg-yHzTNxoxPpkOs0cGTXKgb3dP3ACOxNJoNzl3qXV9jdlUJ8IUMisI2ZiYJdpXmW5qk_9tp-pQLuje2wZaRuUa5R6x18vBbNZaC1HkDAdh8rc7JZbGELX1GmjL_3xXg1Y-LLeU_24UNxiOvPmcm3HqS_RStnT1NOfTw9aVIAY_scDFGRcEb3UDu_CSZOpP1UM_-66d2Q-23m8bylcV5clIcokY_kdpO6LPeE5mDqvQ"
                           alt=""
                           className="elite-title-art-image"
                         />
