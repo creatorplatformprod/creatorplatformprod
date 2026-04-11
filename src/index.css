@@ -3089,6 +3089,7 @@
   right: -0.4rem;
   top: -0.35rem;
   opacity: 0.62;
+  z-index: 1;
 }
 
 .elite-title-card-ghost-mid {
@@ -3097,6 +3098,7 @@
   right: -0.05rem;
   top: 0.15rem;
   opacity: 0.78;
+  z-index: 2;
 }
 
 .elite-title-art-card {
@@ -3111,6 +3113,7 @@
   box-shadow: 0 26px 54px rgba(34, 21, 101, 0.35);
   padding: 0.85rem;
   transform: rotate(3.6deg);
+  z-index: 3;
 }
 
 .elite-title-art-canvas {
@@ -3138,6 +3141,7 @@
   color: #00363a;
   box-shadow: 0 16px 30px rgba(0, 105, 112, 0.35);
   transform: rotate(-7deg);
+  z-index: 4;
 }
 
 .elite-title-members-chip p {
