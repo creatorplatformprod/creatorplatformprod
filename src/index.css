@@ -3066,10 +3066,10 @@
 
 .elite-title-art-shell {
   position: relative;
-  width: min(100%, 340px);
-  max-width: 340px;
+  width: min(100%, 320px);
+  max-width: 320px;
   margin: 0 auto;
-  min-height: 320px;
+  min-height: 286px;
 }
 
 .elite-title-card-ghost {
@@ -3104,17 +3104,29 @@
 
 .elite-title-art-card {
   position: absolute;
-  right: 0.6rem;
-  top: 0.8rem;
-  width: 88%;
-  height: 88%;
+  width: 76%;
+  height: 76%;
   border-radius: 1.2rem;
   background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.24);
   box-shadow: 0 26px 54px rgba(34, 21, 101, 0.35);
   padding: 0.85rem;
-  transform: rotate(3.6deg);
+  transform: rotate(4deg);
+}
+
+.elite-title-art-card-left {
+  left: 0.45rem;
+  top: 1rem;
+  opacity: 0.9;
+  z-index: 2;
+  animation: eliteFloatLeft 6.5s ease-in-out infinite;
+}
+
+.elite-title-art-card-right {
+  right: 0.25rem;
+  top: 0.35rem;
   z-index: 3;
+  animation: eliteFloatRight 6.5s ease-in-out infinite;
 }
 
 .elite-title-art-canvas {
@@ -3132,10 +3144,28 @@
   object-position: center;
 }
 
+@keyframes eliteFloatLeft {
+  0%, 100% {
+    transform: translate(0, 0) rotate(4deg);
+  }
+  50% {
+    transform: translate(-6px, -6px) rotate(3deg);
+  }
+}
+
+@keyframes eliteFloatRight {
+  0%, 100% {
+    transform: translate(0, 0) rotate(4deg);
+  }
+  50% {
+    transform: translate(7px, -8px) rotate(5deg);
+  }
+}
+
 .elite-title-members-chip {
   position: absolute;
-  left: -0.9rem;
-  bottom: 0.55rem;
+  left: -0.45rem;
+  bottom: 0.2rem;
   border-radius: 0.95rem;
   padding: 0.62rem 0.9rem;
   background: #00eefc;
@@ -3171,24 +3201,31 @@
   }
 
   .elite-title-art-shell {
-    width: min(100%, 250px);
-    max-width: 250px;
-    min-height: 240px;
+    width: min(100%, 236px);
+    max-width: 236px;
+    min-height: 214px;
   }
 
-  .elite-title-art-card {
-    right: 0.35rem;
-    top: 0.55rem;
+  .elite-title-art-card-left {
+    left: 0.25rem;
+    top: 0.9rem;
   }
 
-  .elite-title-card-ghost-back {
-    right: -0.25rem;
-    top: -0.15rem;
+  .elite-title-art-card-right {
+    right: 0.05rem;
+    top: 0.35rem;
   }
 
-  .elite-title-card-ghost-mid {
-    right: -0.02rem;
-    top: 0.15rem;
+  .elite-title-members-chip {
+    left: -0.1rem;
+    bottom: -0.15rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .elite-title-art-card-left,
+  .elite-title-art-card-right {
+    animation: none;
   }
 }
 

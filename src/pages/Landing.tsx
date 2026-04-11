@@ -201,9 +201,16 @@ const Landing = () => {
                     </div>
                   </div>
                   <div className="elite-title-art-shell" aria-hidden="true">
-                    <div className="elite-title-card-ghost elite-title-card-ghost-back" />
-                    <div className="elite-title-card-ghost elite-title-card-ghost-mid" />
-                    <div className="elite-title-art-card">
+                    <div className="elite-title-art-card elite-title-art-card-left">
+                      <div className="elite-title-art-canvas">
+                        <img
+                          src="/stitch-blob-from-downloads.png"
+                          alt=""
+                          className="elite-title-art-image"
+                        />
+                      </div>
+                    </div>
+                    <div className="elite-title-art-card elite-title-art-card-right">
                       <div className="elite-title-art-canvas">
                         <img
                           src="/stitch-blob-from-downloads.png"
