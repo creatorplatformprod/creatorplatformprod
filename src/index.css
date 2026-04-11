@@ -3066,6 +3066,7 @@
 
 .elite-title-art-shell {
   position: relative;
+  width: min(100%, 340px);
   max-width: 340px;
   margin: 0 auto;
   min-height: 320px;
@@ -3170,6 +3171,7 @@
   }
 
   .elite-title-art-shell {
+    width: min(100%, 250px);
     max-width: 250px;
     min-height: 240px;
   }
