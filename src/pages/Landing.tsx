@@ -23,13 +23,16 @@ const SPOTLIGHTS = [
   { name: 'Aria',   img: '/spotlight/model-5.jpg' },
 ];
 
-const VANGUARD_FEMALES = SPOTLIGHTS.slice(0, 4).map((creator, idx) => ({
-  name: creator.name,
-  role: ['Beauty Creator', 'Lifestyle Creator', 'Fashion Creator', 'Premium Creator'][idx] || 'Creator',
-  metricA: ['+240%', '1.2M', '94%', '+180%'][idx] || '+120%',
-  metricB: ['$12.4k', '4,500', '8.2%', '$9.8k'][idx] || '$7.4k',
-  image: creator.img
-}));
+const STITCH_CREATOR_MODEL_STACK = [
+  { id: 'm1', img: '/spotlight/model-1.jpg', x: 132, y: -66, rotate: 20 },
+  { id: 'm2', img: '/spotlight/model-2.jpg', x: 104, y: -42, rotate: 15 },
+  { id: 'm3', img: '/spotlight/model-3.jpg', x: 76, y: -19, rotate: 10 },
+  { id: 'm4', img: '/spotlight/model-4.jpg', x: 50, y: 2, rotate: 5 },
+  { id: 'm5', img: '/spotlight/model-5.jpg', x: 24, y: 20, rotate: 0 },
+  { id: 'm6', img: '/spotlight/model-3.jpg', x: -2, y: 38, rotate: -5 },
+  { id: 'm7', img: '/spotlight/model-2.jpg', x: -28, y: 54, rotate: -10 },
+  { id: 'm8', img: '/spotlight/model-1.jpg', x: -54, y: 70, rotate: -15 },
+];
 
 const CHART_DATA = [
   { month: 'Jan', value: 420 },  { month: 'Feb', value: 610 },
@@ -63,7 +66,6 @@ const Landing = () => {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
   const revealFeatures = useReveal(0.12);
-  const revealSocial = useReveal(0.12);
   const revealPricing = useReveal(0.12);
   const revealFaq = useReveal(0.12);
   const [isLogin, setIsLogin] = useState(false);
@@ -200,16 +202,16 @@ const Landing = () => {
                     </div>
                   </div>
                   <div className="elite-title-art-shell" aria-hidden="true">
-                    <div className="elite-title-card-ghost elite-title-card-ghost-back" />
-                    <div className="elite-title-card-ghost elite-title-card-ghost-mid" />
-                    <div className="elite-title-art-card">
-                      <div className="elite-title-art-canvas">
-                        <img
-                          src="/stitch-blob-from-downloads.png"
-                          alt=""
-                          className="elite-title-art-image"
-                        />
-                      </div>
+                    <div className="elite-title-stack-scene">
+                      {STITCH_CREATOR_MODEL_STACK.map((card, idx) => (
+                        <div
+                          key={card.id}
+                          className={`elite-title-stack-card ${idx === STITCH_CREATOR_MODEL_STACK.length - 1 ? 'is-front' : ''}`}
+                          style={{ transform: `translate(${card.x}px, ${card.y}px) rotate(${card.rotate}deg)`, zIndex: idx + 1 }}
+                        >
+                          <img src={card.img} alt="" className="elite-title-stack-image" />
+                        </div>
+                      ))}
                     </div>
                     <div className="elite-title-members-chip">
                       <p>Instant Payouts</p>
@@ -339,50 +341,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* ━━━━━━━━━━ 4. VANGUARD ━━━━━━━━━━ */}
-      <section ref={revealSocial} className="landing-section pt-0 sm:pt-0 reveal">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-8 text-center sm:text-left">
-            <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-2">Live Spotlight</p>
-            <h2 className="landing-heading">SixSevenCreator Spotlight</h2>
-            <p className="text-gray-500 text-sm mt-2 max-w-xl mx-auto sm:mx-0">
-              Featured creators on SixSevenCreator growing audience, retention, and recurring income.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {VANGUARD_FEMALES.map((creator, idx) => (
-              <article key={creator.name} className="vanguard-card">
-                <div className="vanguard-image-wrap">
-                  <img src={creator.image} alt={creator.name} className="vanguard-image" />
-                </div>
-                <div className="p-5">
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <div>
-                      <h3 className="text-gray-900 font-bold text-base">{creator.name}</h3>
-                      <p className="text-[11px] text-gray-500">{creator.role}</p>
-                    </div>
-                    {idx === 0 && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">LIVE NOW</span>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 pt-3 border-t border-gray-200">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Growth</p>
-                      <p className="text-sm font-bold text-indigo-600">{creator.metricA}</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Revenue</p>
-                      <p className="text-sm font-bold text-gray-900">{creator.metricB}</p>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━ 5. PRICING ━━━━━━━━━━ */}
+      {/* ━━━━━━━━━━ 4. PRICING ━━━━━━━━━━ */}
       <section id="pricing" ref={revealPricing} className="landing-section reveal">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
@@ -460,7 +419,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* ━━━━━━━━━━ 6. FAQ ━━━━━━━━━━ */}
+      {/* ━━━━━━━━━━ 5. FAQ ━━━━━━━━━━ */}
       <section ref={revealFaq} className="landing-section reveal">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-10">
@@ -487,7 +446,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* ━━━━━━━━━━ 7. FOOTER ━━━━━━━━━━ */}
+      {/* ━━━━━━━━━━ 6. FOOTER ━━━━━━━━━━ */}
       <footer className="landing-footer">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <BrandWordmark className="brand-wordmark" />
