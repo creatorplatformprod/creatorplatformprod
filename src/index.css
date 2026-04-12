@@ -1266,7 +1266,7 @@
   .brand-wordmark {
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
+    gap: 0;
     font-family: 'Inter', system-ui, sans-serif;
     font-weight: 800;
     font-size: 0.9375rem;
@@ -1276,17 +1276,11 @@
   }
 
   .brand-logo-icon {
-    width: 1.35rem;
-    height: 1.35rem;
+    width: 2.7rem;
+    height: 2.7rem;
     border-radius: 0.38rem;
     display: block;
     flex-shrink: 0;
-  }
-
-  .brand-logo-text {
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: hsl(var(--foreground));
   }
 
   .unlock-cta-brand-gradient {
@@ -1920,10 +1914,6 @@
   .theme-classic-dark .brand-wordmark {
     color: hsl(210 40% 90%);
   }
-  .theme-classic-dark .brand-logo-text {
-    color: hsl(210 40% 90%);
-  }
-
   /* Hero / Cover */
   .theme-classic-dark .profile-hero {
     background: transparent;
