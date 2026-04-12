@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink, Monitor, Smartphone, Copy, Check, Link2 } from "lucide-react";
 import AccountMenu from "@/components/AccountMenu";
 import PublicPageSkeleton from "@/components/PublicPageSkeleton";
+import BrandWordmark from "@/components/BrandWordmark";
 import { api } from "@/lib/api";
 import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
 import { useSkeletonGate } from "@/hooks/useSkeletonGate";
@@ -439,7 +440,7 @@ const PublicWebsitePreview = () => {
           <div className="flex items-center justify-between h-14">
             {/* Left */}
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div className="brand-wordmark"><span className="brand-accent">Six</span><span className="text-gray-900">Seven</span><span className="brand-accent">Creator</span></div>
+              <BrandWordmark className="brand-wordmark" />
               <div className="hidden sm:block w-px h-6 bg-gray-200" />
               <span className="hidden sm:inline text-sm font-semibold text-foreground tracking-tight">Preview</span>
               <div className="dot-live" title="Live" />

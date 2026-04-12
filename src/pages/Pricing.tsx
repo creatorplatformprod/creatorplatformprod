@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Check, Sparkles, Zap } from 'lucide-react';
+import BrandWordmark from '@/components/BrandWordmark';
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ const Pricing = () => {
             Back
           </button>
           <div className="flex items-center gap-3">
-            <div className="brand-wordmark"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
+            <BrandWordmark className="brand-wordmark" />
             <div className="w-px h-5 bg-gray-200" />
             <span className="text-xs font-medium text-muted-foreground">Pricing</span>
           </div>

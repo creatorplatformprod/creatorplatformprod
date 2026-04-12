@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
+import BrandWordmark from "@/components/BrandWordmark";
 import { api } from "@/lib/api";
 import { useSeo } from "@/hooks/use-seo";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
@@ -610,7 +611,7 @@ const Collections1849929295832448 = () => {
                 Back to Feed
               </Button>
               <div className="flex items-center gap-3">
-                <div className="brand-wordmark"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
+                <BrandWordmark className="brand-wordmark" />
               </div>
             </div>
           </header>

@@ -7,6 +7,7 @@ import StatusCard from "@/components/StatusCard";
 import StatusCardWithMedia from "../components/StatusCardWithMedia";
 import Preloader from "@/components/Preloader";
 import TopLoader from "@/components/TopLoader";
+import BrandWordmark from "@/components/BrandWordmark";
 import { collections, getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 import { fetchEngagement, registerEngagementShare, registerEngagementView, setEngagementLike } from "@/lib/engagement";
 
@@ -866,7 +867,7 @@ const Index = () => {
 
                 <footer className="mt-8 sm:mt-12 border-t border-gray-200 pt-6 pb-4">
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
+                    <BrandWordmark className="brand-wordmark text-sm" />
                     <p className="text-xs text-muted-foreground">
                       &copy; {new Date().getFullYear()} SixSeven Creator. All rights reserved.
                     </p>

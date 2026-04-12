@@ -6,6 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import StatusCard from '@/components/StatusCard';
 import StatusCardWithMedia from '@/components/StatusCardWithMedia';
+import BrandWordmark from '@/components/BrandWordmark';
 import {
   LineChart, 
   Line, 
@@ -2774,7 +2775,7 @@ const CreatorDashboard = () => {
             <div className="flex items-center justify-between h-14">
               {/* Left - Brand */}
               <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div className="brand-wordmark"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
+                <BrandWordmark className="brand-wordmark" />
                 <div className="hidden sm:block w-px h-6 bg-gray-200" />
                 <span className="hidden sm:inline text-sm font-semibold text-foreground tracking-tight">Dashboard</span>
               </div>

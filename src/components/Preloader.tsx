@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import BrandWordmark from "@/components/BrandWordmark";
 // Brand preloader
 
 type PreloaderProps = {
@@ -29,7 +30,7 @@ const Preloader = ({ isVisible, onComplete, themeClass = "" }: PreloaderProps) =
       }`}
     >
       <div className="relative z-10 flex flex-col items-center gap-4">
-        <div className="brand-wordmark text-xl md:text-2xl"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
+        <BrandWordmark className="brand-wordmark text-xl md:text-2xl" />
         <div className="relative w-6 h-6">
           <div className="absolute inset-0 rounded-full border-2 border-gray-200" />
           <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-indigo-500 border-r-sky-400 animate-spin" />

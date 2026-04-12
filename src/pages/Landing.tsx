@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useFeedbackToasts } from '@/hooks/useFeedbackToasts';
+import BrandWordmark from '@/components/BrandWordmark';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid
 } from 'recharts';
@@ -162,9 +163,7 @@ const Landing = () => {
       {/* ━━━━━━━━━━ 1. STICKY NAV ━━━━━━━━━━ */}
       <nav className={`landing-nav ${navScrolled ? 'scrolled' : ''}`}>
         <div className="w-full max-w-6xl mx-auto flex items-center justify-between">
-          <div className="brand-wordmark">
-            <span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span>
-          </div>
+          <BrandWordmark className="brand-wordmark" />
           <div className="flex items-center gap-1 sm:gap-4">
             <button onClick={() => scrollTo('features')} className="text-gray-500 hover:text-gray-900 text-[11px] sm:text-sm font-medium transition-colors px-2 sm:px-2.5 py-1">Features</button>
             <button onClick={() => scrollTo('pricing')} className="text-gray-500 hover:text-gray-900 text-[11px] sm:text-sm font-medium transition-colors px-2 sm:px-2.5 py-1">Pricing</button>
@@ -491,9 +490,7 @@ const Landing = () => {
       {/* ━━━━━━━━━━ 7. FOOTER ━━━━━━━━━━ */}
       <footer className="landing-footer">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="brand-wordmark">
-            <span className="brand-accent">Six</span><span className="text-gray-900">Seven</span><span className="brand-accent">Creator</span>
-          </div>
+          <BrandWordmark className="brand-wordmark" />
           <div className="flex items-center gap-5 text-xs text-gray-400">
             <span className="hover:text-gray-600 cursor-pointer transition-colors">Terms</span>
             <span className="hover:text-gray-600 cursor-pointer transition-colors">Privacy</span>

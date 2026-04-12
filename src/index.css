@@ -1264,18 +1264,29 @@
 
   /* ── Brand text ── */
   .brand-wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
     font-family: 'Inter', system-ui, sans-serif;
     font-weight: 800;
     font-size: 0.9375rem;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     color: hsl(var(--foreground));
+    white-space: nowrap;
   }
 
-  .brand-wordmark .brand-accent {
-    background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 45%, #38bdf8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .brand-logo-icon {
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 0.38rem;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .brand-logo-text {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: hsl(var(--foreground));
   }
 
   .unlock-cta-brand-gradient {
@@ -1909,11 +1920,8 @@
   .theme-classic-dark .brand-wordmark {
     color: hsl(210 40% 90%);
   }
-  .theme-classic-dark .brand-wordmark .brand-accent {
-    background: linear-gradient(135deg, hsl(200 100% 70%) 0%, hsl(200 100% 50%) 45%, hsl(280 80% 65%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .theme-classic-dark .brand-logo-text {
+    color: hsl(210 40% 90%);
   }
 
   /* Hero / Cover */

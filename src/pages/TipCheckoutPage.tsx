@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Loader2, CheckCircle2, Gift, AlertCircle, Clock, ChevronDown, CreditCard } from "lucide-react";
 import { api } from "@/lib/api";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
+import BrandWordmark from "@/components/BrandWordmark";
 
 const RAW_API_URL =
   import.meta.env.VITE_API_URL ||
@@ -447,7 +448,7 @@ const TipCheckoutPage = () => {
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm">Back</span>
           </button>
-          <div className="brand-wordmark text-sm"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
+          <BrandWordmark className="brand-wordmark text-sm" />
         </div>
       </header>
 

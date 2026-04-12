@@ -8,6 +8,7 @@ import { getCollection } from "@/collections/collectionsData";
 import { getCollectionId, isValidSecureId } from "@/utils/secureIdMapper";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
+import BrandWordmark from "@/components/BrandWordmark";
 import { api } from "@/lib/api";
 import { useSeo } from "@/hooks/use-seo";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
@@ -553,7 +554,7 @@ const PostDetail = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
-            <div className="hidden sm:block brand-wordmark text-sm"><span className="brand-accent">Six</span><span>Seven</span><span className="brand-accent">Creator</span></div>
+            <BrandWordmark className="hidden sm:block brand-wordmark text-sm" />
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[11px] text-muted-foreground tabular-nums">
