@@ -1,7 +1,7 @@
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CreditCard, Loader2, Users, Eye } from "lucide-react";
+import { ArrowLeft, CreditCard, Loader2, Eye } from "lucide-react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
@@ -815,90 +815,67 @@ const PostDetailBlurred = () => {
           </footer>
         </div>
 
-        {/* Payment Modal */}
-      <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-3"
-          style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
-            overscrollBehavior: 'none',
-            minHeight: '100svh'
-          }}
+        {/* Unlock Modal — minimalist */}
+        <div
+          className="unlock-modal-shell"
+          style={{ overscrollBehavior: 'none', minHeight: '100svh' }}
+          role="dialog"
+          aria-modal="true"
         >
-          <div 
-            className="bg-transparent rounded-2xl p-3 sm:p-3.5 w-full max-w-[280px] sm:max-w-[18rem]"
-            style={{ maxHeight: '85vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
-          >
-            <div className="text-center">
-              <h2 className="text-lg sm:text-lg font-bold mb-1 sm:mb-1.5 bg-[linear-gradient(135deg,#8b5cf6_0%,#7c3aed_45%,#38bdf8_100%)] bg-clip-text text-transparent">
-                Unlock "{collection.title}"
-              </h2>
+          <div className="unlock-modal-min">
+            <p className="unlock-title">Unlock “{collection.title}”</p>
+            <span className="unlock-price">{formattedPrice}</span>
 
-              <div className="flex items-center justify-center gap-1.5 mb-3 sm:mb-4">
-                <Users className="w-3 h-3 text-white/85" />
-                <span className="text-[11px] text-white/85">Join 1,000+ fans who unlocked this content</span>
+            {paymentError && (
+              <div className="unlock-error">{paymentError}</div>
+            )}
+
+            {activeFan?.email ? (
+              <div className="unlock-as">
+                <p className="unlock-as-label">Paying as</p>
+                <p className="unlock-as-value">{activeFan.email}</p>
               </div>
-              
-              {paymentError && (
-                <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-red-500/20 border border-red-500/40 rounded-lg">
-                  <p className="text-xs sm:text-sm text-white">{paymentError}</p>
-                </div>
-              )}
-              
-              <div className="mb-3 sm:mb-4">
-                {activeFan?.email ? (
-                  <div className="w-full rounded-xl border border-border bg-secondary/35 px-3 sm:px-4 py-2.5 text-left">
-                    <p className="text-[11px] text-muted-foreground">Paying as</p>
-                    <p className="text-xs sm:text-sm font-medium text-foreground">{activeFan.email}</p>
-                  </div>
-                ) : (
-                  <input
-                    type="email"
-                    placeholder="Enter your email address"
-                    value={customerEmail}
-                    onChange={(e) => {
-                      setCustomerEmail(e.target.value);
-                      setPaymentError("");
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === 'Go') {
-                        e.preventDefault();
-                        handleCardPaymentClick();
-                      }
-                    }}
-                    className="w-[92%] mx-auto block px-3 sm:px-3.5 py-2.5 sm:py-2.5 text-xs sm:text-sm bg-secondary/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    required
-                    maxLength={254}
-                  />
-                )}
-              </div>
-              
-              <button
-                onClick={handleCardPaymentClick}
-                disabled={isCardPaymentLoading || remoteLoading}
-                className="relative overflow-hidden w-[92%] mx-auto py-2.5 sm:py-2.5 px-3 sm:px-3.5 rounded-xl text-sm sm:text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed !text-white bg-[linear-gradient(135deg,#8b5cf6_0%,#7c3aed_45%,#38bdf8_100%)] hover:brightness-105 hover:shadow-lg hover:scale-[1.02]"
-              >
-                {isCardPaymentLoading || remoteLoading ? (
-                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                ) : (
-                  <>
-                    <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="relative">{`Unlock Now -- ${formattedPrice}`}</span>
-                  </>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const creatorQuery = creatorParam ? `?creator=${encodeURIComponent(creatorParam)}` : '';
-                  navigate(`/recover-access${creatorQuery}`);
+            ) : (
+              <input
+                type="email"
+                placeholder="your email"
+                value={customerEmail}
+                onChange={(e) => { setCustomerEmail(e.target.value); setPaymentError(""); }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === 'Go') {
+                    e.preventDefault();
+                    handleCardPaymentClick();
+                  }
                 }}
-                className="mt-2 text-[11px] text-white underline underline-offset-2 bg-transparent border-none cursor-pointer"
-              >
-                Lost your access link? Recover via email
-              </button>
-            </div>
+                className="unlock-input"
+                required
+                maxLength={254}
+              />
+            )}
+
+            <button
+              onClick={handleCardPaymentClick}
+              disabled={isCardPaymentLoading || remoteLoading}
+              className="unlock-cta"
+              type="button"
+            >
+              {isCardPaymentLoading || remoteLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>Pay {formattedPrice}</>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                const creatorQuery = creatorParam ? `?creator=${encodeURIComponent(creatorParam)}` : '';
+                navigate(`/recover-access${creatorQuery}`);
+              }}
+              className="unlock-recover"
+            >
+              Recover access
+            </button>
           </div>
         </div>
 

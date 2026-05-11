@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Loader2, Unlock } from "lucide-react";
+import { ArrowLeft, Loader2, ArrowUpRight } from "lucide-react";
 import { api } from "@/lib/api";
 import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
+
+type UnlockItem = {
+  accessToken?: string;
+  url?: string;
+  title?: string;
+  creatorUsername?: string;
+  unlockedAt?: string | number;
+};
 
 const FanUnlocks = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [unlocks, setUnlocks] = useState<any[]>([]);
+  const [unlocks, setUnlocks] = useState<UnlockItem[]>([]);
   useFeedbackToasts({ error });
 
   useEffect(() => {
@@ -23,8 +31,9 @@ const FanUnlocks = () => {
         } else {
           setError(result?.error || "Failed to load unlocks");
         }
-      } catch (err: any) {
-        setError(err?.message || "Failed to load unlocks");
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Failed to load unlocks";
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -33,43 +42,94 @@ const FanUnlocks = () => {
   }, []);
 
   return (
-    <div className="min-h-screen feed-bg px-4 py-6">
-      <div className="mx-auto max-w-3xl">
+    <div className="lp-canvas">
+      <div className="lp-shell" style={{ paddingTop: '3rem', paddingBottom: '5rem', maxWidth: '680px' }}>
         <button
           onClick={() => window.history.back()}
-          className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+          className="lp-btn lp-btn-ghost lp-btn-sm"
+          style={{ marginBottom: '2rem' }}
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="w-3.5 h-3.5" />
           Back
         </button>
 
-        <div className="post-card rounded-xl p-5">
-          <div className="flex items-center gap-2 text-foreground font-semibold mb-3">
-            <Unlock className="h-4 w-4" />
-            Your Unlocked Content
-          </div>
+        <header style={{ marginBottom: '2rem' }}>
+          <p className="lp-section-label lp-mono">— Your library</p>
+          <h1 className="lp-h1" style={{ marginTop: '0.6rem' }}>Unlocked content.</h1>
+          <p className="lp-body" style={{ marginTop: '0.75rem' }}>
+            Everything you've paid to unlock, one row per creator. The link
+            opens the content.
+          </p>
+        </header>
+
+        <div
+          style={{
+            background: '#fff',
+            border: '1px solid var(--lp-line)',
+            borderRadius: '12px',
+            overflow: 'hidden',
+          }}
+        >
           {loading ? (
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Loading...
+            <div
+              style={{
+                padding: '2.5rem 1.5rem',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                gap: '0.5rem',
+                color: 'var(--lp-fg-muted)',
+                fontSize: '0.875rem',
+              }}
+            >
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Loading
             </div>
           ) : error ? (
-            <p className="text-sm text-red-400">{error}</p>
+            <p style={{ padding: '1.5rem', fontSize: '0.875rem', color: '#991b1b' }}>{error}</p>
           ) : unlocks.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No unlocked content yet.</p>
-          ) : (
-            <div className="space-y-2">
-              {unlocks.map((item, index) => (
-                <a
-                  key={`${item.accessToken}-${index}`}
-                  href={item.url}
-                  className="block rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 hover:bg-gray-100"
-                >
-                  <p className="text-sm font-medium text-foreground">{item.title}</p>
-                  <p className="text-xs text-muted-foreground">{item.creatorUsername || "creator"}</p>
-                </a>
-              ))}
+            <div style={{ padding: '2.5rem 1.5rem' }}>
+              <p style={{ fontSize: '0.9375rem', color: 'var(--lp-fg)', fontWeight: 500 }}>
+                Nothing here yet.
+              </p>
+              <p style={{ marginTop: '0.3rem', fontSize: '0.8125rem', color: 'var(--lp-fg-muted)' }}>
+                When you unlock content from a creator it shows up here.
+              </p>
             </div>
+          ) : (
+            unlocks.map((item, index) => (
+              <a
+                key={`${item.accessToken}-${index}`}
+                href={item.url}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '1rem',
+                  padding: '1rem 1.25rem',
+                  borderTop: index === 0 ? 'none' : '1px solid var(--lp-line-soft)',
+                  textDecoration: 'none',
+                  transition: 'background 0.12s ease',
+                }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--lp-tint)'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+              >
+                <div>
+                  <p style={{ fontSize: '0.9375rem', fontWeight: 500, color: 'var(--lp-fg)' }}>
+                    {item.title || 'Unlocked content'}
+                  </p>
+                  <p
+                    className="lp-mono"
+                    style={{
+                      marginTop: '0.15rem',
+                      fontSize: '0.75rem',
+                      color: 'var(--lp-fg-faint)',
+                    }}
+                  >
+                    @{item.creatorUsername || 'creator'}
+                  </p>
+                </div>
+                <ArrowUpRight className="w-4 h-4" style={{ color: 'var(--lp-fg-muted)', flexShrink: 0 }} />
+              </a>
+            ))
           )}
         </div>
       </div>
