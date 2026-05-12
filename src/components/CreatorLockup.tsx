@@ -9,8 +9,7 @@ export type CreatorLockupProps = {
 } & (HTMLAttributes<HTMLDivElement> & Partial<ButtonHTMLAttributes<HTMLButtonElement>>);
 
 /**
- * Text lockup matching the marketing site: **67** + monospace `/ creator`.
- * Same look as the landing nav (no favicon-only mark).
+ * Text wordmark: **sixsevencreator** (matches marketing nav).
  */
 export default function CreatorLockup({
   as = 'div',
@@ -26,6 +25,8 @@ export default function CreatorLockup({
         ? 'creator-lockup--on-dark'
         : '';
 
+  const mark = <span className="creator-lockup-wordmark">sixsevencreator</span>;
+
   if (as === 'button') {
     return (
       <button
@@ -33,8 +34,7 @@ export default function CreatorLockup({
         className={cn('creator-lockup', extra, className)}
         {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
       >
-        <span className="creator-lockup-67">67</span>
-        <span className="creator-lockup-tag">/ creator</span>
+        {mark}
       </button>
     );
   }
@@ -42,8 +42,7 @@ export default function CreatorLockup({
   const Comp = as;
   return (
     <Comp className={cn('creator-lockup', extra, className)} {...(rest as HTMLAttributes<HTMLElement>)}>
-      <span className="creator-lockup-67">67</span>
-      <span className="creator-lockup-tag">/ creator</span>
+      {mark}
     </Comp>
   );
 }

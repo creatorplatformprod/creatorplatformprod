@@ -445,7 +445,7 @@ const PublicWebsitePreview = () => {
                 type="button"
                 variant="compact"
                 onClick={() => navigate("/")}
-                aria-label="SixSevenCreator home"
+                aria-label="sixsevencreator home"
               />
               <div className="hidden sm:block w-px h-6 bg-gray-200" />
               <span className="hidden sm:inline text-sm font-semibold text-foreground tracking-tight">Preview</span>

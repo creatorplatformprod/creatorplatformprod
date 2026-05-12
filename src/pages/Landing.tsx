@@ -163,8 +163,7 @@ const Landing = () => {
       <nav className="lp-nav">
         <div className="lp-nav-inner">
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="lp-brand" type="button">
-            <span className="lp-brand-mark">67</span>
-            <span className="lp-brand-tag">/ creator</span>
+            <span className="lp-brand-wordmark">sixsevencreator</span>
           </button>
           <div className="lp-nav-links">
             <button onClick={() => scrollTo('product')} className="lp-nav-link">Product</button>
@@ -576,8 +575,7 @@ const Landing = () => {
           <div className="lp-footer-top">
             <div>
               <span className="lp-brand" style={{ cursor: 'default' }}>
-                <span className="lp-brand-mark">67</span>
-                <span className="lp-brand-tag">/ creator</span>
+                <span className="lp-brand-wordmark">sixsevencreator</span>
               </span>
               <p className="lp-footer-tagline">
                 Card to crypto for creators. Small team, Lisbon and Brooklyn.

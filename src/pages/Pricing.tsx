@@ -45,8 +45,7 @@ const Pricing = () => {
             Back
           </button>
           <button onClick={() => navigate('/')} className="lp-brand">
-            <span className="lp-brand-mark">67</span>
-            <span className="lp-brand-tag">/ creator</span>
+            <span className="lp-brand-wordmark">sixsevencreator</span>
           </button>
           <span className="lp-nav-link" style={{ pointerEvents: 'none' }}>Pricing</span>
         </div>

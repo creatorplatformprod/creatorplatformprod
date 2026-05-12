@@ -528,6 +528,14 @@
     transition: color 0.2s ease;
   }
 
+  .creator-dashboard .creator-nav-item {
+    transition: none !important;
+  }
+
+  .creator-dashboard .creator-nav-item svg {
+    transition: none !important;
+  }
+
   .creator-dashboard .creator-nav-item-active {
     background: hsl(250 100% 97%);
     border: 1px solid hsl(239 84% 67% / 0.2);
@@ -551,18 +559,25 @@
     max-width: none;
   }
 
+  .creator-dashboard .gradient-mesh-bg::before {
+    animation: none !important;
+    transform: none !important;
+  }
+
   .creator-dashboard .card-container,
   .creator-dashboard .card-elevated {
     background: white;
     border: 1px solid hsl(var(--border));
     border-radius: 18px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(139,92,246,0.04);
+    transition: none !important;
   }
 
   .creator-dashboard .card-container:hover,
   .creator-dashboard .card-elevated:hover {
     border-color: hsl(239 84% 67% / 0.18);
     box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 12px 32px rgba(139,92,246,0.06);
+    transform: none !important;
   }
 
   .creator-dashboard .card-title {
@@ -620,12 +635,13 @@
   .creator-dashboard .quick-action-btn {
     border-color: hsl(var(--border)) !important;
     background: white !important;
+    transition: none !important;
   }
 
   .creator-dashboard .quick-action-btn:hover {
     border-color: hsl(239 84% 67% / 0.3) !important;
     background: hsl(250 100% 98%) !important;
-    transform: translateY(-1px);
+    transform: none !important;
   }
 
   .creator-dashboard .dashboard-link-btn {
@@ -639,6 +655,7 @@
 
   .creator-dashboard .checklist-btn {
     border-color: hsl(var(--border)) !important;
+    transition: none !important;
   }
 
   .creator-dashboard .checklist-btn:hover {
@@ -661,7 +678,7 @@
 
   .creator-dashboard .creator-mobile-tab-item {
     border-bottom-width: 2px;
-    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    transition: none !important;
   }
 
   .creator-dashboard .creator-mobile-tab-item:hover {
@@ -685,7 +702,7 @@
     min-height: 2.25rem;
     font-weight: 600;
     letter-spacing: 0.005em;
-    transition: all 0.18s ease;
+    transition: none !important;
   }
 
   .creator-dashboard .dash-btn-primary,
@@ -701,7 +718,7 @@
     background: hsl(239 78% 59%) !important;
     border-color: hsl(239 84% 67%) !important;
     color: #ffffff !important;
-    transform: translateY(-1px);
+    transform: none !important;
     box-shadow: 0 6px 20px rgba(99,102,241,0.3);
   }
 
@@ -773,6 +790,12 @@
 
   .creator-dashboard tbody tr:hover {
     background: hsl(250 100% 98%);
+  }
+
+  .creator-dashboard .transition-colors,
+  .creator-dashboard .transition-all,
+  .creator-dashboard .transition {
+    transition: none !important;
   }
 
   /* Theme-aware hover */
@@ -1288,11 +1311,11 @@
     flex-shrink: 0;
   }
 
-  /* Text lockup: 67 / creator (matches landing marketing nav) */
+  /* Text wordmark — platform URL style */
   .creator-lockup {
     display: inline-flex;
-    align-items: baseline;
-    gap: 0.4rem;
+    align-items: center;
+    gap: 0;
     white-space: nowrap;
     font-family: inherit;
     color: hsl(var(--foreground));
@@ -1304,59 +1327,42 @@
   button.creator-lockup {
     cursor: pointer;
   }
-  .creator-lockup-67 {
+  .creator-lockup-wordmark {
+    display: inline-block;
     font-weight: 700;
-    font-size: 1.0625rem;
-    letter-spacing: -0.04em;
+    font-size: clamp(0.8125rem, 1.8vw, 1rem);
+    letter-spacing: -0.03em;
     line-height: 1;
-    color: #0a0a0a;
-  }
-  .creator-lockup-tag {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.6875rem;
-    font-weight: 500;
-    letter-spacing: 0;
     text-transform: lowercase;
-    color: hsl(var(--muted-foreground));
+    color: transparent;
+    background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 45%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
-  .creator-lockup--compact .creator-lockup-67 {
-    font-size: 0.9375rem;
-  }
-  .creator-lockup--compact .creator-lockup-tag {
-    font-size: 0.625rem;
+  .creator-lockup--compact .creator-lockup-wordmark {
+    font-size: 0.8125rem;
   }
   .creator-lockup--on-dark {
     color: #fff;
   }
-  .creator-lockup--on-dark .creator-lockup-67 {
-    color: #fafafa;
-  }
-  .creator-lockup--on-dark .creator-lockup-tag {
-    color: rgba(255, 255, 255, 0.72);
+  .creator-lockup--on-dark .creator-lockup-wordmark {
+    background: linear-gradient(135deg, hsl(200 100% 78%) 0%, hsl(270 75% 72%) 50%, hsl(280 80% 68%) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 
   .theme-classic-dark .creator-lockup {
     color: hsl(210 40% 96%);
   }
-  .theme-classic-dark .creator-lockup-67 {
-    color: #fafafa;
-  }
-  .theme-classic-dark .creator-lockup-tag {
-    color: hsl(215 15% 58%);
-  }
-
-  .unlock-cta-brand-gradient {
-    display: inline-block;
-    color: #8b5cf6;
-    background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 45%, #38bdf8 100%);
+  .theme-classic-dark .creator-lockup-wordmark {
+    background: linear-gradient(135deg, hsl(200 100% 70%) 0%, hsl(200 100% 50%) 45%, hsl(280 80% 65%) 100%);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-fill-color: transparent;
-  }
-
-  .template-unlock-cta {
-    position: relative;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 
   /* â”€â”€ Brand mark: nav logo â”€â”€ */
@@ -2019,13 +2025,13 @@
     color: hsl(210 40% 90%);
   }
 
-  /* Unlock Everything CTA */
-  .theme-classic-dark .unlock-cta-brand-gradient,
-  .theme-classic-dark .template-unlock-cta {
-    background: linear-gradient(135deg, hsl(200 100% 65%) 0%, hsl(280 80% 65%) 100%) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
+  /* Unlock Everything CTA — theme purple on public profile */
+  .theme-classic-dark .unlock-cta-brand-gradient {
+    color: hsl(var(--primary)) !important;
+    -webkit-text-fill-color: hsl(var(--primary)) !important;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
   }
 
   /* Filter tabs */
@@ -3454,6 +3460,15 @@
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.97), rgba(236, 251, 252, 0.78));
 }
 
+.creator-dashboard .studio-action-pill,
+.creator-dashboard .studio-action-pill-primary {
+  transition: none !important;
+}
+
+.creator-dashboard .studio-action-pill-primary:hover {
+  filter: none;
+}
+
 .creator-top-nav {
   background: rgba(248, 249, 255, 0.82);
   backdrop-filter: blur(16px);
@@ -3471,13 +3486,19 @@
 }
 
 .creator-dashboard .creator-nav-item-active {
-  transform: translateX(3px);
+  transform: none;
 }
 
 .creator-dashboard .card-elevated,
 .creator-dashboard .card-container {
   border-radius: 1.5rem;
   box-shadow: 0 20px 48px rgba(91, 60, 221, 0.06);
+  transition: none !important;
+}
+
+.creator-dashboard .card-elevated:hover,
+.creator-dashboard .card-container:hover {
+  transform: none !important;
 }
 
 .creator-dashboard .sparkline {
@@ -3662,16 +3683,17 @@
     border: none;
     padding: 0;
   }
-  .lp-brand .lp-brand-mark {
-    color: #0a0a0a;
-  }
-  .lp-brand .lp-brand-tag {
-    font-family: ui-monospace, monospace;
-    font-size: 0.6875rem;
-    font-weight: 500;
-    letter-spacing: 0;
-    color: var(--lp-fg-faint);
+  .lp-brand .lp-brand-wordmark {
+    display: inline-block;
+    font-weight: 700;
+    font-size: clamp(0.8125rem, 1.9vw, 1rem);
+    letter-spacing: -0.03em;
     text-transform: lowercase;
+    color: transparent;
+    background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 45%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
   .lp-hero-creators {
     display: flex;
@@ -4284,10 +4306,11 @@
      ═══════════════════════════════════════════════════════════════ */
 
   .unlock-cta-brand-gradient {
-    color: hsl(var(--foreground)) !important;
+    display: inline-block;
+    color: hsl(var(--primary)) !important;
     background: none !important;
     -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+    -webkit-text-fill-color: hsl(var(--primary)) !important;
     background-clip: initial !important;
     position: relative;
     padding-bottom: 0.18em;
@@ -4297,21 +4320,24 @@
     position: absolute;
     left: 0; right: 0; bottom: 0.02em;
     height: 2px;
-    background: hsl(var(--foreground));
+    background: hsl(var(--primary));
     transform-origin: left;
     transform: scaleX(1);
     transition: transform 0.25s ease;
   }
   .template-unlock-cta:hover .unlock-cta-brand-gradient::after { transform: scaleX(0.5); }
-  .template-unlock-cta { transition: opacity 0.18s ease; }
+  .template-unlock-cta {
+    position: relative;
+    transition: opacity 0.18s ease;
+  }
   .template-unlock-cta:hover { opacity: 0.7; }
 
   .theme-classic-dark .unlock-cta-brand-gradient {
-    color: hsl(var(--foreground)) !important;
-    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+    color: hsl(var(--primary)) !important;
+    -webkit-text-fill-color: hsl(var(--primary)) !important;
     background: none !important;
   }
-  .theme-classic-dark .unlock-cta-brand-gradient::after { background: hsl(var(--foreground)); }
+  .theme-classic-dark .unlock-cta-brand-gradient::after { background: hsl(var(--primary)); }
 
   /* ───────────────────────────────────────────────────────────────
      Unlock modal — fully transparent. No card. White text on

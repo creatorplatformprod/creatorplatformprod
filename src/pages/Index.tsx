@@ -648,7 +648,7 @@ const Index = () => {
                 </div>
                 <div className="flex-1 min-w-0 pt-1 sm:pt-4">
                   <div className="flex items-center gap-2">
-                    <h1 className="text-xl sm:text-2xl font-bold text-foreground">SixSeven Creator</h1>
+                    <h1 className="text-xl sm:text-2xl font-bold text-foreground lowercase tracking-tight">sixsevencreator</h1>
                     <svg className="w-5 h-5 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
@@ -662,7 +662,7 @@ const Index = () => {
                 </div>
                 <button
                   onClick={() => navigate('/collections')}
-                  className="hidden sm:flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-purple-600 via-indigo-500 to-sky-400 hover:from-purple-500 hover:via-indigo-400 hover:to-sky-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all hover:scale-[1.02]"
+                  className="hidden sm:flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl text-base font-semibold bg-primary text-primary-foreground shadow-md hover:opacity-90"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" strokeWidth="2" fill="none"/>

@@ -2781,7 +2781,7 @@ const CreatorDashboard = () => {
                   variant="compact"
                   onClick={() => navigate('/')}
                   className="shrink-0"
-                  aria-label="SixSevenCreator home"
+                  aria-label="sixsevencreator home"
                 />
                 <div className="hidden sm:block w-px h-6 bg-gray-200" />
                 <span className="hidden sm:inline text-sm font-semibold text-foreground tracking-tight">Dashboard</span>
@@ -2859,7 +2859,7 @@ const CreatorDashboard = () => {
               <button
                 key={item.key}
                 onClick={() => requestTabChange(item.key)}
-                className={`creator-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ${
+                className={`creator-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm ${
                   activeTab === item.key
                     ? 'creator-nav-item-active text-foreground font-medium'
                     : 'text-muted-foreground hover:text-foreground hover:bg-indigo-500/[0.04] hover:border-indigo-300/20'
@@ -2902,7 +2902,7 @@ const CreatorDashboard = () => {
                 <button
                   key={item.key}
                   onClick={() => requestTabChange(item.key)}
-                  className={`creator-mobile-tab-item flex items-center gap-1.5 px-4 py-3 text-xs font-medium whitespace-nowrap border-b-2 transition-colors ${
+                  className={`creator-mobile-tab-item flex items-center gap-1.5 px-4 py-3 text-xs font-medium whitespace-nowrap border-b-2 ${
                     activeTab === item.key
                       ? 'creator-mobile-tab-item-active'
                       : 'border-transparent text-muted-foreground hover:text-foreground'
@@ -2937,42 +2937,6 @@ const CreatorDashboard = () => {
         {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â Overview Tab Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
         {activeTab === 'overview' && (
           <div className="creator-overview-studio space-y-6">
-            <section className="card-elevated p-5 sm:p-6 studio-command-hero">
-              <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-primary/70 font-semibold">Content Studio</p>
-                  <h2 className="mt-1 text-2xl sm:text-3xl font-black text-foreground tracking-tight">
-                    Welcome back{profileData.displayName ? `, ${profileData.displayName}` : ''}
-                  </h2>
-                  <p className="text-sm text-muted-foreground mt-2">Control your content, sales, and public page performance from one command center.</p>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                    <div className="dot-live" />
-                    <span className="text-[10px] font-medium text-emerald-500">Live</span>
-                  </div>
-                  <button
-                    onClick={() => requestTabChange('analytics')}
-                    className="studio-action-pill"
-                  >
-                    Analytics
-                  </button>
-                  <button
-                    onClick={handlePreviewPublic}
-                    className="studio-action-pill"
-                  >
-                    Preview Site
-                  </button>
-                  <button
-                    onClick={handlePublicWebsite}
-                    className="studio-action-pill studio-action-pill-primary"
-                  >
-                    {isPublicPublished ? 'Open Public Website' : 'Publish Website'}
-                  </button>
-                </div>
-              </div>
-            </section>
-
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
               <div className="xl:col-span-8 space-y-4">
                 <section className="card-elevated p-4 sm:p-5 studio-preview-shell">
@@ -2981,10 +2945,6 @@ const CreatorDashboard = () => {
                       <Eye className="w-4 h-4 text-primary" />
                       Real-time Multi-Device Preview
                     </h3>
-                    <div className="hidden sm:flex items-center gap-1 bg-secondary/60 p-1 rounded-full">
-                      <span className="px-3 py-1 text-[10px] font-semibold rounded-full bg-background text-primary">Desktop</span>
-                      <span className="px-3 py-1 text-[10px] font-semibold text-muted-foreground">Mobile</span>
-                    </div>
                   </div>
 
                   <div className="studio-preview-canvas">
@@ -3125,7 +3085,7 @@ const CreatorDashboard = () => {
                   <div className="space-y-2">
                     <button
                       onClick={() => requestTabChange('collections')}
-                      className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all group cursor-pointer"
+                      className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 group cursor-pointer"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center">
@@ -3141,7 +3101,7 @@ const CreatorDashboard = () => {
 
                     <button
                       onClick={() => requestTabChange('status-cards')}
-                      className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all group cursor-pointer"
+                      className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 group cursor-pointer"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center">
@@ -3157,7 +3117,7 @@ const CreatorDashboard = () => {
 
                     <button
                       onClick={handlePreviewPublic}
-                      className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all group cursor-pointer"
+                      className="quick-action-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 group cursor-pointer"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center">
