@@ -9,6 +9,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
+    "build:creator-assets": "node scripts/build-creator-avifs.mjs",
     "deploy:backend": "npx wrangler deploy --config backend/wrangler.toml --env production",
     "deploy": "npm run build && npm run deploy:backend"
   },

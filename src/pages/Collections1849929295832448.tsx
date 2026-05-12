@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
-import BrandWordmark from "@/components/BrandWordmark";
+import CreatorLockup from "@/components/CreatorLockup";
 import { api } from "@/lib/api";
 import { useSeo } from "@/hooks/use-seo";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
@@ -598,7 +598,7 @@ const Collections1849929295832448 = () => {
   }
 
   return (
-    <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
+    <div className={`min-h-screen mobile-stable-shell feed-bg vault-ui ${themeClass}`}>
           <header className={`sticky top-0 z-10 nav-elevated p-3 sm:p-4 ${isPreviewMode ? 'mobile-preview-navbar-offset' : ''}`}>
             <div className="max-w-6xl mx-auto flex items-center justify-between">
               <Button 
@@ -611,7 +611,7 @@ const Collections1849929295832448 = () => {
                 Back to Feed
               </Button>
               <div className="flex items-center gap-3">
-                <BrandWordmark className="brand-wordmark" />
+                <CreatorLockup variant="onDark" />
               </div>
             </div>
           </header>

@@ -1,12 +1,25 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, X, Cookie, Plus, Check } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useFeedbackToasts } from '@/hooks/useFeedbackToasts';
 
+const CREATOR_FILES = Array.from({ length: 10 }, (_, i) =>
+  `/creators/creator-${String(i + 1).padStart(2, '0')}.avif`
+);
+
+function shuffleInPlace<T>(arr: T[]) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 /* ─────────────────── Static content ─────────────────── */
 
 const PLAN_FEATURES = [
+  'Card → crypto payouts',
   'Unlimited uploads',
   'Custom domain',
   'Real-time analytics',
@@ -17,18 +30,18 @@ const PLAN_FEATURES = [
 ];
 
 const FAQS = [
-  { q: 'How does the payment actually work?',
-    a: 'A fan pays with a Visa, Mastercard, Apple Pay or Google Pay. The money lands in your account the same second they hit Pay. No 30-day hold, no payout schedule, no platform commission.' },
-  { q: 'Do my fans need anything special to pay?',
-    a: 'No. The checkout is the same one they\'ve used a thousand times. Card details, Apple Pay, Google Pay. Nothing to download, no account to make.' },
+  { q: 'What is card to crypto?',
+    a: 'Fans pay with a normal card or Apple Pay / Google Pay. You receive stablecoin or on-chain payout in the same moment. They never see a wallet flow.' },
+  { q: 'Do fans need crypto?',
+    a: 'No. Checkout looks like any other shop.' },
   { q: 'What is the free month?',
-    a: 'A full month of the paid plan. No credit card to start. We send a reminder a few days before it ends so you can decide.' },
-  { q: 'Can I cancel? Will I lose my work?',
-    a: 'Yes, cancel any time from the dashboard. Your page becomes read-only and any pending payments still settle to you. You can export your library and customer list to CSV.' },
+    a: 'Full paid plan for 30 days, no card to start. We email before it ends.' },
+  { q: 'Can I cancel?',
+    a: 'Yes, anytime. Your page becomes read-only; pending sales still settle to you.' },
   { q: 'Is my content protected?',
-    a: 'Every file is served through a signed URL. Two-factor auth is on by default. We run automated DMCA scans across the major leak networks and notify you before takedowns go out.' },
-  { q: 'How do payouts work under the hood?',
-    a: 'Card payments are settled through our processor to a stablecoin (USDC) that lands in the wallet address on your account. ETH and SOL are also supported if you prefer. You don\'t have to think about any of this — but the option is there.' },
+    a: 'Signed URLs, 2FA, and DMCA tooling with leak-network monitoring.' },
+  { q: 'How do payouts work?',
+    a: 'Card payments settle to USDC in your wallet (ETH/SOL supported). Add your address once; we handle the rest.' },
 ];
 
 /* ─────────────────── Component ─────────────────── */
@@ -48,6 +61,10 @@ const Landing = () => {
   const proCheckoutUrl = String(import.meta.env.VITE_BILLING_PRO_URL || '').trim();
   const businessCheckoutUrl = String(import.meta.env.VITE_BILLING_BUSINESS_URL || '').trim();
   useFeedbackToasts({ error });
+
+  const shuffledCreators = useMemo(() => shuffleInPlace([...CREATOR_FILES]), []);
+  const heroFaces = shuffledCreators.slice(0, 6);
+  const mockGridIds = Array.from({ length: 6 }, (_, i) => shuffledCreators[(i + 4) % shuffledCreators.length]);
 
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -141,12 +158,13 @@ const Landing = () => {
 
   /* ─────────────────── Render ─────────────────── */
   return (
-    <div className="lp-canvas">
+    <div className="lp-canvas vault-ui">
       {/* ─── Nav ─── */}
       <nav className="lp-nav">
         <div className="lp-nav-inner">
-          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="lp-brand">
-            67<span className="lp-brand-tag">/ creator</span>
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="lp-brand" type="button">
+            <span className="lp-brand-mark">67</span>
+            <span className="lp-brand-tag">/ creator</span>
           </button>
           <div className="lp-nav-links">
             <button onClick={() => scrollTo('product')} className="lp-nav-link">Product</button>
@@ -168,13 +186,11 @@ const Landing = () => {
           <div className="lp-hero-grid">
             <div>
               <h1 className="lp-h1">
-                A page for your work.
+                Card in. Crypto out.
               </h1>
 
               <p className="lp-lede" style={{ marginTop: '1.25rem' }}>
-                Make a page in a few minutes. Upload your work, set your
-                prices, share the link. Fans pay with a card. You keep
-                all of it — no commission, no payout schedule.
+                Your page. Their card. Your wallet — same second. No platform commission.
               </p>
 
               <div className="lp-hero-actions">
@@ -189,6 +205,19 @@ const Landing = () => {
               <p style={{ marginTop: '1.4rem', fontSize: '0.8125rem', color: 'var(--lp-fg-muted)' }}>
                 Free for the first 30 days. $19.99 / month after.
               </p>
+              <div className="lp-hero-creators" aria-label="Creators on the platform">
+                {heroFaces.map((src) => (
+                  <img
+                    key={src}
+                    src={src}
+                    alt=""
+                    width={52}
+                    height={52}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Right: sign-up form */}
@@ -251,47 +280,50 @@ const Landing = () => {
         </div>
       </section>
 
+      <section className="lp-section" style={{ paddingTop: '0.75rem', paddingBottom: '0.75rem' }}>
+        <div className="lp-shell">
+          <p className="lp-vault-callout">
+            <strong>Card → crypto</strong> — fans stay on familiar checkout; you still settle on-chain or in stablecoin.
+          </p>
+        </div>
+      </section>
+
       {/* ─── What it is — README style ─── */}
       <section id="product" className="lp-section">
         <div className="lp-shell">
           <div className="lp-row-2">
             <div>
-              <h2 className="lp-h2">What the platform does, in five lines.</h2>
+              <h2 className="lp-h2">How it works</h2>
             </div>
             <ul className="lp-readme">
               <li>
                 <span className="lp-readme-num">01</span>
                 <span>
-                  You make a <strong>page</strong> with your own URL. You upload
-                  photos, video, audio, anything.
+                  Your <strong>page</strong>, your URL. Upload photos, video, audio — whatever you sell.
                 </span>
               </li>
               <li>
                 <span className="lp-readme-num">02</span>
                 <span>
-                  You set <strong>prices</strong> per collection, per post, or
-                  for an unlock-everything bundle.
+                  Set <strong>prices</strong> per collection, post, or an unlock-everything bundle.
                 </span>
               </li>
               <li>
                 <span className="lp-readme-num">03</span>
                 <span>
-                  Fans pay with a <strong>card, Apple Pay or Google Pay</strong>.
-                  Nothing to install, no account to make.
+                  Fans pay with <strong>card or tap</strong> (Apple Pay, Google Pay). No app, no wallet for them.
                 </span>
               </li>
               <li>
                 <span className="lp-readme-num">04</span>
                 <span>
-                  The money <strong>lands in your account the same second</strong>.
-                  No payout schedule. No commission.
+                  <strong>You</strong> get paid <strong>the same second</strong> — stablecoin or chain — the card-to-crypto path is on your side only.
                 </span>
               </li>
               <li>
                 <span className="lp-readme-num">05</span>
                 <span>
-                  You see <strong>real-time analytics</strong>, manage takedowns
-                  with DMCA tooling, and export your data whenever.
+                  <strong>Analytics</strong>, DMCA tooling, and CSV export when you need it.
                 </span>
               </li>
             </ul>
@@ -306,11 +338,9 @@ const Landing = () => {
             {/* Feature 1: Page builder */}
             <article className="lp-feature-item">
               <div className="lp-feature-text">
-                <h3 className="lp-h3">A page that looks like you.</h3>
+                <h3 className="lp-h3">Your page.</h3>
                 <p className="lp-body" style={{ marginTop: '0.6rem' }}>
-                  Bring your own domain. Pick a theme — light, dark, or custom.
-                  Cover image, avatar, collections, status posts, links. Done in
-                  a few minutes.
+                  Domain, theme, cover, collections, posts — live in minutes.
                 </p>
               </div>
               <div className="lp-feature-art">
@@ -326,13 +356,22 @@ const Landing = () => {
                         gap: '6px',
                       }}
                     >
-                      {[1, 2, 3, 4, 5, 6].map((i) => (
-                        <div
-                          key={i}
+                      {mockGridIds.map((src) => (
+                        <img
+                          key={src}
+                          src={src}
+                          alt=""
+                          width={200}
+                          height={200}
+                          loading="lazy"
+                          decoding="async"
                           style={{
                             aspectRatio: '1',
-                            background: 'var(--lp-tint)',
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
                             borderRadius: '4px',
+                            filter: 'grayscale(1) contrast(1.05)',
                           }}
                         />
                       ))}
@@ -345,11 +384,9 @@ const Landing = () => {
             {/* Feature 2: Checkout */}
             <article className="lp-feature-item is-flipped">
               <div className="lp-feature-text">
-                <h3 className="lp-h3">A checkout your fans already know.</h3>
+                <h3 className="lp-h3">Their card.</h3>
                 <p className="lp-body" style={{ marginTop: '0.6rem' }}>
-                  Card, Apple Pay, Google Pay. The kind of checkout they've
-                  used a thousand times. Nothing to install on their side, no
-                  account to make.
+                  Checkout they already know — card, Apple Pay, Google Pay. Nothing new to install.
                 </p>
               </div>
               <div className="lp-feature-art">
@@ -393,11 +430,9 @@ const Landing = () => {
             {/* Feature 3: Paid instantly */}
             <article className="lp-feature-item">
               <div className="lp-feature-text">
-                <h3 className="lp-h3">Paid the moment they pay.</h3>
+                <h3 className="lp-h3">Your wallet, instantly.</h3>
                 <p className="lp-body" style={{ marginTop: '0.6rem' }}>
-                  Every sale lands in your account the second your fan hits Pay.
-                  No 30-day holds. No pending balance. No payout schedule. No
-                  commission on what you make.
+                  Card in from fans; crypto or stablecoin out to you — same moment. No holds, no commission.
                 </p>
               </div>
               <div className="lp-feature-art">
@@ -438,10 +473,9 @@ const Landing = () => {
       <section id="pricing" className="lp-section">
         <div className="lp-shell">
           <header style={{ maxWidth: '720px', marginBottom: '2.5rem' }}>
-            <h2 className="lp-h2">One free month. Then $19.99.</h2>
+            <h2 className="lp-h2">$19.99 after a free month</h2>
             <p className="lp-body" style={{ marginTop: '1rem' }}>
-              Same features on every plan. No commission on what your fans pay.
-              No upsells. No usage tiers. Cancel anytime from your dashboard.
+              Same features everywhere. Card → crypto on every plan. No commission on fan payments.
             </p>
           </header>
 
@@ -508,7 +542,7 @@ const Landing = () => {
         <div className="lp-shell">
           <div className="lp-row-2">
             <div>
-              <h2 className="lp-h2">Frequently asked.</h2>
+              <h2 className="lp-h2">FAQ</h2>
               <p className="lp-body" style={{ marginTop: '1rem' }}>
                 Email us at <a href="mailto:support@sixsevencreator.com">support@sixsevencreator.com</a> if
                 you don't see it here. We read everything.
@@ -542,11 +576,11 @@ const Landing = () => {
           <div className="lp-footer-top">
             <div>
               <span className="lp-brand" style={{ cursor: 'default' }}>
-                67<span className="lp-brand-tag">/ creator</span>
+                <span className="lp-brand-mark">67</span>
+                <span className="lp-brand-tag">/ creator</span>
               </span>
               <p className="lp-footer-tagline">
-                A page for your work. Built by a small team between Lisbon
-                and Brooklyn.
+                Card to crypto for creators. Small team, Lisbon and Brooklyn.
               </p>
             </div>
             <div className="lp-footer-col">

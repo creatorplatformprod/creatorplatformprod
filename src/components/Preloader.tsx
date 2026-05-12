@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import BrandWordmark from "@/components/BrandWordmark";
+import CreatorLockup from "@/components/CreatorLockup";
 // Brand preloader
 
 type PreloaderProps = {
@@ -30,7 +30,9 @@ const Preloader = ({ isVisible, onComplete, themeClass = "" }: PreloaderProps) =
       }`}
     >
       <div className="relative z-10 flex flex-col items-center gap-4">
-        <BrandWordmark className="brand-wordmark text-xl md:text-2xl" />
+        <div className="scale-110 md:scale-[1.2] origin-center">
+          <CreatorLockup />
+        </div>
         <div className="relative w-6 h-6">
           <div className="absolute inset-0 rounded-full border-2 border-gray-200" />
           <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-indigo-500 border-r-sky-400 animate-spin" />

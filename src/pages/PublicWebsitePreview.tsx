@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink, Monitor, Smartphone, Copy, Check, Link2 } from "lucide-react";
 import AccountMenu from "@/components/AccountMenu";
 import PublicPageSkeleton from "@/components/PublicPageSkeleton";
-import BrandWordmark from "@/components/BrandWordmark";
+import CreatorLockup from "@/components/CreatorLockup";
 import { api } from "@/lib/api";
 import { useFeedbackToasts } from "@/hooks/useFeedbackToasts";
 import { useSkeletonGate } from "@/hooks/useSkeletonGate";
@@ -433,14 +433,20 @@ const PublicWebsitePreview = () => {
   } as const;
 
   return (
-    <div className="min-h-screen feed-bg">
+    <div className="min-h-screen feed-bg vault-ui">
       {/* Top Navbar */}
       <nav className="sticky top-0 z-50 nav-elevated">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-14">
             {/* Left */}
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <BrandWordmark className="brand-wordmark" />
+              <CreatorLockup
+                as="button"
+                type="button"
+                variant="compact"
+                onClick={() => navigate("/")}
+                aria-label="SixSevenCreator home"
+              />
               <div className="hidden sm:block w-px h-6 bg-gray-200" />
               <span className="hidden sm:inline text-sm font-semibold text-foreground tracking-tight">Preview</span>
               <div className="dot-live" title="Live" />

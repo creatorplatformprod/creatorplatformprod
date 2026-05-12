@@ -8,7 +8,7 @@ import { getCollection } from "@/collections/collectionsData";
 import { getCollectionId, isValidSecureId } from "@/utils/secureIdMapper";
 import ProgressiveImage from "@/components/ProgressiveImage";
 import InlineVideoPlayer from "@/components/InlineVideoPlayer";
-import BrandWordmark from "@/components/BrandWordmark";
+import CreatorLockup from "@/components/CreatorLockup";
 import { api } from "@/lib/api";
 import { useSeo } from "@/hooks/use-seo";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
@@ -541,7 +541,7 @@ const PostDetail = () => {
   const totalImagePages = getTotalImagePages();
 
   return (
-    <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
+    <div className={`min-h-screen mobile-stable-shell feed-bg vault-ui ${themeClass}`}>
       <header className={`sticky top-0 z-10 nav-elevated ${isPreviewMode ? 'mobile-preview-navbar-offset' : ''}`}>
         <div className="max-w-6xl mx-auto p-3 sm:p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -554,7 +554,7 @@ const PostDetail = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
-            <BrandWordmark className="hidden sm:block brand-wordmark text-sm" />
+            <CreatorLockup variant="onDark" className="hidden sm:inline-flex" />
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[11px] text-muted-foreground tabular-nums">

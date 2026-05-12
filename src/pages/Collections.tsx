@@ -630,7 +630,7 @@ const Collections = () => {
   };
 
   return (
-        <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
+        <div className={`min-h-screen mobile-stable-shell feed-bg vault-ui ${themeClass}`}>
           <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 relative">
           <button
             onClick={() => window.history.back()}

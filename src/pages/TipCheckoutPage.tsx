@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Loader2, CheckCircle2, Gift, AlertCircle, Clock, ChevronDown, CreditCard } from "lucide-react";
 import { api } from "@/lib/api";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
-import BrandWordmark from "@/components/BrandWordmark";
+import CreatorLockup from "@/components/CreatorLockup";
 
 const RAW_API_URL =
   import.meta.env.VITE_API_URL ||
@@ -345,7 +345,7 @@ const TipCheckoutPage = () => {
   // Success screen (shown when redirected with access token)
   if (paymentSuccess) {
     return (
-      <div className={`min-h-screen feed-bg flex items-center justify-center p-4 ${themeClass}`}>
+      <div className={`min-h-screen feed-bg vault-ui flex items-center justify-center p-4 ${themeClass}`}>
         <div className="p-4 max-w-xs w-full text-center">
           <style>{`
             @keyframes scale-in {
@@ -411,7 +411,7 @@ const TipCheckoutPage = () => {
   // Session expired screen
   if (sessionExpired || (!tipAmount && !isLoading)) {
     return (
-      <div className={`min-h-screen feed-bg flex items-center justify-center p-4 ${themeClass}`}>
+      <div className={`min-h-screen feed-bg vault-ui flex items-center justify-center p-4 ${themeClass}`}>
         <div className="post-card rounded-xl p-6 max-w-sm w-full text-center space-y-4">
           <div className="w-14 h-14 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto">
             <Clock className="w-7 h-7 text-amber-500" />
@@ -438,7 +438,7 @@ const TipCheckoutPage = () => {
   }
 
   return (
-    <div className={`min-h-screen feed-bg ${themeClass}`}>
+    <div className={`min-h-screen feed-bg vault-ui ${themeClass}`}>
       <header className="sticky top-0 z-10 nav-elevated">
         <div className="max-w-lg mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button
@@ -448,7 +448,7 @@ const TipCheckoutPage = () => {
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm">Back</span>
           </button>
-          <BrandWordmark className="brand-wordmark text-sm" />
+          <CreatorLockup variant="compact" />
         </div>
       </header>
 

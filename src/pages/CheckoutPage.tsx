@@ -3,7 +3,7 @@ import { ArrowLeft, Loader2, CheckCircle2, Lock, ChevronDown, ChevronUp, Clock, 
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import { usePublicWebsiteTheme } from "@/hooks/usePublicWebsiteTheme";
 import { api } from "@/lib/api";
-import BrandWordmark from "@/components/BrandWordmark";
+import CreatorLockup from "@/components/CreatorLockup";
 
 const RAW_API_URL =
   import.meta.env.VITE_API_URL ||
@@ -442,7 +442,7 @@ const CheckoutPage = () => {
   // Success screen (shown when redirected with access token)
   if (paymentSuccess) {
     return (
-      <div className={`min-h-screen feed-bg flex items-center justify-center p-4 ${themeClass}`}>
+      <div className={`min-h-screen feed-bg vault-ui flex items-center justify-center p-4 ${themeClass}`}>
         <div className="p-3 max-w-xs w-full text-center">
           <style>{`
             @keyframes scale-in {
@@ -526,7 +526,7 @@ const CheckoutPage = () => {
   // Session expired screen
   if (sessionExpired || (!checkoutData && !isLoading)) {
     return (
-      <div className={`min-h-screen feed-bg flex items-center justify-center p-4 ${themeClass}`}>
+      <div className={`min-h-screen feed-bg vault-ui flex items-center justify-center p-4 ${themeClass}`}>
         <div className="post-card rounded-2xl p-8 max-w-md w-full text-center space-y-6">
           <div className="w-20 h-20 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto">
             <Clock className="w-10 h-10 text-yellow-500" />
@@ -573,7 +573,7 @@ const CheckoutPage = () => {
   // Loading state while fetching checkout data
   if (isLoading && !checkoutData) {
     return (
-      <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
+      <div className={`min-h-screen feed-bg vault-ui flex items-center justify-center ${themeClass}`}>
         <div className="text-center">
           <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Loading checkout...</p>
@@ -583,7 +583,7 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className={`min-h-screen feed-bg ${themeClass}`}>
+    <div className={`min-h-screen feed-bg vault-ui ${themeClass}`}>
       <header className="sticky top-0 z-10 nav-elevated">
         <div className="max-w-5xl mx-auto p-3 sm:p-4 flex items-center justify-between">
           <button 
@@ -593,7 +593,7 @@ const CheckoutPage = () => {
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm">Back</span>
           </button>
-          <BrandWordmark className="brand-wordmark text-sm" />
+          <CreatorLockup variant="compact" />
         </div>
       </header>
 

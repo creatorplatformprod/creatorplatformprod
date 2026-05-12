@@ -37,7 +37,7 @@ const Pricing = () => {
   const handleCheckoutBusiness = () => businessCheckoutUrl && window.open(businessCheckoutUrl, '_blank', 'noopener,noreferrer');
 
   return (
-    <div className="lp-canvas">
+    <div className="lp-canvas vault-ui">
       <nav className="lp-nav">
         <div className="lp-nav-inner">
           <button onClick={() => navigate('/')} className="lp-btn lp-btn-ghost lp-btn-sm">
@@ -45,7 +45,8 @@ const Pricing = () => {
             Back
           </button>
           <button onClick={() => navigate('/')} className="lp-brand">
-            67<span className="lp-brand-tag">/ creator</span>
+            <span className="lp-brand-mark">67</span>
+            <span className="lp-brand-tag">/ creator</span>
           </button>
           <span className="lp-nav-link" style={{ pointerEvents: 'none' }}>Pricing</span>
         </div>
@@ -55,11 +56,10 @@ const Pricing = () => {
         <header style={{ marginBottom: '3rem', maxWidth: '720px' }}>
           <p className="lp-section-label lp-mono">03 — Pricing</p>
           <h1 className="lp-h1" style={{ marginTop: '0.6rem' }}>
-            One free month. Then $19.99.
+            Simple pricing
           </h1>
           <p className="lp-body" style={{ marginTop: '1.25rem' }}>
-            Same features on every plan. No commission on what your fans pay.
-            No upsells. No usage tiers. Cancel anytime from your dashboard.
+            One free month, then $19.99. Card → crypto on every tier. No commission on what fans pay.
           </p>
         </header>
 

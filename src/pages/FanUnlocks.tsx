@@ -42,7 +42,7 @@ const FanUnlocks = () => {
   }, []);
 
   return (
-    <div className="lp-canvas">
+    <div className="lp-canvas vault-ui">
       <div className="lp-shell" style={{ paddingTop: '3rem', paddingBottom: '5rem', maxWidth: '680px' }}>
         <button
           onClick={() => window.history.back()}
@@ -55,10 +55,9 @@ const FanUnlocks = () => {
 
         <header style={{ marginBottom: '2rem' }}>
           <p className="lp-section-label lp-mono">— Your library</p>
-          <h1 className="lp-h1" style={{ marginTop: '0.6rem' }}>Unlocked content.</h1>
+          <h1 className="lp-h1" style={{ marginTop: '0.6rem' }}>Your unlocks</h1>
           <p className="lp-body" style={{ marginTop: '0.75rem' }}>
-            Everything you've paid to unlock, one row per creator. The link
-            opens the content.
+            Paid with a card. Each row opens that creator&apos;s content.
           </p>
         </header>
 

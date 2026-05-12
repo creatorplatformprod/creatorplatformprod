@@ -617,7 +617,7 @@ const PostDetailBlurred = () => {
 
   if (!collection) {
     return (
-      <div className={`min-h-screen feed-bg flex items-center justify-center ${themeClass}`}>
+      <div className={`min-h-screen feed-bg vault-ui flex items-center justify-center ${themeClass}`}>
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Collection not found</h1>
           <Button onClick={() => navigate("/")} variant="outline">
@@ -630,7 +630,7 @@ const PostDetailBlurred = () => {
   }
 
   return (
-    <div className={`min-h-screen mobile-stable-shell feed-bg ${themeClass}`}>
+    <div className={`min-h-screen mobile-stable-shell feed-bg vault-ui ${themeClass}`}>
       <button
         onClick={() => window.history.back()}
         className={`fixed ${isPreviewMode ? 'mobile-fixed-preview-safe' : 'mobile-fixed-safe'} left-4 z-[60] w-9 h-9 sm:w-8 sm:h-8 rounded-full bg-secondary/80 backdrop-blur-xl hover:bg-secondary flex items-center justify-center text-foreground transition-colors duration-200 shadow-lg`}

@@ -7,7 +7,7 @@ import StatusCard from "@/components/StatusCard";
 import StatusCardWithMedia from "../components/StatusCardWithMedia";
 import Preloader from "@/components/Preloader";
 import TopLoader from "@/components/TopLoader";
-import BrandWordmark from "@/components/BrandWordmark";
+import CreatorLockup from "@/components/CreatorLockup";
 import { collections, getAllCollectionIds, getCollection } from "@/collections/collectionsData";
 import { fetchEngagement, registerEngagementShare, registerEngagementView, setEngagementLike } from "@/lib/engagement";
 
@@ -621,7 +621,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen feed-bg">
+    <div className="min-h-screen feed-bg vault-ui">
       {isLoading ? (
         <Preloader isVisible={true} onComplete={() => {}} />
       ) : (
@@ -867,7 +867,7 @@ const Index = () => {
 
                 <footer className="mt-8 sm:mt-12 border-t border-gray-200 pt-6 pb-4">
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <BrandWordmark className="brand-wordmark text-sm" />
+                    <CreatorLockup variant="compact" />
                     <p className="text-xs text-muted-foreground">
                       &copy; {new Date().getFullYear()} SixSeven Creator. All rights reserved.
                     </p>

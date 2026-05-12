@@ -2,7 +2,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import TipButton from "@/components/TipButton";
-import BrandWordmark from "@/components/BrandWordmark";
+import CreatorLockup from "@/components/CreatorLockup";
 
 interface FeedHeaderProps {
   onSearch: (query: string) => void;
@@ -100,7 +100,7 @@ const FeedHeader = ({
               isDesktop ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
             }`}
           >
-            <BrandWordmark className="brand-wordmark" />
+            <CreatorLockup as="span" variant="compact" />
             <div className="hidden sm:block w-px h-5 bg-gray-200" />
             <span className="hidden sm:block text-sm font-medium text-foreground/80 tracking-tight">{title}</span>
           </div>

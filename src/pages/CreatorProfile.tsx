@@ -9,7 +9,7 @@ import TopLoader from "@/components/TopLoader";
 import PublicPageSkeleton from "@/components/PublicPageSkeleton";
 import FanAccountMenu from "@/components/FanAccountMenu";
 import FanAuthModal from "@/components/FanAuthModal";
-import BrandWordmark from "@/components/BrandWordmark";
+import CreatorLockup from "@/components/CreatorLockup";
 import { api } from "@/lib/api";
 import { useFanAuth } from "@/contexts/FanAuthContext";
 import { useSeo } from "@/hooks/use-seo";
@@ -1055,7 +1055,7 @@ const CreatorProfile = () => {
   }
 
   return (
-    <div className={`min-h-screen feed-bg ${isPreviewMode ? 'public-preview-mode' : 'scrollbar-gutter-balanced'} public-template${templateStyleClass ? ` public-template-${templateStyleClass} template-layout template-layout-${templateStyleClass}` : ''} ${classicDarkClass} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
+    <div className={`min-h-screen feed-bg vault-ui ${isPreviewMode ? 'public-preview-mode' : 'scrollbar-gutter-balanced'} public-template${templateStyleClass ? ` public-template-${templateStyleClass} template-layout template-layout-${templateStyleClass}` : ''} ${classicDarkClass} ${showSidebar && sidebarOpen ? 'template-sidebar-open' : 'template-sidebar-closed'}`}>
       {/* Full Width Navbar - Always on top */}
       <FeedHeader 
         onSearch={handleSearch} 
@@ -1160,9 +1160,9 @@ const CreatorProfile = () => {
               {allCollections.length > 0 && (
                 <button
                   onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                  className="template-unlock-cta relative mb-3 w-[190px] mx-auto text-center text-xl xl:text-2xl font-bold tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
+                  className="template-unlock-cta relative mb-3 w-[190px] mx-auto text-center text-xl xl:text-2xl font-light tracking-tight text-foreground transition-all whitespace-nowrap leading-none"
                 >
-                  <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold lg:font-extrabold">Unlock Everything</span>
+                  <span className="relative unlock-cta-brand-gradient unlock-cta-font font-light">Unlock Everything</span>
                 </button>
               )}
               {(isPreviewMode || hasAnySocialLinks) && (
@@ -1179,9 +1179,9 @@ const CreatorProfile = () => {
             {allCollections.length > 0 && (
               <button
                 onClick={() => navigate(`/collections?creator=${username}${isPreviewMode ? '&mode=preview' : ''}`)}
-                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-2xl sm:text-2xl md:text-2xl font-extrabold tracking-tight text-foreground transition-all lg:hidden"
+                className="template-unlock-cta relative overflow-hidden mt-3 sm:mt-5 ml-0 md:ml-auto self-center md:self-center text-2xl sm:text-2xl md:text-2xl font-light tracking-tight text-foreground transition-all lg:hidden"
               >
-                <span className="relative unlock-cta-brand-gradient unlock-cta-font font-bold">Unlock Everything</span>
+                <span className="relative unlock-cta-brand-gradient unlock-cta-font font-light">Unlock Everything</span>
               </button>
             )}
 
@@ -1425,7 +1425,7 @@ const CreatorProfile = () => {
 
             <footer className="mt-12 border-t border-gray-200 pt-6 pb-4">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                <BrandWordmark className="brand-wordmark text-sm" />
+                <CreatorLockup variant="compact" />
                 <p className="text-xs text-muted-foreground">
                   &copy; {new Date().getFullYear()} {creatorData.displayName || creatorData.username}. All rights reserved.
                 </p>
