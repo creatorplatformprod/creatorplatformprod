@@ -1330,39 +1330,33 @@
   .creator-lockup-wordmark {
     display: inline-block;
     font-weight: 700;
-    font-size: clamp(0.8125rem, 1.8vw, 1rem);
-    letter-spacing: -0.03em;
+    font-size: clamp(0.875rem, 2.1vw, 1.1rem);
+    letter-spacing: -0.035em;
     line-height: 1;
     text-transform: lowercase;
-    color: transparent;
-    background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 45%, #38bdf8 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: hsl(var(--primary-dark));
+    background: none;
+    -webkit-text-fill-color: unset;
   }
   .creator-lockup--compact .creator-lockup-wordmark {
-    font-size: 0.8125rem;
+    font-size: clamp(0.8125rem, 1.65vw, 0.95rem);
   }
   .creator-lockup--on-dark {
     color: #fff;
   }
   .creator-lockup--on-dark .creator-lockup-wordmark {
-    background: linear-gradient(135deg, hsl(200 100% 78%) 0%, hsl(270 75% 72%) 50%, hsl(280 80% 68%) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    color: hsl(262 46% 62%);
+    background: none;
+    -webkit-text-fill-color: unset;
   }
 
   .theme-classic-dark .creator-lockup {
     color: hsl(210 40% 96%);
   }
   .theme-classic-dark .creator-lockup-wordmark {
-    background: linear-gradient(135deg, hsl(200 100% 70%) 0%, hsl(200 100% 50%) 45%, hsl(280 80% 65%) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    color: hsl(var(--primary-dark));
+    background: none;
+    -webkit-text-fill-color: unset;
   }
 
   /* â”€â”€ Brand mark: nav logo â”€â”€ */
@@ -2025,10 +2019,10 @@
     color: hsl(210 40% 90%);
   }
 
-  /* Unlock Everything CTA — theme purple on public profile */
+  /* Unlock Everything CTA — slightly lighter purple on dark profile */
   .theme-classic-dark .unlock-cta-brand-gradient {
-    color: hsl(var(--primary)) !important;
-    -webkit-text-fill-color: hsl(var(--primary)) !important;
+    color: hsl(265 48% 78%) !important;
+    -webkit-text-fill-color: hsl(265 48% 78%) !important;
     background: none !important;
     -webkit-background-clip: initial !important;
     background-clip: initial !important;
@@ -3686,14 +3680,12 @@
   .lp-brand .lp-brand-wordmark {
     display: inline-block;
     font-weight: 700;
-    font-size: clamp(0.8125rem, 1.9vw, 1rem);
-    letter-spacing: -0.03em;
+    font-size: clamp(0.9rem, 2.35vw, 1.15rem);
+    letter-spacing: -0.035em;
     text-transform: lowercase;
-    color: transparent;
-    background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 45%, #38bdf8 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: hsl(var(--primary-dark));
+    background: none;
+    -webkit-text-fill-color: unset;
   }
   .lp-hero-creators {
     display: flex;
@@ -4305,12 +4297,13 @@
      UNLOCK CTA + MODAL (app-wide) — flat, no decoration
      ═══════════════════════════════════════════════════════════════ */
 
+  /* Slightly lighter than --primary for public “Unlock Everything” */
   .unlock-cta-brand-gradient {
     display: inline-block;
-    color: hsl(var(--primary)) !important;
+    color: hsl(262 42% 68%) !important;
     background: none !important;
     -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: hsl(var(--primary)) !important;
+    -webkit-text-fill-color: hsl(262 42% 68%) !important;
     background-clip: initial !important;
     position: relative;
     padding-bottom: 0.18em;
@@ -4320,7 +4313,7 @@
     position: absolute;
     left: 0; right: 0; bottom: 0.02em;
     height: 2px;
-    background: hsl(var(--primary));
+    background: hsl(262 42% 68%);
     transform-origin: left;
     transform: scaleX(1);
     transition: transform 0.25s ease;
@@ -4333,11 +4326,11 @@
   .template-unlock-cta:hover { opacity: 0.7; }
 
   .theme-classic-dark .unlock-cta-brand-gradient {
-    color: hsl(var(--primary)) !important;
-    -webkit-text-fill-color: hsl(var(--primary)) !important;
+    color: hsl(265 48% 78%) !important;
+    -webkit-text-fill-color: hsl(265 48% 78%) !important;
     background: none !important;
   }
-  .theme-classic-dark .unlock-cta-brand-gradient::after { background: hsl(var(--primary)); }
+  .theme-classic-dark .unlock-cta-brand-gradient::after { background: hsl(265 48% 78%); }
 
   /* ───────────────────────────────────────────────────────────────
      Unlock modal — fully transparent. No card. White text on
@@ -4570,6 +4563,16 @@
     backdrop-filter: var(--vault-blur) !important;
     -webkit-backdrop-filter: var(--vault-blur) !important;
     border-bottom: 1px solid var(--vault-line) !important;
+    box-shadow: none !important;
+  }
+
+  /* Fan checkout / tip: dark public theme without .public-template wrapper */
+  .vault-ui.theme-classic-dark .creator-top-nav,
+  .vault-ui.theme-classic-dark .nav-elevated {
+    background: rgba(0, 0, 0, 0.45) !important;
+    backdrop-filter: var(--vault-blur) !important;
+    -webkit-backdrop-filter: var(--vault-blur) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
     box-shadow: none !important;
   }
   .vault-ui.creator-dashboard .creator-sidebar {
