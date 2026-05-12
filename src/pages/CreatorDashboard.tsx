@@ -2968,16 +2968,29 @@ const CreatorDashboard = () => {
                           Use your Unlock tab to gate premium previews and convert more fans to paid members.
                         </p>
                         <button
-                          onClick={() => requestTabChange('unlock')}
+                          type="button"
+                          onClick={handlePreviewPublic}
                           className="studio-action-pill studio-action-pill-primary w-full"
                         >
-                          Open Unlock Controls
+                          Open live preview
                         </button>
                       </div>
                     </div>
 
-                    <div className="studio-mobile-preview hidden md:block">
-                      <div className="studio-mobile-screen" />
+                    <div className="studio-device-row" aria-hidden="true">
+                      <div className="studio-laptop-preview">
+                        <div className="studio-laptop-lid">
+                          <div className="studio-laptop-screen">
+                            <div className="studio-laptop-camera" />
+                          </div>
+                        </div>
+                        <div className="studio-laptop-base" />
+                      </div>
+                      <div className="studio-mobile-preview">
+                        <div className="studio-mobile-notch" />
+                        <div className="studio-mobile-screen" />
+                        <div className="studio-mobile-home-indicator" />
+                      </div>
                     </div>
                   </div>
                 </section>
